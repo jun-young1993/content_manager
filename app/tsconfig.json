@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,9 +18,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "noImplicitAny": false
   },
   "include": [
     "src"
-  ]
+  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
+  "typeRoots": [
+    "../node_modules/@types",
+    "../@types"
+  ],
+  "jsx": "react-jsx"
 }

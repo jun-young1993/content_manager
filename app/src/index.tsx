@@ -1,12 +1,23 @@
 import React from 'react';
+window.React = React
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Tab from './views/menues/Tab';
+
+
+
+// import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
+import './views/css/main.css';
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <App /> */}
+    <Tab />
+    <div id="main" style = {{height:"100vh"}}>
+    </div>
   </React.StrictMode>,
   document.getElementById('root')
 );
