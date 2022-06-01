@@ -5,6 +5,20 @@
   "main": "public/main.js",
   "homepage": "./",
   "dependencies": {
+    "@progress/kendo-data-query": "^1.5.6",
+    "@progress/kendo-drawing": "^1.16.3",
+    "@progress/kendo-licensing": "^1.2.2",
+    "@progress/kendo-react-animation": "^5.3.0",
+    "@progress/kendo-react-buttons": "^5.3.0",
+    "@progress/kendo-react-data-tools": "^5.3.0",
+    "@progress/kendo-react-dateinputs": "^5.3.0",
+    "@progress/kendo-react-dropdowns": "^5.3.0",
+    "@progress/kendo-react-grid": "^5.3.0",
+    "@progress/kendo-react-inputs": "^5.3.0",
+    "@progress/kendo-react-intl": "^5.3.0",
+    "@progress/kendo-react-treeview": "^5.3.0",
+    "@progress/kendo-theme-bootstrap": "^5.4.1",
+    "@progress/kendo-theme-default": "^5.4.1",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -69,5 +83,8 @@
       "@babel/presets-react",
       "@babel/preset-react"
     ]
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }

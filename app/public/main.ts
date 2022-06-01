@@ -3,7 +3,7 @@ import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 
 let mainWindow: BrowserWindow;
-app.disableHardwareAcceleration()
+app.disableHardwareAcceleration();
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 900,

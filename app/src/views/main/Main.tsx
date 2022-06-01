@@ -1,9 +1,11 @@
 import Calendar from './Calendar';
+import User from './User';
 import React from 'react';
 function Main(props : any) {
 
     const modeMap : any  = {
-        "calendar" : <Calendar />
+        "calendar" : <Calendar />,
+        "user" : <User />
     };
     
     let mode:JSX.Element = modeMap[props.mode];

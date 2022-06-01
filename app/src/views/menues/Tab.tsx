@@ -3,6 +3,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Main from '../main/Main';
 import ReactDOM from 'react-dom';
+
+
 function Tab() {
     const handleSelect = function(eventKey: string | null, e: React.SyntheticEvent<unknown>){
   
@@ -15,15 +17,15 @@ function Tab() {
 
     return (
      
-        <Nav variant="pills" activeKey="1" onSelect={handleSelect}>
+        <Nav variant="pills" activeKey="1" onSelect={handleSelect} className="sidebar">
         <Nav.Item>
           <Nav.Link eventKey="calendar" href="#/home">
           calendar
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="2" title="Item">
-            NavLink 2 content
+          <Nav.Link eventKey="user" title="Item">
+            USERS
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>

@@ -4,6 +4,7 @@ var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
 var mainWindow;
+electron_1.app.disableHardwareAcceleration();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
         width: 900,
