@@ -5,6 +5,7 @@ var isDev = require("electron-is-dev");
 var path = require("path");
 var mainWindow;
 electron_1.app.disableHardwareAcceleration();
+require('./src/boots/settings');
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
         width: 900,

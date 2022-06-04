@@ -4,6 +4,10 @@ import * as path from 'path';
 
 let mainWindow: BrowserWindow;
 app.disableHardwareAcceleration();
+
+
+// require('./src/boots/settings');
+
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 900,
