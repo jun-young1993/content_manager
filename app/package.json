@@ -31,6 +31,7 @@
     "install": "^0.13.0",
     "kalend": "^0.14.3",
     "nedb": "^1.8.0",
+    "nedb-promises": "^6.0.3",
     "npm": "^8.10.0",
     "react": "^17.0.2",
     "react-bootstrap": "^2.4.0",

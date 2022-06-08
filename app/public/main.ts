@@ -1,12 +1,15 @@
 import { app, BrowserWindow } from 'electron';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
+import {AutoLoader} from './lib/AutoLoad/AutoLoader';
+
 
 let mainWindow: BrowserWindow;
+const boots = new AutoLoader(path.join(__dirname,'./src/boots/*.js'));
+
 app.disableHardwareAcceleration();
 
-
-// require('./src/boots/settings');
+boots.loader();
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({

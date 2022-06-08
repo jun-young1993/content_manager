@@ -3,9 +3,11 @@ exports.__esModule = true;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
+var AutoLoader_1 = require("./lib/AutoLoad/AutoLoader");
 var mainWindow;
+var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/*.js'));
 electron_1.app.disableHardwareAcceleration();
-require('./src/boots/settings');
+boots.loader();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
         width: 900,
