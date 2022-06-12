@@ -1,35 +1,10 @@
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
-
-// import {Calendar as Calen} from 'react-bootstrap-calendar';
-import Kalend, { CalendarView, OnPageChangeData, OnSelectViewData, OnNewEventClickData, OnEventClickData } from 'kalend' // import component
-
-
-
-// import 'kalend/dist/styles/index.css'; // import styles
-
-
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
-
 import {useState, Component, ReactNode} from 'react';
-import { threadId } from 'worker_threads';
-import { render } from '@testing-library/react';
-import {Table} from "react-bootstrap";
 import {Grid, GridColumn, GridToolbar} from "@progress/kendo-react-grid";
-// import "@progress/kendo-theme-default/dist/all.css";
-// Set the variables here.
-// import "@progress/kendo-theme-bootstrap/dist/all.css";
-// import "bootstrap/scss/bootstrap.css";
 import '@progress/kendo-theme-default/dist/all.css';
 import BaseModal from '../modals/BaseModal';
-
-// const createModal:any =
-
+import * as path from 'path';
+const electron = window.require('electron');
+const ipcRenderer = electron.ipcRenderer;
 
 class User extends Component {
     state = {
@@ -60,7 +35,7 @@ class User extends Component {
                          <BaseModal
                             button = {{
                                 title : "등록",
-                                click : (modal)=> {
+                                click : (modal : BaseModal,)=> {
                                   modal.show();
                                 }
                             }}
@@ -74,7 +49,23 @@ class User extends Component {
                                  name : 'phone_number',
                                  id : 'phone_number'
                              }]
-                         }
+                            }
+                            buttons = {
+                                [{
+                                    text : 'close',
+                                    click : (modal: BaseModal) => {
+                                        modal.close()
+                                    }
+                                },{
+                                    text : 'save',
+                                    click : (modal: BaseModal) => {
+                                        const userInsert = ipcRenderer.sendSync("@User/insert",modal.getInputValues());
+                                        console.log('return userInsert',userInsert);
+
+
+                                    }
+                                }]
+                            }
                          />
                      </GridToolbar>
                 <GridColumn field="Column1" title="column1" width="40px" />

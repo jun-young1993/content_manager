@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "esnext",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,18 +12,22 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "noImplicitAny": false
+    "jsx": "preserve"
   },
   "include": [
     "src"
   ],
-  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ],
   "typeRoots": [
     "../node_modules/@types",
     "../@types"

@@ -1,5 +1,6 @@
 import React from 'react';
 window.React = React
+
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -10,6 +11,7 @@ import Tab from './views/menues/Tab';
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
 import './views/css/main.css';
+
 
 
 ReactDOM.render(

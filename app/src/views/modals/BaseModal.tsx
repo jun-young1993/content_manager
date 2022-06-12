@@ -3,10 +3,15 @@ import {Component} from "react";
 import {Button, FormControl, InputGroup, Modal} from "react-bootstrap";
 import User from "../main/User";
 interface ModalProps {
-    show? : boolean
-    button : object,
-    fields : Array<Fields>
+    show? : boolean;
+    button : object;
+    buttons? :Array<Buttons>;
+    fields : Array<Fields>;
 
+}
+interface Buttons{
+    text : string;
+    click? : any;
 }
 interface Fields{
     text : string,
@@ -18,7 +23,7 @@ class BaseModal extends Component<ModalProps> {
         show : false,
         button : {
             title : 'no title',
-            click : (self)=> {
+            click : (self : BaseModal)=> {
                 alert('no function')
             }
         },
@@ -27,9 +32,15 @@ class BaseModal extends Component<ModalProps> {
             id : 'no id',
             name : 'no name'
         }],
+        buttons : [{
+            text : 'close',
+            click : (self : BaseModal) => {
+                this.show(false);
+            }
+        }]
     }
     private inputValues: {};
-    constructor(props){
+    constructor(props : ModalProps){
         super(props);
 
 
@@ -49,6 +60,9 @@ class BaseModal extends Component<ModalProps> {
     close = () => {
         this.show(false);
     }
+    getInputValues = () => {
+        return this.inputValues;
+    }
     save = () => {
         // this.state.fields.map((object,index)=>{
         //
@@ -59,6 +73,9 @@ class BaseModal extends Component<ModalProps> {
     }
     getFields = () => {
         return this.state.fields;
+    }
+    getButtons = () => {
+        return this.state.buttons;
     }
     settingFields = () => {
 
@@ -75,9 +92,19 @@ class BaseModal extends Component<ModalProps> {
         })
 
     }
-    updateInputValues = (evt) => {
-
-        this.inputValues[evt.target.name] = evt.target.value;
+    settingButtons = ()=> {
+        const _this = this;
+        return this.getButtons().map((object) => {
+            return (
+                <Button onClick={() => object.click(_this)}>
+                    {object.text}
+                </Button>
+            )
+        })
+    }
+    updateInputValues = (evt : any) => {
+        const _this : any = this;
+        _this.inputValues[evt.target.name] = evt.target.value;
     }
     render() {
         return (
@@ -93,12 +120,13 @@ class BaseModal extends Component<ModalProps> {
                         {this.settingFields()}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.close}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.save}>
-                            Save Changes
-                        </Button>
+                        {this.settingButtons()}
+                        {/*<Button variant="secondary" onClick={this.close}>*/}
+                        {/*    Close*/}
+                        {/*</Button>*/}
+                        {/*<Button variant="primary" onClick={this.save}>*/}
+                        {/*    Save Changes*/}
+                        {/*</Button>*/}
                     </Modal.Footer>
                 </Modal>
             </>

@@ -1,17 +1,19 @@
 import { app, BrowserWindow } from 'electron';
+import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
-
+import 'module-alias/register';
 
 let mainWindow: BrowserWindow;
-const boots = new AutoLoader(path.join(__dirname,'./src/boots/*.js'));
+const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
+boots.loader();
+
 
 app.disableHardwareAcceleration();
 
-boots.loader();
-
 const createWindow = () => {
+
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
@@ -23,12 +25,13 @@ const createWindow = () => {
     webPreferences: {
       // node환경처럼 사용하기
       nodeIntegration: true,
-      //enableRemoteModule: true,
+      // enableRemoteModule: true,
       // 개발자도구
+      contextIsolation: false,
       devTools: isDev,
     },
   });
-
+  remoteMain.enable(mainWindow.webContents);
   // production에서는 패키지 내부 리소스에 접근.
   // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);

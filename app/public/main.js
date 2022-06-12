@@ -1,13 +1,15 @@
 "use strict";
 exports.__esModule = true;
 var electron_1 = require("electron");
+var remoteMain = require("@electron/remote/main");
 var isDev = require("electron-is-dev");
 var path = require("path");
 var AutoLoader_1 = require("./lib/AutoLoad/AutoLoader");
+require("module-alias/register");
 var mainWindow;
-var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/*.js'));
-electron_1.app.disableHardwareAcceleration();
+var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();
+electron_1.app.disableHardwareAcceleration();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
         width: 900,
@@ -20,11 +22,13 @@ var createWindow = function () {
         webPreferences: {
             // node환경처럼 사용하기
             nodeIntegration: true,
-            //enableRemoteModule: true,
+            // enableRemoteModule: true,
             // 개발자도구
+            contextIsolation: false,
             devTools: isDev
         }
     });
+    remoteMain.enable(mainWindow.webContents);
     // production에서는 패키지 내부 리소스에 접근.
     // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : "file://".concat(path.join(__dirname, '../build/index.html')));
