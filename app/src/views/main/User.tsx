@@ -8,11 +8,7 @@ const ipcRenderer = electron.ipcRenderer;
 
 class User extends Component {
     state = {
-        data: [
-            {'Column1':'A1', 'Column2':'A2'},
-            {'Column1':'B1', 'Column2':'B2'},
-            {'Column1':'C1', 'Column2':'C2'}
-        ],
+        data: [],
         modal : {
             show : true
         }
@@ -21,8 +17,41 @@ class User extends Component {
     customClick = () => {
         alert("Custom handler in custom toolbar");
     }
+    constructor(props : any) {
+        super(props);
+        const users = ipcRenderer.sendSync("@User/index");
+        console.log('return user index',users);
 
+        if(users.success){
+
+            // @ts-ignore
+            this.state.data = users.data;
+            // this.setState({
+            //     data : [{
+            //         user_name : 'test'
+            //     }]
+            // })
+        }
+    }
+    loadUser(){
+        console.log('start load user');
+        const users = ipcRenderer.sendSync("@User/index");
+        if(users.success){
+
+            // @ts-ignore
+            // this.state.data = users.data;
+            this.setState({
+                data : users.data
+            })
+            // this.setState({
+            //     data : [{
+            //         user_name : 'test'
+            //     }]
+            // })
+        }
+    }
     render() {
+        const _this = this;
         return (
             <>
             <Grid
@@ -61,20 +90,23 @@ class User extends Component {
                                     click : (modal: BaseModal) => {
                                         const userInsert = ipcRenderer.sendSync("@User/insert",modal.getInputValues());
                                         console.log('return userInsert',userInsert);
-
+                                        if(userInsert.success){
+                                            console.log('insert afetr reload');
+                                            _this.loadUser();
+                                        }
 
                                     }
                                 }]
                             }
                          />
                      </GridToolbar>
-                <GridColumn field="Column1" title="column1" width="40px" />
-                <GridColumn field="Column2" title="column2" width="40px" />
-                <GridColumn field="ProductID" title="ID" width="40px" />
-                <GridColumn field="ProductName" title="Name" width="250px" />
-                <GridColumn field="Category.CategoryName" title="CategoryName" />
-                <GridColumn field="UnitPrice" title="Price" />
-                <GridColumn field="UnitsInStock" title="In stock" />
+                <GridColumn field="user_name" title="이름" width="100px" />
+                <GridColumn field="phone_number" title="폰" width="100px" />
+                {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
+                {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
+                {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}
+                {/*<GridColumn field="UnitPrice" title="Price" />*/}
+                {/*<GridColumn field="UnitsInStock" title="In stock" />*/}
             </Grid>
 
             </>

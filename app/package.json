@@ -96,6 +96,7 @@
   "_moduleAliases": {
     "@": "./",
     "@src" : "./src",
-    "@lib" : "./public/lib"
+    "@lib" : "./public/lib",
+    "@model" : "./public/models"
   }
 }
