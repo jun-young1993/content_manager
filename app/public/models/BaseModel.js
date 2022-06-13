@@ -11,6 +11,7 @@ var BaseModel = /** @class */ (function () {
         this.store = STORE_TYPE.NEDB;
         Object.assign(this, property);
         this.setDb();
+        // super.db = this.db();
     }
     BaseModel.prototype.setDb = function () {
         if (this.isNedb()) {
@@ -19,8 +20,6 @@ var BaseModel = /** @class */ (function () {
             this.database = database;
         }
     };
-    BaseModel.prototype.getTable = function () {
-    };
     BaseModel.prototype.isNedb = function () {
         if (this.store == STORE_TYPE.NEDB) {
             return true;
@@ -28,19 +27,7 @@ var BaseModel = /** @class */ (function () {
         return false;
     };
     BaseModel.prototype.db = function () {
-        return this.database;
-    };
-    BaseModel.prototype.query = function (method, query) {
-        if (query === void 0) { query = {}; }
-        return this.db()[method](query);
-    };
-    BaseModel.prototype.get = function (query) {
-        if (query === void 0) { query = {}; }
-        return this.query('get', query);
-    };
-    BaseModel.prototype.insert = function (query) {
-        if (query === void 0) { query = {}; }
-        return this.query('insert', query);
+        return this.database.database;
     };
     return BaseModel;
 }());

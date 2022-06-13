@@ -21,20 +21,33 @@ var User = /** @class */ (function () {
     function User() {
     }
     User.index = function (event, args) {
-        userDb.get().then(function (resolve) {
-            return event.returnValue = {
-                success: true,
-                data: resolve
-            };
+        userDb.db().find({ is_deleted: 'N' }, function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
         });
     };
     User.insert = function (event, args) {
-        userDb.insert(args).then(function (resolve) {
-            console.log(resolve);
-            return event.returnValue = {
-                success: true,
-                data: resolve
-            };
+        userDb.db().insert(Object.assign(args, {
+            'is_deleted': "N",
+            'created_at': new Date('YmdHis'),
+            'updated_at': new Date('YmdHis'),
+            'deleted_at': null
+        }), function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
+    User.update = function (event, args) {
+        userDb.db().update(args, function (err, data) {
+            return event.returnValue = data;
         });
     };
     return User;

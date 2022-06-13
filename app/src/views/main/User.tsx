@@ -20,7 +20,7 @@ class User extends Component {
     constructor(props : any) {
         super(props);
         const users = ipcRenderer.sendSync("@User/index");
-        console.log('return user index',users);
+
 
         if(users.success){
 
@@ -37,17 +37,10 @@ class User extends Component {
         console.log('start load user');
         const users = ipcRenderer.sendSync("@User/index");
         if(users.success){
-
             // @ts-ignore
-            // this.state.data = users.data;
             this.setState({
                 data : users.data
             })
-            // this.setState({
-            //     data : [{
-            //         user_name : 'test'
-            //     }]
-            // })
         }
     }
     render() {
@@ -93,6 +86,7 @@ class User extends Component {
                                         if(userInsert.success){
                                             console.log('insert afetr reload');
                                             _this.loadUser();
+                                            modal.close();
                                         }
 
                                     }

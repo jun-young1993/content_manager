@@ -1,8 +1,15 @@
 export enum QueryMap {
         "get" = "find",
-        "insert" = "insert"
+        "insert" = "insert",
+        "find" = "findOne",
+        "update" = "update"
 }
-export enum QueryMap2 {
-        "get" = "find",
-        "insert" = "insert"
+export class Custom {
+        "update"= (query:object = {},nedb) => {
+
+                // @ts-ignore
+                // if (query.type == 'set') {
+                //         const query.id =
+                // }
+        }
 }

@@ -34,7 +34,12 @@ var Nedb = /** @class */ (function () {
             var nedbMethod = NedbConfig_1.QueryMap[method];
             this_1[method] = function (query) {
                 if (query === void 0) { query = {}; }
-                return _this.nePromise(nedbMethod, query);
+                if (NedbConfig_1.Custom[method]) {
+                    return NedbConfig_1.Custom[method](query, _this.db());
+                }
+                else {
+                    return _this.nePromise(nedbMethod, query);
+                }
             };
         };
         var this_1 = this;

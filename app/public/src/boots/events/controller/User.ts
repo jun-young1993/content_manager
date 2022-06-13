@@ -19,22 +19,42 @@ const userDb = new UserModel();
 // ipcRenderer.send('asynchronous-message', 'ping')
 class User {
     static index(event, args){
-        userDb.get().then(resolve => {
-            return event.returnValue = {
-                success : true,
-                data : resolve
+        userDb.db().find({is_deleted : 'N'},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
             }
+
         })
     }
     static insert(event,args){
-        userDb.insert(args).then((resolve) => {
-            console.log(resolve);
 
-            return event.returnValue = {
-                success : true,
-                data : resolve
+        userDb.db().insert(Object.assign(args,{
+            'is_deleted' : "N",
+            'created_at' : new Date('YmdHis'),
+            'updated_at' : new Date('YmdHis'),
+            'deleted_at' : null,
+        }),(err,data) => {
+
+
+            if(data){
+
+
+                return event.returnValue = {
+                    success : true,
+                    data :data
+                }
             }
+
         });
+    }
+
+    static update(event,args){
+        userDb.db().update(args,(err,data) => {
+            return event.returnValue = data;
+        })
     }
 }
 

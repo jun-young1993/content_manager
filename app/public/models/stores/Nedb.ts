@@ -1,6 +1,6 @@
 import * as DataStore from "nedb";
 
-import {QueryMap} from "./config/NedbConfig";
+import {QueryMap,Custom} from "./config/NedbConfig";
 // const Datastore = require('nedb-promises')
 
 // const DataStore = require('nedb-proxises');
@@ -23,12 +23,15 @@ export class Nedb{
 
     private nePromise(method:string,query:object = {}){
         return new Promise((promiseResolve,promiseReject) => {
-            this.db()[method](query,(err,resolve) => {
-                if(err){
-                    return promiseReject(err);
-                }
-              return promiseResolve(resolve)
-            })
+
+                this.db()[method](query,(err,resolve) => {
+                    if(err){
+                        return promiseReject(err);
+                    }
+                    return promiseResolve(resolve)
+                })
+
+
         })
 
     }
@@ -36,9 +39,15 @@ export class Nedb{
 
         for(let method in QueryMap){
             const nedbMethod = QueryMap[method];
-            this[method] = (query:object = {}) => {
-                return this.nePromise(nedbMethod,query);
+
+            this[method] = (query: object = {}) => {
+                if(Custom[method]){
+                    return Custom[method](query,this.db());
+                }else {
+                    return this.nePromise(nedbMethod, query);
+                }
             }
+
         }
 
     }

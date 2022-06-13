@@ -1,5 +1,6 @@
 import {Nedb} from "./stores/Nedb";
 import {promises} from "dns";
+import {QueryBuilder} from "../lib/QueryBuilder/QueryBuilder";
 
 export enum STORE_TYPE {
     NEDB = "nedb"
@@ -13,8 +14,10 @@ export class BaseModel implements Property{
     table : string;
     database : any
     constructor(property: Property) {
+
         Object.assign(this,property);
         this.setDb()
+        // super.db = this.db();
     }
 
     private setDb(){
@@ -25,32 +28,44 @@ export class BaseModel implements Property{
         }
     }
 
-    private getTable(){
-
-    }
-
-    private isNedb(){
+    protected isNedb(){
         if(this.store == STORE_TYPE.NEDB){
             return true;
         }
         return false;
     }
 
-    private db(){
-        return this.database;
+    public db(){
+        return this.database.database;
     }
 
-    private query(method:string,query:object = {}){
-        return this.db()[method](query);
-    }
 
-    public get(query : object = {})
-    {
-        return this.query('get',query);
-    }
 
-    public insert(query : object = {})
-    {
-        return this.query('insert',query);
-    }
+    // private query(method:string,query:object = {}){
+    //     return this.db()[method](query);
+    // }
+    //
+    // public get(query : object = {})
+    // {
+    //     return this.query('get',query);
+    // }
+    //
+    // public insert(query : object = {})
+    // {
+    //     return this.query('insert',query);
+    // }
+    //
+    // public find(query : object = {})
+    // {
+    //     return this.query('find',query);
+    // }
+    //
+    // public update(query : object = {}, query2 : object = {})
+    // {
+    //     return this.query('update',query);
+    // }
+    //
+    // public delete(query : object = {}, query2 : object = {}){
+    //     return this.query('delete',query);
+    // }
 }
