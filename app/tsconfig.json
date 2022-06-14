@@ -33,5 +33,6 @@
     "../@types"
   ],
   "jsx": "react-jsx",
-  "moduleResolution": "node"
+  "moduleResolution": "node",
+  "noImplicitAny": false
 }
