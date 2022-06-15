@@ -61,6 +61,9 @@ class User extends Component {
 
         this.setState({ selectedState });
     };
+    onKeyUpHandler = (event:any) => {
+        console.log(event.target.value);
+    };
     customClick = () => {
         alert("Custom handler in custom toolbar");
     }
@@ -112,7 +115,7 @@ class User extends Component {
                              [{
                                  text : '이름',
                                  name : 'user_name',
-                                 id : 'user_name',
+                                 id : 'user_name'
                              },{
                                  text : '폰',
                                  name : 'phone_number',
@@ -131,10 +134,10 @@ class User extends Component {
                                         const userInsert = ipcRenderer.sendSync("@User/insert",modal.getInputValues());
 
                                         if(userInsert.success){
-
+                                
                                             _this.loadUser();
                                             modal.close();
-
+                                
                                         }
 
                                     }

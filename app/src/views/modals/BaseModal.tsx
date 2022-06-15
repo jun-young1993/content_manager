@@ -1,12 +1,12 @@
-import React from "react";
-import {Component} from "react";
+import React,{Component,Fragment} from "react";
+
 import {Button, FormControl, InputGroup, Modal} from "react-bootstrap";
 import User from "../main/User";
 interface ModalProps {
     show? : boolean;
     button : object;
     buttons? :Array<Buttons>;
-    fields : Array<Fields>;
+    fields? : Array<Fields>;
 
 }
 interface Buttons{
@@ -16,7 +16,8 @@ interface Buttons{
 interface Fields{
     text : string,
     id : string,
-    name : string
+    name : string,
+    onKeyPress? : any
 }
 class BaseModal extends Component<ModalProps> {
     state = {
@@ -30,7 +31,8 @@ class BaseModal extends Component<ModalProps> {
         fields : [{
             text : 'no text',
             id : 'no id',
-            name : 'no name'
+            name : 'no name',
+            onKeyPress : null
         }],
         buttons : [{
             text : 'close',
@@ -79,14 +81,24 @@ class BaseModal extends Component<ModalProps> {
     }
     settingFields = () => {
 
-        return this.getFields().map((object,index)=>{
+        return this.getFields().map((object:Fields,index)=>{
 
 
 
             return (
                 <InputGroup>
                     <InputGroup.Text >{object.text}</InputGroup.Text>
-                    <FormControl id={object.id} name={object.name} onChange={this.updateInputValues}></FormControl>
+                    <FormControl 
+                    id={object.id} 
+                    name={object.name} 
+                    onChange={this.updateInputValues}
+                    onKeyPress={event => {
+                        if(object.onKeyPress){
+                            object.onKeyPress(event);
+                        }
+                    }}
+                    >
+                    </FormControl>
                 </InputGroup>
             );
         })

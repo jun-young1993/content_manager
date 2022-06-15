@@ -1,5 +1,5 @@
 // import {User} from '../../public/models/User'
-const {User} = require('../../public/models/User')
+const {User} = require('../../../public/models/User')
 const data = new User();
 
 // const {QueryMap} = require('../../public/models/stores/config/NedbConfig');

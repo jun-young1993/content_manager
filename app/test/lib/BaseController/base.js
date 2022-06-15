@@ -1,4 +1,4 @@
- const {BaseController} = require("../../public/src/boots/events/controller/BaseController");
+ const {BaseController} = require("../../../public/src/boots/events/controller/BaseController");
 class User {
     test = 'hi';
 
