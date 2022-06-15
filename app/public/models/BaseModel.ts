@@ -22,6 +22,7 @@ export class BaseModel implements Property{
 
     private setDb(){
         if(this.isNedb()){
+            
             const path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/'+this.table+'.db';
             const database = new Nedb(path);
             this.database = database;

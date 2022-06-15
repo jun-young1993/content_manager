@@ -8,7 +8,7 @@ export class BaseController implements Property{
     controller;
 
     constructor(controller:any){
-        console.log('baseCOntroller this');
+        
 
 
 
@@ -22,10 +22,10 @@ export class BaseController implements Property{
     ipcOn(){
         const allMethods = this.getMethods();
         const _this = this;
-        console.log(allMethods);
+        
         for(let index = 0; index < allMethods.length; index++){
             const methodName = allMethods[index];
-            console.log(methodName);
+            
             const channel = _this.makeChannel(methodName);
 
             // ipcMain.on(channel,(event,args) =>{

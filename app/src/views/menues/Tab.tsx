@@ -18,7 +18,7 @@ function Tab() {
     return (
      
         <Nav variant="pills" activeKey="1" onSelect={handleSelect} className="sidebar">
-        <Nav.Item>
+        {/* <Nav.Item>
           <Nav.Link eventKey="calendar" href="#/home">
           calendar
           </Nav.Link>
@@ -32,13 +32,14 @@ function Tab() {
           <Nav.Link eventKey="3" disabled>
             NavLink 3 content
           </Nav.Link>
-        </Nav.Item>
-        <NavDropdown title="Dropdown" id="nav-dropdown">
-          <NavDropdown.Item eventKey="4.1">Action</NavDropdown.Item>
-          <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
+        </Nav.Item> */}
+        <NavDropdown title="설정" id="nav-dropdown">
+          <NavDropdown.Item eventKey="storage">스토리지 설정</NavDropdown.Item>
+          <NavDropdown.Item eventKey="code">시스템 코드 관리</NavDropdown.Item>
+          {/* <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
           <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item eventKey="4.4">Separated link</NavDropdown.Item>
+          <NavDropdown.Item eventKey="4.4">Separated link</NavDropdown.Item> */}
         </NavDropdown>
       </Nav>
         

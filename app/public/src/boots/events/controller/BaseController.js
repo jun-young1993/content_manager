@@ -25,17 +25,14 @@ var BaseController = /** @class */ (function () {
             );
             return props;
         };
-        console.log('baseCOntroller this');
         this.controller = controller;
         this.ipcOn();
     }
     BaseController.prototype.ipcOn = function () {
         var allMethods = this.getMethods();
         var _this = this;
-        console.log(allMethods);
         for (var index = 0; index < allMethods.length; index++) {
             var methodName = allMethods[index];
-            console.log(methodName);
             var channel = _this.makeChannel(methodName);
             // ipcMain.on(channel,(event,args) =>{
             //     _this.controller[methodName](event,args);
