@@ -4,75 +4,52 @@ import {
     Grid,
     GridColumn as Column, GridHeaderSelectionChangeEvent,
     GridSelectionChangeEvent,
-    GridToolbar
+    GridToolbar,
+    GridDetailRowProps,
+    GridExpandChangeEvent
 } from "@progress/kendo-react-grid";
 import '@progress/kendo-theme-default/dist/all.css';
 import BaseModal from '../modals/BaseModal';
-import {getter} from "@progress/kendo-data-query";
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
+import {Button, FormControl, InputGroup, Modal, FormGroup,FormLabel} from "react-bootstrap";
 
 
 
-const DATA_ITEM_KEY: string = "_id";
-const SELECTED_FIELD: string = "selected";
-const idGetter = getter(DATA_ITEM_KEY);
 
 
-interface StoragState {
+
+interface State {
     data: [];
+    parent_data : any,
     modal : {
         show : boolean
     }
-    selectedState: {
-        [id: string]: boolean | number[];
-    };
+}
+interface Props {
+    parent_data? : any
 }
 
 
-class Storage extends Component {
-    state : StoragState = {
-        data: ipcRenderer.sendSync("@Storage/index").data.map((dataItem:object) => {
-            return Object.assign({ selected: false }, dataItem);
-        }),
-        modal : {
-            show : true
-        },
-        selectedState : { 1 : true}
+class CodeItem extends Component<Props> {
+    state : State = {
+        data: [],
+        parent_data : null,
+        modal: {
+            show: true
+        }
     }
-    onSelectionChange = (event: GridSelectionChangeEvent) => {
-        const selectedState = getSelectedState({
-            event,
-            selectedState: this.state.selectedState,
-            dataItemKey: DATA_ITEM_KEY,
-        });
-            
-        this.setState({ selectedState });
-    };
-    onHeaderSelectionChange = (event: GridHeaderSelectionChangeEvent) => {
-        const checkboxElement: any = event.syntheticEvent.target;
-        const checked = checkboxElement.checked;
-        const selectedState = {};
 
-        this.state.data.forEach((item) => {
-            // @ts-ignore
-            selectedState[idGetter(item)] = checked;
-        });
+    parent_data = null
 
-        this.setState({ selectedState });
-    };
-    onKeyUpHandler = (event:any) => {
-        console.log(event.target.value);
-    };
-    customClick = () => {
-        alert("Custom handler in custom toolbar");
-    }
     constructor(props : any) {
         super(props);
+        Object.assign(this.state,props);
+        console.log('this.state',this.state);
     }
-    loadUser(){
+    load(){
         console.log('start load user');
-        const users = ipcRenderer.sendSync("@Storage/index");
+        const users = ipcRenderer.sendSync("@CodeItem/index");
         if(users.success){
             // @ts-ignore
             this.setState({
@@ -80,28 +57,17 @@ class Storage extends Component {
             })
         }
     }
+    getParentData(key : string){
+        return this.state.parent_data[key];
+    }
     render() {
         const _this = this;
+
         return (
             <>
             <Grid
-                style={{
-                    height: "400px",
-                }}
-                data={this.state.data.map((item:object) => ({
-                    ...item,
-                    [SELECTED_FIELD]: this.state.selectedState[idGetter(item)],
-                }))}
-                dataItemKey={DATA_ITEM_KEY}
-                selectedField={SELECTED_FIELD}
-                selectable={{
-                    enabled: true,
-                    drag: false,
-                    cell: false,
-                    mode: "multiple",
-                }}
-                onSelectionChange={this.onSelectionChange}
-                onHeaderSelectionChange={this.onHeaderSelectionChange}
+
+                data={this.state.data}
             >
                      <GridToolbar>
                          <BaseModal
@@ -112,7 +78,17 @@ class Storage extends Component {
                                 }
                             }}
                             fields = {
-                                [{
+                                [
+                                    {
+                                        element : () => {
+                                            return   <FormGroup>
+                                                <FormControl
+                                                    value={this.state.parent_data.code_name+' ('+this.state.parent_data.code+')'}
+                                                    readOnly
+                                                />
+                                            </FormGroup>;
+                                        }
+                                    },{
                                     text : '코드',
                                     name : 'code',
                                     id : 'code'
@@ -135,11 +111,20 @@ class Storage extends Component {
                                 },{
                                     text : 'save',
                                     click : (modal: BaseModal) => {
-                                        const userInsert = ipcRenderer.sendSync("@Storage/insert",modal.getInputValues());
+
+
+                                        const insertCodeItem = {
+                                          parent_code :this.state.parent_data.code
+                                        };
+
+
+                                        Object.assign(insertCodeItem,modal.getInputValues());
+
+                                        const userInsert = ipcRenderer.sendSync("@CodeItem/insert",insertCodeItem);
 
                                         if(userInsert.success){
                                 
-                                            _this.loadUser();
+                                            _this.load();
                                             modal.close();
                                 
                                         }
@@ -149,17 +134,17 @@ class Storage extends Component {
                             }
                          />
                      </GridToolbar>
-                <Column
-                    field={SELECTED_FIELD}
-                    width="50px"
-                    headerSelectionValue={
-                        this.state.data.findIndex(
-                            (item) => !this.state.selectedState[idGetter(item)]
-                        ) === -1
-                    }
-                />
-                <Column field="user_name" title="이름" width="100px" />
-                <Column field="phone_number" title="폰" width="100px" />
+                {/*<Column*/}
+                {/*    field={SELECTED_FIELD}*/}
+                {/*    width="50px"*/}
+                {/*    headerSelectionValue={*/}
+                {/*        this.state.data.findIndex(*/}
+                {/*            (item) => !this.state.selectedState[idGetter(item)]*/}
+                {/*        ) === -1*/}
+                {/*    }*/}
+                {/*/>*/}
+                <Column field="code" title="코드" width="200px" />
+                <Column field="code_name" title="코드명" width="200px" />
                 {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
                 {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
                 {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}
@@ -172,4 +157,4 @@ class Storage extends Component {
     }
 }
 
-export default Storage;
+export default CodeItem;

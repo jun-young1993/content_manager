@@ -8,7 +8,10 @@ var NedbConfig_1 = require("./config/NedbConfig");
 var Nedb = /** @class */ (function () {
     function Nedb(path) {
         this.path = path;
-        var database = new DataStore(this.path);
+        var database = new DataStore({
+            filename: this.path,
+            timestampData: true
+        });
         database.loadDatabase();
         this.database = database;
         this.querySetting();

@@ -42,6 +42,8 @@ export class BaseModel implements Property{
 
 
 
+
+
     // private query(method:string,query:object = {}){
     //     return this.db()[method](query);
     // }

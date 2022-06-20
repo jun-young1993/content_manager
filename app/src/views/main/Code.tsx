@@ -1,15 +1,19 @@
 import React, {useState, Component, ReactNode} from 'react';
-import Stack from 'react-bootstrap/Stack'
 import {
     getSelectedState,
     Grid,
     GridColumn as Column, GridHeaderSelectionChangeEvent,
     GridSelectionChangeEvent,
-    GridToolbar
+    GridToolbar,
+    GridDetailRowProps,
+    GridExpandChangeEvent
 } from "@progress/kendo-react-grid";
 import '@progress/kendo-theme-default/dist/all.css';
 import BaseModal from '../modals/BaseModal';
 import {getter} from "@progress/kendo-data-query";
+import CodeItem  from './CodeItem';
+
+
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -20,7 +24,7 @@ const SELECTED_FIELD: string = "selected";
 const idGetter = getter(DATA_ITEM_KEY);
 
 
-interface StoragState {
+interface UserState {
     data: [];
     modal : {
         show : boolean
@@ -29,10 +33,43 @@ interface StoragState {
         [id: string]: boolean | number[];
     };
 }
+const DetailComponent = (props:GridDetailRowProps) => {
+    console.log('detail component',props);
+    const dataItem = props.dataItem;
+    const tmp = [];
+    tmp.push(dataItem);
+    return (
 
+            <Grid
+                data={tmp}
+                dataItemKey={DATA_ITEM_KEY}
+            >
+                <Column field="code" title="이름" width="100px" />
+                <Column field="code_name" title="폰" width="100px" />
+            </Grid>
+
+    );
+    return (
+        <div
+            style={{
+                height: "50px",
+                width: "100%",
+            }}
+        >
+            <div
+                style={{
+                    position: "absolute",
+                    width: "100%",
+                }}
+            >
+                <div className="k-loading-image" />
+            </div>
+        </div>
+    );
+};
 
 class Code extends Component {
-    state : StoragState = {
+    state : UserState = {
         data: ipcRenderer.sendSync("@Code/index").data.map((dataItem:object) => {
             return Object.assign({ selected: false }, dataItem);
         }),
@@ -47,7 +84,7 @@ class Code extends Component {
             selectedState: this.state.selectedState,
             dataItemKey: DATA_ITEM_KEY,
         });
-            
+            console.log(selectedState);
         this.setState({ selectedState });
     };
     onHeaderSelectionChange = (event: GridHeaderSelectionChangeEvent) => {
@@ -62,6 +99,37 @@ class Code extends Component {
 
         this.setState({ selectedState });
     };
+    onExpandChange = (event : GridExpandChangeEvent) => {
+        let newData = this.state.data.map((item: any) => {
+
+            if (item._id === event.dataItem._id) {
+                item.expanded = !event.dataItem.expanded;
+            }
+            return item;
+        });
+        this.setState(newData);
+    }
+    detailComponent = (props:GridDetailRowProps) => {
+        const dataItem = props.dataItem;
+
+        console.log('detailComponent',dataItem);
+        return (
+            <CodeItem
+                parent_data={dataItem}
+            />
+            // <CodeItem
+            //
+            // ></CodeItem>
+            // <Grid
+            //     data={tmp}
+            //     dataItemKey={DATA_ITEM_KEY}
+            // >
+            //     <Column field="code" title="이름" width="100px" />
+            //     <Column field="code_name" title="폰" width="100px" />
+            // </Grid>
+
+        );
+    }
     onKeyUpHandler = (event:any) => {
         console.log(event.target.value);
     };
@@ -83,90 +151,97 @@ class Code extends Component {
     }
     render() {
         const _this = this;
+        console.log(this.state.data);
         return (
             <>
-            {/* <Stack direction="horizontal" gap={2}>     */}
-                <Grid
-           
-                    style={{
-                        height: "400px",
-                    }}
-                    data={this.state.data.map((item:object) => ({
-                        ...item,
-                        [SELECTED_FIELD]: this.state.selectedState[idGetter(item)],
-                    }))}
-                    dataItemKey={DATA_ITEM_KEY}
-                    selectedField={SELECTED_FIELD}
-                    selectable={{
-                        enabled: true,
-                        drag: false,
-                        cell: false,
-                        mode: "multiple",
-                    }}
-                    onSelectionChange={this.onSelectionChange}
-                    onHeaderSelectionChange={this.onHeaderSelectionChange}
-                >
-                        <GridToolbar>
-                            <BaseModal
-                                button = {{
-                                    title : "등록",
-                                    click : (modal : BaseModal,)=> {
-                                    modal.show();
-                                    }
-                                }}
-                                fields = {
+            <Grid
+                style={{
+                    height: "400px",
+                }}
+                data={this.state.data.map((item:object) => ({
+                    ...item,
+                    [SELECTED_FIELD]: this.state.selectedState[idGetter(item)],
+
+
+                }))}
+                detail={this.detailComponent}
+                dataItemKey={DATA_ITEM_KEY}
+                selectedField={SELECTED_FIELD}
+                expandField="expanded"
+                selectable={{
+                    enabled: true,
+                    drag: false,
+                    cell: false,
+                    mode: "single",
+                }}
+                onExpandChange={this.onExpandChange}
+                onSelectionChange={this.onSelectionChange}
+                onHeaderSelectionChange={this.onHeaderSelectionChange}
+            >
+                     <GridToolbar>
+                         <BaseModal
+                            button = {{
+                                title : "등록",
+                                click : (modal : BaseModal,)=> {
+                                  modal.show();
+                                }
+                            }}
+                            fields = {
                                 [{
-                                    text : '스토리지 명',
-                                    name : 'name',
-                                    id : 'name'
+                                    text : '코드',
+                                    name : 'code',
+                                    id : 'code'
                                 },{
-                                    text : '타입',
-                                    name : 'type',
-                                    id : 'type'
+                                    text : '코드명',
+                                    name : 'code_name',
+                                    id : 'code_name'
+                                },{
+                                    text : "설명",
+                                    name : "description",
+                                    id : "description"
                                 }]
-                                }
-                                buttons = {
-                                    [{
-                                        text : 'close',
-                                        click : (modal: BaseModal) => {
-                                            modal.close()
-                                        }
-                                    },{
-                                        text : 'save',
-                                        click : (modal: BaseModal) => {
-                                            const userInsert = ipcRenderer.sendSync("@Code/insert",modal.getInputValues());
+                            }
+                            buttons = {
+                                [{
+                                    text : 'close',
+                                    click : (modal: BaseModal) => {
+                                        modal.close()
+                                    }
+                                },{
+                                    text : 'save',
+                                    click : (modal: BaseModal) => {
+                                        const userInsert = ipcRenderer.sendSync("@Code/insert",modal.getInputValues());
 
-                                            if(userInsert.success){
-                                    
-                                                _this.loadUser();
-                                                modal.close();
-                                    
-                                            }
-
+                                        if(userInsert.success){
+                                
+                                            _this.loadUser();
+                                            modal.close();
+                                
                                         }
-                                    }]
-                                }
-                            />
-                        </GridToolbar>
-                    <Column
-                        field={SELECTED_FIELD}
-                        width="50px"
-                        headerSelectionValue={
-                            this.state.data.findIndex(
-                                (item) => !this.state.selectedState[idGetter(item)]
-                            ) === -1
-                        }
-                    />
-                    <Column field="user_name" title="이름" width="100px" />
-                    <Column field="phone_number" title="폰" width="100px" />
-                    {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
-                    {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
-                    {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}
-                    {/*<GridColumn field="UnitPrice" title="Price" />*/}
-                    {/*<GridColumn field="UnitsInStock" title="In stock" />*/}
-                </Grid>
-              
-            {/* </Stack> */}
+
+                                    }
+                                }]
+                            }
+                         />
+                     </GridToolbar>
+                {/*<Column*/}
+                {/*    field={SELECTED_FIELD}*/}
+                {/*    width="50px"*/}
+                {/*    headerSelectionValue={*/}
+                {/*        this.state.data.findIndex(*/}
+                {/*            (item) => !this.state.selectedState[idGetter(item)]*/}
+                {/*        ) === -1*/}
+                {/*    }*/}
+                {/*/>*/}
+                <Column field="code" title="코드" width="200px" />
+                <Column field="code_name" title="코드명" width="200px" />
+                {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
+                {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
+                {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}
+                {/*<GridColumn field="UnitPrice" title="Price" />*/}
+                {/*<GridColumn field="UnitsInStock" title="In stock" />*/}
+            </Grid>
+
             </>
         );
     }

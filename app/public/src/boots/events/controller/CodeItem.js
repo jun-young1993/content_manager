@@ -33,8 +33,6 @@ var CodeItem = /** @class */ (function () {
     CodeItem.insert = function (event, args) {
         codeItemDb.db().insert(Object.assign(args, {
             'is_deleted': "N",
-            'created_at': new Date('YmdHis'),
-            'updated_at': new Date('YmdHis'),
             'deleted_at': null
         }), function (err, data) {
             if (data) {

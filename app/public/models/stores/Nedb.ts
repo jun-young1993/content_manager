@@ -11,7 +11,10 @@ export class Nedb{
 
     constructor(path : string) {
         this.path = path;
-        const database = new DataStore(this.path);
+        const database = new DataStore({
+            filename : this.path,
+            timestampData : true
+        });
         database.loadDatabase();
         this.database = database;
         this.querySetting()

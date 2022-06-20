@@ -1,12 +1,12 @@
-import React,{Component,Fragment} from "react";
+import React, {Component, Fragment, ReactElement} from "react";
 
-import {Button, FormControl, InputGroup, Modal} from "react-bootstrap";
+import {Button, FormControl, InputGroup, Modal, FormGroup, FormLabel} from "react-bootstrap";
 import User from "../main/User";
 interface ModalProps {
     show? : boolean;
     button : object;
     buttons? :Array<Buttons>;
-    fields? : Array<Fields>;
+    fields? : any;
 
 }
 interface Buttons{
@@ -17,7 +17,9 @@ interface Fields{
     text : string,
     id : string,
     name : string,
-    onKeyPress? : any
+    onKeyPress? : any,
+    value? : any,
+    readOnly? : boolean
 }
 class BaseModal extends Component<ModalProps> {
     state = {
@@ -81,25 +83,29 @@ class BaseModal extends Component<ModalProps> {
     }
     settingFields = () => {
 
-        return this.getFields().map((object:Fields,index)=>{
-
-
+        return this.getFields().map((object:any,index)=>{
+            if(object.element){
+                return (object.element());
+            }
+            const value = object.value;
+            let FormField: any;
+            FormField = <FormControl
+                id={object.id}
+                name={object.name}
+                onChange={this.updateInputValues}
+                onKeyPress={event => {
+                    if(object.onKeyPress){
+                        object.onKeyPress(event);
+                    }
+                }}
+                value={value}
+            />
 
             return (
-                <InputGroup>
-                    <InputGroup.Text >{object.text}</InputGroup.Text>
-                    <FormControl 
-                    id={object.id} 
-                    name={object.name} 
-                    onChange={this.updateInputValues}
-                    onKeyPress={event => {
-                        if(object.onKeyPress){
-                            object.onKeyPress(event);
-                        }
-                    }}
-                    >
-                    </FormControl>
-                </InputGroup>
+                <FormGroup>
+                    <FormLabel >{object.text}</FormLabel>
+                    {FormField}
+                </FormGroup>
             );
         })
 
@@ -116,6 +122,7 @@ class BaseModal extends Component<ModalProps> {
     }
     updateInputValues = (evt : any) => {
         const _this : any = this;
+
         _this.inputValues[evt.target.name] = evt.target.value;
     }
     render() {

@@ -32,9 +32,8 @@ var Code = /** @class */ (function () {
     };
     Code.insert = function (event, args) {
         codeDb.db().insert(Object.assign(args, {
+            'use_yn': "Y",
             'is_deleted': "N",
-            'created_at': new Date('YmdHis'),
-            'updated_at': new Date('YmdHis'),
             'deleted_at': null
         }), function (err, data) {
             if (data) {

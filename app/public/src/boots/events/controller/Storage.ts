@@ -34,8 +34,6 @@ class Storage {
 
         storageDb.db().insert(Object.assign(args,{
             'is_deleted' : "N",
-            'created_at' : new Date('YmdHis'),
-            'updated_at' : new Date('YmdHis'),
             'deleted_at' : null,
         }),(err,data) => {
 
