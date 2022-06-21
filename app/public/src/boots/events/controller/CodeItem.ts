@@ -27,9 +27,22 @@ class CodeItem {
                     data : data
                 }
             }
-
         })
     }
+
+    static indexByParentCode(event, parentCode){
+
+        codeItemDb.db().find({is_deleted : 'N',
+                                parent_code : parentCode},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }
+        })
+    }
+
     static insert(event,args){
 
         codeItemDb.db().insert(Object.assign(args,{

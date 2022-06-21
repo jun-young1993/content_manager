@@ -45,15 +45,21 @@ class CodeItem extends Component<Props> {
     constructor(props : any) {
         super(props);
         Object.assign(this.state,props);
+
+        const codeItems = ipcRenderer.sendSync("@CodeItem/indexByParentCode",this.state.parent_data.code);
+        console.log(codeItems);
+        Object.assign(this.state,codeItems)
         console.log('this.state',this.state);
+        // this.load();
     }
     load(){
         console.log('start load user');
-        const users = ipcRenderer.sendSync("@CodeItem/index");
-        if(users.success){
+        const codeItems = ipcRenderer.sendSync("@CodeItem/indexByParentCode",this.state.parent_data.code);
+        console.log('loadDatacodeItem',codeItems)
+        if(codeItems.success){
             // @ts-ignore
             this.setState({
-                data : users.data
+                data : codeItems.data
             })
         }
     }
@@ -145,6 +151,7 @@ class CodeItem extends Component<Props> {
                 {/*/>*/}
                 <Column field="code" title="코드" width="200px" />
                 <Column field="code_name" title="코드명" width="200px" />
+                <Column field="use_yn" title="사용여부" width="200px" />
                 {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
                 {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
                 {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}

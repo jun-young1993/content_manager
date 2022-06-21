@@ -30,8 +30,20 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
+    CodeItem.indexByParentCode = function (event, parentCode) {
+        codeItemDb.db().find({ is_deleted: 'N',
+            parent_code: parentCode }, function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
     CodeItem.insert = function (event, args) {
         codeItemDb.db().insert(Object.assign(args, {
+            'use_yn': "Y",
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
