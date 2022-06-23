@@ -33,8 +33,13 @@ function Tab() {
             NavLink 3 content
           </Nav.Link>
         </Nav.Item> */}
+        <Nav.Item>
+            <Nav.Link eventKey="ingest" href="#/home">
+              인제스트
+            </Nav.Link>
+        </Nav.Item>
         <NavDropdown title="설정" id="nav-dropdown">
-          <NavDropdown.Item eventKey="storage">스토리지 설정</NavDropdown.Item>
+          <NavDropdown.Item eventKey="storage">스토리지 관리</NavDropdown.Item>
           <NavDropdown.Item eventKey="code">시스템 코드 관리</NavDropdown.Item>
           {/* <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
           <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>

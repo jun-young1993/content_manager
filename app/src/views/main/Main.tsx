@@ -2,6 +2,7 @@ import Calendar from './Calendar';
 import User from './User';
 import Storage from './Storage';
 import Code from './Code';
+import Ingest from './Ingest';
 import React from 'react';
 function Main(props : any) {
 
@@ -9,7 +10,8 @@ function Main(props : any) {
         "calendar" : <Calendar />,
         "user" : <User />,
         "storage" : <Storage />,
-        "code" : <Code />
+        "code" : <Code />,
+        "ingest" : <Ingest />
     };
     
     let mode:JSX.Element = modeMap[props.mode];
