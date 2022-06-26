@@ -4,6 +4,7 @@ import Storage from './Storage';
 import Code from './Code';
 import Ingest from './Ingest';
 import React from 'react';
+import Metadata from "./Metadata";
 function Main(props : any) {
 
     const modeMap : any  = {
@@ -11,7 +12,8 @@ function Main(props : any) {
         "user" : <User />,
         "storage" : <Storage />,
         "code" : <Code />,
-        "ingest" : <Ingest />
+        "ingest" : <Ingest />,
+        "metadata" : <Metadata />
     };
     
     let mode:JSX.Element = modeMap[props.mode];

@@ -34,5 +34,6 @@
   ],
   "jsx": "react-jsx",
   "moduleResolution": "node",
-  "noImplicitAny": false
+  "noImplicitAny": false,
+  "extends": "./tsconfig.paths.json"
 }

@@ -1,8 +1,9 @@
 # electron
 ## 개발 환경
 - version
-	- node : 14.17.3
-	- npm : 6.14.13
+    - node : 14.17.3
+    - npm : 6.14.13
+    - craco : 5.8 (리액트 버전에 따라 다름)
 
 ## 실행
 - npx create-react-app app --typescript or npx create-react-app app --template typescript

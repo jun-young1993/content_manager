@@ -45,7 +45,10 @@ var Metadata = /** @class */ (function () {
     };
     Metadata.update = function (event, args) {
         metadataDb.db().update(args, function (err, data) {
-            return event.returnValue = data;
+            return event.returnValue = {
+                success: true,
+                data: data
+            };
         });
     };
     return Metadata;

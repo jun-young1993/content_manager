@@ -1,7 +1,7 @@
 
 
 // import {Calendar as Calen} from 'react-bootstrap-calendar';
-import Kalend, { CalendarView, OnPageChangeData, OnSelectViewData, OnNewEventClickData, OnEventClickData } from 'kalend' // import component
+import Kalend, { CalendarView, OnPageChangeData, OnSelectViewData, OnNewEventClickData, OnEventClickData } from 'kalend' // import components
 
 
 

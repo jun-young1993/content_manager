@@ -52,7 +52,10 @@ class Metadata {
 
     static update(event,args){
         metadataDb.db().update(args,(err,data) => {
-            return event.returnValue = data;
+            return event.returnValue = {
+                success : true,
+                data : data
+            };
         })
     }
 }

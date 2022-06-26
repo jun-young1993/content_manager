@@ -5,7 +5,13 @@
   "main": "public/main.js",
   "homepage": "./",
   "dependencies": {
+    "@craco/craco": "5.8",
     "@electron/remote": "^2.0.8",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/lab": "^5.0.0-alpha.87",
+    "@mui/material": "^5.8.5",
+    "@mui/x-data-grid": "^5.12.3",
     "@progress/kendo-data-query": "^1.5.6",
     "@progress/kendo-drawing": "^1.16.3",
     "@progress/kendo-licensing": "^1.2.2",
@@ -31,7 +37,6 @@
     "electron-is-dev": "^2.0.0",
     "install": "^0.13.0",
     "kalend": "^0.14.3",
-    "module-alias": "^2.2.2",
     "nedb": "^1.8.0",
     "nedb-promises": "^6.0.3",
     "node-sass": "^7.0.1",
@@ -45,8 +50,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
+    "react-start": "craco start",
+    "react-build": "craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
@@ -81,6 +86,7 @@
     "cross-env": "^7.0.3",
     "electron": "^17.2.0",
     "electron-builder": "^22.14.13",
+    "module-alias": "^2.2.2",
     "typescript": "^4.6.3",
     "wait-on": "^6.0.1"
   },

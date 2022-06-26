@@ -1,3 +1,4 @@
+
 import React from 'react';
 window.React = React
 
@@ -6,7 +7,7 @@ import './index.css';
 import App from './App';
 import Tab from './views/menues/Tab';
 
-
+import MainContainer from '@src/views/main/MainContainer';
 
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
@@ -17,7 +18,8 @@ import './views/css/main.css';
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
-    <Tab />
+    {/*<Tab />*/}
+      <MainContainer />
     <div id="main" style = {{height:"100vh"}}>
     </div>
   </React.StrictMode>,
