@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridToolbarContainer, DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { GridToolbarContainer, DataGrid, GridRowsProp, GridColDef,GridRowParams,GridCallbackDetails } from '@mui/x-data-grid';
 import MetadataFormDialog from "@views/main/support/MetadataFormDialog";
 import {
     Button,
@@ -47,6 +47,7 @@ const columns: GridColDef[] = [
 
 export default function Metadata() {
     const [rows,setRows] = React.useState(getRows);
+    const [selected,setSelected] = React.useState(null);
     const reload = () => {
         setRows(getRows);
     }
@@ -55,6 +56,16 @@ export default function Metadata() {
             <DataGrid
                 rows={rows}
                 columns={columns}
+                autoHeight={true}
+                rowCount={10}
+                editMode="row"
+                loading={true}
+                onRowClick={(params: GridRowParams, event: any, details: GridCallbackDetails)=>{
+                        console.log('params',params)
+                        console.log('event',event)
+                        console.log('details',details)
+                        setSelected(params.row);
+                }}
                 components={{
                     Toolbar: () => {
                         return (
@@ -66,8 +77,22 @@ export default function Metadata() {
                                             reload : reload
                                         }}
                                     />
-                                    <Button variant="text">수정</Button>
-                                    <Button variant="text">삭제</Button>
+                                    <MetadataFormDialog
+                                        buttonTitle="수정"
+                                        grid = {{
+                                            selected : selected,
+                                            reload : reload
+                                        }}
+                                    />
+                                    <MetadataFormDialog
+                                        buttonTitle="삭제"
+                                        grid = {{
+                                            selected : selected,
+                                            reload : reload
+                                        }}
+                                    />
+                                    {/* <Button variant="text">수정</Button>
+                                    <Button variant="text">삭제</Button> */}
                                 </Stack>
                             </GridToolbarContainer>
                         );
