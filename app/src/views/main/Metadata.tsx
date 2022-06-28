@@ -56,10 +56,9 @@ export default function Metadata() {
             <DataGrid
                 rows={rows}
                 columns={columns}
-                autoHeight={true}
-                rowCount={10}
+                // autoHeight={true}
+                // rowCount={10}
                 editMode="row"
-                loading={true}
                 onRowClick={(params: GridRowParams, event: any, details: GridCallbackDetails)=>{
                         console.log('params',params)
                         console.log('event',event)
