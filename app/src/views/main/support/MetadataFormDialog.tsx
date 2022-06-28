@@ -6,8 +6,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {MenuItem} from "@mui/material";
+import {IconButton, MenuItem, Alert, AlertTitle, AlertColor} from "@mui/material";
 import AlertDialog from "@views/components/AlertDialog"
+
 import electron from "electron";
 const ipcRenderer = electron.ipcRenderer;
 const fieldTypes = [
@@ -65,13 +66,21 @@ export default function MetadataFormDialog(props:any) {
 
     const handleSave = (alertDialogMethods:any) =>  {
 
+        
 
         // setOpenAlert(true);
         const exists = ipcRenderer.sendSync("@Field/first",{code:fieldCode});
 
         if(exists.success){
-            alertDialogMethods.setType('warning');
-            alertDialogMethods.setText('이미 존재하는 코드입니다. 다른 필드코드로 요청해주세요.');
+            
+                
+            alertDialogMethods.setALertOption({
+                severity : 'warning',
+                title : "알림",
+                text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
+                disableBackDrop : true
+            })
+        
             return;
         }
 
@@ -82,22 +91,23 @@ export default function MetadataFormDialog(props:any) {
         });
 
         if(insert.success){
-
-            alertDialogMethods.setType('success');
-            alertDialogMethods.setText('등록되었습니다.');
-            alertDialogMethods.setOnClose((event: React.SyntheticEvent)=> {
-
-                //모르겠다 나중에 처리하자
-                console.log('ekerl')
-                // setOpen(false);
-                // props.grid.reload();
-            });
-
-
-
+            alertDialogMethods.setALertOption({
+                severity : 'success',
+                onClose : () => {
+                    setOpen(false);
+                    props.grid.reload();
+                    
+                },
+                title : "성공",
+                text : "성공적으로 등록되었습니다."
+            })
         }else{
-            alertDialogMethods.setType('error');
-            alertDialogMethods.setText('등록에 실패했습니다.');
+            alertDialogMethods.setALertOption({
+                severity : 'error',
+                title : "알림",
+                text : "등록에 실패했습니다.",
+                disableBackDrop : true
+            })
         }
     }
 
@@ -110,28 +120,35 @@ export default function MetadataFormDialog(props:any) {
                 <DialogTitle>{buttonTitle}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We
-                        will send updates occasionally.
+                        {/* To subscribe to this website, please enter your email address here. We
+                        will send updates occasionally. */}
                     </DialogContentText>
-
-                    <TextField
-                        id="field_type"
-                        select
-                        label="필드 타입"
-                        value={fieldType}
-                        onChange={handleFieldTypeChange}
-                        helperText="Please select your field type"
-                        variant="standard"
-                    >
-                        {fieldTypes.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                    <TextField id="code" label="필드코드" variant="standard" onChange={updateInputValues} value={fieldCode}/>
-                    <TextField id="name" label="필드명" variant="standard" onChange={updateInputValues} value={fieldName}/>
-                    <TextField id="description" label="설명" variant="standard" onChange={updateInputValues} value={fieldDescription}/>
+                    <div>
+                        <TextField
+                            id="field_type"
+                            select
+                            label="필드 타입"
+                            value={fieldType}
+                            onChange={handleFieldTypeChange}
+                            helperText="Please select your field type"
+                            variant="standard"
+                        >
+                            {fieldTypes.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </div>
+                    <div>
+                        <TextField id="code" label="필드코드" variant="standard" onChange={updateInputValues} value={fieldCode}/>
+                    </div>
+                    <div>
+                        <TextField id="name" label="필드명" variant="standard" onChange={updateInputValues} value={fieldName}/>
+                    </div>
+                    <div>
+                        <TextField id="description" label="설명" variant="standard" onChange={updateInputValues} value={fieldDescription}/>
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>취소</Button>

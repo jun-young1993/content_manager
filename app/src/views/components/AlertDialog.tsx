@@ -1,46 +1,69 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, AlertColor, Stack} from "@mui/material";
+import {Modal,Alert, Box, AlertColor, Stack, AlertTitle} from "@mui/material";
 import {useEffect} from "react";
 
 export default function AlertDialog(props:any) {
     const [open, setOpen] = React.useState(false);
 
-    const [type,setType] = React.useState(undefined);
-
-    const [text, setText] = React.useState('');
-    const [title, setTitle] = React.useState('');
-
-    const [onClose, setOnClose] = React.useState(undefined);
 
 
+
+
+    
     const baseAlert = <Alert severity='info'></Alert>;
     const [alert,setAlert] = React.useState(baseAlert);
+    const [disableBackDrop,setDisableBackDrop] = React.useState(false);
+    const [alertOption, setALertOption] = React.useState({
+        severity : undefined,
+        onClose : () => {
+
+        },
+        title : "",
+        text : "",
+        disableBackDrop : false
+    });
     useEffect(() => {
-        const changeAlert = <Alert severity={type}>{text}</Alert>;
+        if(alertOption.disableBackDrop){
+            setDisableBackDrop(alertOption.disableBackDrop);
+        } 
+        const changeAlert = 
+        <Alert severity={alertOption.severity}
+                onClose={alertOption.onClose}
+                >
+            <AlertTitle>{alertOption.title}</AlertTitle>
+            {alertOption.text}
+        </Alert>;
         setAlert(changeAlert);
-    },[type])
+    },[alertOption])
 
 
     const handleClickOpen = () => {
         setOpen(true);
         if(props.onClick){
             props.onClick({
-                setType : setType,
-                setText : setText,
-                setOnClose : setOnClose
+                setALertOption : setALertOption
             });
 
 
         }
     };
 
-    const handleClose = () => {
+    const handleClose = (event:any,reason:any) => {
+        if(!disableBackDrop){
+            if(reason == "backdropClick"){
+                return;
+            }
+        }else{
+            setDisableBackDrop(false);
+        }
+        
         setOpen(false);
 
     };
@@ -55,14 +78,17 @@ export default function AlertDialog(props:any) {
                 // aria-labelledby="alert-dialog-title"
                 // aria-describedby="alert-dialog-description"
             >
+                 {/* <Box sx={style}> */}
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                        {alert}
+                    </Stack>
+                 {/* </Box> */}
                 {/*<DialogTitle id="alert-dialog-title">*/}
                     {/*{title}*/}
                 {/*</DialogTitle>*/}
                 {/*<DialogContent>*/}
                 {/*    <DialogContentText id="alert-dialog-description">*/}
-                <Stack sx={{ width: '100%' }} spacing={2}>
-                    {alert}
-                </Stack>
+         
                 {/*    </DialogContentText>*/}
                 {/*</DialogContent>*/}
                 {/*<DialogActions>*/}
