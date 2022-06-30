@@ -47,7 +47,7 @@ const columns: GridColDef[] = [
 
 export default function Metadata() {
     const [rows,setRows] = React.useState(getRows);
-    const [selected,setSelected] = React.useState(null);
+    const [selected,setSelected] = React.useState(undefined);
     const reload = () => {
         setRows(getRows);
     }
@@ -59,11 +59,11 @@ export default function Metadata() {
                 // autoHeight={true}
                 // rowCount={10}
                 editMode="row"
-                onRowClick={(params: GridRowParams, event: any, details: GridCallbackDetails)=>{
+                onRowClick={(params: any, event: any, details: GridCallbackDetails)=>{
                         console.log('params',params)
                         console.log('event',event)
                         console.log('details',details)
-                        setSelected(params.row);
+                        setSelected(params);
                 }}
                 components={{
                     Toolbar: () => {

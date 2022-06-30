@@ -22,7 +22,31 @@ const fieldTypes = [
     }
 ];
 
+
+
+const fieldValuseReducer = (state:any,action:any) : any =>{
+    if(action.type == 'PUT'){
+        state = action.data;
+    }else if(action.type == 'PATCH'){
+        state[action.key] = action.data;
+    }
+    console.log(state);
+    return state;
+};
+
 export default function MetadataFormDialog(props:any) {
+    const [fieldValuse, setFieldValues] = React.useReducer(fieldValuseReducer, {
+        type : 'text_field',
+        code : '',
+        name : '',
+        description : ''
+    });
+    
+    console.log('props.selected',props.grid.selected.row)
+    if(props.grid.selected){
+        
+        setFieldValues({type : 'PUT', data : props.grid.selected.row});
+    }
 
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
@@ -32,26 +56,19 @@ export default function MetadataFormDialog(props:any) {
 
     const [open, setOpen] = React.useState(false);
 
-    const [fieldType, setFieldType] = React.useState('text_field');
-    const [fieldCode, setFieldCode] = React.useState('');
-    const [fieldName, setFieldName] = React.useState('');
-    const [fieldDescription, setFieldDescription] = React.useState('');
+    // const [fieldType, setFieldType] = React.useState('text_field');
 
-    const handleFieldTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // setFullWidth(event.target.checked);
-        setFieldType(
-            event.target.value,
-        );
-    };
+
+    // const handleFieldTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     // setFullWidth(event.target.checked);
+    //     setFieldType(
+    //         event.target.value,
+    //     );
+    // };
 
     const updateInputValues = (evt : any) => {
-        if(evt.target.id == 'code'){
-            setFieldCode(evt.target.value);
-        }else if(evt.target.id == 'name'){
-            setFieldName(evt.target.value);
-        }else if(evt.target.id == 'description'){
-            setFieldDescription(evt.target.value);
-        };
+        setFieldValues({type : 'PATCH', data : evt.target.value, key : evt.target.id});
+    
 
     }
 
@@ -69,7 +86,7 @@ export default function MetadataFormDialog(props:any) {
         
 
         // setOpenAlert(true);
-        const exists = ipcRenderer.sendSync("@Field/first",{code:fieldCode});
+        const exists = ipcRenderer.sendSync("@Field/first",{code:fieldValuse.code});
 
         if(exists.success){
             
@@ -84,11 +101,7 @@ export default function MetadataFormDialog(props:any) {
             return;
         }
 
-        const insert = ipcRenderer.sendSync("@Field/insert",{
-            code : fieldCode,
-            name : fieldName,
-            description : fieldDescription
-        });
+        const insert = ipcRenderer.sendSync("@Field/insert",fieldValuse);
 
         if(insert.success){
             alertDialogMethods.setALertOption({
@@ -99,13 +112,13 @@ export default function MetadataFormDialog(props:any) {
                     
                 },
                 title : "성공",
-                text : "성공적으로 등록되었습니다."
+                text : "성공적으로 "+buttonTitle+"되었습니다."
             })
         }else{
             alertDialogMethods.setALertOption({
                 severity : 'error',
                 title : "알림",
-                text : "등록에 실패했습니다.",
+                text : buttonTitle+"에 실패했습니다.",
                 disableBackDrop : true
             })
         }
@@ -125,11 +138,11 @@ export default function MetadataFormDialog(props:any) {
                     </DialogContentText>
                     <div>
                         <TextField
-                            id="field_type"
+                            id="type"
                             select
                             label="필드 타입"
-                            value={fieldType}
-                            onChange={handleFieldTypeChange}
+                            value={fieldValuse.type}
+                            onChange={updateInputValues}
                             helperText="Please select your field type"
                             variant="standard"
                         >
@@ -141,19 +154,19 @@ export default function MetadataFormDialog(props:any) {
                         </TextField>
                     </div>
                     <div>
-                        <TextField id="code" label="필드코드" variant="standard" onChange={updateInputValues} value={fieldCode}/>
+                        <TextField id="code" label="필드코드" variant="standard" onChange={updateInputValues} value={fieldValuse.code}/>
                     </div>
                     <div>
-                        <TextField id="name" label="필드명" variant="standard" onChange={updateInputValues} value={fieldName}/>
+                        <TextField id="name" label="필드명" variant="standard" onChange={updateInputValues} value={fieldValuse.name}/>
                     </div>
                     <div>
-                        <TextField id="description" label="설명" variant="standard" onChange={updateInputValues} value={fieldDescription}/>
+                        <TextField id="description" label="설명" variant="standard" onChange={updateInputValues} value={fieldValuse.description}/>
                     </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>취소</Button>
                     <AlertDialog
-                        button="저장"
+                        button={buttonTitle}
                         onClick={handleSave}
                     />
                 </DialogActions>
