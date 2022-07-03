@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import InputLabel from "@mui/material/InputLabel";
 import electron from "electron";
+import AlertDialog from "@views/components/AlertDialog";
 const ipcRenderer = electron.ipcRenderer;
 
 
@@ -37,6 +38,7 @@ const getRows =()=> {
 }
 
 const columns: GridColDef[] = [
+    { field: 'type', headerName: '필드타입', width: 150 },
     { field: 'code', headerName: '필드코드', width: 150 },
     { field: 'name', headerName: '코드명', width: 150 },
     { field: 'description', headerName: '설명', width: 150 },
@@ -44,10 +46,19 @@ const columns: GridColDef[] = [
 ];
 
 
-
+const reducer = (prevState:any, newState:any) => ({
+    ...prevState,
+    ...newState
+})
 export default function Metadata() {
     const [rows,setRows] = React.useState(getRows);
-    const [selected,setSelected] = React.useState(undefined);
+
+    const [state, setState] = React.useReducer(reducer, {
+        grid : {
+            selected : undefined
+        }
+    });
+
     const reload = () => {
         setRows(getRows);
     }
@@ -63,7 +74,12 @@ export default function Metadata() {
                         console.log('params',params)
                         console.log('event',event)
                         console.log('details',details)
-                        setSelected(params);
+                        setState({
+                            grid : {
+                                selected : params
+                            }
+                        })
+                        // setSelected(params);
                 }}
                 components={{
                     Toolbar: () => {
@@ -72,22 +88,53 @@ export default function Metadata() {
                                 <Stack spacing={2} direction="row">
                                     <MetadataFormDialog
                                         buttonTitle="등록"
+                                        ype = "INSERT"
                                         grid = {{
                                             reload : reload
                                         }}
                                     />
                                     <MetadataFormDialog
                                         buttonTitle="수정"
+                                        type = "PATCH"
                                         grid = {{
-                                            selected : selected,
+                                            selected : state.grid.selected,
                                             reload : reload
                                         }}
                                     />
-                                    <MetadataFormDialog
-                                        buttonTitle="삭제"
-                                        grid = {{
-                                            selected : selected,
-                                            reload : reload
+                                    <AlertDialog
+                                        button="삭제"
+                                        onClick={(alertDialog:any)=>{
+                                            if(state.grid.selected){
+                                                const result = ipcRenderer.sendSync("@Field/delete",{
+                                                    _id : state.grid.selected.row._id
+                                                });
+                                                if(result.success){
+                                                    alertDialog.setALertOption({
+                                                        severity : 'success',
+                                                        onClose : () => {
+                                                            reload();
+
+
+                                                        },
+                                                        title : "성공",
+                                                        text : "성공적으로 삭제 되었습니다."
+                                                    })
+                                                }else{
+                                                    alertDialog.setALertOption({
+                                                        severity : 'error',
+                                                        title : "알림",
+                                                        text : "삭제처리 실패했습니다.",
+                                                        disableBackDrop : true
+                                                    })
+                                                }
+                                            }else{
+                                                alertDialog.setALertOption({
+                                                    severity : 'warning',
+                                                    title : "알림",
+                                                    text : "삭제할 항목을 선택해주세요.",
+                                                    disableBackDrop : true
+                                                })
+                                            }
                                         }}
                                     />
                                     {/* <Button variant="text">수정</Button>

@@ -37,6 +37,7 @@ var BaseController = /** @class */ (function () {
             // ipcMain.on(channel,(event,args) =>{
             //     _this.controller[methodName](event,args);
             // });
+            // console.log('start method',methodName);
             electron_1.ipcMain.on(channel, _this.controller[methodName]);
         }
     };

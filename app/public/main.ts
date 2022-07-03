@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import {ipcMain,ipcRenderer} from "electron";
 // import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
@@ -8,12 +9,19 @@ import 'module-alias/register';
 let mainWindow: BrowserWindow;
 const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
 boots.loader();
-global.console.log = (string:any)=> {
-  console.info('===================');
-	console.info(__filename);
-	console.info(string)	
-	console.info('===================');
-}
+
+// ipcMain.on('test',(events,...args)=>{
+//   console.log('test render');
+//   console.log('events',events)
+//   console.log('args',args)
+// });
+
+// global.console.log = (string:any)=> {
+//   console.info('===================');
+// 	console.info(__filename);
+// 	console.info(string)
+// 	console.info('===================');
+// }
 app.disableHardwareAcceleration();
 
 const createWindow = () => {

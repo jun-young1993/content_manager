@@ -8,6 +8,9 @@ const codeItem = new CodeItem();
 // codeItem.db().find({is_deleted : "N",parent_code : "STORAGE_TYPE", use_yn : "Y"},(err,data) => {
 //     console.log(data);
 // })
+// codeItem.db().remove({_id : "rEhMekfo6NDM9yFo"},(err,data) => {
+//     console.log(data);
+// });
 codeItem.db().remove({_id : "rEhMekfo6NDM9yFo"},(err,data) => {
     console.log(data);
 });

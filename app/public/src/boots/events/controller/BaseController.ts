@@ -1,4 +1,5 @@
 import {ipcMain} from "electron";
+import {method} from "lodash";
 interface Property {
     controller : any;
 
@@ -31,6 +32,7 @@ export class BaseController implements Property{
             // ipcMain.on(channel,(event,args) =>{
             //     _this.controller[methodName](event,args);
             // });
+            // console.log('start method',methodName);
             ipcMain.on(channel,_this.controller[methodName]);
 
 

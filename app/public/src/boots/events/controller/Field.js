@@ -18,6 +18,7 @@ var Field = /** @class */ (function () {
         });
     };
     Field.index = function (event, args) {
+        console.log('field index', args);
         db.db().find({ use_yn: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
@@ -27,8 +28,12 @@ var Field = /** @class */ (function () {
             }
         });
     };
-    Field.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
+    Field.insert = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        db.db().insert(Object.assign(args[0], {
             'use_yn': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -40,8 +45,12 @@ var Field = /** @class */ (function () {
             }
         });
     };
-    Field.update = function (event, args) {
-        db.db().update(args, function (err, data) {
+    Field.update = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
             return event.returnValue = {
                 success: true,
                 data: data
@@ -65,6 +74,27 @@ var Field = /** @class */ (function () {
                 };
             }
         });
+    };
+    Field["delete"] = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (args.length >= 1) {
+            db.db().remove(args[0], function (err, data) {
+                if (data) {
+                    return event.returnValue = {
+                        success: true,
+                        data: data
+                    };
+                }
+                else {
+                    return event.returnValue = {
+                        success: false
+                    };
+                }
+            });
+        }
     };
     return Field;
 }());

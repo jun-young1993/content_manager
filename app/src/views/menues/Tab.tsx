@@ -39,6 +39,7 @@ function Tab() {
             </Nav.Link>
         </Nav.Item>
         <NavDropdown title="설정" id="nav-dropdown">
+            {/*<NavDropdown.Item eventKey="ingest">인제스트</NavDropdown.Item>*/}
           <NavDropdown.Item eventKey="metadata">메타데이터 관리</NavDropdown.Item>
           <NavDropdown.Item eventKey="storage">스토리지 관리</NavDropdown.Item>
           <NavDropdown.Item eventKey="code">시스템 코드 관리</NavDropdown.Item>

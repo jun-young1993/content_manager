@@ -18,7 +18,7 @@ class Field {
     }
 
     static index(event, args){
-        
+        console.log('field index',args);
         db.db().find({use_yn : 'N'},(err,data) => {
             if(data){
                 return event.returnValue = {
@@ -29,9 +29,9 @@ class Field {
 
         })
     }
-    static insert(event,args){
+    static insert(event,...args){
 
-        db.db().insert(Object.assign(args,{
+        db.db().insert(Object.assign(args[0],{
             'use_yn' : "N",
             'deleted_at' : null,
         }),(err,data) => {
@@ -49,8 +49,9 @@ class Field {
         });
     }
 
-    static update(event,args){
-        db.db().update(args,(err,data) => {
+    static update(event,...args){
+
+        db.db().update(args[1],{$set : args[0]},(err,data) => {
             return event.returnValue = {
                 success : true,
                 data : data
@@ -59,6 +60,7 @@ class Field {
     }
 
     static first(event,args){
+
         db.db().findOne(Object.assign(args,{
             'use_yn' : "N",
             'deleted_at' : null,
@@ -75,6 +77,26 @@ class Field {
             }
 
         })
+    }
+
+    static delete(event, ...args){
+
+        if(args.length >= 1){
+            db.db().remove(args[0],(err,data) => {
+                if(data){
+                    return event.returnValue = {
+                        success : true,
+                        data : data
+                    }
+                }else{
+                    return event.returnValue = {
+                        success : false
+                    }
+                }
+
+            });
+        }
+
     }
 }
 

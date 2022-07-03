@@ -9,12 +9,17 @@ require("module-alias/register");
 var mainWindow;
 var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();
-global.console.log = function (string) {
-    console.info('===================');
-    console.info(__filename);
-    console.info(string);
-    console.info('===================');
-};
+// ipcMain.on('test',(events,...args)=>{
+//   console.log('test render');
+//   console.log('events',events)
+//   console.log('args',args)
+// });
+// global.console.log = (string:any)=> {
+//   console.info('===================');
+// 	console.info(__filename);
+// 	console.info(string)
+// 	console.info('===================');
+// }
 electron_1.app.disableHardwareAcceleration();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({

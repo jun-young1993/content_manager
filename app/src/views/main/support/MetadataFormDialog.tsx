@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {IconButton, MenuItem, Alert, AlertTitle, AlertColor} from "@mui/material";
 import AlertDialog from "@views/components/AlertDialog"
-
+import * as _ from 'lodash'
 import electron from "electron";
 const ipcRenderer = electron.ipcRenderer;
 const fieldTypes = [
@@ -33,20 +33,27 @@ const fieldValuseReducer = (state:any,action:any) : any =>{
     console.log(state);
     return state;
 };
+const reducer = (prevState:any, newState:any) => ({...prevState,...newState});
+// const reducer = (prevState:any, newState:any) => _.merge(
+//     prevState,
+//     newState
+// )
 
 export default function MetadataFormDialog(props:any) {
-    const [fieldValuse, setFieldValues] = React.useReducer(fieldValuseReducer, {
+
+
+
+    
+    let initState = {
         type : 'text_field',
         code : '',
         name : '',
         description : ''
-    });
-    
-    console.log('props.selected',props.grid.selected.row)
-    if(props.grid.selected){
-        
-        setFieldValues({type : 'PUT', data : props.grid.selected.row});
+    };
+    if(props.type == "PATCH" && props.grid.selected){
+        initState = props.grid.selected.row
     }
+    const [state, setState] = React.useReducer(reducer, initState);
 
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
@@ -67,8 +74,17 @@ export default function MetadataFormDialog(props:any) {
     // };
 
     const updateInputValues = (evt : any) => {
-        setFieldValues({type : 'PATCH', data : evt.target.value, key : evt.target.id});
-    
+        // setFieldValues({type : 'PATCH', data : evt.target.value, key : evt.target.id});
+
+
+        // const set = {
+        //     [key] : value
+        // };
+        // // set[key] = value;
+
+        setState({
+            [evt.target.name]: evt.target.value
+        })
 
     }
 
@@ -86,24 +102,51 @@ export default function MetadataFormDialog(props:any) {
         
 
         // setOpenAlert(true);
-        const exists = ipcRenderer.sendSync("@Field/first",{code:fieldValuse.code});
+        if(props.type == "INSERT"){
+            const exists = ipcRenderer.sendSync("@Field/first",{code:state.code});
 
-        if(exists.success){
-            
-                
-            alertDialogMethods.setALertOption({
-                severity : 'warning',
-                title : "알림",
-                text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
-                disableBackDrop : true
-            })
-        
-            return;
+            if(exists.success){
+
+
+                alertDialogMethods.setALertOption({
+                    severity : 'warning',
+                    title : "알림",
+                    text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
+                    disableBackDrop : true
+                })
+
+                return;
+            }
         }
 
-        const insert = ipcRenderer.sendSync("@Field/insert",fieldValuse);
+        let result = {
+            success : false
+        }
+        if(props.type == "PATCH"){
 
-        if(insert.success){
+            result = ipcRenderer.sendSync("@Field/update",{
+                type : state.type,
+                code : state.code,
+                name : state.name,
+                description : state.description
+            },{
+                _id : state._id
+            });
+            if(result.success){
+                setState({
+                    type : state.type,
+                    code : state.code,
+                    name : state.name,
+                    description : state.description
+                });
+            }
+
+        }else{
+            result = ipcRenderer.sendSync("@Field/insert",state);
+        }
+
+
+        if(result.success){
             alertDialogMethods.setALertOption({
                 severity : 'success',
                 onClose : () => {
@@ -123,7 +166,7 @@ export default function MetadataFormDialog(props:any) {
             })
         }
     }
-
+    console.log('before render state',state)
     return (
         <div>
             <Button variant="text" onClick={handleClickOpen}>
@@ -138,10 +181,11 @@ export default function MetadataFormDialog(props:any) {
                     </DialogContentText>
                     <div>
                         <TextField
-                            id="type"
+                            name="type"
                             select
                             label="필드 타입"
-                            value={fieldValuse.type}
+                            value={state.type}
+                            // value="text_field"
                             onChange={updateInputValues}
                             helperText="Please select your field type"
                             variant="standard"
@@ -154,13 +198,13 @@ export default function MetadataFormDialog(props:any) {
                         </TextField>
                     </div>
                     <div>
-                        <TextField id="code" label="필드코드" variant="standard" onChange={updateInputValues} value={fieldValuse.code}/>
+                        <TextField name="code" label="필드코드" variant="standard" onChange={updateInputValues} value={state.code}/>
                     </div>
                     <div>
-                        <TextField id="name" label="필드명" variant="standard" onChange={updateInputValues} value={fieldValuse.name}/>
+                        <TextField name="name" label="필드명" variant="standard" onChange={updateInputValues} value={state.name}/>
                     </div>
                     <div>
-                        <TextField id="description" label="설명" variant="standard" onChange={updateInputValues} value={fieldValuse.description}/>
+                        <TextField name="description" label="설명" variant="standard" onChange={updateInputValues} value={state.description}/>
                     </div>
                 </DialogContent>
                 <DialogActions>
