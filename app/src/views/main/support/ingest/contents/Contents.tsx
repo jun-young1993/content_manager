@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from "@mui/material/Button";
+import * as Path from "path";
 
 
 
@@ -25,11 +26,8 @@ const Demo = styled('div')(({ theme }) => ({
 const Input = styled('input')({
     display: 'none',
 });
-const makeListItem = function(files:any,options :any = {
-    setSecondary : null,
-    secondary : null
-}){
-    console.log(options);
+const makeListItem = function(files:any){
+
     // @ts-ignore
     return (files.map((file:any, index:any) =>
         <ListItem
@@ -44,9 +42,10 @@ const makeListItem = function(files:any,options :any = {
                 <Avatar>
                     <IconButton
                         onClick={(evt : any) => {
-                            if(options.setSecondary){
-                                options.setSecondary(!options.secondary);
-                            }
+
+                            // if(options.setSecondary){
+                            //     options.setSecondary(!options.secondary);
+                            // }
                             console.log('click avatar',evt);
                         }}
                     >
@@ -55,8 +54,8 @@ const makeListItem = function(files:any,options :any = {
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
-                primary={file}
-                secondary={options.secondary ? 'test' : null}
+                primary={Path.basename(file)}
+                // secondary={secondary ? 'test' : null}
             />
         </ListItem>
     )
@@ -64,14 +63,11 @@ const makeListItem = function(files:any,options :any = {
 }
 export default function Contents() {
     const [dense, setDense] = React.useState(false);
-    const [secondary, setSecondary] = React.useState({});
+    const [secondary, setSecondary] = React.useState([]);
     const [files, setFiles] = React.useState([]);
     // @ts-ignore
-    const [lists, setLists] = React.useState(makeListItem(['no item']),{
-        setSecondary: setSecondary,
-        secondary : secondary
-    });
-    const [currentDate, setCurrentDate] = React.useState(Date.now());
+    const [lists, setLists] = React.useState(makeListItem(['no item']));
+    // const [currentDate, setCurrentDate] = React.useState(Date.now());
     const inputEl = React.useRef(null)
     // const inputChange = (event:any) => {
     //     console.log('inputChange',event.target.files);
@@ -112,7 +108,7 @@ export default function Contents() {
                         accept="image/*"
                         id="contained-button-file"
                         multiple type="file"
-                        key={currentDate}
+                        // key={currentDate}
                         style={{ display: 'none' }}
                         // onClick={(event) => {
                         //     const randomString = Math.random().toString(36);
@@ -153,24 +149,21 @@ export default function Contents() {
 
                             // const secondaryArray:[] = [];
                             // secondaryArray.fill()
-                            const tmpSecondary = new Array(files.length).fill(false);
-                            console.log('tmpSecondary',tmpSecondary);
+                            // const tmpSecondary = new Array(files.length).fill(false);
+                            // console.log('tmpSecondary',tmpSecondary);
                             // for(let i = 0; files.length < i; i++){
                             //     secondaryObj[i] = false;
                             // }
                             // @ts-ignore
-                            setSecondary(Object.assign({},tmpSecondary))
-                            console.log('secondary',secondary);
+                            // setSecondary(Object.assign({},tmpSecondary))
+                            // console.log('secondary',secondary);
                             // React.useEffect(() => {
                             //    console.log('use Effect',secondary);
                             // }, [secondary]);
                             console.log('before set Files ',files)
                             setFiles(files);
 
-                            setLists(makeListItem(files,{
-                                setSecondary : setSecondary,
-                                secondary : secondary
-                            }));
+                            setLists(makeListItem(files));
                             console.log('after set Files ',files)
                         }}
                     />
