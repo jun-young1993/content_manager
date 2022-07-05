@@ -53,7 +53,12 @@ const reducer = (prevState:any, newState:any) => ({
 })
 export default function Metadata() {
     const [rows,setRows] = React.useState(getRows);
-
+    const [values, setValues] = React.useReducer(reducer,{
+        type : '',
+        code : '',
+        name : '',
+        description : ''
+    });
     const [state, setState] = React.useReducer(reducer, {
         grid : {
             selected : undefined
@@ -62,6 +67,12 @@ export default function Metadata() {
 
     const reload = () => {
         setRows(getRows);
+    }
+    const updateInputValues = (evt : any) => {
+        setValues({
+            [evt.target.name]: evt.target.value
+        })
+
     }
     return (
         <div style={{ height: 300, width: '100%' }}>
@@ -89,25 +100,15 @@ export default function Metadata() {
                                 <Stack spacing={2} direction="row">
                                     <FormDialog
                                         buttonTitle="등록"
-                                        initState={{
-                                            type : '',
-                                            code : '',
-                                            name : '',
-                                            description : ''
-                                        }}
-                                        fields={[{
-                                            name : "code",
-                                            label : "필드코드"
-                                        },{
-                                            name : "code",
-                                            label : "필드코드"
-                                        },{
-                                            name : "code",
-                                            label : "필드코드"
-                                        }]}
-                                        type = "INSERT"
-                                        grid = {{
-                                            reload : reload
+                                        values={values}
+                                        fields={[
+                                        <div><TextField name="type" label="타입" variant="standard" onChange={updateInputValues}/></div>,
+                                        <div><TextField name="code" label="코드" variant="standard" onChange={updateInputValues}/></div>,
+                                        <div><TextField name="name" label="스토리지 명" variant="standard" onChange={updateInputValues}/></div>,
+                                        <div><TextField name="description" label="설명" variant="standard" onChange={updateInputValues}/></div>
+                                        ]}
+                                        onSaveClick={(result:any)=>{
+                                            console.log('insert result',result)
                                         }}
                                     />
                                     <MetadataFormDialog

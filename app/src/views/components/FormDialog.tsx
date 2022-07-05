@@ -46,8 +46,8 @@ export default function FormDialog(props:any) {
     
    
     
-    const [state, setState] = React.useReducer(reducer, props.initState);
-    const [field, setField] = React.useReducer(reducer, props.fields);
+    const [values, setValues] = React.useReducer(reducer, props.values ?? {});
+    const [fields, setFields] = React.useReducer(reducer, props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
 
@@ -66,20 +66,7 @@ export default function FormDialog(props:any) {
     //     );
     // };
 
-    const updateInputValues = (evt : any) => {
-        // setFieldValues({type : 'PATCH', data : evt.target.value, key : evt.target.id});
-
-
-        // const set = {
-        //     [key] : value
-        // };
-        // // set[key] = value;
-
-        setState({
-            [evt.target.name]: evt.target.value
-        })
-
-    }
+    
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -90,76 +77,76 @@ export default function FormDialog(props:any) {
 
     };
 
-    const handleSave = (alertDialogMethods:any) =>  {
+    // const handleSave = (alertDialogMethods:any) =>  {
 
         
 
-        // setOpenAlert(true);
-        if(props.type == "INSERT"){
-            const exists = ipcRenderer.sendSync("@Field/first",{code:state.code});
+    //     // setOpenAlert(true);
+    //     if(props.type == "INSERT"){
+    //         const exists = ipcRenderer.sendSync("@Field/first",{code:state.code});
 
-            if(exists.success){
-
-
-                alertDialogMethods.setALertOption({
-                    severity : 'warning',
-                    title : "알림",
-                    text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
-                    disableBackDrop : true
-                })
-
-                return;
-            }
-        }
-
-        let result = {
-            success : false
-        }
-        if(props.type == "PATCH"){
-
-            result = ipcRenderer.sendSync("@Field/update",{
-                type : state.type,
-                code : state.code,
-                name : state.name,
-                description : state.description
-            },{
-                _id : state._id
-            });
-            if(result.success){
-                setState({
-                    type : state.type,
-                    code : state.code,
-                    name : state.name,
-                    description : state.description
-                });
-            }
-
-        }else{
-            result = ipcRenderer.sendSync("@Field/insert",state);
-        }
+    //         if(exists.success){
 
 
-        if(result.success){
-            alertDialogMethods.setALertOption({
-                severity : 'success',
-                onClose : () => {
-                    setOpen(false);
-                    props.grid.reload();
+    //             alertDialogMethods.setALertOption({
+    //                 severity : 'warning',
+    //                 title : "알림",
+    //                 text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
+    //                 disableBackDrop : true
+    //             })
+
+    //             return;
+    //         }
+    //     }
+
+    //     let result = {
+    //         success : false
+    //     }
+    //     if(props.type == "PATCH"){
+
+    //         result = ipcRenderer.sendSync("@Field/update",{
+    //             type : state.type,
+    //             code : state.code,
+    //             name : state.name,
+    //             description : state.description
+    //         },{
+    //             _id : state._id
+    //         });
+    //         if(result.success){
+    //             setState({
+    //                 type : state.type,
+    //                 code : state.code,
+    //                 name : state.name,
+    //                 description : state.description
+    //             });
+    //         }
+
+    //     }else{
+    //         result = ipcRenderer.sendSync("@Field/insert",state);
+    //     }
+
+
+    //     if(result.success){
+    //         alertDialogMethods.setALertOption({
+    //             severity : 'success',
+    //             onClose : () => {
+    //                 setOpen(false);
+    //                 props.grid.reload();
                     
-                },
-                title : "성공",
-                text : "성공적으로 "+buttonTitle+"되었습니다."
-            })
-        }else{
-            alertDialogMethods.setALertOption({
-                severity : 'error',
-                title : "알림",
-                text : buttonTitle+"에 실패했습니다.",
-                disableBackDrop : true
-            })
-        }
-    }
-    console.log('before render state',state)
+    //             },
+    //             title : "성공",
+    //             text : "성공적으로 "+buttonTitle+"되었습니다."
+    //         })
+    //     }else{
+    //         alertDialogMethods.setALertOption({
+    //             severity : 'error',
+    //             title : "알림",
+    //             text : buttonTitle+"에 실패했습니다.",
+    //             disableBackDrop : true
+    //         })
+    //     }
+    // }
+    console.log('before render state',values)
     return (
         <div>
             <Button variant="text" onClick={handleClickOpen}>
@@ -172,44 +159,20 @@ export default function FormDialog(props:any) {
                         {/* To subscribe to this website, please enter your email address here. We
                         will send updates occasionally. */}
                     </DialogContentText>
-                    {field.map((field:any)=>{
-                        <div>
-                            <TextField name={field.name} label={field.label} variant="standard" onChange={updateInputValues} value={field.value}/>
-                        </div>
-                    })}
-                    {/* <div>
-                        <TextField
-                            name="type"
-                            select
-                            label="필드 타입"
-                            value={state.type}
-                            // value="text_field"
-                            onChange={updateInputValues}
-                            helperText="Please select your field type"
-                            variant="standard"
-                        >
-                            {fieldTypes.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </div>
-                    <div>
-                        <TextField name="code" label="필드코드" variant="standard" onChange={updateInputValues} value={state.code}/>
-                    </div>
-                    <div>
-                        <TextField name="name" label="필드명" variant="standard" onChange={updateInputValues} value={state.name}/>
-                    </div>
-                    <div>
-                        <TextField name="description" label="설명" variant="standard" onChange={updateInputValues} value={state.description}/>
-                    </div> */}
+                    {fields.map((field:any)=>field)}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>취소</Button>
                     <AlertDialog
                         button={buttonTitle}
-                        onClick={handleSave}
+                        onClick={()=>{
+                            if(props.onSaveClick){
+                                props.onSaveClick({
+                                    values : values,
+                                    setOpen : setOpen
+                                });
+                            }
+                        }}
                     />
                 </DialogActions>
             </Dialog>
