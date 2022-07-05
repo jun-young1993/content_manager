@@ -27,13 +27,19 @@ const Input = styled('input')({
     display: 'none',
 });
 const makeListItem = function(files:any){
-
+    if(files.length == 0){
+        return (
+            <div>파일을 선택해주세요.</div>
+        );
+    }
     // @ts-ignore
     return (files.map((file:any, index:any) =>
         <ListItem
             key={index}
             secondaryAction={
-                <IconButton edge="end" aria-label="delete">
+                <IconButton edge="end" aria-label="delete" onClick={(evt : any) => {
+
+                }}>
                     <DeleteIcon />
                 </IconButton>
             }
@@ -66,7 +72,7 @@ export default function Contents() {
     const [secondary, setSecondary] = React.useState([]);
     const [files, setFiles] = React.useState([]);
     // @ts-ignore
-    const [lists, setLists] = React.useState(makeListItem(['no item']));
+    const [lists, setLists] = React.useState(makeListItem([files]));
     // const [currentDate, setCurrentDate] = React.useState(Date.now());
     const inputEl = React.useRef(null)
     // const inputChange = (event:any) => {
@@ -184,7 +190,7 @@ export default function Contents() {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                     <Typography sx={{ mt: 4, mb: 4 }} variant="h6" component="div">
-                        Avatar with text and icon
+                        {/* Avatar with text and icon */}
                     </Typography>
                     <Demo>
                         <List dense={dense}>

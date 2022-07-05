@@ -12,6 +12,7 @@ import {
     TabPanel
 } from '@mui/lab';
 import Storage from "@views/main/Storage";
+import StorageT from "@views/main/StorageT";
 import Code from "@views/main/Code";
 import Metadata from "@views/main/Metadata";
 import Ingest from "@views/main/Ingest";
@@ -35,12 +36,14 @@ export default function MainContainer() {
                         <Tab label="스토리지" value="1" />
                         <Tab label="코드관리" value="2" />
                         <Tab label="메타데이터" value="3" />
+                        <Tab label="스토리지 테스트" value="4" />
                     </TabList>
                 </Box>
                 <TabPanel value="0"><Ingest /></TabPanel>
                 <TabPanel value="1"><Storage /></TabPanel>
                 <TabPanel value="2"><Code /></TabPanel>
                 <TabPanel value="3"><Metadata /></TabPanel>
+                <TabPanel value="4"><StorageT /></TabPanel>
             </TabContext>
         </Box>
     );

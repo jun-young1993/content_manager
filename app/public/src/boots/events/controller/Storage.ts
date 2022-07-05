@@ -1,7 +1,7 @@
 import {BaseController} from "./BaseController";
 import {Storage as StorageModel} from "../../../../models/Storage";
 // import {User} from "@model/User";
-const storageDb = new StorageModel();
+const db = new StorageModel();
 
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
@@ -18,9 +18,21 @@ const storageDb = new StorageModel();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Storage {
+    static all(event, args){
+
+        db.db().find({},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }
+
+        })
+    }
     static index(event, args){
         
-        storageDb.db().find({is_deleted : 'N'},(err,data) => {
+        db.db().find({is_deleted : 'N'},(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -32,7 +44,7 @@ class Storage {
     }
     static insert(event,args){
 
-        storageDb.db().insert(Object.assign(args,{
+        db.db().insert(Object.assign(args,{
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
@@ -50,10 +62,55 @@ class Storage {
         });
     }
 
-    static update(event,args){
-        storageDb.db().update(args,(err,data) => {
-            return event.returnValue = data;
+
+    static update(event,...args){
+
+        db.db().update(args[1],{$set : args[0]},(err,data) => {
+            return event.returnValue = {
+                success : true,
+                data : data
+            };
         })
+    }
+
+    static first(event,args){
+
+        db.db().findOne(Object.assign(args,{
+            'use_yn' : "N",
+            'deleted_at' : null,
+        }),(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }else{
+                return event.returnValue = {
+                    success : false
+                }
+            }
+
+        })
+    }
+
+    static delete(event, ...args){
+
+        if(args.length >= 1){
+            db.db().remove(args[0],(err,data) => {
+                if(data){
+                    return event.returnValue = {
+                        success : true,
+                        data : data
+                    }
+                }else{
+                    return event.returnValue = {
+                        success : false
+                    }
+                }
+
+            });
+        }
+
     }
 }
 

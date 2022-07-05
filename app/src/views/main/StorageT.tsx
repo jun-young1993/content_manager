@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { GridToolbarContainer, DataGrid, GridRowsProp, GridColDef,GridRowParams,GridCallbackDetails } from '@mui/x-data-grid';
 import MetadataFormDialog from "@views/main/support/metadata/MetadataFormDialog";
+import FormDialog from "@views/components/FormDialog";
 import {
     Button,
     Stack,
@@ -25,12 +26,12 @@ const ipcRenderer = electron.ipcRenderer;
 
 const getRows =()=> {
 
-    const fields = ipcRenderer.sendSync("@Field/all");
-    if(fields.success){
-        return fields.data.map((field : any) => {
+    const storages = ipcRenderer.sendSync("@Storage/all");
+    if(storages.success){
+        return storages.data.map((storage : any) => {
 
-            field.id = field._id;
-            return field;
+            storage.id = storage._id;
+            return storage;
         });
 
     }
@@ -38,9 +39,9 @@ const getRows =()=> {
 }
 
 const columns: GridColDef[] = [
-    { field: 'type', headerName: '필드타입', width: 150 },
-    { field: 'code', headerName: '필드코드', width: 150 },
-    { field: 'name', headerName: '코드명', width: 150 },
+    { field: 'type', headerName: '스토리지 타입', width: 150 },
+    { field: 'code', headerName: '스토리지 코드', width: 150 },
+    { field: 'code_name', headerName: '스토리지명', width: 150 },
     { field: 'description', headerName: '설명', width: 150 },
     { field: 'use_yn', headerName: '사용여부', width: 150 },
 ];
@@ -86,8 +87,24 @@ export default function Metadata() {
                         return (
                             <GridToolbarContainer>
                                 <Stack spacing={2} direction="row">
-                                    <MetadataFormDialog
+                                    <FormDialog
                                         buttonTitle="등록"
+                                        initState={{
+                                            type : '',
+                                            code : '',
+                                            name : '',
+                                            description : ''
+                                        }}
+                                        fields={[{
+                                            name : "code",
+                                            label : "필드코드"
+                                        },{
+                                            name : "code",
+                                            label : "필드코드"
+                                        },{
+                                            name : "code",
+                                            label : "필드코드"
+                                        }]}
                                         type = "INSERT"
                                         grid = {{
                                             reload : reload
@@ -105,7 +122,7 @@ export default function Metadata() {
                                         button="삭제"
                                         onClick={(alertDialog:any)=>{
                                             if(state.grid.selected){
-                                                const result = ipcRenderer.sendSync("@Field/delete",{
+                                                const result = ipcRenderer.sendSync("@Storage/delete",{
                                                     _id : state.grid.selected.row._id
                                                 });
                                                 if(result.success){
