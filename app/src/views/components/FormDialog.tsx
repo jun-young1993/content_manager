@@ -33,20 +33,16 @@ const fieldValuseReducer = (state:any,action:any) : any =>{
     console.log(state);
     return state;
 };
-const reducer = (prevState:any, newState:any) => ({...prevState,...newState});
-// const reducer = (prevState:any, newState:any) => _.merge(
-//     prevState,
-//     newState
-// )
+const reducer = (prevState:any, newState:any) => (Object.assign(prevState,newState));
+
 
 export default function FormDialog(props:any) {
 
 
 
-    
-   
-    
-    const [values, setValues] = React.useReducer(reducer, props.values ?? {});
+
+
+    const [values, setValues] = React.useReducer(reducer, props.values);
     const [fields, setFields] = React.useReducer(reducer, props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
@@ -76,7 +72,14 @@ export default function FormDialog(props:any) {
         setOpen(false);
 
     };
+    const updateValues = (evt : any) => {
 
+        setValues({
+            [evt.target.name]: evt.target.value
+        })
+
+
+    }
     // const handleSave = (alertDialogMethods:any) =>  {
 
         
@@ -159,7 +162,15 @@ export default function FormDialog(props:any) {
                         {/* To subscribe to this website, please enter your email address here. We
                         will send updates occasionally. */}
                     </DialogContentText>
-                    {fields.map((field:any)=>field)}
+                    {fields.map((field:any)=>{
+                        let element = <TextField />;
+                        field.onChange = field.onChange ?  field.onChange : updateValues;
+                        return (
+                            <div>
+                                {React.cloneElement(element,field)}
+                            </div>
+                        )
+                    })}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>취소</Button>

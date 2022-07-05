@@ -102,13 +102,39 @@ export default function Metadata() {
                                         buttonTitle="등록"
                                         values={values}
                                         fields={[
-                                        <div><TextField name="type" label="타입" variant="standard" onChange={updateInputValues}/></div>,
-                                        <div><TextField name="code" label="코드" variant="standard" onChange={updateInputValues}/></div>,
-                                        <div><TextField name="name" label="스토리지 명" variant="standard" onChange={updateInputValues}/></div>,
-                                        <div><TextField name="description" label="설명" variant="standard" onChange={updateInputValues}/></div>
+                                            {
+                                                name : "type",
+                                                label : "타입",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "code",
+                                                label : "스토리지 코드",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "name",
+                                                label : "스토리지 명",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "description",
+                                                label : "설명",
+                                                variant:"standard"
+                                            }
                                         ]}
                                         onSaveClick={(result:any)=>{
                                             console.log('insert result',result)
+                                            if(result){
+                                                const valuse = result.valuse;
+                                                if(valuse){
+                                                    const exists = ipcRenderer.sendSync("@Storage/first",{code:valuse.code});
+                                                    if(exists.success){
+                                                        
+                                                    }
+                                                }
+                                            }
+
                                         }}
                                     />
                                     <MetadataFormDialog
