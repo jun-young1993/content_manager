@@ -22,7 +22,7 @@ export default function CustomAlert(props:any) {
     }
     const [disableBackDrop,setDisableBackDrop] = React.useState(propsDisableBackDrop);
 
-    let propsSeverity:string = 'info';
+    let propsSeverity:AlertColor = 'info';
     if(props.serverity){
         propsSeverity = props.serverity;
     }

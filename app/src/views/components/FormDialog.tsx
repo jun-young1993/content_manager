@@ -174,7 +174,19 @@ export default function FormDialog(props:any) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>취소</Button>
-                    <AlertDialog
+                    <Button 
+                        onClick={()=>{
+                            if(props.onSaveClick){
+                                props.onSaveClick({
+                                    values : values,
+                                    setOpen : setOpen
+                                });
+                            }
+                        }}
+                    >
+                        {buttonTitle}
+                        </Button>
+                    {/* <AlertDialog
                         button={buttonTitle}
                         onClick={()=>{
                             if(props.onSaveClick){
@@ -184,7 +196,7 @@ export default function FormDialog(props:any) {
                                 });
                             }
                         }}
-                    />
+                    /> */}
                 </DialogActions>
             </Dialog>
 

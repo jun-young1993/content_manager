@@ -15,6 +15,7 @@ import {
 import InputLabel from "@mui/material/InputLabel";
 import electron from "electron";
 import AlertDialog from "@views/components/AlertDialog";
+import CustomAlert from "@views/components/CustomAlert";
 const ipcRenderer = electron.ipcRenderer;
 
 
@@ -64,6 +65,8 @@ export default function Metadata() {
             selected : undefined
         }
     });
+
+    const [alert, setALert] = React.useState((<CustomAlert open={false} />))
 
     const reload = () => {
         setRows(getRows);
@@ -124,14 +127,22 @@ export default function Metadata() {
                                             }
                                         ]}
                                         onSaveClick={(result:any)=>{
-                                            console.log('insert result',result)
+                                            
                                             if(result){
                                                 const valuse = result.valuse;
                                                 if(valuse){
                                                     const exists = ipcRenderer.sendSync("@Storage/first",{code:valuse.code});
                                                     if(exists.success){
-                                                        
+                                                        return setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
                                                     }
+
+                                                    const result = ipcRenderer.sendSync("@Storage/insert",values);
+                                                    if(result.success){
+                                                        reload();
+                                                        return setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                    }
+
+                                                    setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
                                                 }
                                             }
 
@@ -184,6 +195,7 @@ export default function Metadata() {
                                     {/* <Button variant="text">수정</Button>
                                     <Button variant="text">삭제</Button> */}
                                 </Stack>
+                                    {alert}
                             </GridToolbarContainer>
                         );
                     }
