@@ -36,6 +36,7 @@ const fieldValuseReducer = (state:any,action:any) : any =>{
 const reducer = (prevState:any, newState:any) => (Object.assign(prevState,newState));
 
 
+
 export default function FormDialog(props:any) {
 
 
@@ -43,10 +44,18 @@ export default function FormDialog(props:any) {
 
 
     const [values, setValues] = React.useReducer(reducer, props.values);
+
+    const [newValues, setNewValues] = React.useState(Object.assign({},values));
+
     const [fields, setFields] = React.useReducer(reducer, props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
-
+    const refs:any = {};
+    fields.map((field:any) => refs[field.name] = React.useRef(field.value));
+    // React.useEffect(()=>{
+    //     console.log('effect values', values);
+    //     setNewValues(values);
+    // },[values]);
     // const [openAlert, setOpenAlert] = React.useState(false);
     // const [openAlert, setOpenAlert] = React.useState(false);
 
@@ -73,83 +82,19 @@ export default function FormDialog(props:any) {
 
     };
     const updateValues = (evt : any) => {
-
-        setValues({
-            [evt.target.name]: evt.target.value
-        })
-
-
-    }
-    // const handleSave = (alertDialogMethods:any) =>  {
-
+        const {name,value} = evt.target;
         
+        console.log(Object.assign(newValues,{
+            [name]: value
+        }));
+        setNewValues(Object.assign(newValues,{
+            [name]: value
+        }))
 
-    //     // setOpenAlert(true);
-    //     if(props.type == "INSERT"){
-    //         const exists = ipcRenderer.sendSync("@Field/first",{code:state.code});
-
-    //         if(exists.success){
-
-
-    //             alertDialogMethods.setALertOption({
-    //                 severity : 'warning',
-    //                 title : "알림",
-    //                 text : "이미 존재하는 코드입니다.\r\n다른 필드코드로 요청해주세요.",
-    //                 disableBackDrop : true
-    //             })
-
-    //             return;
-    //         }
-    //     }
-
-    //     let result = {
-    //         success : false
-    //     }
-    //     if(props.type == "PATCH"){
-
-    //         result = ipcRenderer.sendSync("@Field/update",{
-    //             type : state.type,
-    //             code : state.code,
-    //             name : state.name,
-    //             description : state.description
-    //         },{
-    //             _id : state._id
-    //         });
-    //         if(result.success){
-    //             setState({
-    //                 type : state.type,
-    //                 code : state.code,
-    //                 name : state.name,
-    //                 description : state.description
-    //             });
-    //         }
-
-    //     }else{
-    //         result = ipcRenderer.sendSync("@Field/insert",state);
-    //     }
-
-
-    //     if(result.success){
-    //         alertDialogMethods.setALertOption({
-    //             severity : 'success',
-    //             onClose : () => {
-    //                 setOpen(false);
-    //                 props.grid.reload();
-                    
-    //             },
-    //             title : "성공",
-    //             text : "성공적으로 "+buttonTitle+"되었습니다."
-    //         })
-    //     }else{
-    //         alertDialogMethods.setALertOption({
-    //             severity : 'error',
-    //             title : "알림",
-    //             text : buttonTitle+"에 실패했습니다.",
-    //             disableBackDrop : true
-    //         })
-    //     }
-    // }
-    console.log('before render state',values)
+        console.log('afterSetValues',newValues);
+    }
+  
+    
     return (
         <div>
             <Button variant="text" onClick={handleClickOpen}>
@@ -164,7 +109,9 @@ export default function FormDialog(props:any) {
                     </DialogContentText>
                     {fields.map((field:any)=>{
                         let element = <TextField />;
-                        field.onChange = field.onChange ?  field.onChange : updateValues;
+                        // field.onChange = field.onChange ?  field.onChange : updateValues;
+                        // field.value = newValues[field.name];
+                        field.inputRef=refs[field.name];
                         return (
                             <div>
                                 {React.cloneElement(element,field)}
@@ -177,9 +124,17 @@ export default function FormDialog(props:any) {
                     <Button 
                         onClick={()=>{
                             if(props.onSaveClick){
+                                const newValues:any = {};
+                                
+                                console.log('refs',refs);
+                                Object.keys(refs).forEach((name) => {
+                                    newValues[name] = refs[name].current.value
+                                });
+                                
+                                    
                                 props.onSaveClick({
-                                    values : values,
-                                    setOpen : setOpen
+                                    values : newValues,
+                                    setOpen : setOpen,
                                 });
                             }
                         }}

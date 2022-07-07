@@ -49,7 +49,13 @@ class Storage {
             'deleted_at' : null,
         }),(err,data) => {
 
-
+            if(err){
+                return event.returnValue = {
+                    success : false,
+                    data : null,
+                    msg : err
+                }
+            }
             if(data){
 
 

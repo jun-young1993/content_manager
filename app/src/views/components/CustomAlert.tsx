@@ -11,13 +11,13 @@ import {useEffect} from "react";
 
 export default function CustomAlert(props:any) {
     let propsOpen = true;
-    if(props.open){
+    if(props.open || props.open === false){
         propsOpen = props.open;
     }
     const [open, setOpen] = React.useState(propsOpen);
 
     let propsDisableBackDrop = true;
-    if(props.disableBackDrop){
+    if(props.disableBackDrop || props.disableBackDrop === false){
         propsDisableBackDrop = props.disableBackDrop;
     }
     const [disableBackDrop,setDisableBackDrop] = React.useState(propsDisableBackDrop);

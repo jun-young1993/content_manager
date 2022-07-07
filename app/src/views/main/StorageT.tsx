@@ -127,28 +127,34 @@ export default function Metadata() {
                                             }
                                         ]}
                                         onSaveClick={(result:any)=>{
-                                            
+                                            console.log('result',result);
+                                            let errorMsg:string = '';
                                             if(result){
-                                                const valuse = result.valuse;
-                                                if(valuse){
-                                                    const exists = ipcRenderer.sendSync("@Storage/first",{code:valuse.code});
+                                                const values = result.values;
+                                                if(values){
+                                                    const exists = ipcRenderer.sendSync("@Storage/first",{code:values.code});
                                                     if(exists.success){
-                                                        return setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
+                                                        setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
+                                                        return false;
                                                     }
 
-                                                    const result = ipcRenderer.sendSync("@Storage/insert",values);
-                                                    if(result.success){
+                                                    const insert = ipcRenderer.sendSync("@Storage/insert",values);
+                                                    if(insert.success){
                                                         reload();
-                                                        return setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                        setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                        return  true;
                                                     }
 
-                                                    setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                    console.log('insert',insert);
                                                 }
                                             }
 
+                                            
+                                            setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                            return false;
                                         }}
                                     />
-                                    <MetadataFormDialog
+                                    <FormDialog
                                         buttonTitle="수정"
                                         type = "PATCH"
                                         grid = {{
