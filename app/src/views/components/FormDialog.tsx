@@ -45,13 +45,14 @@ export default function FormDialog(props:any) {
 
     const [values, setValues] = React.useReducer(reducer, props.values);
 
-    const [newValues, setNewValues] = React.useState(Object.assign({},values));
+
 
     const [fields, setFields] = React.useReducer(reducer, props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
     const refs:any = {};
-    fields.map((field:any) => refs[field.name] = React.useRef(field.value));
+    fields.map((field:any) => refs[field.name] = React.useRef(values[field.name]));
+    console.log('renderer');
     // React.useEffect(()=>{
     //     console.log('effect values', values);
     //     setNewValues(values);
@@ -60,6 +61,8 @@ export default function FormDialog(props:any) {
     // const [openAlert, setOpenAlert] = React.useState(false);
 
     const [open, setOpen] = React.useState(false);
+
+
 
     // const [fieldType, setFieldType] = React.useState('text_field');
 
@@ -81,19 +84,7 @@ export default function FormDialog(props:any) {
         setOpen(false);
 
     };
-    const updateValues = (evt : any) => {
-        const {name,value} = evt.target;
-        
-        console.log(Object.assign(newValues,{
-            [name]: value
-        }));
-        setNewValues(Object.assign(newValues,{
-            [name]: value
-        }))
-
-        console.log('afterSetValues',newValues);
-    }
-  
+ 
     
     return (
         <div>
@@ -108,15 +99,12 @@ export default function FormDialog(props:any) {
                         will send updates occasionally. */}
                     </DialogContentText>
                     {fields.map((field:any)=>{
-                        let element = <TextField />;
+                        let element = <TextField inputRef={refs[field.name]} defaultValue={values[field.name]}/>;
                         // field.onChange = field.onChange ?  field.onChange : updateValues;
                         // field.value = newValues[field.name];
-                        field.inputRef=refs[field.name];
-                        return (
-                            <div>
-                                {React.cloneElement(element,field)}
-                            </div>
-                        )
+
+                        return(<div>{React.cloneElement(element,field)}</div>)
+                    
                     })}
                 </DialogContent>
                 <DialogActions>
@@ -133,6 +121,7 @@ export default function FormDialog(props:any) {
                                 
                                     
                                 props.onSaveClick({
+                                    oldValues : values,
                                     values : newValues,
                                     setOpen : setOpen,
                                 });
