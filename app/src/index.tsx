@@ -7,7 +7,7 @@ import './index.css';
 import App from './App';
 import Tab from './views/menues/Tab';
 
-import MainContainer from '@src/views/main/MainContainer';
+import MainContainer from '@views/main/MainContainer';
 import MainTabBar from '@src/views/main/MainTabBar';
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
