@@ -16,11 +16,12 @@ import Storage from "@views/main/Storage";
 import Code from "@views/main/Code";
 import Metadata from "@views/main/Metadata";
 import Ingest from "@views/main/Ingest";
+import Content from "@views/main/Content";
 
 
 
 
-export default function MainContainer() {
+export default function MainContainer(props:any) {
     const [value, setValue] = React.useState('0');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -28,20 +29,22 @@ export default function MainContainer() {
     };
 
     return (
-        <Box sx={{ width: '100%', typography: 'body1' }}>
+        <Box sx={{ width: '100%', typography: 'body1' , height:"100vh"}}>
             <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleChange} centered aria-label="lab API tabs example">
-                        <Tab label="인제스트" value="0" />
-                        <Tab label="스토리지" value="1" />
-                        <Tab label="코드관리" value="2" />
-                        <Tab label="메타데이터" value="3" />
+                        <Tab label="콘텐츠" value="0" />
+                        <Tab label="인제스트" value="1" />
+                        <Tab label="스토리지" value="2" />
+                        <Tab label="코드관리" value="3" />
+                        <Tab label="메타데이터" value="4" />
                     </TabList>
                 </Box>
-                <TabPanel value="0"><Ingest /></TabPanel>
-                <TabPanel value="1"><Storage /></TabPanel>
-                <TabPanel value="2"><Code /></TabPanel>
-                <TabPanel value="3"><Metadata /></TabPanel>
+                <TabPanel value="0"><Content /></TabPanel>
+                <TabPanel value="1"><Ingest /></TabPanel>
+                <TabPanel value="2"><Storage /></TabPanel>
+                <TabPanel value="3"><Code /></TabPanel>
+                <TabPanel value="4"><Metadata /></TabPanel>
             </TabContext>
         </Box>
     );

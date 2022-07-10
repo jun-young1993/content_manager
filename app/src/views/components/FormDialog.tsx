@@ -99,7 +99,15 @@ export default function FormDialog(props:any) {
                         will send updates occasionally. */}
                     </DialogContentText>
                     {fields.map((field:any)=>{
-                        let element = <TextField inputRef={refs[field.name]} defaultValue={values[field.name]}/>;
+                        // let children = null;
+                        // if(field.children){
+                        //     children = field.children;
+                        //     delete field.children;
+                        // }
+
+                        let element = <TextField inputRef={refs[field.name]} defaultValue={values[field.name]} />;
+
+
                         // field.onChange = field.onChange ?  field.onChange : updateValues;
                         // field.value = newValues[field.name];
 

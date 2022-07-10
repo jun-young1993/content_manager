@@ -10,6 +10,8 @@ export default function FieldSet(props:any){
         setValues({
             [option.code] : evt.target.value
         })
+        console.log(valuse);
+        props.onUpdateValues(valuse);
     }
     return(<div>
         {fields.map((data:any)=>{

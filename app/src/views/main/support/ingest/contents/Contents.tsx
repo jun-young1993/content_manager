@@ -27,13 +27,14 @@ const Input = styled('input')({
     display: 'none',
 });
 const makeListItem = function(files:any){
+    console.log('first files',files);
     if(files.length == 0){
         return (
             <div>파일을 선택해주세요.</div>
         );
     }
     // @ts-ignore
-    return (files.map((file:any, index:any) =>
+    return (files.map((file:string, index:any) =>
         <ListItem
             key={index}
             secondaryAction={
@@ -67,12 +68,12 @@ const makeListItem = function(files:any){
     )
     )
 }
-export default function Contents() {
+export default function Contents(props:any) {
     const [dense, setDense] = React.useState(false);
     const [secondary, setSecondary] = React.useState([]);
     const [files, setFiles] = React.useState([]);
     // @ts-ignore
-    const [lists, setLists] = React.useState(makeListItem([files]));
+    const [lists, setLists] = React.useState(makeListItem(files));
     // const [currentDate, setCurrentDate] = React.useState(Date.now());
     const inputEl = React.useRef(null)
     // const inputChange = (event:any) => {
@@ -168,7 +169,7 @@ export default function Contents() {
                             // }, [secondary]);
                             console.log('before set Files ',files)
                             setFiles(files);
-
+                            props.setFiles(files);
                             setLists(makeListItem(files));
                             console.log('after set Files ',files)
                         }}

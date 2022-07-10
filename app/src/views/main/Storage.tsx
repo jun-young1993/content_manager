@@ -42,7 +42,8 @@ const getRows =()=> {
 const columns: GridColDef[] = [
     { field: 'type', headerName: '스토리지 타입', width: 150 },
     { field: 'code', headerName: '스토리지 코드', width: 150 },
-    { field: 'name', headerName: '스토리지명', width: 150 },
+    { field: 'name', headerName: '스토리지 명', width: 150 },
+    { field: 'path', headerName: '스토리지 경로', width: 150 },
     { field: 'description', headerName: '설명', width: 150 },
     { field: 'use_yn', headerName: '사용여부', width: 150 },
 ];
@@ -108,11 +109,46 @@ export default function Storage() {
                                     <FormDialog
                                         buttonTitle="등록"
                                         values={values}
+                                        variant="standard"
                                         fields={[
                                             {
+                                                select : true,
                                                 name : "type",
                                                 label : "타입",
-                                                variant:"standard"
+                                                variant:"standard",
+                                                children : (
+                                                    [
+                                                        (<MenuItem
+                                                        key="local" value="local"
+                                                    >
+                                                        local
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="ftp" value="ftp"
+                                                    >
+                                                        ftp
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="sftp" value="sftp"
+                                                    >
+                                                        sftp
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="nas" value="nas"
+                                                    >
+                                                        nas
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="san" value="san"
+                                                    >
+                                                        san
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="aws" value="aws"
+                                                    >
+                                                        aws
+                                                    </MenuItem>)
+                                                ])
                                             },
                                             {
                                                 name : "code",
@@ -125,10 +161,16 @@ export default function Storage() {
                                                 variant:"standard"
                                             },
                                             {
-                                                name : "description",
-                                                label : "설명",
+                                                name: "path",
+                                                label : "경로",
                                                 variant:"standard"
+                                            },
+                                            {
+                                                name: "description",
+                                                label: "설명",
+                                                variant: "standard"
                                             }
+
                                         ]}
                                         onSaveClick={(result:any)=>{
                                             console.log('result',result);
@@ -164,6 +206,7 @@ export default function Storage() {
                                         values={selected}
                                         fields={[
                                             {
+                                                type : "combo",
                                                 name : "type",
                                                 label : "타입",
                                                 variant:"standard"
@@ -176,6 +219,11 @@ export default function Storage() {
                                             {
                                                 name : "name",
                                                 label : "스토리지 명",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name: "path",
+                                                label : "경로",
                                                 variant:"standard"
                                             },
                                             {

@@ -13,6 +13,7 @@ export default function Ingest() {
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [skipped, setSkipped] = React.useState(new Set<number>());
 
+
 	const isStepOptional = (step: number) => {
 		return step === 1;
 	};
@@ -20,8 +21,17 @@ export default function Ingest() {
 	const isStepSkipped = (step: number) => {
 		return skipped.has(step);
 	};
+	const handleFinish = (callback : any) => {
+		if(activeStep === steps.length - 1){
+			console.log('finish');
+			callback();
+		}
+
+	}
+
 
 	const handleNext = () => {
+
 		let newSkipped = skipped;
 		if (isStepSkipped(activeStep)) {
 			newSkipped = new Set(newSkipped.values());
@@ -92,7 +102,11 @@ export default function Ingest() {
 			) : (
 				<React.Fragment>
 					<Typography sx={{ mt: 2, mb: 1 }}>
-						<IngestStep activeStep={activeStep}/>
+
+						<IngestStep
+							activeStep={activeStep}
+							handleFinish={handleFinish}
+						/>
 					</Typography>
 					<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
 						<Button
