@@ -1,8 +1,12 @@
 import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
+import Button from '@mui/material/Button';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
+import ListSubheader from '@mui/material/ListSubheader';
 import electron from "electron";
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 const ipcRenderer = electron.ipcRenderer;
 // import img from "/Users/junyoungkim/Desktop/a.png";
 /**
@@ -11,21 +15,34 @@ const ipcRenderer = electron.ipcRenderer;
  */
 export default function Image() {
     return (
-        <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={150}>
+        <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={100}>
             {contentList.map((item:any) => (
                 <ImageListItem key={item.img}>
                     <img
                         // src={`${item.img}?w=248&fit=crop&auto=format`}
                         // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        src={"http://localhost:3000/logo192.png"}
-                        srcSet={"http://localhost:3000/logo192.png"}
+                        src={"http://localhost:3000/logo192.png?w=100&fit=crop&auto=format"}
+                        srcSet={"http://localhost:3000/logo192.png?w=100&fit=crop&auto=format&dpr=2 2x"}
                         alt={item.title}
                         loading="lazy"
                     />
+                    {/* <ImageListItemBar
+                        title={<Button>{item.title}</Button>}
+                        subtitle={<Button><span>{item.sub_title}</span></Button>}
+                        position="below"
+                    /> */}
+                    
                     <ImageListItemBar
                         title={item.title}
-                        subtitle={<span>by: {item.author}</span>}
                         position="below"
+                        subtitle={
+                        <span>
+                            상세보기
+                            <IconButton aria-label="delete" size="small">
+                                <InfoIcon fontSize="inherit" />
+                            </IconButton>
+                        </span>
+                        }
                     />
                 </ImageListItem>
             ))}

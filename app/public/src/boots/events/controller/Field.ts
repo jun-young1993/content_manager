@@ -18,7 +18,6 @@ class Field {
     }
 
     static index(event, args){
-        console.log('field index',args);
         db.db().find({use_yn : 'N'},(err,data) => {
             if(data){
                 return event.returnValue = {

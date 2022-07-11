@@ -8,9 +8,13 @@ import * as React from "react";
 
 export default function IngestRequest(props:any) {
     const baseAlert = ((<CustomAlert open={false} />));
-    const [alert, setALert] = React.useState(baseAlert)
+    const [insert, setInsert] = React.useState(false);
+    const [task, setTask] = React.useState([]);
     const ingest = () => {
-
+        if(insert === true){
+            console.log('insert true');
+            return;
+        }
         console.log('props insert request',props)
 
 
@@ -21,34 +25,53 @@ export default function IngestRequest(props:any) {
         if(contentInsert.success){
             console.log('contentInsert',contentInsert);
             //    콘텐츠 성공
-            const medias = [];
+            const medias:any = [];
             files.map((file:any) => {
                 console.log('media insert',file);
                 const insertData = {
                     content_id : contentInsert.data._id,
-                    type : 'original',
+                    type : 'out',
                     path : file,
-                    online : true
+                    is_media : true
                 };
                 const mediaInsert = ipcRenderer.sendSync("@Media/insert",insertData);
 
                 if(mediaInsert.success){
-                    medias.push(insertData);
+                    medias.push(mediaInsert.data);
                 }
 
             })
-
+            const taskList:any = [];
             if(medias.length === files.length) {
                 //    성공!
             //    콘텐츠 창 리로드 해주기
             //    작업 흐름 만들기
+                medias.map((media:any) => {
+                    const insertTaskData = {
+                        source_media : media._id,
+                        source_storage : media.path,
+                        target_storage : 'online',
+                        target_media : null,
+                        status : 'queue',
+                        type : 'fs'
+                    };
+                    const insertTask = ipcRenderer.sendSync("@Task/insert",insertTaskData);
+                    taskList.push(insertTask.data);
+                })
+                
             }
+
+
+            setInsert(true);
+            setTask(taskList);
         }
     }
     ingest();
     // props.handleFinish(ingest);
     return (
 
-    <div> </div>
+    <div> 
+        {task.map((data:any)=><div>{data.source_media}</div>)}
+    </div>
     )
 }

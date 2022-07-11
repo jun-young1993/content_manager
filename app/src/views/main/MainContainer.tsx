@@ -17,6 +17,7 @@ import Code from "@views/main/Code";
 import Metadata from "@views/main/Metadata";
 import Ingest from "@views/main/Ingest";
 import Content from "@views/main/Content";
+import TaskMonitor from '@views/main/TaskMonitor';
 
 
 
@@ -38,6 +39,7 @@ export default function MainContainer(props:any) {
                         <Tab label="스토리지" value="2" />
                         <Tab label="코드관리" value="3" />
                         <Tab label="메타데이터" value="4" />
+                        <Tab label="작업관리" value="5" />
                     </TabList>
                 </Box>
                 <TabPanel value="0"><Content /></TabPanel>
@@ -45,6 +47,7 @@ export default function MainContainer(props:any) {
                 <TabPanel value="2"><Storage /></TabPanel>
                 <TabPanel value="3"><Code /></TabPanel>
                 <TabPanel value="4"><Metadata /></TabPanel>
+                <TabPanel value="5"><TaskMonitor /></TabPanel>
             </TabContext>
         </Box>
     );

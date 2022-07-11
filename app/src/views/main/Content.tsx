@@ -18,8 +18,11 @@ export default function Content() {
     return (
         // <Box sx={{ flexGrow: 1, height:"100%" }} style={{height: '100%'}}>
             <Grid container spacing={2} style={{height: '100vh'}} >
-                <Grid item xs={2}  style={{height: '100vh',border: "1px solid grey"}}>
-                    <Category />
+                <Grid item xs={2}  style={{height: '100vh'}}>
+                    <Box sx={{borderRight:1, height:'100vh'}}>
+                        <Category />
+                    </Box>
+                    
                 </Grid>
                 <Grid item xs={10} style={{height: '100vh'}}>
                     <ContentList />

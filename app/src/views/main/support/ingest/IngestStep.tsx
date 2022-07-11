@@ -3,7 +3,7 @@ import ContentMetadata from "@views/main/support/ingest/ContentMetadata";
 import Contents from "@views/main/support/ingest/contents/Contents";
 import IngestRequest from "@views/main/support/ingest/IngestRequest";
 const electron = window.require('electron');
-import uniqid from "uniqid";
+
 const ipcRenderer = electron.ipcRenderer;
 interface Props {
     activeStep: number;
@@ -39,8 +39,8 @@ export default function IngestStep(props:Props) {
         // console.log(files);
         const metadata = metadataValues;
         // Object.assign(metadata,{id : uniqid()});
-        metadata.id = uniqid();
-        console.log(metadataValues);
+        
+        
         step = <IngestRequest metadata={metadata} files={files}/>;
         // step = <div></div>
     }else{

@@ -41,6 +41,8 @@ export default function Category() {
     );
 
     return (
+        <>
+        <span>카테고리</span>
         <TreeView
             aria-label="rich object"
             defaultCollapseIcon={<ExpandMoreIcon />}
@@ -50,5 +52,6 @@ export default function Category() {
         >
             {renderTree(data)}
         </TreeView>
+        </>
     );
 }
