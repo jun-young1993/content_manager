@@ -48,12 +48,13 @@ export default function IngestRequest(props:any) {
             //    작업 흐름 만들기
                 medias.map((media:any) => {
                     const insertTaskData = {
-                        source_media : media._id,
-                        source_storage : media.path,
+                        source_media_id : media._id,
+                        source_storage : null,
                         target_storage : 'online',
-                        target_media : null,
+                        target_media_id : null,
                         status : 'queue',
-                        type : 'fs'
+                        type : 'fs',
+                        priority : 0
                     };
                     const insertTask = ipcRenderer.sendSync("@Task/insert",insertTaskData);
                     taskList.push(insertTask.data);
@@ -61,9 +62,11 @@ export default function IngestRequest(props:any) {
                 
             }
 
-
-            setInsert(true);
-            setTask(taskList);
+            if(taskList.length == medias.length){
+                setInsert(true);
+                setTask(taskList);
+            }
+            
         }
     }
     ingest();
