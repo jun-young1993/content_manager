@@ -108,6 +108,7 @@
     "@": "./",
     "@src": "./src",
     "@lib": "./public/lib",
-    "@model": "./public/models"
+    "@models": "./public/models",
+    "@task" : "./public/lib/Task"
   }
 }

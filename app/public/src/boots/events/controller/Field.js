@@ -18,7 +18,6 @@ var Field = /** @class */ (function () {
         });
     };
     Field.index = function (event, args) {
-        console.log('field index', args);
         db.db().find({ use_yn: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
