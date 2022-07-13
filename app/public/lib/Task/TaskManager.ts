@@ -1,6 +1,7 @@
 const {Task} = require('@models/Task');
 
 const {FileManager} = require('@task/module/FileManager');
+const {TaskParse} = require('@task/TaskParse');
 
 export class TaskManager{
 	private TaskDb = new Task().db();
@@ -57,11 +58,17 @@ export class TaskManager{
 		})
 	}
 
+
+
+
 	ingest(){
 		this.findQueued()
 		.then((task) => {
-			console.log(task);
-			new FileManager(task).copy();
+			new TaskParse(task)
+				.getTaskParse()
+				.then((parse) => {
+					// console.log(parse);
+				})
 		})
 		.catch((err) => {
 

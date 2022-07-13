@@ -3,6 +3,7 @@ exports.__esModule = true;
 exports.TaskManager = void 0;
 var Task = require('@models/Task').Task;
 var FileManager = require('@task/module/FileManager').FileManager;
+var TaskParse = require('@task/TaskParse').TaskParse;
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();
@@ -57,8 +58,11 @@ var TaskManager = /** @class */ (function () {
     TaskManager.prototype.ingest = function () {
         this.findQueued()
             .then(function (task) {
-            console.log(task);
-            new FileManager(task).copy();
+            new TaskParse(task)
+                .getTaskParse()
+                .then(function (parse) {
+                // console.log(parse);
+            });
         })["catch"](function (err) {
         });
     };

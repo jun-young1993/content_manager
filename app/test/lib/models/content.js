@@ -1,15 +1,19 @@
 // import {User} from '../../public/models/User'
 const {Media} = require('../../../public/models/Media')
 const media = new Media();
-
+const path = require("path");
 const {Content} = require('../../../public/models/Content')
 const content = new Content();
 // import {uniqueId} from "lodash";
 const {uniqueId} =require("lodash");
 
-
-media.db().remove({}, { multi: true });
-content.db().remove({}, { multi: true });
+media.db().find({},(err,data)=>{
+    data.forEach((i)=>{
+        console.log(i);
+    })
+})
+// media.db().remove({}, { multi: true });
+// content.db().remove({}, { multi: true });
 
 // content.db().insert({title : "title"});
 

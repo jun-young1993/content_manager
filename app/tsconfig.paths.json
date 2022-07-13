@@ -10,6 +10,12 @@
       ],
       "@views/*": [
         "./src/views/*"
+      ],
+      "@models/*": [
+        "./public/models/*"
+      ],
+      "@task/*": [
+        "./public/lib/Task/*"
       ]
     }
   }

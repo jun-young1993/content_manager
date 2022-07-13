@@ -15,9 +15,9 @@ var BaseModel = /** @class */ (function () {
     }
     BaseModel.prototype.setDb = function () {
         if (this.isNedb()) {
-            // const path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/'+this.table+'.db';
+            var path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/' + this.table + '.db';
             // const path = app.getPath("downloads")+'/db/'+this.table+'.db';
-            var path = 'C:\\Users\\jun\\Downloads\\db' + this.table + '.db';
+            // const path = 'C:\\Users\\jun\\Downloads\\db'+this.table+'.db';
             var database = new Nedb_1.Nedb(path);
             this.database = database;
         }
