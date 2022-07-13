@@ -217,7 +217,6 @@ var TaskParse = /** @class */ (function () {
                         this.sourceStorageType = this.sourceStorage ? this.sourceStorage.type : null;
                         this.targetStoragePath = this.targetStorage ? this.targetStorage.path : null;
                         this.targetStorageType = this.targetStorage ? this.targetStorage.type : null;
-                        console.log('last dis', this);
                         moduleParams = {
                             source: this.getSource(),
                             target: this.targetStoragePath + '/test.png'

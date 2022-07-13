@@ -65,6 +65,8 @@ export default function IngestRequest(props:any) {
             if(taskList.length == medias.length){
                 setInsert(true);
                 setTask(taskList);
+
+                ipcRenderer.sendSync("@WorkFlow/ingest");
             }
             
         }

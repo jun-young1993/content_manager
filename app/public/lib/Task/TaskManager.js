@@ -55,16 +55,26 @@ var TaskManager = /** @class */ (function () {
             })["catch"](reject);
         });
     };
-    TaskManager.prototype.ingest = function () {
-        this.findQueued()
-            .then(function (task) {
-            new TaskParse(task)
-                .getTaskParse()
-                .then(function (parse) {
-                // console.log(parse);
+    TaskManager.prototype.initialize = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.findQueued()
+                .then(function (task) {
+                new TaskParse(task)
+                    .getTaskParse()
+                    .then(function (parse) {
+                    // const module = parse.module;
+                    // module.copy();
+                    resolve(parse);
+                });
+            })["catch"](function (err) {
+                reject(err);
             });
-        })["catch"](function (err) {
         });
+    };
+    TaskManager.prototype.start = function () {
+    };
+    TaskManager.prototype.ingest = function () {
     };
     return TaskManager;
 }());

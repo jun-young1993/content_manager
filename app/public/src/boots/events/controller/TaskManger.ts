@@ -1,5 +1,0 @@
-class TaskManger{
-	static nextJob(){
-
-	}
-}

@@ -4,20 +4,17 @@ const fs = require("fs");
 export class FileManager {
 	private readStream;
 	private writeStream;
+	private params;
 
 	constructor(params){
-		console.log('start fileManager');
-
-
-		console.log(params);
-		// this.readStream = fs.createReadStream(task.source_storage);
-		// this.writeStream = fs.createWriteStream()
+		
+		this.params = params;
 
 
 	}
 
-	copy(task){
-		
+	copy(){
+		fs.createReadStream(this.params.source).pipe(fs.createWriteStream(this.params.target));
 	}
 
 

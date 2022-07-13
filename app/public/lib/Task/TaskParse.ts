@@ -147,8 +147,7 @@ export class TaskParse {
 		this.targetStoragePath = this.targetStorage ? this.targetStorage.path : null;
 		this.targetStorageType = this.targetStorage ? this.targetStorage.type : null;
 
-		console.log('last dis',this);
-
+		// console.log('last dis',this);
 		const moduleParams = {
 			source : this.getSource(),
 			target : this.targetStoragePath+'/test.png'

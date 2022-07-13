@@ -58,21 +58,33 @@ export class TaskManager{
 		})
 	}
 
+	initialize(){
+		return new Promise((resolve, reject) => {
+			this.findQueued()
+			.then((task) => {
+				new TaskParse(task)
+					.getTaskParse()
+					.then((parse) => {
+						// const module = parse.module;
+						// module.copy();
+						resolve(parse);
+					})
+			})
+			.catch((err) => {
+				reject(err)	;
+			})
+			
+		})
+		
+	}
 
+	start(){
+		
+	}
 
 
 	ingest(){
-		this.findQueued()
-		.then((task) => {
-			new TaskParse(task)
-				.getTaskParse()
-				.then((parse) => {
-					// console.log(parse);
-				})
-		})
-		.catch((err) => {
-
-		})
+		
 	}
 
 }

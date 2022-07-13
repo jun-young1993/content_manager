@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import {ipcMain,ipcRenderer} from "electron";
 // import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
@@ -25,7 +25,7 @@ boots.loader();
 app.disableHardwareAcceleration();
 
 const createWindow = () => {
-
+  
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
@@ -57,8 +57,15 @@ const createWindow = () => {
   // Emitted when the window is closed.
   mainWindow.on('closed', () => (mainWindow = undefined!));
   mainWindow.focus();
-};
 
+
+  
+};
+app.whenReady().then(async () => {
+  
+  // await session.defaultSession.loadExtension("C:\\Users\\jun\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi\\1.44.2_0")
+  // await session.defaultSession.removeExtension('ghbmnnjooekpmoecnnnilnnbdlolhkhi');
+})
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
