@@ -28,12 +28,13 @@ const pages = [
   }
   
 ];
+
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const MenuAppBar = (props:any) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+  const [anchoreElConfig, setAnchorElConfig] = React.useState<null | HTMLElement>(null);
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -41,14 +42,20 @@ const MenuAppBar = (props:any) => {
     setAnchorElUser(event.currentTarget);
   };
 
+
   const handleCloseNavMenu = (event:any) => {
+    console.log(event);
     props.onClick(event.target.value);
+    
+    // handleOpenConfigMenu(event.currentTarget)
     setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+
 
   return (
     <AppBar position="static">
@@ -108,6 +115,7 @@ const MenuAppBar = (props:any) => {
                 </MenuItem>
               ))}
             </Menu>
+    
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -138,6 +146,7 @@ const MenuAppBar = (props:any) => {
               >
                 {page.label}
               </Button>
+              
             ))}
           </Box>
 

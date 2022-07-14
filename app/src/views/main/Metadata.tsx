@@ -64,7 +64,7 @@ export default function Metadata() {
         setRows(getRows);
     }
     return (
-        <div style={{ height: 300, width: '100%' }}>
+        <div style={{ height: '100vh', width: '100%' }}>
             <DataGrid
                 rows={rows}
                 columns={columns}

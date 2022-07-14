@@ -59,8 +59,8 @@ boots.loader();
 electron_1.app.disableHardwareAcceleration();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
-        width: 900,
-        height: 680,
+        width: 1260,
+        height: 600,
         center: true,
         kiosk: !isDev,
         resizable: true,
@@ -89,15 +89,7 @@ var createWindow = function () {
 };
 electron_1.app.whenReady().then(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: 
-            // await session.defaultSession.loadExtension("C:\\Users\\jun\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi\\1.44.2_0")
-            return [4 /*yield*/, electron_1.session.defaultSession.removeExtension('ghbmnnjooekpmoecnnnilnnbdlolhkhi')];
-            case 1:
-                // await session.defaultSession.loadExtension("C:\\Users\\jun\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi\\1.44.2_0")
-                _a.sent();
-                return [2 /*return*/];
-        }
+        return [2 /*return*/];
     });
 }); });
 // This method will be called when Electron has finished

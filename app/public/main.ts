@@ -27,8 +27,8 @@ app.disableHardwareAcceleration();
 const createWindow = () => {
   
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    width: 1260,
+    height: 600,
     center: true,
     kiosk: !isDev,
     resizable: true,

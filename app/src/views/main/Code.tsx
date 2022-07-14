@@ -1,250 +1,349 @@
-import React, {useState, Component, ReactNode} from 'react';
+import * as React from 'react';
+import { GridToolbarContainer, DataGrid, GridRowsProp, GridColDef,GridRowParams,GridCallbackDetails } from '@mui/x-data-grid';
+import MetadataFormDialog from "@views/main/support/metadata/MetadataFormDialog";
+import FormDialog from "@views/components/FormDialog";
 import {
-    getSelectedState,
-    Grid,
-    GridColumn as Column, GridHeaderSelectionChangeEvent,
-    GridSelectionChangeEvent,
-    GridToolbar,
-    GridDetailRowProps,
-    GridExpandChangeEvent
-} from "@progress/kendo-react-grid";
-import '@progress/kendo-theme-default/dist/all.css';
-import BaseModal from '../modals/BaseModal';
-import {getter} from "@progress/kendo-data-query";
-import CodeItem  from './CodeItem';
-
-
-const electron = window.require('electron');
+    Button,
+    Stack,
+    FormControlLabel,
+    FormControl,
+    Select,
+    MenuItem,
+    SelectChangeEvent,
+    TextField, Box
+} from '@mui/material';
+import InputLabel from "@mui/material/InputLabel";
+import electron from "electron";
+import AlertDialog from "@views/components/AlertDialog";
+import IconButton from '@mui/material/IconButton';
+import CustomAlert from "@views/components/CustomAlert";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 const ipcRenderer = electron.ipcRenderer;
+import { cloneDeep } from 'lodash'
+import FormTextField from '../components/FormTextField';
 
+// const rows: GridRowsProp = [
+//     { id: 1, col1: 'Hello', col2: 'World' },
+//     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
+//     { id: 3, col1: 'MUI', col2: 'is Amazing' },
+// ];
 
+const getRows =()=> {
+    return [
+        {
+            id : 'online',
+            code : 'online',
+            name : '온라인',
+            collapse : false,
+            children : [{
+                id : 'online1-1',
+                code : 'online1-1',
+                name : '온라인1-1'
+            }]
+        },
+        {
+            id : 'online3',
+            code : 'online3',
+            name : '온라인3',
+            children : {
+                id : 'online3-1',
+                code : 'online3-1',
+                name : '온라인3-1'
+            }
+        }
+    ];
+    const storages = ipcRenderer.sendSync("@Storage/all");
+    if(storages.success){
+        return storages.data.map((storage : any) => {
 
-const DATA_ITEM_KEY: string = "_id";
-const SELECTED_FIELD: string = "selected";
-const idGetter = getter(DATA_ITEM_KEY);
+            storage.id = storage._id;
+            return storage;
+        });
 
-
-interface UserState {
-    data: [];
-    modal : {
-        show : boolean
     }
-    selectedState: {
-        [id: string]: boolean | number[];
-    };
+
 }
-const DetailComponent = (props:GridDetailRowProps) => {
-    console.log('detail components',props);
-    const dataItem = props.dataItem;
-    const tmp = [];
-    tmp.push(dataItem);
-    return (
 
-            <Grid
-                data={tmp}
-                dataItemKey={DATA_ITEM_KEY}
-            >
-                <Column field="code" title="이름" width="100px" />
-                <Column field="code_name" title="폰" width="100px" />
-            </Grid>
 
-    );
+
+const reducer = (prevState:any, newState:any) => ({
+    ...prevState,
+    ...newState
+})
+export default function Code() {
+    const [rows,setRows] = React.useState(getRows);
+    const columns: GridColDef[] = [
+        { field: 'tasks', headerName: '', width : 50 , 
+        renderCell : (params:any) => {
+            if(params.row.children){
+                return (
+                    <IconButton color="secondary" 
+                               aria-label="add an alarm"
+                               onClick= {(evt:any)=>{
+                                   console.log(evt);
+                                   console.log('click params',params);
+                                   rows.forEach((row:any,index:number)=>{
+                                    if(row.id == params.id){
+                                        let temp = cloneDeep(rows);
+                                        let tempIndex = index+1;
+                                        for(let i=0; i<row.children.length; i++){
+                                            const child = row.children[i];
+                                            temp.splice(tempIndex,0,child);
+                                            tempIndex = tempIndex+1;
+                                        }
+                                        
+                                        console.log(tempIndex);
+                                        setRows(tempIndex);
+                                        return false;
+                                    }
+                                   });
+                               }}
+                   >
+                       <ArrowDropDownIcon />
+                   </IconButton>
+                   )
+            }
+            return (
+                <></>
+            )
+        }},
+        { field: 'type', headerName: '스토리지 타입', width: 150 },
+        { field: 'code', headerName: '스토리지 코드', width: 150 },
+        { field: 'name', headerName: '스토리지 명', width: 150 },
+        { field: 'path', headerName: '스토리지 경로', width: 150 },
+        { field: 'description', headerName: '설명', width: 150 },
+        { field: 'use_yn', headerName: '사용여부', width: 150 },
+    ];
+    
+    const [values, setValues] = React.useReducer(reducer,{
+        type : '',
+        code : '',
+        name : '',
+        description : ''
+    });
+
+    const [selected , setSelected] = React.useState({
+        _id : null
+    });
+
+
+    const [state, setState] = React.useReducer(reducer, {
+        grid : {
+            selected : undefined
+        }
+    });
+    const baseAlert = ((<CustomAlert open={false} />));
+    const [alert, setALert] = React.useState(baseAlert)
+    
+
+    const reload = () => {
+        setRows(getRows);
+    }
+    
     return (
-        <div
-            style={{
-                height: "50px",
-                width: "100%",
-            }}
-        >
-            <div
-                style={{
-                    position: "absolute",
-                    width: "100%",
+        <div style={{ height: 300, width: '100%' }}>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                // autoHeight={true}
+                // rowCount={10}
+                editMode="row"
+                onRowClick={(params: any, event: any, details: GridCallbackDetails)=>{
+                        console.log('params',params)
+                        console.log('event',event)
+                        console.log('details',details)
+                        // setState({
+                        //     grid : {
+                        //         selected : params
+                        //     }
+                        // })
+                        setALert(baseAlert);
+                        setSelected(params.row);
+                        // setSelected(params);
                 }}
-            >
-                <div className="k-loading-image" />
-            </div>
+                components={{
+                    Toolbar: () => {
+                        return (
+                            <GridToolbarContainer>
+                                <Stack spacing={2} direction="row">
+                                    <FormDialog
+                                        buttonTitle="등록"
+                                        values={values}
+                                        variant="standard"
+                                        fields={[
+                                            {
+                                                select : true,
+                                                name : "type",
+                                                label : "타입",
+                                                variant:"standard",
+                                                children : (
+                                                    [
+                                                        (<MenuItem
+                                                        key="local" value="local"
+                                                    >
+                                                        local
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="ftp" value="ftp"
+                                                    >
+                                                        ftp
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="sftp" value="sftp"
+                                                    >
+                                                        sftp
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="nas" value="nas"
+                                                    >
+                                                        nas
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="san" value="san"
+                                                    >
+                                                        san
+                                                    </MenuItem>),
+                                                        (<MenuItem
+                                                        key="aws" value="aws"
+                                                    >
+                                                        aws
+                                                    </MenuItem>)
+                                                ])
+                                            },
+                                            {
+                                                name : "code",
+                                                label : "스토리지 코드",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "name",
+                                                label : "스토리지 명",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name: "path",
+                                                label : "경로",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name: "description",
+                                                label: "설명",
+                                                variant: "standard"
+                                            }
+
+                                        ]}
+                                        onSaveClick={(result:any)=>{
+                                            console.log('result',result);
+                                            let errorMsg:string = '';
+                                            if(result){
+                                                const values = result.values;
+                                                if(values){
+                                                    const exists = ipcRenderer.sendSync("@Storage/first",{code:values.code});
+                                                    if(exists.success){
+                                                        setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
+                                                        return false;
+                                                    }
+
+                                                    const insert = ipcRenderer.sendSync("@Storage/insert",values);
+                                                    if(insert.success){
+                                                        reload();
+                                                        setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                        return  true;
+                                                    }
+
+                                                    console.log('insert',insert);
+                                                }
+                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                return false;
+                                            }
+
+                                            
+                            
+                                        }}
+                                    />
+                                    <FormDialog
+                                        buttonTitle="수정"
+                                        values={selected}
+                                        fields={[
+                                            {
+                                                type : "combo",
+                                                name : "type",
+                                                label : "타입",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "code",
+                                                label : "스토리지 코드",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "name",
+                                                label : "스토리지 명",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name: "path",
+                                                label : "경로",
+                                                variant:"standard"
+                                            },
+                                            {
+                                                name : "description",
+                                                label : "설명",
+                                                variant:"standard"
+                                            }
+                                        ]}
+                                        onSaveClick={(result:any)=>{
+                                            console.log('result',result);
+                                            let errorMsg:string = '';
+                                            
+                                            if(result){
+                                                const update = ipcRenderer.sendSync("@Storage/update",result.values,{
+                                                    _id : result.oldValues._id
+                                                });
+                                                if(update.success){
+                                                    reload();
+                                                    setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                    return  true;
+                                                }
+                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                return false;
+                                            }
+
+                                            
+                                        }}
+                                    />
+                                    <Button
+                                       onClick={(evt:any)=>{
+                                           const id:any = selected._id;
+                                           if(id){
+                                               const result = ipcRenderer.sendSync("@Storage/delete",{
+                                                   _id : id
+                                               });
+                                               if(result.success){
+                                                   reload();
+                                                   setALert((<CustomAlert serverity="success" title="삭제 되었습니다." />));
+                                               }else{
+                                                   setALert((<CustomAlert serverity="error" title="삭제 실패 했습니다." />));
+                                               }
+                                           }else{
+                                               setALert((<CustomAlert serverity="error" title="선택된 항목이 없습니다." />));
+                                           }
+                                       }}
+                                    >
+                                        삭제
+                                    </Button>
+                           
+                                    {/* <Button variant="text">수정</Button>
+                                    <Button variant="text">삭제</Button> */}
+                                </Stack>
+                                 {alert}
+                            </GridToolbarContainer>
+                    
+                        );
+                    }
+                }}
+            />
         </div>
     );
-};
-
-class Code extends Component {
-    state : UserState = {
-        data: ipcRenderer.sendSync("@Code/index").data.map((dataItem:object) => {
-            return Object.assign({ selected: false }, dataItem);
-        }),
-        modal : {
-            show : true
-        },
-        selectedState : { 1 : true}
-    }
-    onSelectionChange = (event: GridSelectionChangeEvent) => {
-        const selectedState = getSelectedState({
-            event,
-            selectedState: this.state.selectedState,
-            dataItemKey: DATA_ITEM_KEY,
-        });
-            console.log(selectedState);
-        this.setState({ selectedState });
-    };
-    onHeaderSelectionChange = (event: GridHeaderSelectionChangeEvent) => {
-        const checkboxElement: any = event.syntheticEvent.target;
-        const checked = checkboxElement.checked;
-        const selectedState = {};
-
-        this.state.data.forEach((item) => {
-            // @ts-ignore
-            selectedState[idGetter(item)] = checked;
-        });
-
-        this.setState({ selectedState });
-    };
-    onExpandChange = (event : GridExpandChangeEvent) => {
-        let newData = this.state.data.map((item: any) => {
-
-            if (item._id === event.dataItem._id) {
-                item.expanded = !event.dataItem.expanded;
-            }
-            return item;
-        });
-        this.setState(newData);
-    }
-    detailComponent = (props:GridDetailRowProps) => {
-        const dataItem = props.dataItem;
-
-        console.log('detailComponent',dataItem);
-        return (
-            <CodeItem
-                parent_data={dataItem}
-            />
-            // <CodeItem
-            //
-            // ></CodeItem>
-            // <Grid
-            //     data={tmp}
-            //     dataItemKey={DATA_ITEM_KEY}
-            // >
-            //     <Column field="code" title="이름" width="100px" />
-            //     <Column field="code_name" title="폰" width="100px" />
-            // </Grid>
-
-        );
-    }
-    onKeyUpHandler = (event:any) => {
-        console.log(event.target.value);
-    };
-    customClick = () => {
-        alert("Custom handler in custom toolbar");
-    }
-    constructor(props : any) {
-        super(props);
-    }
-    loadUser(){
-        console.log('start load user');
-        const users = ipcRenderer.sendSync("@Code/index");
-        if(users.success){
-            // @ts-ignore
-            this.setState({
-                data : users.data
-            })
-        }
-    }
-    render() {
-        const _this = this;
-        console.log(this.state.data);
-        return (
-            <>
-            <Grid
-                style={{
-                    height: "400px",
-                }}
-                data={this.state.data.map((item:object) => ({
-                    ...item,
-                    [SELECTED_FIELD]: this.state.selectedState[idGetter(item)],
-
-
-                }))}
-                detail={this.detailComponent}
-                dataItemKey={DATA_ITEM_KEY}
-                selectedField={SELECTED_FIELD}
-                expandField="expanded"
-                selectable={{
-                    enabled: true,
-                    drag: false,
-                    cell: false,
-                    mode: "single",
-                }}
-                onExpandChange={this.onExpandChange}
-                onSelectionChange={this.onSelectionChange}
-                onHeaderSelectionChange={this.onHeaderSelectionChange}
-            >
-                     <GridToolbar>
-                         <BaseModal
-                            button = {{
-                                title : "등록",
-                                click : (modal : BaseModal,)=> {
-                                  modal.show();
-                                }
-                            }}
-                            fields = {
-                                [{
-                                    text : '코드',
-                                    name : 'code',
-                                    id : 'code'
-                                },{
-                                    text : '코드명',
-                                    name : 'code_name',
-                                    id : 'code_name'
-                                },{
-                                    text : "설명",
-                                    name : "description",
-                                    id : "description"
-                                }]
-                            }
-                            buttons = {
-                                [{
-                                    text : 'close',
-                                    click : (modal: BaseModal) => {
-                                        modal.close()
-                                    }
-                                },{
-                                    text : 'save',
-                                    click : (modal: BaseModal) => {
-                                        const userInsert = ipcRenderer.sendSync("@Code/insert",modal.getInputValues());
-
-                                        if(userInsert.success){
-                                
-                                            _this.loadUser();
-                                            modal.close();
-                                
-                                        }
-
-                                    }
-                                }]
-                            }
-                         />
-                     </GridToolbar>
-                {/*<Column*/}
-                {/*    field={SELECTED_FIELD}*/}
-                {/*    width="50px"*/}
-                {/*    headerSelectionValue={*/}
-                {/*        this.state.data.findIndex(*/}
-                {/*            (item) => !this.state.selectedState[idGetter(item)]*/}
-                {/*        ) === -1*/}
-                {/*    }*/}
-                {/*/>*/}
-                <Column field="code" title="코드" width="200px" />
-                <Column field="code_name" title="코드명" width="200px" />
-                {/*<GridColumn field="ProductID" title="ID" width="40px" />*/}
-                {/*<GridColumn field="ProductName" title="Name" width="250px" />*/}
-                {/*<GridColumn field="Category.CategoryName" title="CategoryName" />*/}
-                {/*<GridColumn field="UnitPrice" title="Price" />*/}
-                {/*<GridColumn field="UnitsInStock" title="In stock" />*/}
-            </Grid>
-
-            </>
-        );
-    }
 }
-
-export default Code;

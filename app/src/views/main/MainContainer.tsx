@@ -17,6 +17,7 @@ import Code from "@views/main/Code";
 import Metadata from "@views/main/Metadata";
 import Ingest from "@views/main/Ingest";
 import Content from "@views/main/Content";
+import Config from "@views/main/Config";
 import TaskMonitor from '@views/main/TaskMonitor';
 import MenuAppBar from '@views/main/support/main/MenuAppBar';
 
@@ -34,13 +35,14 @@ export default function MainContainer(props:any) {
 
         
         
-        <Box sx={{ width: '100%', typography: 'body1' , height:"100vh"}}>
+        <Box sx={{ width: '100%', typography: 'body1' , height:'100vh'}}>
             <MenuAppBar 
                 onClick={(value:any)=>{
                     console.log('value menu click',value);
                     const container:any = {
                         Content : <Content />,
-                        Ingest : <Ingest />
+                        Ingest : <Ingest />,
+                        Config : <Config />
                     };
                     setValue(container[value]);
                 }}
