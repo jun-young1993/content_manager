@@ -41,6 +41,23 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
+    CodeItem.findByParentCode = function (event, codes) {
+        codeItemDb.db().findOne({ is_deleted: 'N',
+            parent_code: codes[0],
+            code: codes[1]
+        }, function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+            return event.returnValue = {
+                success: false,
+                data: null
+            };
+        });
+    };
     CodeItem.insert = function (event, args) {
         codeItemDb.db().insert(Object.assign(args, {
             'use_yn': "Y",
@@ -55,10 +72,35 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
-    CodeItem.update = function (event, args) {
+    CodeItem.update = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
         codeItemDb.db().update(args, function (err, data) {
             return event.returnValue = data;
         });
+    };
+    CodeItem["delete"] = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (args.length >= 1) {
+            codeItemDb.db().remove(args[0], function (err, data) {
+                if (data) {
+                    return event.returnValue = {
+                        success: true,
+                        data: data
+                    };
+                }
+                else {
+                    return event.returnValue = {
+                        success: false
+                    };
+                }
+            });
+        }
     };
     return CodeItem;
 }());

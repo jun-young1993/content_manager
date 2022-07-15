@@ -43,6 +43,25 @@ class CodeItem {
         })
     }
 
+    static findByParentCode(event, codes){
+
+        codeItemDb.db().findOne({is_deleted : 'N',
+                                parent_code : codes[0],
+                                code : codes[1]
+                            },(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }
+            return event.returnValue = {
+                success : false,
+                data : null
+            }
+        })
+    }
+
     static insert(event,args){
 
         codeItemDb.db().insert(Object.assign(args,{
@@ -64,10 +83,29 @@ class CodeItem {
         });
     }
 
-    static update(event,args){
+    static update(event,...args){
         codeItemDb.db().update(args,(err,data) => {
             return event.returnValue = data;
         })
+    }
+    static delete(event, ...args){
+
+        if(args.length >= 1){
+            codeItemDb.db().remove(args[0],(err,data) => {
+                if(data){
+                    return event.returnValue = {
+                        success : true,
+                        data : data
+                    }
+                }else{
+                    return event.returnValue = {
+                        success : false
+                    }
+                }
+
+            });
+        }
+
     }
 }
 

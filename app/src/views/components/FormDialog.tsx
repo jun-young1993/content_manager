@@ -51,7 +51,11 @@ export default function FormDialog(props:any) {
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
     const refs:any = {};
-    fields.map((field:any) => refs[field.name] = React.useRef(values[field.name]));
+    fields.map((field:any) => {
+        if(field){
+            refs[field.name] = React.useRef(values[field.name])
+        }
+    });
     console.log('renderer');
     // React.useEffect(()=>{
     //     console.log('effect values', values);
@@ -88,7 +92,7 @@ export default function FormDialog(props:any) {
     
     return (
         <div>
-            <Button variant="text" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpen}>
                 {buttonTitle}
             </Button>
             <Dialog open={open} onClose={handleClose}>
@@ -99,6 +103,9 @@ export default function FormDialog(props:any) {
                         will send updates occasionally. */}
                     </DialogContentText>
                     {fields.map((field:any)=>{
+                        if(field === null){
+                            return null;
+                        }
                         // let children = null;
                         // if(field.children){
                         //     children = field.children;

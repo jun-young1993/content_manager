@@ -18,6 +18,18 @@ const codeDb = new codeModel();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Code {
+    static all(event, args){
+
+        codeDb.db().find({},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }
+
+        })
+    }
     static index(event, args){
         
         codeDb.db().find({is_deleted : 'N'},(err,data) => {
@@ -51,10 +63,49 @@ class Code {
         });
     }
 
-    static update(event,args){
-        codeDb.db().update(args,(err,data) => {
+    static update(event,...args){
+        codeDb.db().update(args[1],{$set : args[0]},(err,data) => {
             return event.returnValue = data;
         })
+    }
+    static first(event,args){
+
+        codeDb.db().findOne(Object.assign(args,{
+            'use_yn' : "N",
+            'deleted_at' : null,
+        }),(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }else{
+                return event.returnValue = {
+                    success : false
+                }
+            }
+
+        })
+    }
+
+    static delete(event, ...args){
+
+        if(args.length >= 1){
+            codeDb.db().remove(args[0],(err,data) => {
+                if(data){
+                    return event.returnValue = {
+                        success : true,
+                        data : data
+                    }
+                }else{
+                    return event.returnValue = {
+                        success : false
+                    }
+                }
+
+            });
+        }
+
     }
 }
 

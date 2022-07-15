@@ -20,6 +20,16 @@ var codeDb = new Code_1.Code();
 var Code = /** @class */ (function () {
     function Code() {
     }
+    Code.all = function (event, args) {
+        codeDb.db().find({}, function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
     Code.index = function (event, args) {
         codeDb.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
@@ -44,10 +54,53 @@ var Code = /** @class */ (function () {
             }
         });
     };
-    Code.update = function (event, args) {
-        codeDb.db().update(args, function (err, data) {
+    Code.update = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        codeDb.db().update(args[1], { $set: args[0] }, function (err, data) {
             return event.returnValue = data;
         });
+    };
+    Code.first = function (event, args) {
+        codeDb.db().findOne(Object.assign(args, {
+            'use_yn': "N",
+            'deleted_at': null
+        }), function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+            else {
+                return event.returnValue = {
+                    success: false
+                };
+            }
+        });
+    };
+    Code["delete"] = function (event) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (args.length >= 1) {
+            codeDb.db().remove(args[0], function (err, data) {
+                if (data) {
+                    return event.returnValue = {
+                        success: true,
+                        data: data
+                    };
+                }
+                else {
+                    return event.returnValue = {
+                        success: false
+                    };
+                }
+            });
+        }
     };
     return Code;
 }());
