@@ -36,6 +36,7 @@ export default function MainContainer(props:any) {
         
         
         <Box sx={{ width: '100%', typography: 'body1' , height:'100vh'}}>
+            <Box sx={{ width: '100%',height:'20vh'}}>
             <MenuAppBar 
                 onClick={(value:any)=>{
                     console.log('value menu click',value);
@@ -47,7 +48,10 @@ export default function MainContainer(props:any) {
                     setValue(container[value]);
                 }}
             />
+            </Box>
+            <Box sx={{ width: '100%',height:'80vh'}}>
             {value}
+            </Box>
         </Box>
         
         // <Box sx={{ width: '100%', typography: 'body1' , height:"100vh"}}>

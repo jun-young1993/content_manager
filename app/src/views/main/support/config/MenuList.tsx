@@ -75,7 +75,7 @@ export default function MenuList(props:any) {
       </ListItemButton>
 	<Collapse in={userOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-	{listItem("메타데이터","metadta",<StarBorder />,true)}
+	{listItem("메타데이터","metadata",<StarBorder />,true)}
 	{listItem("스토리지","storage",<StarBorder />,true)}
         </List>
       	</Collapse>

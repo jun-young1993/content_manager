@@ -11,6 +11,7 @@ import AlertDialog from "@views/components/AlertDialog"
 import * as _ from 'lodash'
 import electron from "electron";
 const ipcRenderer = electron.ipcRenderer;
+import { cloneDeep } from 'lodash'
 const fieldTypes = [
     {
         value: 'text_field',
@@ -47,8 +48,39 @@ export default function FormDialog(props:any) {
 
 
 
-    const [fields, setFields] = React.useReducer(reducer, props.fields);
+    const [fields, setFields] = React.useState(props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
+
+    console.log('props',props);
+    const [changeFields, setChangeFields] = React.useState(props.changeFields);
+    
+    if(changeFields){
+        const tmpFields = cloneDeep(fields);
+        changeFields.forEach((changeField:any,fieldIndex:number) => {
+            
+            
+            fields.forEach((field:any,index:number)=>{
+                
+                if(changeField.name == field.name){
+                    
+                    console.log('splice 0',tmpFields)
+                    tmpFields.splice(index+1,0,changeField);
+                    console.log('splice 1',tmpFields)
+                    tmpFields.splice(index,1)
+                    console.log('tmpFields',tmpFields);
+                    
+                }
+            })
+            console.log('fieldIndex',fieldIndex);
+            console.log(changeFields.length);
+            if(fieldIndex == changeFields.length-1){
+                console.log('last set fields',tmpFields);
+                setFields(tmpFields);
+                setChangeFields([]);
+            }
+        })
+        
+    }
 
     const refs:any = {};
     fields.map((field:any) => {
@@ -114,7 +146,15 @@ export default function FormDialog(props:any) {
 
                         let element = <TextField inputRef={refs[field.name]} defaultValue={values[field.name]} />;
 
-
+                        if(field.onChangeValue){
+                            field.onChange = (evt:any) => {
+                                field.onChangeValue(evt,{
+                                    ref : refs[field.name],
+                                    refs : refs,
+                                    setChangeFields : setChangeFields,
+                                })
+                            }
+                        }
                         // field.onChange = field.onChange ?  field.onChange : updateValues;
                         // field.value = newValues[field.name];
 
