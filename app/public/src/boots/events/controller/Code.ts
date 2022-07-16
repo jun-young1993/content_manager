@@ -42,6 +42,19 @@ class Code {
 
         })
     }
+
+    static indexByUsing(event, args){
+        codeDb.db().find({use_yn : 'Y'},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success : true,
+                    data : data
+                }
+            }
+
+        })
+    }
+
     static insert(event,args){
 
         codeDb.db().insert(Object.assign(args,{
@@ -69,10 +82,9 @@ class Code {
         })
     }
     static first(event,args){
-
+        console.log('code first',args);
         codeDb.db().findOne(Object.assign(args,{
-            'use_yn' : "N",
-            'deleted_at' : null,
+            'use_yn' : "Y"
         }),(err,data) => {
             if(data){
                 return event.returnValue = {

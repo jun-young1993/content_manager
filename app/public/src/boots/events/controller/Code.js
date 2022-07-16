@@ -40,6 +40,16 @@ var Code = /** @class */ (function () {
             }
         });
     };
+    Code.indexByUsing = function (event, args) {
+        codeDb.db().find({ use_yn: 'Y' }, function (err, data) {
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
     Code.insert = function (event, args) {
         codeDb.db().insert(Object.assign(args, {
             'use_yn': "Y",
@@ -64,9 +74,9 @@ var Code = /** @class */ (function () {
         });
     };
     Code.first = function (event, args) {
+        console.log('code first', args);
         codeDb.db().findOne(Object.assign(args, {
-            'use_yn': "N",
-            'deleted_at': null
+            'use_yn': "Y"
         }), function (err, data) {
             if (data) {
                 return event.returnValue = {

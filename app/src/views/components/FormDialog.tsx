@@ -63,18 +63,19 @@ export default function FormDialog(props:any) {
                 
                 if(changeField.name == field.name){
                     
-                    console.log('splice 0',tmpFields)
+                    console.log('splice 0',changeField)
                     tmpFields.splice(index+1,0,changeField);
                     console.log('splice 1',tmpFields)
                     tmpFields.splice(index,1)
                     console.log('tmpFields',tmpFields);
-                    
+
                 }
             })
             console.log('fieldIndex',fieldIndex);
             console.log(changeFields.length);
             if(fieldIndex == changeFields.length-1){
                 console.log('last set fields',tmpFields);
+
                 setFields(tmpFields);
                 setChangeFields([]);
             }
@@ -85,7 +86,12 @@ export default function FormDialog(props:any) {
     const refs:any = {};
     fields.map((field:any) => {
         if(field){
-            refs[field.name] = React.useRef(values[field.name])
+            let defaultValue = values[field.name];
+            if(field.defaultvalue){
+                defaultValue = field.defaultvalue;
+                console.log('defaultValue',defaultValue);
+            }
+            refs[field.name] = React.useRef(defaultValue)
         }
     });
     console.log('renderer');
@@ -138,13 +144,18 @@ export default function FormDialog(props:any) {
                         if(field === null){
                             return null;
                         }
+                        console.log('field',field)
                         // let children = null;
                         // if(field.children){
                         //     children = field.children;
                         //     delete field.children;
                         // }
-
-                        let element = <TextField inputRef={refs[field.name]} defaultValue={values[field.name]} />;
+                        let fieldValue = values[field.name];
+                        if(field.defaultValue){
+                            fieldValue = field.defaultValue;
+                        }
+                        console.log('re render ',fieldValue);
+                        let element = <TextField inputRef={refs[field.name]} defaultValue={fieldValue} />;
 
                         if(field.onChangeValue){
                             field.onChange = (evt:any) => {
@@ -152,6 +163,7 @@ export default function FormDialog(props:any) {
                                     ref : refs[field.name],
                                     refs : refs,
                                     setChangeFields : setChangeFields,
+                                    setValues : setValues
                                 })
                             }
                         }

@@ -87,59 +87,74 @@ export default function Metadata() {
     const [changeFields, setChangeFields] = React.useState<any>([]);
     const handleTypeChange =(event: React.ChangeEvent<HTMLInputElement>,info:any) => {
 
-        if(event.target.value === 'code'){
-            const codeCombo = {
-                select : true,
-                fullWidth : true,
-                name : "code",
-                label : "필드코드",
-                variant:"standard",
-                children : (
-                    [
-                        (<MenuItem
-                        key="text" value="text"
-                    >
-                        텍스트필드
-                    </MenuItem>),
-                        (<MenuItem
-                        key="code" value="code"
-                    >
-                        코드콤보
-                    </MenuItem>)
-                ])
+
+
+        if(event.target.name === 'type'){
+            if(event.target.value === 'code'){
+                const codeResult = ipcRenderer.sendSync("@Code/indexByUsing");
+                let codes = [];
+                if(codeResult.success){
+                    if(codeResult.data){
+                        codes = codeResult.data;
+                        console.log('codes',codes)
+                    }
+                }
+                const codeCombo = {
+                    select : true,
+                    fullWidth : true,
+                    name : "code",
+                    label : "필드코드",
+                    variant:"standard",
+                    children : (codes.map((code:any)=>{return (<MenuItem key={code.code} value={code.code}>{code.name}</MenuItem>)})),
+                    onChangeValue:handleTypeChange
+                }
+                info.setChangeFields([codeCombo,{
+                    name: "name",
+                    label : "필드명",
+                    variant:"standard",
+                    disabled : true
+                }]);
+
+
+
+            }else{
+                info.setChangeFields([{
+                    name : "code",
+                    label : "필드코드",
+                    variant:"standard"
+                },{
+                    name: "name",
+                    label : "필드명",
+                    variant:"standard"
+                }]);
+
             }
-            info.setChangeFields([codeCombo,{
-                name: "name",
-                label : "필드명",
-                variant:"standard",
-                disabled : true
-            }]);
-            
-            
-            return;
-        
-            setCodeField(codeCombo);
-            setNameField({
-                name: "name",
-                label : "필드명",
-                variant:"standard",
-                disabled : true
-            })
-        }else{
-            return;
-            setCodeField({
-                name : "code",
-                label : "필드코드",
-                variant:"standard"
-            });
-            setNameField({
-                name: "name",
-                label : "필드명",
-                variant:"standard"
-            })
+        };
+
+        if(event.target.name === 'code'){
+            console.log('event.target',event.target)
+            const selectedCodeValue = event.target.value;
+
+            const codeInfo = ipcRenderer.sendSync("@Code/first",{code : selectedCodeValue});
+
+            if(codeInfo){
+                console.log('codeInfo',codeInfo)
+                if(codeInfo.data){
+                    console.log('codeInfo',codeInfo)
+                    const codeName = codeInfo.data.name;
+                    info.setChangeFields([{
+                        name: "name",
+                        label : "필드명",
+                        variant:"standard",
+                        defaultValue : codeName
+                    }]);
+
+                }
+            }
+            console.log('codeValue',info.refs.code.current);
         }
-        // setCurrency(event.target.value);
-      };
+    }
+
     const reload = () => {
         setRows(getRows);
     }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import FieldSet from "@views/main/support/ingest/fields/FieldSet";
 import TextField from "@mui/material/TextField";
+import {MenuItem} from "@mui/material";
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -23,11 +24,35 @@ export default function ContentMetadata(props:any){
 
         const fields:any = [];
 
-        metaFields.map((metaField:any) => fields.push({
-            name : metaField.code,
-            label : metaField.name,
-            variant : "standard"
-        }));
+        metaFields.map((metaField:any) => {
+            const codeResult = ipcRenderer.sendSync("@CodeItem/indexByParentCode",metaField.code);
+            let codes = [];
+            if(codeResult.success){
+                if(codeResult.data){
+                    codes = codeResult.data;
+                    console.log('codes',codes)
+                }
+            }
+            if(metaField.type == 'code'){
+                fields.push({
+                    select : true,
+                    fullWidth : true,
+                    name : metaField.code,
+                    label : metaField.name,
+                    variant : "standard",
+                    children : (codes.map((code:any)=>{return (<MenuItem key={code.code} value={code.code}>{code.name}</MenuItem>)}))
+                })
+            }else{
+                fields.push({
+                    fullWidth : true,
+                    name : metaField.code,
+                    label : metaField.name,
+                    variant : "standard"
+                })
+            }
+
+
+        });
 
 
 
@@ -48,8 +73,9 @@ export default function ContentMetadata(props:any){
                         //     children = field.children;
                         //     delete field.children;
                         // }
-
                         let element = <TextField onChange={updateInputValues} />;
+
+
 
 
                         // field.onChange = field.onChange ?  field.onChange : updateValues;

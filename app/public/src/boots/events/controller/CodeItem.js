@@ -31,7 +31,7 @@ var CodeItem = /** @class */ (function () {
         });
     };
     CodeItem.indexByParentCode = function (event, parentCode) {
-        codeItemDb.db().find({ is_deleted: 'N',
+        codeItemDb.db().find({ use_yn: 'Y',
             parent_code: parentCode }, function (err, data) {
             if (data) {
                 return event.returnValue = {

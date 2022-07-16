@@ -389,7 +389,7 @@ export default function Code() {
                                         onSaveClick={(result:any)=>{
                                             console.log('result',result);
                                             let errorMsg:string = '';
-                                            
+
                                             if(result){
                                                 const values = result.values;
                                                 if(values){
@@ -485,6 +485,7 @@ export default function Code() {
                                             }else{ 
                                                 table = '@CodeItem';
                                             }
+                                            console.log('before deleted',{_id : id});
                                             const result = ipcRenderer.sendSync(table+"/delete",{
                                                 _id : id
                                             });

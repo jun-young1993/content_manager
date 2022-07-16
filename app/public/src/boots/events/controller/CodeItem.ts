@@ -32,7 +32,7 @@ class CodeItem {
 
     static indexByParentCode(event, parentCode){
 
-        codeItemDb.db().find({is_deleted : 'N',
+        codeItemDb.db().find({use_yn : 'Y',
                                 parent_code : parentCode},(err,data) => {
             if(data){
                 return event.returnValue = {
@@ -45,7 +45,7 @@ class CodeItem {
 
     static findByParentCode(event, codes){
 
-        codeItemDb.db().findOne({is_deleted : 'N',
+        codeItemDb.db().findOne({use_yn : 'Y',
                                 parent_code : codes[0],
                                 code : codes[1]
                             },(err,data) => {
