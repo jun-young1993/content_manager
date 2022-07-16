@@ -12,11 +12,15 @@ const reducer = (prevState:any, newState:any) => ({...prevState,...newState});
 export default function ContentMetadata(props:any){
     const [state, setState] = React.useReducer(reducer, {});
     const metadataFields = ipcRenderer.sendSync("@Field/index");
+    const metadata = props.metadata;
 
     const updateInputValues = (evt : any) => {
-        props.setMetadataValues({
-            [evt.target.name]: evt.target.value
-        })
+        if(props.setMetadataValues){
+            props.setMetadataValues({
+                [evt.target.name]: evt.target.value
+            })
+        }
+
 
     }
     if(metadataFields.success){
@@ -25,33 +29,40 @@ export default function ContentMetadata(props:any){
         const fields:any = [];
 
         metaFields.map((metaField:any) => {
-            const codeResult = ipcRenderer.sendSync("@CodeItem/indexByParentCode",metaField.code);
-            let codes = [];
-            if(codeResult.success){
-                if(codeResult.data){
-                    codes = codeResult.data;
-                    console.log('codes',codes)
+            const fieldSet:any = {
+                fullWidth : true,
+                name : metaField.code,
+                label : metaField.name,
+                variant : "standard"
+            };
+            if(metaField.type == 'code') {
+                const codeResult = ipcRenderer.sendSync("@CodeItem/indexByParentCode", metaField.code);
+                let codes = [];
+                if (codeResult.success) {
+                    if (codeResult.data) {
+                        codes = codeResult.data;
+                        console.log('codes', codes)
+                    }
+                }
+
+                const codeFieldSet = {
+                    select: true,
+                    fullWidth: true,
+                    children : (codes.map((code: any) => {
+                        return (<MenuItem key={code.code} value={code.code}>{code.name}</MenuItem>)
+                    }))
+                }
+
+
+                Object.assign(fieldSet,codeFieldSet);
+            }
+
+            if(metadata){
+                if(metadata[metaField.code]){
+                    fieldSet['defaultValue'] = metadata[metaField.code];
                 }
             }
-            if(metaField.type == 'code'){
-                fields.push({
-                    select : true,
-                    fullWidth : true,
-                    name : metaField.code,
-                    label : metaField.name,
-                    variant : "standard",
-                    children : (codes.map((code:any)=>{return (<MenuItem key={code.code} value={code.code}>{code.name}</MenuItem>)}))
-                })
-            }else{
-                fields.push({
-                    fullWidth : true,
-                    name : metaField.code,
-                    label : metaField.name,
-                    variant : "standard"
-                })
-            }
-
-
+            fields.push(fieldSet)
         });
 
 

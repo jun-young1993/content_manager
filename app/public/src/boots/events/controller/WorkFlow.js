@@ -11,6 +11,7 @@ var WorkFlow = /** @class */ (function () {
             .then(function (taskParse) {
             console.log('taskParse');
             console.log(taskParse);
+            taskParse.module.copy();
             return event.returnValue = {
                 success: true,
                 data: null

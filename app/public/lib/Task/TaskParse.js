@@ -219,7 +219,7 @@ var TaskParse = /** @class */ (function () {
                         this.targetStorageType = this.targetStorage ? this.targetStorage.type : null;
                         moduleParams = {
                             source: this.getSource(),
-                            target: this.targetStoragePath + '/test.png'
+                            target: this.targetStoragePath + '/' + path.basename(this.getSource())
                         };
                         module = this.getModule();
                         this.module = new module(moduleParams);

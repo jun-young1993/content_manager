@@ -42,7 +42,7 @@ var CodeItem = /** @class */ (function () {
         });
     };
     CodeItem.findByParentCode = function (event, codes) {
-        codeItemDb.db().findOne({ is_deleted: 'N',
+        codeItemDb.db().findOne({ use_yn: 'Y',
             parent_code: codes[0],
             code: codes[1]
         }, function (err, data) {

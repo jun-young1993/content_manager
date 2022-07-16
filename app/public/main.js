@@ -95,7 +95,11 @@ electron_1.app.whenReady().then(function () { return __awaiter(void 0, void 0, v
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-electron_1.app.on('ready', createWindow);
+electron_1.app.on('ready', function () {
+    createWindow();
+    var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/events/ready/**/*.js'));
+    boots.loader();
+});
 // Quit when all windows are closed.
 electron_1.app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {

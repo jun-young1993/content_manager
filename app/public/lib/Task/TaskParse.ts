@@ -150,7 +150,7 @@ export class TaskParse {
 		// console.log('last dis',this);
 		const moduleParams = {
 			source : this.getSource(),
-			target : this.targetStoragePath+'/test.png'
+			target : this.targetStoragePath+'/'+path.basename(this.getSource())
 		}
 
 		const module = this.getModule();

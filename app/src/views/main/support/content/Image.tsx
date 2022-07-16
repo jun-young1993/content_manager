@@ -3,6 +3,7 @@ import ImageList from '@mui/material/ImageList';
 import Button from '@mui/material/Button';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
+import ContentItemBar from '@views/main/support/content/ContentItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
 import electron from "electron";
 import IconButton from '@mui/material/IconButton';
@@ -31,19 +32,21 @@ export default function Image() {
                         subtitle={<Button><span>{item.sub_title}</span></Button>}
                         position="below"
                     /> */}
-                    
-                    <ImageListItemBar
-                        title={item.title}
-                        position="below"
-                        subtitle={
-                        <span>
-                            상세보기
-                            <IconButton aria-label="delete" size="small">
-                                <InfoIcon fontSize="inherit" />
-                            </IconButton>
-                        </span>
-                        }
-                    />
+                    <ContentItemBar content={item} />
+                    {/*<ImageListItemBar*/}
+                    {/*    title={item.title}*/}
+                    {/*    position="below"*/}
+                    {/*    subtitle={*/}
+                    {/*    <span>*/}
+                    {/*        상세보기*/}
+                    {/*        <IconButton aria-label="delete" size="small" onClick={()=>{*/}
+                    {/*            */}
+                    {/*        }}>*/}
+                    {/*            <InfoIcon fontSize="inherit" />*/}
+                    {/*        </IconButton>*/}
+                    {/*    </span>*/}
+                    {/*    }*/}
+                    {/*/>*/}
                 </ImageListItem>
             ))}
         </ImageList>

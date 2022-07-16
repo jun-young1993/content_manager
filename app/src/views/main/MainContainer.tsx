@@ -20,6 +20,7 @@ import Content from "@views/main/Content";
 import Config from "@views/main/Config";
 import TaskMonitor from '@views/main/TaskMonitor';
 import MenuAppBar from '@views/main/support/main/MenuAppBar';
+import ContentDialog from "@views/main/support/content/ContentDialog";
 
 
 
@@ -33,9 +34,10 @@ export default function MainContainer(props:any) {
 
     return (
 
-        
+
         
         <Box sx={{ width: '100%', typography: 'body1' , height:'100vh'}}>
+
             <Box sx={{ width: '100%',height:'20vh'}}>
             <MenuAppBar 
                 onClick={(value:any)=>{
