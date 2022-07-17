@@ -33,3 +33,25 @@
 - [release]
 	- build명령어와 같지만 그 후 배포를 해준다. (추가설정 필요)
 	
+
+
+#필수코드 
+--TASK_MODULE_TYPE
+---fs_copy
+
+--MEDIA_TYPE
+---out
+---original
+
+- tsconfig.path.json
+      "@route/*" : [
+        "./public/lib/route/*"
+      ],
+      "@service/*" :[
+        "./public/service/*"
+      ]
+
+
+-pakage.json
+  "@route" : "./public/lib/route",
+    "@service" : "./public/service"
