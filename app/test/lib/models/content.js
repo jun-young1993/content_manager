@@ -7,11 +7,11 @@ const content = new Content();
 // import {uniqueId} from "lodash";
 const {uniqueId} =require("lodash");
 
-media.db().find({},(err,data)=>{
-    data.forEach((i)=>{
-        console.log(i);
-    })
+media.db().findOne({content_id : 'qVci79SkN042Wqrn', type : 'out'},(err,data)=>{
+    console.log(data);
 })
+
+
 // media.db().remove({}, { multi: true });
 // content.db().remove({}, { multi: true });
 

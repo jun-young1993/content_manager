@@ -22,8 +22,8 @@ export default function Image() {
                     <img
                         // src={`${item.img}?w=248&fit=crop&auto=format`}
                         // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        src={"http://localhost:3000/logo192.png?w=100&fit=crop&auto=format"}
-                        srcSet={"http://localhost:3000/logo192.png?w=100&fit=crop&auto=format&dpr=2 2x"}
+                        src={"http://localhost:11101/thumbnail/"+item._id+"?w=100&fit=crop&auto=format"}
+                        srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=100&fit=crop&auto=format&dpr=2 2x"}
                         alt={item.title}
                         loading="lazy"
                     />
