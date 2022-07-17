@@ -16,6 +16,7 @@ import InputLabel from "@mui/material/InputLabel";
 import electron from "electron";
 import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
+import {codeItemByMenuItem} from "@src/helper/meterialHelper";
 const ipcRenderer = electron.ipcRenderer;
 
 
@@ -27,7 +28,7 @@ const ipcRenderer = electron.ipcRenderer;
 
 const getRows =()=> {
 
-    const storages = ipcRenderer.sendSync("@Storage/all");
+    const storages = ipcRenderer.sendSync("@Module/all");
     if(storages.success){
         return storages.data.map((storage : any) => {
 
@@ -40,20 +41,88 @@ const getRows =()=> {
 }
 
 const columns: GridColDef[] = [
-    { field: 'type', headerName: '스토리지 타입', width: 150 },
-    { field: 'code', headerName: '스토리지 코드', width: 150 },
-    { field: 'name', headerName: '스토리지 명', width: 150 },
-    { field: 'path', headerName: '스토리지 경로', width: 150 },
+    { field: 'task_type_nm', headerName: '작업 타입', width: 150 },
+    { field: 'source_media_nm', headerName: '소스 미디어', width: 150 },
+    { field: 'source_storage_nm', headerName: '소스 스토리지', width: 150 },
+    { field: 'target_media_nm', headerName: '타겟 미디어', width: 150 },
+    { field: 'target_storage_nm', headerName: '타겟 스토리지', width: 150 },
     { field: 'description', headerName: '설명', width: 150 },
-    { field: 'use_yn', headerName: '사용여부', width: 150 },
 ];
+function storageByMenuItem(){
+	const data = ipcRenderer.sendSync("@Storage/all");
+	const items = []
+	if(data.success){
+		const codeItem = data.data;
+		for(let codeItemIndex = 0; codeItemIndex < codeItem.length; codeItemIndex++){
+			items.push((<MenuItem key={codeItem[codeItemIndex].code} value={codeItem[codeItemIndex].code}>{codeItem[codeItemIndex].name}</MenuItem>))	
+		}
+		return (items);
+	}
+}
 
 
+function codeNameMapping(result:any){
+    const nm:any = {
+        task_type_nm : '',
+        source_media_nm : '',
+        source_storage_nm : '',
+        target_media_nm : '',
+        target_storage_nm : ''
+    };
+
+    if(result.values.task_type){
+        const taskType = ipcRenderer.sendSync('@CodeItem/findByParentCode','TASK_MODULE_TYPE',result.values.task_type);
+        console.log(taskType);
+        if(taskType){
+            if(taskType.success){
+                nm['task_type_nm'] = taskType.data.name;
+            }
+        }
+    }
+    if(result.values.source_media){
+        const sourceMedia = ipcRenderer.sendSync('@CodeItem/findByParentCode','MEDIA_TYPE',result.values.source_media);
+        if(sourceMedia){
+            if(sourceMedia.success){
+                nm['source_media_nm'] = sourceMedia.data.name;
+            }
+        }
+    }
+
+    if(result.values.source_media){
+        const targetMedia = ipcRenderer.sendSync('@CodeItem/findByParentCode','MEDIA_TYPE',result.values.target_media)
+        if(targetMedia){
+            if(targetMedia.success){
+                nm['target_media_nm'] = targetMedia.data.name;
+            }
+        }
+    }
+    
+    if(result.values.source_storage){
+        const sourceStorage = ipcRenderer.sendSync('@Storage/first',{code : result.values.source_storage});
+        if(sourceStorage){
+            if(sourceStorage.success){
+                nm['source_storage_nm'] = sourceStorage.data.name;
+            }
+        }
+    }
+
+    if(result.values.target_storage){
+        const targetStorage = ipcRenderer.sendSync('@Storage/first',{code : result.values.target_storage});
+        if(targetStorage){
+            if(targetStorage.success){
+                nm['target_storage_nm'] = targetStorage.data.name;
+            }
+        }
+    }
+
+    return nm;
+}
 const reducer = (prevState:any, newState:any) => ({
     ...prevState,
     ...newState
 })
-export default function Storage() {
+export default function Module() {
+
     const [rows,setRows] = React.useState(getRows);
     const [values, setValues] = React.useReducer(reducer,{
         type : '',
@@ -113,58 +182,48 @@ export default function Storage() {
                                         fields={[
                                             {
                                                 select : true,
-                                                name : "type",
-                                                fullWidth : true,
-                                                label : "타입",
+                                                name : "task_type",
+                                                label : "작업타입",
+                                                fullWidth: true,
                                                 variant:"standard",
-                                                children : (
-                                                    [
-                                                        (<MenuItem
-                                                        key="local" value="local"
-                                                    >
-                                                        local
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="ftp" value="ftp"
-                                                    >
-                                                        ftp
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="sftp" value="sftp"
-                                                    >
-                                                        sftp
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="nas" value="nas"
-                                                    >
-                                                        nas
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="san" value="san"
-                                                    >
-                                                        san
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="aws" value="aws"
-                                                    >
-                                                        aws
-                                                    </MenuItem>)
-                                                ])
+                                                children : codeItemByMenuItem('TASK_MODULE_TYPE')
                                             },
                                             {
-                                                name : "code",
-                                                label : "스토리지 코드",
-                                                variant:"standard"
+                                                name: "name",
+                                                label: "작업명",
+                                                variant: "standard"
                                             },
                                             {
-                                                name : "name",
-                                                label : "스토리지 명",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "source_media",
+                                                label : "소스 미디어",
+                                                fullWidth: true,
+                                                variant:"standard",
+                                                children : codeItemByMenuItem('MEDIA_TYPE')
                                             },
                                             {
-                                                name: "path",
-                                                label : "경로",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "source_storage",
+                                                label : "소스 스토리지",
+                                                fullWidth : true,
+                                                variant:"standard",
+                                                children : storageByMenuItem()
+                                            },
+                                            {
+                                                select : true,
+                                                name : "target_media",
+                                                label : "타겟 미디어",
+                                                fullWidth: true,
+                                                variant:"standard",
+                                                children : codeItemByMenuItem('MEDIA_TYPE')
+                                            },
+                                            {
+                                                select : true,
+                                                name : "target_storage",
+                                                label : "타겟 스토리지",
+                                                fullWidth : true,
+                                                variant:"standard",
+                                                children : storageByMenuItem()
                                             },
                                             {
                                                 name: "description",
@@ -178,14 +237,16 @@ export default function Storage() {
                                             let errorMsg:string = '';
                                             if(result){
                                                 const values = result.values;
+                                                
                                                 if(values){
-                                                    const exists = ipcRenderer.sendSync("@Storage/first",{code:values.code});
-                                                    if(exists.success){
-                                                        setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
-                                                        return false;
-                                                    }
+                                                  
+                                                    const nm = codeNameMapping(result);
+                                                    
+                                                    Object.assign(result.values,nm);
+                                                    
 
-                                                    const insert = ipcRenderer.sendSync("@Storage/insert",values);
+                                                    
+                                                    const insert = ipcRenderer.sendSync("@Module/insert",result.values);
                                                     if(insert.success){
                                                         reload();
                                                         setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
@@ -207,30 +268,54 @@ export default function Storage() {
                                         values={selected}
                                         fields={[
                                             {
-                                                type : "combo",
-                                                name : "type",
-                                                label : "타입",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "task_type",
+                                                label : "작업타입",
+                                                fullWidth: true,
+                                                variant:"standard",
+                                                children : codeItemByMenuItem('TASK_MODULE_TYPE')
                                             },
                                             {
-                                                name : "code",
-                                                label : "스토리지 코드",
-                                                variant:"standard"
+                                                name: "name",
+                                                label: "작업명",
+                                                variant: "standard"
                                             },
                                             {
-                                                name : "name",
-                                                label : "스토리지 명",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "source_media",
+                                                label : "소스 미디어",
+                                                fullWidth: true,
+                                                variant:"standard",
+                                                children : codeItemByMenuItem('MEDIA_TYPE')
                                             },
                                             {
-                                                name: "path",
-                                                label : "경로",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "source_storage",
+                                                label : "소스 스토리지",
+                                                fullWidth : true,
+                                                variant:"standard",
+                                                children : storageByMenuItem()
                                             },
                                             {
-                                                name : "description",
-                                                label : "설명",
-                                                variant:"standard"
+                                                select : true,
+                                                name : "target_media",
+                                                label : "타겟 미디어",
+                                                fullWidth: true,
+                                                variant:"standard",
+                                                children : codeItemByMenuItem('MEDIA_TYPE')
+                                            },
+                                            {
+                                                select : true,
+                                                name : "target_storage",
+                                                label : "타겟 스토리지",
+                                                fullWidth : true,
+                                                variant:"standard",
+                                                children : storageByMenuItem()
+                                            },
+                                            {
+                                                name: "description",
+                                                label: "설명",
+                                                variant: "standard"
                                             }
                                         ]}
                                         onSaveClick={(result:any)=>{
@@ -238,7 +323,13 @@ export default function Storage() {
                                             let errorMsg:string = '';
                                             
                                             if(result){
-                                                const update = ipcRenderer.sendSync("@Storage/update",result.values,{
+                                                const nm = codeNameMapping(result);
+
+
+                                                
+                                                    
+                                                Object.assign(result.values,nm);
+                                                const update = ipcRenderer.sendSync("@Module/update",result.values,{
                                                     _id : result.oldValues._id
                                                 });
                                                 if(update.success){
@@ -257,7 +348,7 @@ export default function Storage() {
                                        onClick={(evt:any)=>{
                                            const id:any = selected._id;
                                            if(id){
-                                               const result = ipcRenderer.sendSync("@Storage/delete",{
+                                               const result = ipcRenderer.sendSync("@Module/delete",{
                                                    _id : id
                                                });
                                                if(result.success){

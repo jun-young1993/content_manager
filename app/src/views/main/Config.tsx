@@ -12,6 +12,7 @@ const steps = ['메타데이터 등록', '미디어 선택', 'Create an ad'];
 import Metadata from "@views/main/Metadata";
 import Code from "@views/main/Code";
 import Storage from "@views/main/Storage";
+import Module from "@views/main/Module";
 export default function Config() {
 	const [view, setView] = React.useState(<Metadata />)
 	return (
@@ -28,6 +29,9 @@ export default function Config() {
 						}
 						if(menuId == 'code'){
 							setView(<Code />);
+						}
+						if(menuId == 'module'){
+							setView(<Module />);
 						}
 						console.log('menu id',menuId)
 					}}

@@ -43,7 +43,7 @@ class CodeItem {
         })
     }
 
-    static findByParentCode(event, codes){
+    static findByParentCode(event, ...codes){
 
         codeItemDb.db().findOne({use_yn : 'Y',
                                 parent_code : codes[0],

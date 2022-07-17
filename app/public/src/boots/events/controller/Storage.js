@@ -42,6 +42,7 @@ var Storage = /** @class */ (function () {
     };
     Storage.insert = function (event, args) {
         db.db().insert(Object.assign(args, {
+            'use_yn': "Y",
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -74,7 +75,7 @@ var Storage = /** @class */ (function () {
     };
     Storage.first = function (event, args) {
         db.db().findOne(Object.assign(args, {
-            'use_yn': "N",
+            'use_yn': "Y",
             'deleted_at': null
         }), function (err, data) {
             if (data) {

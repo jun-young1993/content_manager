@@ -51,7 +51,7 @@ export default function FormDialog(props:any) {
     const [fields, setFields] = React.useState(props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
-    console.log('props',props);
+    
     const [changeFields, setChangeFields] = React.useState(props.changeFields);
     
     if(changeFields){
@@ -71,7 +71,7 @@ export default function FormDialog(props:any) {
 
                 }
             })
-            console.log('fieldIndex',fieldIndex);
+            
             console.log(changeFields.length);
             if(fieldIndex == changeFields.length-1){
                 console.log('last set fields',tmpFields);
@@ -144,7 +144,7 @@ export default function FormDialog(props:any) {
                         if(field === null){
                             return null;
                         }
-                        console.log('field',field)
+                        
                         // let children = null;
                         // if(field.children){
                         //     children = field.children;
@@ -154,7 +154,7 @@ export default function FormDialog(props:any) {
                         if(field.defaultValue){
                             fieldValue = field.defaultValue;
                         }
-                        console.log('re render ',fieldValue);
+                        
                         let element = <TextField inputRef={refs[field.name]} defaultValue={fieldValue} />;
 
                         if(field.onChangeValue){

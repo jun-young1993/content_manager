@@ -1,9 +1,9 @@
 "use strict";
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
-var CodeItem_1 = require("../../../../models/CodeItem");
+var Module_1 = require("../../../../models/Module");
 // import {User} from "@model/User";
-var codeItemDb = new CodeItem_1.CodeItem();
+var db = new Module_1.Module();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
 //     event.reply('asynchronous-reply', 'pong')
@@ -17,11 +17,11 @@ var codeItemDb = new CodeItem_1.CodeItem();
 //     console.log(arg) // prints "pong"
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
-var CodeItem = /** @class */ (function () {
-    function CodeItem() {
+var Module = /** @class */ (function () {
+    function Module() {
     }
-    CodeItem.index = function (event, args) {
-        codeItemDb.db().find({ is_deleted: 'N' }, function (err, data) {
+    Module.all = function (event, args) {
+        db.db().find({}, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -30,9 +30,8 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
-    CodeItem.indexByParentCode = function (event, parentCode) {
-        codeItemDb.db().find({ use_yn: 'Y',
-            parent_code: parentCode }, function (err, data) {
+    Module.index = function (event, args) {
+        db.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -41,31 +40,41 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
-    CodeItem.findByParentCode = function (event) {
-        var codes = [];
+    Module.insert = function (event, args) {
+        db.db().insert(Object.assign(args, {
+            'is_deleted': "N",
+            'deleted_at': null
+        }), function (err, data) {
+            if (err) {
+                return event.returnValue = {
+                    success: false,
+                    data: null,
+                    msg: err
+                };
+            }
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
+    Module.update = function (event) {
+        var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
-            codes[_i - 1] = arguments[_i];
+            args[_i - 1] = arguments[_i];
         }
-        codeItemDb.db().findOne({ use_yn: 'Y',
-            parent_code: codes[0],
-            code: codes[1]
-        }, function (err, data) {
-            if (data) {
-                return event.returnValue = {
-                    success: true,
-                    data: data
-                };
-            }
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
             return event.returnValue = {
-                success: false,
-                data: null
+                success: true,
+                data: data
             };
         });
     };
-    CodeItem.insert = function (event, args) {
-        codeItemDb.db().insert(Object.assign(args, {
-            'use_yn': "Y",
-            'is_deleted': "N",
+    Module.first = function (event, args) {
+        db.db().findOne(Object.assign(args, {
+            'use_yn': "N",
             'deleted_at': null
         }), function (err, data) {
             if (data) {
@@ -74,24 +83,20 @@ var CodeItem = /** @class */ (function () {
                     data: data
                 };
             }
+            else {
+                return event.returnValue = {
+                    success: false
+                };
+            }
         });
     };
-    CodeItem.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        codeItemDb.db().update(args, function (err, data) {
-            return event.returnValue = data;
-        });
-    };
-    CodeItem["delete"] = function (event) {
+    Module["delete"] = function (event) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
         if (args.length >= 1) {
-            codeItemDb.db().remove(args[0], function (err, data) {
+            db.db().remove(args[0], function (err, data) {
                 if (data) {
                     return event.returnValue = {
                         success: true,
@@ -106,6 +111,6 @@ var CodeItem = /** @class */ (function () {
             });
         }
     };
-    return CodeItem;
+    return Module;
 }());
-new BaseController_1.BaseController(CodeItem);
+new BaseController_1.BaseController(Module);

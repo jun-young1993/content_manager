@@ -27,8 +27,9 @@ export default function MenuList(props:any) {
 	setSystemOpen(!systemOpen);
   };
 
-  const handleClick = () => {
-    setOpen(!open);
+  const [taskOpen, setTaskOpen] = React.useState(false);
+  const handleTaskClick = () => {
+    setTaskOpen(!taskOpen);
   };
 
 
@@ -76,7 +77,19 @@ export default function MenuList(props:any) {
 	<Collapse in={userOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
 	{listItem("메타데이터","metadata",<StarBorder />,true)}
-	{listItem("스토리지","storage",<StarBorder />,true)}
+        </List>
+      	</Collapse>
+        <ListItemButton onClick={handleTaskClick}>
+        <ListItemIcon>
+          <ManageAccountsIcon />
+        </ListItemIcon>
+        <ListItemText primary="작업 관리" />
+        {taskOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+	<Collapse in={taskOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+	        {listItem("작업 모듈","module",<StarBorder />,true)}
+          {listItem("스토리지","storage",<StarBorder />,true)}
         </List>
       	</Collapse>
 	      <ListItemButton onClick={handleSystemClick}>

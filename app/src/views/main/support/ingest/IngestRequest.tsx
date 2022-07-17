@@ -12,10 +12,9 @@ export default function IngestRequest(props:any) {
     const [task, setTask] = React.useState([]);
     const ingest = () => {
         if(insert === true){
-            console.log('insert true');
             return;
         }
-        console.log('props insert request',props)
+        
 
 
         const metadata = props.metadata;
