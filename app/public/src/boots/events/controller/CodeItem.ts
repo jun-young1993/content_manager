@@ -1,6 +1,6 @@
 import {BaseController} from "./BaseController";
 import {CodeItem as codeItemModel} from "../../../../models/CodeItem";
-// import {User} from "@model/User";
+
 const codeItemDb = new codeItemModel();
 
 // ipcMain.on('asynchronous-message', (event, arg) => {

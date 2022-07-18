@@ -5,7 +5,7 @@ window.React = React
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Tab from './views/menues/Tab';
+
 
 import MainContainer from '@views/main/MainContainer';
 import MainTabBar from '@src/views/main/MainTabBar';

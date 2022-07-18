@@ -2,7 +2,6 @@
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var Content_1 = require("../../../../models/Content");
-// import {User} from "@model/User";
 var db = new Content_1.Content();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"

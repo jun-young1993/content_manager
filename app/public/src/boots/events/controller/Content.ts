@@ -1,6 +1,6 @@
 import {BaseController} from "./BaseController";
 import {Content as Model} from "../../../../models/Content";
-// import {User} from "@model/User";
+
 const db = new Model();
 
 // ipcMain.on('asynchronous-message', (event, arg) => {
