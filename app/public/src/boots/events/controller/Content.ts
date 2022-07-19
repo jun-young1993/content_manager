@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Content as Model} from "../../../../models/Content";
 

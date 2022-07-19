@@ -2,11 +2,10 @@ const fs = require("fs");
 
 
 export class FileManager {
-	private readStream;
-	private writeStream;
-	private params;
+	
+	private params:any;
 
-	constructor(params){
+	constructor(params:any){
 		console.log('[start FileManager]');
 		this.params = params;
 

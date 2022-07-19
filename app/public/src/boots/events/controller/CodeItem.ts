@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {CodeItem as codeItemModel} from "../../../../models/CodeItem";
 
@@ -18,9 +20,9 @@ const codeItemDb = new codeItemModel();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class CodeItem {
-    static index(event, args){
+    static index(event:any, args:any){
         
-        codeItemDb.db().find({is_deleted : 'N'},(err,data) => {
+        codeItemDb.db().find({is_deleted : 'N'},(err:any,data:any) => {
             if(data){
                 return event.returnValue = {
                     success : true,

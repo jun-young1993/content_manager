@@ -11,7 +11,7 @@ interface Property {
 }
 export class BaseModel implements Property{
     store : STORE_TYPE = STORE_TYPE.NEDB
-    table : string;
+    table : string = '';
     database : any
     constructor(property: Property) {
 

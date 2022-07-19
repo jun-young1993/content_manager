@@ -1,37 +1,37 @@
-const {Storage} = require("@models/Storage");
-const {Media} = require("@models/Media");
-const {FileManager} = require("@task/module/FileManager");
+const {Storage} = require("../../models/Storage");
+const {Media} = require("../../models/Media");
+const {FileManager} = require("./module/FileManager");
 import * as path from "path";
 export class TaskParse {
-	private sourceMediaId;
-	private targetMediaId;
-	private sourceStoragePath;
-	private targetStoragePath;
-	private sourceStorageType;
-	private targetStorageType;
-	private sourceStorage;
-	private targetStorage;
-	private sourceMedia;
-	private targetMedia;
-	private module;
+	private sourceMediaId : any = null;
+	private targetMediaId : any = null;
+	private sourceStoragePath : any = null;
+	private targetStoragePath : any = null;
+	private sourceStorageType : any = null;
+	private targetStorageType : any = null;
+	private sourceStorage : any = null;
+	private targetStorage : any = null;
+	private sourceMedia : any = null;
+	private targetMedia : any = null;
+	private module : any = null;
 
-	private task;
+	private task : any = null;
 
-	constructor(task) {
+	constructor(task:any) {
 		console.log('before start task parse');
 		this.task = task;
 		console.log('start task parse');
 		console.log(this);
 		// this.storageDb = new Storage();
 	}
-	async getStorage(code){
+	async getStorage(code:any){
 		const _this = this;
 
 
 		const storage = await new Promise((resolve,reject) =>{
 			if(code){
 				new Storage().db().findOne({code : code},
-					(err,storage) => {
+					(err:any,storage:any) => {
 						console.log(code)
 						console.log(err);
 						console.log(storage);
@@ -50,14 +50,14 @@ export class TaskParse {
 		})
 		return storage;
 	};
-	async getMedia(mediaId){
+	async getMedia(mediaId:any){
 
 
 
 		const media = await new Promise((resolve,reject) =>{
 			if(mediaId){
 				new Media().db().findOne({_id : mediaId},
-					(err,media) => {
+					(err:any,media:any) => {
 
 						if(media){
 
@@ -100,7 +100,7 @@ export class TaskParse {
 	}
 	getModule(){
 		const type = this.task.type;
-		const modules = {
+		const modules: any = {
 			fs : FileManager
 		};
 
@@ -148,7 +148,7 @@ export class TaskParse {
 		this.targetStorageType = this.targetStorage ? this.targetStorage.type : null;
 
 		// console.log('last dis',this);
-		const moduleParams = {
+		const moduleParams:any = {
 			source : this.getSource(),
 			target : this.targetStoragePath+'/'+path.basename(this.getSource())
 		}

@@ -1,3 +1,6 @@
+// @ts-nocheck
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Metadata as MetadataModel} from "../../../../models/Metadata";
 // import {User} from "@model/User";

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Storage as StorageModel} from "../../../../models/Storage";
 // import {User} from "@model/User";

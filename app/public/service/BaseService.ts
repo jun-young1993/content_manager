@@ -3,15 +3,18 @@ export class BaseService{
 	private model:any = [];
 	
 	constructor(property:any){
-		// const {Field} = require('../../../public/models/Field')
-		property.models.forEach((model) => {
+		
+		property.models.forEach((model:any) => {
 			
-			this.model[model] = require('@models/'+model)
+			// @ts-ignore
+			
+			this.model[model] = require('../models/'+model)
 		})
 
 	}
 	
-	getModel(modelName){
+	getModel(modelName:any){
+			// @ts-ignore
 		return new this.model[modelName][modelName]().db();
 	}
 }

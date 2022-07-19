@@ -1,15 +1,15 @@
-const fs = require("fs");
-const stream = require("stream");
-const path = require("path");
+import * as fs from "fs";
+import * as stream from "stream";
+import * as path from "path";
 
 const router = require('express').Router();
 
-const {MediaService} = require('@service/MediaService');
+const {MediaService} = require('../../service/MediaService')
 const mediaSv = new MediaService();
-router.get('/:contentId', (req, res) => {
+router.get('/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
 	
-	mediaSv.findOutByContentId(contentId).then((media)=>{
+	mediaSv.findOutByContentId(contentId).then((media:any)=>{
 		if(media.success){
 			const read = fs.createReadStream(path.resolve(media.data.path));
 			const pass = new stream.PassThrough();

@@ -1,4 +1,6 @@
 "use strict";
+// @ts-ignore
+// import DataStore from "nedb";
 exports.__esModule = true;
 exports.Nedb = void 0;
 var DataStore = require("nedb");
@@ -34,10 +36,14 @@ var Nedb = /** @class */ (function () {
     Nedb.prototype.querySetting = function () {
         var _this = this;
         var _loop_1 = function (method) {
+            // @ts-ignore
             var nedbMethod = NedbConfig_1.QueryMap[method];
+            // @ts-ignore
             this_1[method] = function (query) {
                 if (query === void 0) { query = {}; }
+                // @ts-ignore
                 if (NedbConfig_1.Custom[method]) {
+                    // @ts-ignore
                     return NedbConfig_1.Custom[method](query, _this.db());
                 }
                 else {

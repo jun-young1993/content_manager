@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Field as FieldModel} from "../../../../models/Field";
 // import {User} from "@model/User";

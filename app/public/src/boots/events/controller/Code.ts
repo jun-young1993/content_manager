@@ -18,9 +18,9 @@ const codeDb = new codeModel();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Code {
-    static all(event, args){
+    static all(event:any, args:any){
 
-        codeDb.db().find({},(err,data) => {
+        codeDb.db().find({},(err:any,data:any) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -30,9 +30,9 @@ class Code {
 
         })
     }
-    static index(event, args){
+    static index(event:any, args:any){
         
-        codeDb.db().find({is_deleted : 'N'},(err,data) => {
+        codeDb.db().find({is_deleted : 'N'},(err:any,data:any) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -43,8 +43,8 @@ class Code {
         })
     }
 
-    static indexByUsing(event, args){
-        codeDb.db().find({use_yn : 'Y'},(err,data) => {
+    static indexByUsing(event:any, args:any){
+        codeDb.db().find({use_yn : 'Y'},(err:any,data:any) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -55,13 +55,13 @@ class Code {
         })
     }
 
-    static insert(event,args){
+    static insert(event:any,args:any){
 
         codeDb.db().insert(Object.assign(args,{
             'use_yn' : "Y",
             'is_deleted' : "N",
             'deleted_at' : null,
-        }),(err,data) => {
+        }),(err:any,data:any) => {
 
 
             if(data){
@@ -76,16 +76,16 @@ class Code {
         });
     }
 
-    static update(event,...args){
-        codeDb.db().update(args[1],{$set : args[0]},(err,data) => {
+    static update(event:any,...args:any){
+        codeDb.db().update(args[1],{$set : args[0]},(err:any,data:any) => {
             return event.returnValue = data;
         })
     }
-    static first(event,args){
+    static first(event:any,args:any){
         console.log('code first',args);
         codeDb.db().findOne(Object.assign(args,{
             'use_yn' : "Y"
-        }),(err,data) => {
+        }),(err:any,data:any) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -100,10 +100,10 @@ class Code {
         })
     }
 
-    static delete(event, ...args){
+    static delete(event:any, ...args:any){
 
         if(args.length >= 1){
-            codeDb.db().remove(args[0],(err,data) => {
+            codeDb.db().remove(args[0],(err:any,data:any) => {
                 if(data){
                     return event.returnValue = {
                         success : true,

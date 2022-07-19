@@ -1,4 +1,5 @@
 "use strict";
+// @ts-nocheck
 exports.__esModule = true;
 exports.BaseController = void 0;
 var electron_1 = require("electron");

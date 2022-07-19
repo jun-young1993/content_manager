@@ -9,6 +9,7 @@ var STORE_TYPE;
 var BaseModel = /** @class */ (function () {
     function BaseModel(property) {
         this.store = STORE_TYPE.NEDB;
+        this.table = '';
         Object.assign(this, property);
         this.setDb();
         // super.db = this.db();

@@ -16,7 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 exports.MediaService = void 0;
-var BaseService = require('@service/BaseService').BaseService;
+var BaseService = require('../service/BaseService').BaseService;
 var MediaService = /** @class */ (function (_super) {
     __extends(MediaService, _super);
     function MediaService() {

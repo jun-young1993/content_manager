@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Module as Modle} from "../../../../models/Module";
 // import {User} from "@model/User";

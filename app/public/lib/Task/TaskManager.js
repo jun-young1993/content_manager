@@ -1,9 +1,8 @@
 "use strict";
 exports.__esModule = true;
 exports.TaskManager = void 0;
-var Task = require('@models/Task').Task;
-var FileManager = require('@task/module/FileManager').FileManager;
-var TaskParse = require('@task/TaskParse').TaskParse;
+var Task = require('../../models/Task').Task;
+var TaskParse = require('./TaskParse').TaskParse;
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();

@@ -1,4 +1,6 @@
 "use strict";
+// @ts-nocheck
+// @ts-nocheck
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var Metadata_1 = require("../../../../models/Metadata");

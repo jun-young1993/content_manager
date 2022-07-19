@@ -3,15 +3,15 @@ export enum QUERY_TYPE {
 }
 
 export class QueryBuilder {
-    protected wheres = [];
-    protected queryType = '';
+    protected wheres:any = [];
+    protected queryType:any = '';
     // protected db = null;
     public query(){
         return this;
     }
 
     public where(column:string,where:any){
-        const whereSet = {
+        const whereSet:any = {
             column : column,
             where : where
         }
@@ -27,7 +27,7 @@ export class QueryBuilder {
     private querySetting(){
         const wheres = this.wheres;
         if(this.queryType == QUERY_TYPE.GET){
-            wheres.forEach((value,index) => {
+            wheres.forEach((value:any,index:any) => {
                 console.log(value);
                 console.log(index);
             })

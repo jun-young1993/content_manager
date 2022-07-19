@@ -5,7 +5,7 @@ export enum QueryMap {
         "update" = "update"
 }
 export class Custom {
-        "update"= (query:object = {},nedb) => {
+        "update"= (query:object = {},nedb:any) => {
 
                 // @ts-ignore
                 // if (query.type == 'set') {

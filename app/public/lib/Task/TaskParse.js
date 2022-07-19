@@ -37,12 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.TaskParse = void 0;
-var Storage = require("@models/Storage").Storage;
-var Media = require("@models/Media").Media;
-var FileManager = require("@task/module/FileManager").FileManager;
+var Storage = require("../../models/Storage").Storage;
+var Media = require("../../models/Media").Media;
+var FileManager = require("./module/FileManager").FileManager;
 var path = require("path");
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
+        this.sourceMediaId = null;
+        this.targetMediaId = null;
+        this.sourceStoragePath = null;
+        this.targetStoragePath = null;
+        this.sourceStorageType = null;
+        this.targetStorageType = null;
+        this.sourceStorage = null;
+        this.targetStorage = null;
+        this.sourceMedia = null;
+        this.targetMedia = null;
+        this.module = null;
+        this.task = null;
         console.log('before start task parse');
         this.task = task;
         console.log('start task parse');

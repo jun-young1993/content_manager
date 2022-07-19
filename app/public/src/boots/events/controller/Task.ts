@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Task as Model} from "../../../../models/Task";
 // import {User} from "@model/User";

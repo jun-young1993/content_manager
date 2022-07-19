@@ -1,4 +1,5 @@
-const {BaseService} = require('@service/BaseService');
+
+const {BaseService} = require('../service/BaseService');
 export class MediaService extends BaseService{
 	constructor(){
 		super({
@@ -9,12 +10,12 @@ export class MediaService extends BaseService{
 		});
 	}
 
-	findOriginalByContentId(contentId){
+	findOriginalByContentId(contentId:any){
 		return this.findTypeByContentId('original',contentId);
 	}
-	findTypeByContentId(type,contentId){
+	findTypeByContentId(type:any,contentId:any){
 		return new Promise((resolve, reject) => {
-			this.getModel('Media').findOne({content_id : contentId, type : type},(err,media)=>{
+			this.getModel('Media').findOne({content_id : contentId, type : type},(err:any,media:any)=>{
 				resolve({
 					success : true,
 					data : media
@@ -22,7 +23,7 @@ export class MediaService extends BaseService{
 			})
 		})
 	}
-	findOutByContentId(contentId){
+	findOutByContentId(contentId:any){
 		return this.findTypeByContentId('out',contentId);
 	}
 }

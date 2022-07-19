@@ -1,7 +1,8 @@
 "use strict";
+// @ts-nocheck
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
-var TaskManager = require("@task/TaskManager").TaskManager;
+var TaskManager = require("../../../../lib/Task/TaskManager").TaskManager;
 var WorkFlow = /** @class */ (function () {
     function WorkFlow() {
     }

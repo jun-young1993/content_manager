@@ -1,7 +1,8 @@
-const {Task} = require('@models/Task');
 
-const {FileManager} = require('@task/module/FileManager');
-const {TaskParse} = require('@task/TaskParse');
+const {Task} = require('../../models/Task');
+
+
+const {TaskParse} = require('./TaskParse');
 
 export class TaskManager{
 	private TaskDb = new Task().db();
@@ -18,7 +19,7 @@ export class TaskManager{
 			this.TaskDb.find({status : params.status})
 			.sort({priority : params.priority})
 			.limit(params.limit)
-			.exec((error,tasks) => {
+			.exec((error:any,tasks:any) => {
 				if(tasks){
 					resolve(tasks);
 				}
@@ -61,16 +62,16 @@ export class TaskManager{
 	initialize(){
 		return new Promise((resolve, reject) => {
 			this.findQueued()
-			.then((task) => {
+			.then((task:any) => {
 				new TaskParse(task)
 					.getTaskParse()
-					.then((parse) => {
+					.then((parse:any) => {
 						// const module = parse.module;
 						// module.copy();
 						resolve(parse);
 					})
 			})
-			.catch((err) => {
+			.catch((err:any) => {
 				reject(err)	;
 			})
 			

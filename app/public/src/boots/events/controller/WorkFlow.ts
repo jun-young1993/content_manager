@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
-const {TaskManager} = require("@task/TaskManager");
+const {TaskManager} = require("../../../../lib/Task/TaskManager");
 class WorkFlow{
 	static ingest(event,args){
 		new TaskManager()
 		.initialize()
-		.then((taskParse) => {
+		.then((taskParse:any) => {
 			console.log('taskParse');
 			console.log(taskParse);
 			taskParse.module.copy();
@@ -13,7 +15,7 @@ class WorkFlow{
 				data : null
 			}
 		})
-		.catch((error)=>{
+		.catch((error:any)=>{
 			console.log('error');
 			console.log(error);
 			return event.returnValue = {

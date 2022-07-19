@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {BaseController} from "./BaseController";
 import {Media as Model} from "../../../../models/Media";
 // import {User} from "@model/User";
