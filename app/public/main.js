@@ -41,7 +41,7 @@ var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
 var AutoLoader_1 = require("./lib/AutoLoad/AutoLoader");
-require("module-alias/register");
+// import 'module-alias/register';
 var mainWindow;
 var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();

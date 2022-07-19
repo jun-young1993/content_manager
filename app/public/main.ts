@@ -4,7 +4,7 @@ import {ipcMain,ipcRenderer} from "electron";
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
-import 'module-alias/register';
+// import 'module-alias/register';
 
 let mainWindow: BrowserWindow;
 const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));

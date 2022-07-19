@@ -88,6 +88,7 @@ export default function MenuList(props:any) {
       </ListItemButton>
 	<Collapse in={taskOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
+          {listItem("워크플로우","workflow",<StarBorder />,true)}
 	        {listItem("작업 모듈","module",<StarBorder />,true)}
           {listItem("스토리지","storage",<StarBorder />,true)}
         </List>

@@ -41,6 +41,7 @@ const getRows =()=> {
 }
 
 const columns: GridColDef[] = [
+    { field: 'name', headerName: '작업명', width: 150 },
     { field: 'task_type_nm', headerName: '작업 타입', width: 150 },
     { field: 'source_media_nm', headerName: '소스 미디어', width: 150 },
     { field: 'source_storage_nm', headerName: '소스 스토리지', width: 150 },
