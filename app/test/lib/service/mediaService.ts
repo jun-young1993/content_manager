@@ -35,9 +35,9 @@ class mediaService extends baseService{
 		})
 	}
 
-	findOutByContentId(contentId){
+	findOutByContentId(contentId:any){
 		return new Promise((resolve, reject) => {
-			this.getModel('Media').findOne({content_id : contentId, type : 'out'},(err,media)=>{
+			this.getModel('Media').findOne({content_id : contentId, type : 'out'},(err:any,media:any)=>{
 				resolve({
 					success : true,
 					data : media
@@ -50,5 +50,3 @@ class mediaService extends baseService{
 const media = new mediaService();
 
 
-console.log(require('../../../public/models/'+'Content'))
-console.log(media.findOutByContentId('qVci79SkN042Wqrn').then((resolve) => console.log(resolve)));

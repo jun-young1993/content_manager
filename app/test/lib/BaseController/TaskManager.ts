@@ -4,8 +4,8 @@ import 'module-alias/register';
 
 
 // const Task = require('@models/Task');
-const {Task} = require("@models/Task");
-const {TaskManager} = require("@task/TaskManager");
+
+const {TaskManager} = require("../../../public/lib/Task/TaskManager");
 import fs from "fs";
 
 
