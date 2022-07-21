@@ -75,7 +75,6 @@ var Module = /** @class */ (function () {
     };
     Module.first = function (event, args) {
         db.db().findOne(Object.assign(args, {
-            'use_yn': "N",
             'deleted_at': null
         }), function (err, data) {
             if (data) {

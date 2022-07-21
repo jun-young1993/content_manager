@@ -11,6 +11,11 @@ import Typography from '@mui/material/Typography';
 import { GridToolbarContainer} from '@mui/x-data-grid';
 import FormDialog from "@views/components/FormDialog";
 import Grid from '@mui/material/Grid';
+import TreeView from '@mui/lab/TreeView';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import TreeItem from '@mui/lab/TreeItem';
+const { createTreeHierarchy } = require('hierarchy-js');
 import {
 	Button,
 	Stack,
@@ -33,24 +38,77 @@ const getRows = () =>{
 		return workflows.data;
 	}
 }
+const reducer = (prevState:any, newState:any) => ({
+	...prevState,
+	...newState
+    })
 export default function WorkflowList() {
 	const [rows,setRows] = React.useState(getRows);
 	const baseAlert = ((<CustomAlert open={false} />));
     const [alert, setALert] = React.useState(baseAlert)
     const [details , setDetails] = React.useState([]);
-    const [workflowView , setWorkflowView] = React.useState(<WorkflowDetail 
-	id={"test"}
-	/>)	
-    
+    const [workflowId, setWorkflowId] = React.useState(null);
+    const [selectedId , setSelectedId] = React.useState(null);
+    const [treeData, setTreeData] = React.useReducer(reducer,{
+	id : 'no',
+	name : '작업흐름이 없습니다.'
+    })
+
+
+
+    const workflowByMenuItem = () =>{
+	const data = ipcRenderer.sendSync("@Module/all");
+	console.log('modules',data);
+	const items = []
+	if(data.success){
+		const module = data.data;
+		for(let codeItemIndex = 0; codeItemIndex < module.length; codeItemIndex++){
+			items.push((<MenuItem key={module[codeItemIndex]._id} value={module[codeItemIndex]._id}>{module[codeItemIndex].name}</MenuItem>))	
+		}
+		return (items);
+	}
+	
+    }
+
+    const [moduleItems , setModuleItems] = React.useState(workflowByMenuItem);
+    const makeHierarchy = (workflowId : any) => {
+	const ruleData = ipcRenderer.sendSync("@WorkFlowRule/getByWorkflowId",{workflow_id : workflowId});
+	return createTreeHierarchy(ruleData.data)[0];
+	
+    }
     const onClickItem = (evt : any, id:any) => {
-	console.log(id);
-	setWorkflowView(<WorkflowDetail 
-		id={id}
-	/>)
+	
+	let children:any = makeHierarchy(id);
+	
+	
+	setWorkflowId(id);
+	setTreeData(children);
+	setTree(renderTree(children))
+
     }
     const reload = () => {
         setRows(getRows);
     }
+    const [workflowDetailView,setWorkflowDetailView] = React.useState(<WorkflowDetail 
+	workflowId={workflowId}
+	treeData={treeData}
+	moduleItems={moduleItems}
+	/>);
+	const renderTree = (nodes: any) => (
+		
+		(
+			<TreeItem key={nodes.id} 
+				nodeId={nodes.id} 
+				label={nodes.name} 
+				>
+				{Array.isArray(nodes.children)
+				? nodes.children.map((node:any) => renderTree(node))
+				: null}
+			</TreeItem>
+			)
+		
+	);
+	const [tree , setTree] = React.useState(renderTree(treeData));	
   return (
 	<Grid container spacing={2} style={{height: '100vh'}} >
 		<Grid item xs={6}  style={{height: '100vh'}}>
@@ -86,10 +144,12 @@ export default function WorkflowList() {
 										/>));
 									return false;
 								}
-
+								
 								const insert = ipcRenderer.sendSync("@WorkFlow/insert",values);
+								
 								if(insert.success){
 									reload();
+									result.setOpen(false)
 									setALert((<CustomAlert serverity="success" 
 												title="등록되었습니다." 
 										/>));
@@ -145,7 +205,80 @@ export default function WorkflowList() {
 			</Box>
 		</Grid>
 		<Grid item xs={6} style={{height: '100vh'}}>
-			{workflowView}
+				<Stack spacing={2} direction="row">
+					<FormDialog
+					buttonTitle="등록"
+					values={{
+						name : '',
+						description : ''
+					}}
+					variant="standard"
+					fields={[
+						{
+							select : true,
+							name : "module_id",
+							label : '모듈',
+							fullWidth : true,
+							variant : "standard",
+							children : moduleItems
+						}
+					]}
+					onSaveClick={(result:any)=>{
+						if(result){
+							const values = result.values;
+							console.log(values);
+							if(values){
+								const moduleInfo = ipcRenderer.sendSync("@Module/first",{_id : values.module_id});
+								console.log(moduleInfo);
+								let addChildrenModule:any =  null;
+								let children:any = null;
+								
+								// const selecteIds = selectedId.split('/');
+
+									children = treeData['children'] =[{
+										id : values.module_id,
+										name : moduleInfo.data.name
+									}];
+									console.log('props.treeData',treeData);
+									treeData['children'] = children;	
+									
+									const insert =ipcRenderer.sendSync("@WorkFlowRule/insert",{
+										workflow_id : workflowId,
+										module_id : values.module_id,
+										module_name : moduleInfo.data.name,
+										parent_id : selectedId
+									})
+										
+						
+								
+								if(insert.data){
+									
+										setTree(renderTree(makeHierarchy(workflowId)));
+										result.setOpen(false);
+									
+								}
+							
+							}
+						
+							return false;
+						}
+
+					}}
+				/>
+							
+			</Stack>
+			<TreeView
+				aria-label="rich object"
+				defaultCollapseIcon={<ExpandMoreIcon />}
+				defaultExpanded={['start workflow']}
+				defaultExpandIcon={<ChevronRightIcon />}
+				onNodeSelect={(evt:any,nodeId:any)=>{
+					setSelectedId(nodeId);
+				}}
+				sx={{ height: '100vh', flexGrow: 1,  overflowY: 'auto' }}
+			>
+				{tree}
+			</TreeView>
 		</Grid>
 	</Grid>
   );

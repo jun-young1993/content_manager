@@ -84,7 +84,6 @@ class Module {
     static first(event,args){
 
         db.db().findOne(Object.assign(args,{
-            'use_yn' : "N",
             'deleted_at' : null,
         }),(err,data) => {
             if(data){

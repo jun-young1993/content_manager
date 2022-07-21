@@ -2,35 +2,12 @@
 // @ts-nocheck
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
-var TaskManager = require("../../../../lib/Task/TaskManager").TaskManager;
-var Workflow_1 = require("../../../../models/Workflow");
-var db = new Workflow_1.Workflow();
 var WorkflowRule_1 = require("../../../../models/WorkflowRule");
-var ruleModle = new WorkflowRule_1.WorkflowRule();
-var WorkFlow = /** @class */ (function () {
-    function WorkFlow() {
+var db = new WorkflowRule_1.WorkflowRule();
+var WorkFlowRule = /** @class */ (function () {
+    function WorkFlowRule() {
     }
-    WorkFlow.ingest = function (event, args) {
-        new TaskManager()
-            .initialize()
-            .then(function (taskParse) {
-            console.log('taskParse');
-            console.log(taskParse);
-            taskParse.module.copy();
-            return event.returnValue = {
-                success: true,
-                data: null
-            };
-        })["catch"](function (error) {
-            console.log('error');
-            console.log(error);
-            return event.returnValue = {
-                success: false,
-                data: null
-            };
-        });
-    };
-    WorkFlow.all = function (event, args) {
+    WorkFlowRule.all = function (event, args) {
         db.db().find({}, function (err, data) {
             if (data) {
                 return event.returnValue = {
@@ -40,7 +17,7 @@ var WorkFlow = /** @class */ (function () {
             }
         });
     };
-    WorkFlow.first = function (event, args) {
+    WorkFlowRule.first = function (event, args) {
         db.db().findOne(Object.assign(args, {
             'deleted_at': null
         }), function (err, data) {
@@ -57,7 +34,7 @@ var WorkFlow = /** @class */ (function () {
             }
         });
     };
-    WorkFlow["delete"] = function (event) {
+    WorkFlowRule["delete"] = function (event) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
@@ -78,7 +55,7 @@ var WorkFlow = /** @class */ (function () {
             });
         }
     };
-    WorkFlow.index = function (event, args) {
+    WorkFlowRule.index = function (event, args) {
         db.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
@@ -88,26 +65,19 @@ var WorkFlow = /** @class */ (function () {
             }
         });
     };
-    WorkFlow.insert = function (event, args) {
+    WorkFlowRule.insert = function (event, args) {
         db.db().insert(Object.assign(args, {
             'deleted_at': null
         }), function (err, data) {
             if (data) {
-                ruleModle.db().insert({
-                    workflow_id: data._id,
-                    module_id: null,
-                    module_name: 'start workflow',
-                    parent_id: null
-                }, function (err, data) {
-                    return event.returnValue = {
-                        success: true,
-                        data: data
-                    };
-                });
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
             }
         });
     };
-    WorkFlow.update = function (event) {
+    WorkFlowRule.update = function (event) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
@@ -119,6 +89,22 @@ var WorkFlow = /** @class */ (function () {
             };
         });
     };
-    return WorkFlow;
+    WorkFlowRule.getByWorkflowId = function (event, args) {
+        db.db().find(args, function (err, data) {
+            data.map(function (child) {
+                child.id = child._id;
+                child.name = child.module_name;
+                child.parentId = child.parent_id;
+                return child;
+            });
+            if (data) {
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                };
+            }
+        });
+    };
+    return WorkFlowRule;
 }());
-new BaseController_1.BaseController(WorkFlow);
+new BaseController_1.BaseController(WorkFlowRule);

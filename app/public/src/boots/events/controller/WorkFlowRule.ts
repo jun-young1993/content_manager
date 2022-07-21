@@ -1,33 +1,11 @@
 // @ts-nocheck
 
 import {BaseController} from "./BaseController";
-const {TaskManager} = require("../../../../lib/Task/TaskManager");
-import {Workflow as Model} from "../../../../models/Workflow";
+import {WorkflowRule as Model} from "../../../../models/WorkflowRule";
+
 const db = new Model();
-import {WorkflowRule as RuleModel} from "../../../../models/WorkflowRule";
-const ruleModle = new RuleModel();
-class WorkFlow{
-	static ingest(event,args){
-		new TaskManager()
-		.initialize()
-		.then((taskParse:any) => {
-			console.log('taskParse');
-			console.log(taskParse);
-			taskParse.module.copy();
-			return event.returnValue = {
-				success : true,
-				data : null
-			}
-		})
-		.catch((error:any)=>{
-			console.log('error');
-			console.log(error);
-			return event.returnValue = {
-				success : false,
-				data : null
-			}
-		})
-	}
+class WorkFlowRule{
+
 
 	static all(event, args){
 
@@ -99,18 +77,10 @@ class WorkFlow{
 	
 	
 		    if(data){
-			ruleModle.db().insert({
-				workflow_id : data._id,
-				module_id : null,
-				module_name : 'start workflow',
-				parent_id : null
-			},(err , data) => {
-				return event.returnValue = {
-					success : true,
-					data :data
-				}
-			})
-		
+			return event.returnValue = {
+				success : true,
+				data :data
+			}
 		
 		    }
 	
@@ -125,5 +95,27 @@ class WorkFlow{
 		    };
 		})
 	    }
+
+
+	static getByWorkflowId(event,args){
+		db.db().find(args,(err:any,data:any) => {
+			data.map((child) => {
+				child.id = child._id;
+				child.name = child.module_name
+				child.parentId = child.parent_id;
+				return child;
+			});
+			if(data){
+				return event.returnValue = {
+					success : true,
+					data : data
+				};
+			}
+			
+			
+		})
+	}
 }
-new BaseController(WorkFlow);
+	 
+	
+new BaseController(WorkFlowRule);
