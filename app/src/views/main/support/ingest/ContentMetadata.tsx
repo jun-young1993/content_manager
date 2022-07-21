@@ -23,10 +23,28 @@ export default function ContentMetadata(props:any){
 
 
     }
+
+    const workflowes = ipcRenderer.sendSync("@WorkFlow/all");
     if(metadataFields.success){
         const metaFields = metadataFields.data;
-
-        const fields:any = [];
+        
+        const defaultFields = [{
+            required : true,
+            helperText:"required field",
+            select: true,
+            fullWidth: true,
+            name : 'workflow',
+            label : '워크플로우',
+            variant : "standard",
+            color:"secondary",
+            focused : true,
+            defaultValue:workflowes.data[0]._id,
+            children : (workflowes.data.map((code: any) => {
+                return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
+            }))
+        }];
+        
+        const fields:any = [...defaultFields];
 
         metaFields.map((metaField:any) => {
             const fieldSet:any = {
@@ -65,9 +83,11 @@ export default function ContentMetadata(props:any){
             fields.push(fieldSet)
         });
 
+   
 
-
-
+        {fields.map((field:any) => {
+            return (React.cloneElement(<TextField />,field));
+        })}
         if(fields.length == 0){
         //     필드항목이 없습니다.
             return(
@@ -87,7 +107,7 @@ export default function ContentMetadata(props:any){
                         let element = <TextField onChange={updateInputValues} />;
 
 
-
+                    
 
                         // field.onChange = field.onChange ?  field.onChange : updateValues;
                         // field.value = newValues[field.name];

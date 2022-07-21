@@ -7,7 +7,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const steps = ['메타데이터 등록', '미디어 선택', 'Create an ad'];
+const steps = ['메타데이터 등록', '미디어 선택', '완료'];
 
 export default function Ingest() {
 	const [activeStep, setActiveStep] = React.useState(0);

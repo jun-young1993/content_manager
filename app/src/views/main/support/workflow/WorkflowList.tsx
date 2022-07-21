@@ -46,7 +46,7 @@ export default function WorkflowList() {
 	const [rows,setRows] = React.useState(getRows);
 	const baseAlert = ((<CustomAlert open={false} />));
     const [alert, setALert] = React.useState(baseAlert)
-    const [details , setDetails] = React.useState([]);
+    const [expanded, setExpanded] = React.useState<string[]>([]);
     const [workflowId, setWorkflowId] = React.useState(null);
     const [selectedId , setSelectedId] = React.useState(null);
     const [treeData, setTreeData] = React.useReducer(reducer,{
@@ -73,9 +73,19 @@ export default function WorkflowList() {
     const [moduleItems , setModuleItems] = React.useState(workflowByMenuItem);
     const makeHierarchy = (workflowId : any) => {
 	const ruleData = ipcRenderer.sendSync("@WorkFlowRule/getByWorkflowId",{workflow_id : workflowId});
+	const expandedArray:any = [];
+	ruleData.data.map((rule:any) => {
+		console.log('rule',rule)
+		expandedArray.push(rule._id);
+	})
+	console.log('beforExpanded',expandedArray)
+	setExpanded(expandedArray);
+	console.log('expanded',expandedArray)
+	console.log('hierarchy',createTreeHierarchy(ruleData.data)[0]);
 	return createTreeHierarchy(ruleData.data)[0];
 	
     }
+
     const onClickItem = (evt : any, id:any) => {
 	
 	let children:any = makeHierarchy(id);
@@ -270,7 +280,8 @@ export default function WorkflowList() {
 			<TreeView
 				aria-label="rich object"
 				defaultCollapseIcon={<ExpandMoreIcon />}
-				defaultExpanded={['start workflow']}
+				defaultExpanded={expanded}
+				expanded={expanded}
 				defaultExpandIcon={<ChevronRightIcon />}
 				onNodeSelect={(evt:any,nodeId:any)=>{
 					setSelectedId(nodeId);

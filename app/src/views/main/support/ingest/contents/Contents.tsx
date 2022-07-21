@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import * as Path from "path";
 
 
@@ -93,10 +94,19 @@ export default function Contents(props:any) {
     //     // );
     // }
     // console.log(makeListItem(['no item']));
-    console.log('files',files);
+    const fields = [{
+        select: true,
+        fullWidth: true,
+        label : '워크플로우',
+        onChange: () => {
+
+        },
+        children : []
+    }]
 
     return (
-        <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
+        <Box sx={{ flexGrow: 1, width: '100%' }}>
+ 
             <FormGroup row>
                 {/*<FormControlLabel*/}
                 {/*    control={*/}

@@ -2,6 +2,7 @@ import * as React from 'react';
 import ContentMetadata from "@views/main/support/ingest/ContentMetadata";
 import Contents from "@views/main/support/ingest/contents/Contents";
 import IngestRequest from "@views/main/support/ingest/IngestRequest";
+import IngestInfo from "@views/main/support/ingest/IngestInfo";
 const electron = window.require('electron');
 
 const ipcRenderer = electron.ipcRenderer;
@@ -20,9 +21,7 @@ export default function IngestStep(props:Props) {
     const [fields, setFields] = React.useState([]);
 
     const [metadataValues, setMetadataValues] = React.useReducer(metadataValuesReducer, {});
-    React.useEffect(()=>{
-        console.log('activeStep',activeStep);
-    },[activeStep])
+    
     if(props.activeStep == 0){
         step = <ContentMetadata
             setMetadataValues={setMetadataValues}
@@ -31,20 +30,19 @@ export default function IngestStep(props:Props) {
         step = <Contents setFiles={setFiles}></Contents>;
     }else if(props.activeStep == 2){
         console.log('content insert');
-
-
+        const metadata = metadataValues;
+        step = <IngestRequest metadata={metadata} files={files}/>;
+        
 
 
         // console.log(metadataValues);
         // console.log(files);
-        const metadata = metadataValues;
+        
         // Object.assign(metadata,{id : uniqid()});
         
         
-        step = <IngestRequest metadata={metadata} files={files}/>;
+        
         // step = <div></div>
-    }else{
-        step = <div></div>;
     }
     return (
         step
