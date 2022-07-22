@@ -11,18 +11,30 @@ router.get('/:contentId', (req:any, res:any) => {
 	
 	mediaSv.findOutByContentId(contentId).then((media:any)=>{
 		if(media.success){
-			const read = fs.createReadStream(path.resolve(media.data.path));
-			const pass = new stream.PassThrough();
-			stream.pipeline(
-				read,
-				pass,
-				(err) => {
-					if(err){
-						return res.sendStatus(400);
-					}
+			if(media.data){
+				if(media.data.path){
+					const read = fs.createReadStream(path.resolve(media.data.path));
+					const pass = new stream.PassThrough();
+					stream.pipeline(
+						read,
+						pass,
+						(err) => {
+							if(err){
+								return res.sendStatus(400);
+							}
+						}
+					)
+					pass.pipe(res);
+				}else{
+					return res.sendStatus(400);
 				}
-			)
-			pass.pipe(res);
+			
+			}else{
+				return res.sendStatus(400);
+			}
+	
+		}else{
+			return res.sendStatus(400);
 		}
 	
 		

@@ -28,7 +28,7 @@ var WorkflowService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
-    WorkflowService.prototype.getWorkflowRuleByWorkflowId = function (workflowId) {
+    WorkflowService.prototype.hierarchyRuleByWorkflowId = function (workflowId) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {

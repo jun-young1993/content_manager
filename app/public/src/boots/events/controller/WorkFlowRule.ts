@@ -19,6 +19,37 @@ class WorkFlowRule{
 	
 		})
 	    }
+
+	static getFirstRules(event, workflowId){
+		db.db().findOne({workflow_id : workflowId, parent_id : null},(err,data)=>{
+			if(data){
+				const rootId = data._id;
+				db.db().find({parent_id : rootId},(err,data) => {
+					if(data){
+						return event.returnValue = {
+							success : true,
+							data : data
+						}
+					}else{
+						return event.returnValue = {
+							success : false,
+							data : null,
+							msg : err
+						}
+					}
+				
+				})
+			}else{
+				return event.returnValue = {
+					success : false,
+					data : null,
+					msg : err
+				}
+			}
+
+			
+		})
+	}
 	    static first(event,args){
 
 		db.db().findOne(Object.assign(args,{

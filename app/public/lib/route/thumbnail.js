@@ -10,14 +10,24 @@ router.get('/:contentId', function (req, res) {
     var contentId = req.params.contentId;
     mediaSv.findOutByContentId(contentId).then(function (media) {
         if (media.success) {
-            var read = fs.createReadStream(path.resolve(media.data.path));
-            var pass = new stream.PassThrough();
-            stream.pipeline(read, pass, function (err) {
-                if (err) {
+            if (media.data) {
+                if (media.data.path) {
+                    var read = fs.createReadStream(path.resolve(media.data.path));
+                    var pass = new stream.PassThrough();
+                    stream.pipeline(read, pass, function (err) {
+                        if (err) {
+                            return res.sendStatus(400);
+                        }
+                    });
+                    pass.pipe(res);
+                }
+                else {
                     return res.sendStatus(400);
                 }
-            });
-            pass.pipe(res);
+            }
+            else {
+                return res.sendStatus(400);
+            }
         }
     });
 });

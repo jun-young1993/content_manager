@@ -13,7 +13,7 @@ class WorkFlow{
 		.then((taskParse:any) => {
 			console.log('taskParse');
 			console.log(taskParse);
-			taskParse.module.copy();
+			// taskParse.module.copy();
 			return event.returnValue = {
 				success : true,
 				data : null

@@ -33,18 +33,20 @@ export default function ContentMetadata(props:any){
             helperText:"required field",
             select: true,
             fullWidth: true,
-            name : 'workflow',
+            name : 'workflow_id',
             label : '워크플로우',
             variant : "standard",
             color:"secondary",
             focused : true,
-            defaultValue:workflowes.data[0]._id,
+            // defaultValue:workflowes.data[0]._id,
             children : (workflowes.data.map((code: any) => {
                 return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
             }))
         }];
         
         const fields:any = [...defaultFields];
+
+   
 
         metaFields.map((metaField:any) => {
             const fieldSet:any = {
@@ -85,9 +87,7 @@ export default function ContentMetadata(props:any){
 
    
 
-        {fields.map((field:any) => {
-            return (React.cloneElement(<TextField />,field));
-        })}
+
         if(fields.length == 0){
         //     필드항목이 없습니다.
             return(
@@ -106,9 +106,16 @@ export default function ContentMetadata(props:any){
                         // }
                         let element = <TextField onChange={updateInputValues} />;
 
-
+                        // console.log('element',element,field)
                     
-
+                        // if(field.defaultValue){
+                        //     updateInputValues({
+                        //         target: {
+                        //             name : field.name,
+                        //             value : field.value
+                        //         }
+                        //     })
+                        // }
                         // field.onChange = field.onChange ?  field.onChange : updateValues;
                         // field.value = newValues[field.name];
 

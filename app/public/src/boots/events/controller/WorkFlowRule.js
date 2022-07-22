@@ -17,6 +17,35 @@ var WorkFlowRule = /** @class */ (function () {
             }
         });
     };
+    WorkFlowRule.getFirstRules = function (event, workflowId) {
+        db.db().findOne({ workflow_id: workflowId, parent_id: null }, function (err, data) {
+            if (data) {
+                var rootId = data._id;
+                db.db().find({ parent_id: rootId }, function (err, data) {
+                    if (data) {
+                        return event.returnValue = {
+                            success: true,
+                            data: data
+                        };
+                    }
+                    else {
+                        return event.returnValue = {
+                            success: false,
+                            data: null,
+                            msg: err
+                        };
+                    }
+                });
+            }
+            else {
+                return event.returnValue = {
+                    success: false,
+                    data: null,
+                    msg: err
+                };
+            }
+        });
+    };
     WorkFlowRule.first = function (event, args) {
         db.db().findOne(Object.assign(args, {
             'deleted_at': null

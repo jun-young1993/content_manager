@@ -9,7 +9,7 @@ export class FileManager {
 		console.log('[start FileManager]');
 		this.params = params;
 
-
+		
 	}
 
 	copy(){

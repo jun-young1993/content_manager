@@ -39,6 +39,8 @@ exports.__esModule = true;
 exports.TaskParse = void 0;
 var Storage = require("../../models/Storage").Storage;
 var Media = require("../../models/Media").Media;
+var Task = require("../../models/Task").Task;
+var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
 var path = require("path");
 var TaskParse = /** @class */ (function () {
@@ -54,9 +56,11 @@ var TaskParse = /** @class */ (function () {
         this.sourceMedia = null;
         this.targetMedia = null;
         this.module = null;
+        this.moduleInfo = null;
         this.task = null;
         console.log('before start task parse');
         this.task = task;
+        // task.module_id;
         console.log('start task parse');
         console.log(this);
         // this.storageDb = new Storage();
@@ -75,7 +79,6 @@ var TaskParse = /** @class */ (function () {
                                         console.log(err);
                                         console.log(storage);
                                         if (storage) {
-                                            console.log('get storage', storage);
                                             resolve(storage);
                                         }
                                         else {
@@ -175,13 +178,6 @@ var TaskParse = /** @class */ (function () {
             });
         });
     };
-    TaskParse.prototype.getModule = function () {
-        var type = this.task.type;
-        var modules = {
-            fs: FileManager
-        };
-        return modules[type];
-    };
     TaskParse.prototype.getSourceDir = function () {
         return path.dirname(this.sourceMedia.path);
     };
@@ -200,42 +196,151 @@ var TaskParse = /** @class */ (function () {
         }
         return path.resolve(this.getSourceDir(), this.getSourceBasenaem() + this.getSourceExtention());
     };
+    TaskParse.prototype.getModuleInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this, module;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _this = this;
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                console.log('getModuleInfo', _this.task.module_id);
+                                if (_this.task.module_id) {
+                                    new Module().db().findOne({ _id: _this.task.module_id }, function (err, module) {
+                                        if (module) {
+                                            resolve(module);
+                                        }
+                                        else {
+                                            resolve(null);
+                                        }
+                                    });
+                                }
+                                else {
+                                    resolve(null);
+                                }
+                            })];
+                    case 1:
+                        module = _a.sent();
+                        return [2 /*return*/, module];
+                }
+            });
+        });
+    };
+    ;
+    TaskParse.prototype.setMedia = function (org) {
+        return __awaiter(this, void 0, void 0, function () {
+            var media;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            new Media().db().insert(Object.assign({
+                                is_media: true
+                            }, org), function (err, data) {
+                                resolve(data);
+                            });
+                        })];
+                    case 1:
+                        media = _a.sent();
+                        return [2 /*return*/, media];
+                }
+            });
+        });
+    };
+    TaskParse.prototype.updateTask = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this, task;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _this = this;
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                new Task().db().update({ _id: _this.task._id }, {
+                                    $set: {
+                                        source_media_id: _this.sourceMedia._id,
+                                        target_media_id: _this.targetMedia._id,
+                                        source: _this.sourceMedia.full_path,
+                                        target: _this.targetMedia.full_path
+                                    }
+                                }, function (err, data) {
+                                    if (data) {
+                                        new Task().db().findOne({ _id: _this.task._id }, function (err, taskData) {
+                                            resolve(taskData);
+                                        });
+                                    }
+                                });
+                            })];
+                    case 1:
+                        task = _a.sent();
+                        return [2 /*return*/, task];
+                }
+            });
+        });
+    };
+    TaskParse.prototype.getModule = function (type) {
+        var modules = {
+            fs: FileManager
+        };
+        return modules[type];
+    };
     TaskParse.prototype.getTaskParse = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var task, _a, _b, _c, _d, moduleParams, module;
+            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, _b, _c, newTask, taskType, _d, moduleTypeCode, moduleTypeMethod, module_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
                         task = this.task;
                         // base parsing
                         _a = this;
-                        return [4 /*yield*/, this.getSourceMedia()];
+                        return [4 /*yield*/, this.getModuleInfo()];
                     case 1:
                         // base parsing
-                        _a.sourceMedia = _e.sent();
-                        _b = this;
-                        return [4 /*yield*/, this.getTargetMedia()];
+                        _a.moduleInfo = _e.sent();
+                        console.log('moduleInfo', this.moduleInfo);
+                        if (!this.moduleInfo) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.getStorage(this.moduleInfo.target_storage)];
                     case 2:
-                        _b.targetMedia = _e.sent();
-                        _c = this;
-                        return [4 /*yield*/, this.getSourceStorage()];
+                        targetStorage = _e.sent();
+                        return [4 /*yield*/, this.getStorage(this.moduleInfo.source_storage)];
                     case 3:
-                        _c.sourceStorage = _e.sent();
-                        _d = this;
-                        return [4 /*yield*/, this.getTargetStorage()];
+                        sourceStorage = _e.sent();
+                        sourceStoragePath = sourceStorage.path;
+                        targetStoragePath = targetStorage.path;
+                        if (this.moduleInfo.source_media) {
+                            sourceStoragePath = '';
+                        }
+                        _b = this;
+                        return [4 /*yield*/, this.setMedia({
+                                content_id: this.task.content_id,
+                                type: this.moduleInfo.source_media,
+                                storage: this.moduleInfo.source_storage,
+                                path: this.task.source,
+                                full_path: path.resolve(sourceStoragePath, this.task.source)
+                            })];
                     case 4:
-                        _d.targetStorage = _e.sent();
-                        this.sourceStoragePath = this.sourceStorage ? this.sourceStorage.path : null;
-                        this.sourceStorageType = this.sourceStorage ? this.sourceStorage.type : null;
-                        this.targetStoragePath = this.targetStorage ? this.targetStorage.path : null;
-                        this.targetStorageType = this.targetStorage ? this.targetStorage.type : null;
-                        moduleParams = {
-                            source: this.getSource(),
-                            target: this.targetStoragePath + '/' + path.basename(this.getSource())
-                        };
-                        module = this.getModule();
-                        this.module = new module(moduleParams);
+                        _b.sourceMedia = _e.sent();
+                        console.log('after source media', this.sourceMedia);
+                        _c = this;
+                        return [4 /*yield*/, this.setMedia({
+                                content_id: this.task.content_id,
+                                type: this.moduleInfo.target_media,
+                                storage: this.moduleInfo.target_storage,
+                                path: this.task._id + path.extname(this.task.source),
+                                full_path: path.resolve(targetStoragePath, this.task._id + path.extname(this.task.source))
+                            })];
+                    case 5:
+                        _c.targetMedia = _e.sent();
+                        console.log('after source media', this.targetMedia);
+                        return [4 /*yield*/, this.updateTask()];
+                    case 6:
+                        newTask = _e.sent();
+                        console.log('new Task', newTask);
+                        taskType = this.moduleInfo.task_type;
+                        _d = taskType.split('_'), moduleTypeCode = _d[0], moduleTypeMethod = _d[1];
+                        module_1 = this.getModule(moduleTypeCode.toLowerCase());
+                        this.module = new module_1(newTask);
+                        this.module[moduleTypeMethod.toLowerCase()]();
                         return [2 /*return*/, Promise.resolve(this)];
+                    case 7: return [2 /*return*/, Promise.reject(null)];
                 }
             });
         });
