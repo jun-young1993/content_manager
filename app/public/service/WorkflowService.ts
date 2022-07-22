@@ -13,7 +13,7 @@ export class WorkflowService extends BaseService{
 	hierarchyRuleByWorkflowId(workflowId : any){
 		return new Promise((resolve, reject) => {
 			this.getModel('WorkflowRule').find({workflow_id : workflowId},(err:any,data:any) => {
-				data.map((child) => {
+				data.map((child:any) => {
 					child.id = child._id;
 					child.name = child.module_name
 					child.parentId = child.parent_id;

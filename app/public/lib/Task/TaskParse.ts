@@ -166,7 +166,7 @@ export class TaskParse {
 		return module;
 	};
 
-	async setMedia(org){
+	async setMedia(org:any){
 
 		const media = await new Promise((resolve,reject) =>{
 			
@@ -203,7 +203,7 @@ export class TaskParse {
 		return task;
 		
 	}
-	getModule(type){
+	getModule(type:any){
 
 		const modules: any = {
 			fs : FileManager

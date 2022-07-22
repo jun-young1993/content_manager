@@ -29,6 +29,9 @@ router.get('/:contentId', function (req, res) {
                 return res.sendStatus(400);
             }
         }
+        else {
+            return res.sendStatus(400);
+        }
     });
 });
 module.exports = router;
