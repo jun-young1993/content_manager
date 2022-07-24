@@ -5,8 +5,10 @@ const {Task} = require('../../models/Task');
 const {TaskParse} = require('./TaskParse');
 
 export class TaskManager{
-	private TaskDb = new Task().db();
+	private TaskDb:any;
 	constructor(){
+		this.TaskDb = new Task().db();
+		console.log('[start taskManger]')
 		/*
 		{
 			status : 'queue'
@@ -50,7 +52,7 @@ export class TaskManager{
 		Object.assign(options,params);
 		return new Promise((resolve, reject) => {
 			this.getQueued(options).then((tasks:any) => {
-				
+				console.log('get Queued',tasks);
 				if(tasks){
 					resolve(tasks[0]);
 				}

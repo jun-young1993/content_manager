@@ -57,7 +57,7 @@ export class TaskParse {
 		})
 		return storage;
 	};
-	async getMedia(mediaId:any){
+	async getMedia2(mediaId:any){
 
 
 
@@ -165,16 +165,33 @@ export class TaskParse {
 		})
 		return module;
 	};
-
-	async setMedia(org:any){
-
-		const media = await new Promise((resolve,reject) =>{
-			
-			new Media().db().insert(Object.assign({
-				is_media : true
-			},org),(err:any, data:any) => {
+	async getMedia(org:any) {
+		const mediaDb = new Media().db();
+		const media = await new Promise((resolve,reject) => {
+			mediaDb.findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
 				resolve(data);
 			})
+
+		})
+		return media;
+	}
+	async setMedia(org:any){
+		const mediaDb = new Media().db();
+		const media = await new Promise((resolve,reject) =>{
+			mediaDb.findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
+				if(data){
+					mediaDb.update({_id : data._id},{$set : org},(err:any, data:any) => {
+						resolve(data);
+					})
+				}else{
+					mediaDb.insert(Object.assign({
+						is_media : true
+					},org),(err:any, data:any) => {
+						resolve(data);
+					})
+				}
+			})
+
 		})
 		return media;
 		
@@ -222,9 +239,17 @@ export class TaskParse {
 			const sourceStorage:any = await this.getStorage(this.moduleInfo.source_storage)
 			let sourceStoragePath = sourceStorage.path;
 			const targetStoragePath = targetStorage.path;
-			if(this.moduleInfo.source_media){
+			if(this.moduleInfo.source_media == 'out'){
 				sourceStoragePath = '';
+			}else{
+				const sourceMedia:any = await this.getMedia({content_id : this.task.content_id, type : this.moduleInfo.source_media})
+				console.log('[sourceMedia]',sourceMedia);
+				if(sourceMedia){
+					this.task.source = sourceMedia.path;
+					console.log('[chanage this.task.source]',this.task.source);
+				}
 			}
+
 			this.sourceMedia = await this.setMedia({
 				content_id : this.task.content_id,
 				type : this.moduleInfo.source_media,
@@ -240,7 +265,7 @@ export class TaskParse {
 				path : this.task._id+path.extname(this.task.source),
 				full_path : path.resolve(targetStoragePath,this.task._id+path.extname(this.task.source))
 			})
-			console.log('after source media',this.targetMedia);
+			console.log('after target media',this.targetMedia);
 			const newTask = await this.updateTask();
 			console.log('new Task',newTask);
 			

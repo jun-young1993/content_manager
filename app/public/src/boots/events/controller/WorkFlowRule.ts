@@ -20,16 +20,32 @@ class WorkFlowRule{
 		})
 	    }
 
-	static getFirstRules(event, workflowId){
-		db.db().findOne({workflow_id : workflowId, parent_id : null},(err,data)=>{
-			if(data){
-				const rootId = data._id;
-				db.db().find({parent_id : rootId},(err,data) => {
+	static getFirstRules(event, workflowId:any){
+		console.log('get First rules worfklow id',workflowId);
+			try{
+				console.log('db',db)
+				db.db().findOne({workflow_id : workflowId, parent_id : null},
+					(err:any,data:any)=>{
+					console.log('findOneerrr',err);
+					console.log('get First rules',data);
 					if(data){
-						return event.returnValue = {
-							success : true,
-							data : data
-						}
+						const rootId = data._id;
+						db.db().find({parent_id : rootId},(err,data) => {
+							console.log('get First rules find',data);
+							if(data){
+								return event.returnValue = {
+									success : true,
+									data : data
+								}
+							}else{
+								return event.returnValue = {
+									success : false,
+									data : null,
+									msg : err
+								}
+							}
+
+						})
 					}else{
 						return event.returnValue = {
 							success : false,
@@ -37,19 +53,14 @@ class WorkFlowRule{
 							msg : err
 						}
 					}
-				
+
+
 				})
-			}else{
-				return event.returnValue = {
-					success : false,
-					data : null,
-					msg : err
-				}
+			}catch(e){
+				console.log('Exception get First rules',e);
 			}
 
-			
-		})
-	}
+		}
 	    static first(event,args){
 
 		db.db().findOne(Object.assign(args,{

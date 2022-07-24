@@ -1,14 +1,14 @@
 const fs = require("fs");
-
+const {TaskUpdater} = require('../TaskUpdater');
 
 export class FileManager {
 	
 	private params:any;
-
+	private taskUpdater:any;
 	constructor(params:any){
 		console.log('[start FileManager]');
 		this.params = params;
-
+		this.taskUpdater = new TaskUpdater(params._id);
 		
 	}
 
@@ -23,6 +23,7 @@ export class FileManager {
 			})
 			.on('finish',()=>{
 				console.log('stream finish');
+				this.taskUpdater.complete();
 			});
 	}
 

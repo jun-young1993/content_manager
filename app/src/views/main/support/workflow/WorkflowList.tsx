@@ -74,10 +74,22 @@ export default function WorkflowList() {
     const makeHierarchy = (workflowId : any) => {
 	const ruleData = ipcRenderer.sendSync("@WorkFlowRule/getByWorkflowId",{workflow_id : workflowId});
 	const expandedArray:any = [];
-	ruleData.data.map((rule:any) => {
-		console.log('rule',rule)
-		expandedArray.push(rule._id);
-	})
+	if(ruleData){
+		if(ruleData.success){
+			if(ruleData.data){
+				if(ruleData.data.length != 0){
+					ruleData.data.map((rule:any) => {
+						console.log('rule',rule)
+						expandedArray.push(rule._id);
+					})
+				}
+
+			}
+
+		}
+
+	}
+
 	console.log('beforExpanded',expandedArray)
 	setExpanded(expandedArray);
 	console.log('expanded',expandedArray)

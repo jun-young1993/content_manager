@@ -18,33 +18,43 @@ var WorkFlowRule = /** @class */ (function () {
         });
     };
     WorkFlowRule.getFirstRules = function (event, workflowId) {
-        db.db().findOne({ workflow_id: workflowId, parent_id: null }, function (err, data) {
-            if (data) {
-                var rootId = data._id;
-                db.db().find({ parent_id: rootId }, function (err, data) {
-                    if (data) {
-                        return event.returnValue = {
-                            success: true,
-                            data: data
-                        };
-                    }
-                    else {
-                        return event.returnValue = {
-                            success: false,
-                            data: null,
-                            msg: err
-                        };
-                    }
-                });
-            }
-            else {
-                return event.returnValue = {
-                    success: false,
-                    data: null,
-                    msg: err
-                };
-            }
-        });
+        console.log('get First rules worfklow id', workflowId);
+        try {
+            console.log('db', db);
+            db.db().findOne({ workflow_id: workflowId, parent_id: null }, function (err, data) {
+                console.log('findOneerrr', err);
+                console.log('get First rules', data);
+                if (data) {
+                    var rootId = data._id;
+                    db.db().find({ parent_id: rootId }, function (err, data) {
+                        console.log('get First rules find', data);
+                        if (data) {
+                            return event.returnValue = {
+                                success: true,
+                                data: data
+                            };
+                        }
+                        else {
+                            return event.returnValue = {
+                                success: false,
+                                data: null,
+                                msg: err
+                            };
+                        }
+                    });
+                }
+                else {
+                    return event.returnValue = {
+                        success: false,
+                        data: null,
+                        msg: err
+                    };
+                }
+            });
+        }
+        catch (e) {
+            console.log('Exception get First rules', e);
+        }
     };
     WorkFlowRule.first = function (event, args) {
         db.db().findOne(Object.assign(args, {

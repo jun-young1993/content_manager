@@ -10,18 +10,37 @@ const {Task} = require("@models/Task");
 const tdb = new Task();
 const {Module} = require("@models/Module");
 const mdb = new Module();
+const {Media} = require("@models/Media");
+const mediaDb = new Media();
 const { createTreeHierarchy } = require('hierarchy-js');
 const { join } = require("path");
 // const {Module} = require("@models/Module");
 // const dbm = new Module();
-
-
-
+tdb.db().findOne({_id : '995VAwrwpcFtyNrL'},(err,data)=>{
+    console.log(data);
+})
+// tdb.db().find({status : 'queue'}).sort({priority : -1}).limit(1).exec((err,data)=>{
+//     console.log(data);
+//
+// })
+// tdb.db().findOne({_id : 'dtSbRILvxV3t3LFb'},(err,taskData) => {
+//         const ruleId = taskData.rule_id;
+//         const workflowId = taskData.workflow_id;
+//         console.log('taskData',taskData);
+//     wdb.db().find({parent_id : ruleId},(err,workflowDatas) => {
+//             console.log(workflowDatas);
+//     })
+// })
+//
+// return;
 // db.db().findOne({_id : 'I2Pn8lsiKU5LCS4o'},(err, data) => {
-
-    wdb.db().findOne({workflow_id : 'I2Pn8lsiKU5LCS4o', parent_id : null},(err,data)=>{
+// mediaDb.db().find({content_id : 'XCWY4fX064W8FVwQ'},(err, data) =>{
+//     console.log(data);
+// })
+return;
+wdb.db().findOne({workflow_id : 'SdM0se6fbDAizR9V', parent_id : null},(err,data)=>{
         if(data){
-            const rootId = data._id;;
+            const rootId = data._id;
             
             wdb.db().find({parent_id : rootId}, (err,data) => {
                 console.log(data)

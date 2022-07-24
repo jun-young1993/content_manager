@@ -98,7 +98,7 @@ var TaskParse = /** @class */ (function () {
         });
     };
     ;
-    TaskParse.prototype.getMedia = function (mediaId) {
+    TaskParse.prototype.getMedia2 = function (mediaId) {
         return __awaiter(this, void 0, void 0, function () {
             var media;
             return __generator(this, function (_a) {
@@ -227,18 +227,48 @@ var TaskParse = /** @class */ (function () {
         });
     };
     ;
-    TaskParse.prototype.setMedia = function (org) {
+    TaskParse.prototype.getMedia = function (org) {
         return __awaiter(this, void 0, void 0, function () {
-            var media;
+            var mediaDb, media;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
-                            new Media().db().insert(Object.assign({
-                                is_media: true
-                            }, org), function (err, data) {
-                                resolve(data);
-                            });
-                        })];
+                    case 0:
+                        mediaDb = new Media().db();
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                mediaDb.findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
+                                    resolve(data);
+                                });
+                            })];
+                    case 1:
+                        media = _a.sent();
+                        return [2 /*return*/, media];
+                }
+            });
+        });
+    };
+    TaskParse.prototype.setMedia = function (org) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mediaDb, media;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        mediaDb = new Media().db();
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                mediaDb.findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
+                                    if (data) {
+                                        mediaDb.update({ _id: data._id }, { $set: org }, function (err, data) {
+                                            resolve(data);
+                                        });
+                                    }
+                                    else {
+                                        mediaDb.insert(Object.assign({
+                                            is_media: true
+                                        }, org), function (err, data) {
+                                            resolve(data);
+                                        });
+                                    }
+                                });
+                            })];
                     case 1:
                         media = _a.sent();
                         return [2 /*return*/, media];
@@ -284,7 +314,7 @@ var TaskParse = /** @class */ (function () {
     };
     TaskParse.prototype.getTaskParse = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, _b, _c, newTask, taskType, _d, moduleTypeCode, moduleTypeMethod, module_1;
+            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, sourceMedia, _b, _c, newTask, taskType, _d, moduleTypeCode, moduleTypeMethod, module_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -296,7 +326,7 @@ var TaskParse = /** @class */ (function () {
                         // base parsing
                         _a.moduleInfo = _e.sent();
                         console.log('moduleInfo', this.moduleInfo);
-                        if (!this.moduleInfo) return [3 /*break*/, 7];
+                        if (!this.moduleInfo) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.getStorage(this.moduleInfo.target_storage)];
                     case 2:
                         targetStorage = _e.sent();
@@ -305,9 +335,19 @@ var TaskParse = /** @class */ (function () {
                         sourceStorage = _e.sent();
                         sourceStoragePath = sourceStorage.path;
                         targetStoragePath = targetStorage.path;
-                        if (this.moduleInfo.source_media) {
-                            sourceStoragePath = '';
+                        if (!(this.moduleInfo.source_media == 'out')) return [3 /*break*/, 4];
+                        sourceStoragePath = '';
+                        return [3 /*break*/, 6];
+                    case 4: return [4 /*yield*/, this.getMedia({ content_id: this.task.content_id, type: this.moduleInfo.source_media })];
+                    case 5:
+                        sourceMedia = _e.sent();
+                        console.log('[sourceMedia]', sourceMedia);
+                        if (sourceMedia) {
+                            this.task.source = sourceMedia.path;
+                            console.log('[chanage this.task.source]', this.task.source);
                         }
+                        _e.label = 6;
+                    case 6:
                         _b = this;
                         return [4 /*yield*/, this.setMedia({
                                 content_id: this.task.content_id,
@@ -316,7 +356,7 @@ var TaskParse = /** @class */ (function () {
                                 path: this.task.source,
                                 full_path: path.resolve(sourceStoragePath, this.task.source)
                             })];
-                    case 4:
+                    case 7:
                         _b.sourceMedia = _e.sent();
                         console.log('after source media', this.sourceMedia);
                         _c = this;
@@ -327,11 +367,11 @@ var TaskParse = /** @class */ (function () {
                                 path: this.task._id + path.extname(this.task.source),
                                 full_path: path.resolve(targetStoragePath, this.task._id + path.extname(this.task.source))
                             })];
-                    case 5:
+                    case 8:
                         _c.targetMedia = _e.sent();
                         console.log('after source media', this.targetMedia);
                         return [4 /*yield*/, this.updateTask()];
-                    case 6:
+                    case 9:
                         newTask = _e.sent();
                         console.log('new Task', newTask);
                         taskType = this.moduleInfo.task_type;
@@ -340,7 +380,7 @@ var TaskParse = /** @class */ (function () {
                         this.module = new module_1(newTask);
                         this.module[moduleTypeMethod.toLowerCase()]();
                         return [2 /*return*/, Promise.resolve(this)];
-                    case 7: return [2 /*return*/, Promise.reject(null)];
+                    case 10: return [2 /*return*/, Promise.reject(null)];
                 }
             });
         });

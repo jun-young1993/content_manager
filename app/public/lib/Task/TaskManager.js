@@ -6,6 +6,7 @@ var TaskParse = require('./TaskParse').TaskParse;
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();
+        console.log('[start taskManger]');
         /*
         {
             status : 'queue'
@@ -47,6 +48,7 @@ var TaskManager = /** @class */ (function () {
         Object.assign(options, params);
         return new Promise(function (resolve, reject) {
             _this.getQueued(options).then(function (tasks) {
+                console.log('get Queued', tasks);
                 if (tasks) {
                     resolve(tasks[0]);
                 }
