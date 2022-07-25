@@ -14,11 +14,31 @@ const {Media} = require("@models/Media");
 const mediaDb = new Media();
 const { createTreeHierarchy } = require('hierarchy-js');
 const { join } = require("path");
+tdb.db().findOne({_id : 'sW5himP0mmlefe6a'},(err,data) => {
+    
+    tdb.db().update({_id : data._id},{$set:{status : 'complete'}},(err,data) => {
+        console.log('err',err);
+        console.log('update data',data);
+        tdb.db().find({status : 'complete'},(err,data)=>{
+            console.log(data)
+        })
+    })
+});
+return;
+// wdb.db().find({workflow_id : 'CEFm95JwruHbRIyN'},(err,data) => {
+//     data.map((child) => {
+//         child.id = child._id;
+//         child.name = child.module_name
+//         child.parentId = child.parent_id;
+//         return child;
+//     });
+//     console.log(data);
+// })
 // const {Module} = require("@models/Module");
 // const dbm = new Module();
-tdb.db().findOne({_id : '995VAwrwpcFtyNrL'},(err,data)=>{
-    console.log(data);
-})
+// tdb.db().findOne({_id : '995VAwrwpcFtyNrL'},(err,data)=>{
+//     console.log(data);
+// })
 // tdb.db().find({status : 'queue'}).sort({priority : -1}).limit(1).exec((err,data)=>{
 //     console.log(data);
 //

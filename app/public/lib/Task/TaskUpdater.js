@@ -52,21 +52,24 @@ var TaskUpdater = /** @class */ (function () {
         });
     };
     TaskUpdater.prototype.complete = function () {
+        var _this_1 = this;
         var _this = this;
         this.taskModel.update({ _id: this.taskId }, { $set: { status: 'complete' } }, function (err, update) {
-            console.log('update complete', update);
-            if (update) {
-                _this.nextTaskRule().then(function (resolve) {
-                    console.log('resolve', resolve);
-                    console.log('[TaskManager]', _this.taskManager);
-                    _this.taskManager.initialize()
-                        .then(function (taskParse) {
-                        console.log('next task', taskParse);
-                    })["catch"](function (reject) {
-                        console.log('catch', reject);
+            console.log('update complete task id ', _this_1.taskId);
+            _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
+                console.log('after update task info', task);
+                if (update) {
+                    _this.nextTaskRule().then(function (resolve) {
+                        console.log('next Tassk rule', resolve);
+                        _this.taskManager.initialize()
+                            .then(function (taskParse) {
+                            // console.log('update next module start')
+                            // taskParse.start();
+                        })["catch"](function (reject) {
+                        });
                     });
-                });
-            }
+                }
+            });
         });
     };
     return TaskUpdater;

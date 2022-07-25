@@ -57,7 +57,7 @@ export default function IngestRequest(props:any) {
                                 };
                                 const insertTask = ipcRenderer.sendSync("@Task/insert",insertTaskData);
                                 taskList.push(insertTask.data);
-
+                                
 
                                 console.log('insertCount',taskList.length);
                                 console.log('files.length * rootRules',files.length * rootRules.data.length)

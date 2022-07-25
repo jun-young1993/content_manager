@@ -23,7 +23,9 @@ export class TaskUpdater {
                     const ruleId = taskData.rule_id;
                     this.workflowRuleModel.find({parent_id : ruleId},(err:any , workflowRuleDatas:any)=> {
                         const insertTaskDatas:any = [];
+                        
                         if(workflowRuleDatas.length != 0 ){
+                            
                             workflowRuleDatas.map((rule:any) => {
                                 const insertTaskData = {
                                     content_id : taskData.content_id,
@@ -35,8 +37,9 @@ export class TaskUpdater {
                                     status : 'queue',
                                     priority : 0
                                 }
-
+                                
                                 this.taskModel.insert(insertTaskData,(err:any,data:any)=> {
+                                    
                                     insertTaskDatas.push(data);
                                     if(insertTaskDatas.length == workflowRuleDatas.length){
                                         resolve(insertTaskDatas);
@@ -58,21 +61,28 @@ export class TaskUpdater {
     complete(){
         const _this = this;
         this.taskModel.update({_id : this.taskId},{$set : {status : 'complete'}},(err:any,update : any) => {
-            console.log('update complete',update);
-            if(update){
-                _this.nextTaskRule().then((resolve) => {
-                    console.log('resolve',resolve);
-                    console.log('[TaskManager]',_this.taskManager)
+            console.log('update complete task id ',this.taskId)
+            this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
+                console.log('after update task info',task);
+                if(update){
+       
+                    _this.nextTaskRule().then((resolve) => {
+                        console.log('next Tassk rule',resolve);
                     _this.taskManager.initialize()
                         .then((taskParse:any) => {
-                            console.log('next task',taskParse);
+                            // console.log('update next module start')
+                            // taskParse.start();
                         })
                         .catch((reject:any) => {
-                            console.log('catch',reject);
+                            
                         })
 
-                })
+                    })
+     
+              
             }
+            })
+     
         })
     }
 }

@@ -5,23 +5,25 @@ var fs = require("fs");
 var TaskUpdater = require('../TaskUpdater').TaskUpdater;
 var FileManager = /** @class */ (function () {
     function FileManager(params) {
-        console.log('[start FileManager]');
+        console.log('fileManager module ', params.task);
         this.params = params;
-        this.taskUpdater = new TaskUpdater(params._id);
+        this.taskUpdater = new TaskUpdater(params.task._id);
     }
     FileManager.prototype.copy = function () {
         var _this = this;
-        fs.createReadStream(this.params.source)
+        fs.createReadStream(this.params.sourceMedia.full_path)
             .on('error', function (error) {
             console.log('read stream error', error);
         })
-            .pipe(fs.createWriteStream(this.params.target))
+            .pipe(fs.createWriteStream(this.params.targetMedia.full_path))
             .on('error', function (error) {
             console.log('write stream error', error);
         })
             .on('finish', function () {
-            console.log('stream finish');
-            _this.taskUpdater.complete();
+            setTimeout(function () {
+                console.log('stream finish');
+                _this.taskUpdater.complete();
+            }, 3000);
         });
     };
     return FileManager;

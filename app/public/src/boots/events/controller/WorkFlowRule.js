@@ -130,6 +130,8 @@ var WorkFlowRule = /** @class */ (function () {
     };
     WorkFlowRule.getByWorkflowId = function (event, args) {
         db.db().find(args, function (err, data) {
+            console.log('args', args);
+            console.log('data', data);
             data.map(function (child) {
                 child.id = child._id;
                 child.name = child.module_name;

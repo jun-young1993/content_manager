@@ -140,7 +140,10 @@ class WorkFlowRule{
 
 
 	static getByWorkflowId(event,args){
+
 		db.db().find(args,(err:any,data:any) => {
+			console.log('args',args)
+			console.log('data',data);
 			data.map((child) => {
 				child.id = child._id;
 				child.name = child.module_name

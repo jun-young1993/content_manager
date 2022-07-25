@@ -6,24 +6,28 @@ export class FileManager {
 	private params:any;
 	private taskUpdater:any;
 	constructor(params:any){
-		console.log('[start FileManager]');
+		console.log('fileManager module ',params.task)
 		this.params = params;
-		this.taskUpdater = new TaskUpdater(params._id);
+		
 		
 	}
 
 	copy(){
-		fs.createReadStream(this.params.source)
+		fs.createReadStream(this.params.sourceMedia.full_path)
 			.on('error',(error:Error)=>{
 				console.log('read stream error',error)
 			})
-			.pipe(fs.createWriteStream(this.params.target))
+			.pipe(fs.createWriteStream(this.params.targetMedia.full_path))
 			.on('error',(error:Error)=>{
 				console.log('write stream error',error)
 			})
 			.on('finish',()=>{
-				console.log('stream finish');
-				this.taskUpdater.complete();
+				
+				setTimeout(() => {
+					console.log('stream finish');
+					new TaskUpdater(this.params.task._id).complete();
+				},3000)
+				
 			});
 	}
 

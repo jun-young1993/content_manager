@@ -72,17 +72,29 @@ export default function WorkflowList() {
 
     const [moduleItems , setModuleItems] = React.useState(workflowByMenuItem);
     const makeHierarchy = (workflowId : any) => {
+	console.log('getWorkflow',workflowId);
 	const ruleData = ipcRenderer.sendSync("@WorkFlowRule/getByWorkflowId",{workflow_id : workflowId});
 	const expandedArray:any = [];
 	if(ruleData){
 		if(ruleData.success){
 			if(ruleData.data){
+				console.log('ruleData',ruleData)
 				if(ruleData.data.length != 0){
 					ruleData.data.map((rule:any) => {
 						console.log('rule',rule)
 						expandedArray.push(rule._id);
 					})
+					console.log('beforExpanded',expandedArray)
+					setExpanded(expandedArray);
+					console.log('expanded',expandedArray)
+					const hierarchy = createTreeHierarchy(ruleData.data);
+					if(hierarchy){
+						return hierarchy[0];
+					}
 				}
+				
+		
+				
 
 			}
 
@@ -90,11 +102,12 @@ export default function WorkflowList() {
 
 	}
 
-	console.log('beforExpanded',expandedArray)
-	setExpanded(expandedArray);
-	console.log('expanded',expandedArray)
-	console.log('hierarchy',createTreeHierarchy(ruleData.data)[0]);
-	return createTreeHierarchy(ruleData.data)[0];
+	return [{
+		id : 'root',
+		name : 'start workflow'
+	}];
+
+	
 	
     }
 

@@ -6,7 +6,6 @@ var TaskParse = require('./TaskParse').TaskParse;
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();
-        console.log('[start taskManger]');
         /*
         {
             status : 'queue'
@@ -37,23 +36,28 @@ var TaskManager = /** @class */ (function () {
         Object.assign(options, params);
         return this.get(options);
     };
-    TaskManager.prototype.findQueued = function (params) {
-        var _this = this;
-        if (params === void 0) { params = {}; }
-        var options = {
-            status: 'queue',
-            priority: -1,
-            limit: 1
-        };
-        Object.assign(options, params);
+    TaskManager.prototype.findQueued = function () {
+        var taskDb = new Task().db();
         return new Promise(function (resolve, reject) {
-            _this.getQueued(options).then(function (tasks) {
-                console.log('get Queued', tasks);
-                if (tasks) {
-                    resolve(tasks[0]);
+            taskDb.findOne({ status: 'queue' }, function (error, task) {
+                if (task) {
+                    console.log('[in findQueued]', task);
+                    taskDb.findOne({ _id: task._id }, function (error, taskInfo) {
+                        console.log('findQueued', taskInfo);
+                        resolve(taskInfo);
+                    });
                 }
-                reject(tasks);
-            })["catch"](reject);
+                else {
+                    reject(error);
+                }
+            });
+            // .sort({priority : -1})
+            // .exec((error:any,tasks:any) => {
+            // 	if(tasks){
+            // 		resolve(tasks);
+            // 	}
+            // 	reject(error);
+            // });
         });
     };
     TaskManager.prototype.initialize = function () {
@@ -61,13 +65,15 @@ var TaskManager = /** @class */ (function () {
         return new Promise(function (resolve, reject) {
             _this.findQueued()
                 .then(function (task) {
-                new TaskParse(task)
-                    .getTaskParse()
-                    .then(function (parse) {
-                    // const module = parse.module;
-                    // module.copy();
-                    resolve(parse);
-                });
+                if (task) {
+                    new TaskParse(task)
+                        .getTaskParse()
+                        .then(function (parse) {
+                        // const module = parse.module;
+                        // module.copy();
+                        resolve(parse);
+                    });
+                }
             })["catch"](function (err) {
                 reject(err);
             });

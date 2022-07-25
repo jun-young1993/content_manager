@@ -8,7 +8,7 @@ export class TaskManager{
 	private TaskDb:any;
 	constructor(){
 		this.TaskDb = new Task().db();
-		console.log('[start taskManger]')
+		
 		/*
 		{
 			status : 'queue'
@@ -43,39 +43,62 @@ export class TaskManager{
 		return this.get(options);
 	}
 
-	findQueued(params : any = {}){
-		const options: any = {
-			status : 'queue',
-			priority : -1,
-			limit : 1
-		};
-		Object.assign(options,params);
+	findQueued(){
+
+		const taskDb = new Task().db();
 		return new Promise((resolve, reject) => {
-			this.getQueued(options).then((tasks:any) => {
-				console.log('get Queued',tasks);
-				if(tasks){
-					resolve(tasks[0]);
+			taskDb.findOne({status : 'queue'},(error:any,task:any) => {
+				
+				if(task){
+					console.log('[in findQueued]',task);
+					taskDb.findOne({_id : task._id},(error : any, taskInfo:any)=> {
+						console.log('findQueued',taskInfo);
+						resolve(taskInfo);
+					})
+					
+				}else{
+					reject(error);
 				}
-				reject(tasks);
-			}).catch(reject);
+
+				
+				
+			})
+			// .sort({priority : -1})
+			// .exec((error:any,tasks:any) => {
+			// 	if(tasks){
+			// 		resolve(tasks);
+			// 	}
+
+				
+			// 	reject(error);
+				
+				
+			// });
 		})
+		
 	}
 
 	initialize(){
 		return new Promise((resolve, reject) => {
-			this.findQueued()
-			.then((task:any) => {
-				new TaskParse(task)
-					.getTaskParse()
-					.then((parse:any) => {
-						// const module = parse.module;
-						// module.copy();
-						resolve(parse);
-					})
-			})
-			.catch((err:any) => {
-				reject(err)	;
-			})
+			
+				this.findQueued()
+				.then((task:any) => {
+					if(task){
+						new TaskParse(task)
+						.getTaskParse()
+						.then((parse:any) => {
+							// const module = parse.module;
+							// module.copy();
+							resolve(parse);
+						})
+					}
+				
+				})
+				.catch((err:any) => {
+					reject(err)	;
+				})
+			
+			
 			
 		})
 		
