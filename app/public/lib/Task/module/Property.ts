@@ -1,12 +1,16 @@
 const path = require('path');
+
+
 export class Property {
 	private sourceMedia:any;
 	private targetMedia:any;
 	private task:any;
+	private log : any;
 	constructor(params:any){
 		this.sourceMedia = params.sourceMedia;
 		this.targetMedia = params.targetMedia;
 		this.task = params.task;
+		
 	}
 	getTaskId(){
 		return this.task._id;

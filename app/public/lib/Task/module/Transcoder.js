@@ -27,44 +27,49 @@ var fs = require('fs');
 var ffmpeg = require('fluent-ffmpeg');
 var TaskUpdater = require('../TaskUpdater').TaskUpdater;
 var Property = require('./Property').Property;
+var log = require('../../Logger');
 var Transcoder = /** @class */ (function (_super) {
     __extends(Transcoder, _super);
     function Transcoder(params) {
-        var _this = _super.call(this, params) || this;
-        console.log('fileManager module ', params);
+        var _this = this;
+        log.channel('ts').info('[Start Transcoding]', params);
+        log.channel('ts').info('[ffmpegPath]', ffmpegPath);
+        log.channel('ts').info('[ffprobePath]', ffprobePath);
+        _this = _super.call(this, params) || this;
         _this.params = params;
-        console.log('[transcoder target]', _this.getTargetDir());
         return _this;
     }
     Transcoder.prototype.initialize = function () {
         ffmpeg.setFfmpegPath(ffmpegPath);
         ffmpeg.setFfprobePath(ffprobePath);
-        console.log('[stream path]', this.getSourceFullPath());
         var taskId = this.getTaskId();
         return ffmpeg(this.getSourceFullPath())
             .on('filenames', function (filenames) {
+            log.channel('ts').info('[thumbnail filenames]', filenames);
             console.log('Will generate ' + filenames.join(', '));
         })
             .on('progress', function (progress) {
             console.log('Processing: ' + progress.percent + '% done');
         })
             .on('error', function (err, stdout, stderr) {
-            console.log('err', err);
-            console.log('stdout', stdout);
-            console.log('stderr', stderr);
+            log.channel('ts').error('[thumbnail error]', err);
+            log.channel('ts').error('[thumbnail stdout]', stdout);
+            log.channel('ts').error('[thumbnail stderr]', stderr);
         })
             .on('end', function () {
-            console.log('Screenshots taken');
+            log.channel('ts').error('[thumbnail Complete]');
             new TaskUpdater(taskId).complete();
         });
     };
     Transcoder.prototype.thumbnail = function () {
-        this.initialize().screenshots({
+        var options = {
             count: 1,
             folder: this.getTargetDir(),
             filename: this.getTargetName(),
             size: '320x240'
-        });
+        };
+        log.channel('ts').info('[Create Thumbnail [Target Dir] [Target Name]]', options);
+        this.initialize().screenshots(options);
     };
     return Transcoder;
 }(Property));

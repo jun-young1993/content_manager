@@ -9,48 +9,56 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const {TaskUpdater} = require('../TaskUpdater');
 const {Property} = require('./Property');
+const log = require('../../Logger')
 export class Transcoder extends Property{
 	
 	private params:any;
 	private taskUpdater:any;
 	constructor(params:any){
+		log.channel('ts').info('[Start Transcoding]',params);
+		log.channel('ts').info('[ffmpegPath]',ffmpegPath);
+		log.channel('ts').info('[ffprobePath]',ffprobePath);
 		super(params);
-		console.log('fileManager module ',params)
 		this.params = params;
-		console.log('[transcoder target]',this.getTargetDir());
+		
 		
 	}
 	initialize(){
+		
 		ffmpeg.setFfmpegPath(ffmpegPath);
 		ffmpeg.setFfprobePath(ffprobePath);
-		console.log('[stream path]',this.getSourceFullPath())
+		
 		const taskId = this.getTaskId();
 		return ffmpeg(this.getSourceFullPath())
 		.on('filenames', function(filenames) {
+			log.channel('ts').info('[thumbnail filenames]',filenames);
 			console.log('Will generate ' + filenames.join(', '))
 		})
 		.on('progress',function(progress){
 			console.log('Processing: ' + progress.percent + '% done');
 		})
 		.on('error',function(err, stdout, stderr){
-			console.log('err',err)
-			console.log('stdout',stdout)
-			console.log('stderr',stderr)
+			log.channel('ts').error('[thumbnail error]',err);
+			log.channel('ts').error('[thumbnail stdout]',stdout);
+			log.channel('ts').error('[thumbnail stderr]',stderr);
 		})
 		.on('end', function() {
-			console.log('Screenshots taken');
+			log.channel('ts').error('[thumbnail Complete]');
+			
 			
 			new TaskUpdater(taskId).complete();
 		});	
 	}
 
 	thumbnail(){
-		this.initialize().screenshots({
+		const options = {
 			count : 1,
 			folder : this.getTargetDir(),
 			filename : this.getTargetName(),
 			size : '320x240'
-		})
+		};
+		log.channel('ts').info('[Create Thumbnail [Target Dir] [Target Name]]',options);
+		this.initialize().screenshots(options)
 	}
 	
 

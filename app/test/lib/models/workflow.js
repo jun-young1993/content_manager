@@ -15,6 +15,9 @@ const {Media} = require("@models/Media");
 const mediaDb = new Media();
 const { createTreeHierarchy } = require('hierarchy-js');
 const { join } = require("path");
+const logging = require('../../../public/config/logging');
+console.log(logging);
+return;
 mediaDb.db().findOne({content_id : '3foJzOqBvOY9en7J', type : 'thumbnail'},(err,data) => {
     console.log(data);
     return;
