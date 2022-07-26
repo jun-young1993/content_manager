@@ -22,7 +22,7 @@ var Media = /** @class */ (function () {
     function Media() {
     }
     Media.index = function (event, args) {
-        db.db().find({ is_deleted: 'N' }, function (err, data) {
+        new Media_1.Media().db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -32,7 +32,7 @@ var Media = /** @class */ (function () {
         });
     };
     Media.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
+        new Media_1.Media().db().insert(Object.assign(args, {
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -45,7 +45,7 @@ var Media = /** @class */ (function () {
         });
     };
     Media.update = function (event, args) {
-        db.db().update(args, function (err, data) {
+        new Media_1.Media().db().update(args, function (err, data) {
             return event.returnValue = {
                 success: true,
                 data: data

@@ -42,6 +42,7 @@ var Media = require("../../models/Media").Media;
 var Task = require("../../models/Task").Task;
 var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
+var Transcoder = require("./module/Transcoder").Transcoder;
 var path = require("path");
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
@@ -245,20 +246,20 @@ var TaskParse = /** @class */ (function () {
                     case 0:
                         mediaDb = new Media().db();
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                mediaDb.findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
+                                new Media().db().findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
                                     if (data) {
                                         var mediaId = data._id;
-                                        mediaDb.update({ _id: mediaId }, { $set: org }, function (err, updateData) {
-                                            mediaDb.findOne({ _id: data._id }, function (err, media) {
+                                        new Media().db().update({ _id: mediaId }, { $set: org }, function (err, updateData) {
+                                            new Media().db().findOne({ _id: data._id }, function (err, media) {
                                                 resolve(media);
                                             });
                                         });
                                     }
                                     else {
-                                        mediaDb.insert(Object.assign({
+                                        new Media().db().insert(Object.assign({
                                             is_media: true
                                         }, org), function (err, insertData) {
-                                            mediaDb.findOne({ _id: insertData._id }, function (err, media) {
+                                            new Media().db().findOne({ _id: insertData._id }, function (err, media) {
                                                 resolve(media);
                                             });
                                         });
@@ -275,21 +276,24 @@ var TaskParse = /** @class */ (function () {
     TaskParse.prototype.updateTask = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this, task;
+            var _this_1 = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _this = this;
+                        console.log('[update before task]', this.task);
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 new Task().db().update({ _id: _this.task._id }, {
-                                    $set: {
+                                    $set: Object.assign(_this.task, {
                                         source_media_id: _this.sourceMedia._id,
                                         target_media_id: _this.targetMedia._id,
                                         source: _this.sourceMedia.path,
                                         target: _this.targetMedia.path
-                                    }
+                                    })
                                 }, function (err, data) {
                                     if (data) {
                                         new Task().db().findOne({ _id: _this.task._id }, function (err, taskData) {
+                                            console.log('[update after task]', _this_1.task);
                                             resolve(taskData);
                                         });
                                     }
@@ -304,13 +308,14 @@ var TaskParse = /** @class */ (function () {
     };
     TaskParse.prototype.getModule = function (type) {
         var modules = {
-            fs: FileManager
+            fs: FileManager,
+            transcoder: Transcoder
         };
         return modules[type];
     };
     TaskParse.prototype.getTaskParse = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, sourceMedia, _b, _c, newTask, taskType, _d, moduleTypeCode, moduleTypeMethod, module_1;
+            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, sourceMedia, _b, taskType, _c, moduleTypeCode, moduleTypeMethod, ext, _d, newTask, module_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -352,22 +357,29 @@ var TaskParse = /** @class */ (function () {
                             })];
                     case 7:
                         _b.sourceMedia = _e.sent();
-                        _c = this;
+                        taskType = this.moduleInfo.task_type;
+                        _c = taskType.split('_'), moduleTypeCode = _c[0], moduleTypeMethod = _c[1];
+                        console.log('[moduleTypeCode]', moduleTypeCode);
+                        console.log('[moduleTypeMethod]', moduleTypeMethod);
+                        ext = path.extname(this.task.source);
+                        if (moduleTypeMethod.toLowerCase() == 'thumbnail') {
+                            ext = '.png';
+                        }
+                        _d = this;
                         return [4 /*yield*/, this.setMedia({
                                 content_id: this.task.content_id,
                                 type: this.moduleInfo.target_media,
                                 storage: this.moduleInfo.target_storage,
                                 path: this.task._id + path.extname(this.task.source),
-                                full_path: path.resolve(targetStoragePath, this.task._id + path.extname(this.task.source))
+                                full_path: path.resolve(targetStoragePath, this.task._id + ext)
                             })];
                     case 8:
-                        _c.targetMedia = _e.sent();
+                        _d.targetMedia = _e.sent();
                         return [4 /*yield*/, this.updateTask()];
                     case 9:
                         newTask = _e.sent();
-                        taskType = this.moduleInfo.task_type;
-                        _d = taskType.split('_'), moduleTypeCode = _d[0], moduleTypeMethod = _d[1];
                         module_1 = this.getModule(moduleTypeCode.toLowerCase());
+                        console.log('[this.module]', this.module);
                         this.module = new module_1({
                             task: newTask,
                             sourceMedia: this.sourceMedia,

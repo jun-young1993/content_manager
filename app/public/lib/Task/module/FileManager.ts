@@ -23,10 +23,10 @@ export class FileManager {
 			})
 			.on('finish',()=>{
 				
-				setTimeout(() => {
-					console.log('stream finish');
-					new TaskUpdater(this.params.task._id).complete();
-				},3000)
+				
+				console.log('stream finish');
+				new TaskUpdater(this.params.task._id).complete();
+				
 				
 			});
 	}

@@ -3,6 +3,7 @@ const {Media} = require("../../models/Media");
 const {Task} = require("../../models/Task");
 const {Module} = require("../../models/Module");
 const {FileManager} = require("./module/FileManager");
+const {Transcoder} = require("./module/Transcoder");
 import * as path from "path";
 export class TaskParse {
 	private sourceMediaId : any = null;
@@ -171,23 +172,23 @@ export class TaskParse {
 	async setMedia(org:any){
 		const mediaDb = new Media().db();
 		const media = await new Promise((resolve,reject) =>{
-			mediaDb.findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
+			new Media().db().findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
 				
 				if(data){
 					const mediaId = data._id;
-					mediaDb.update({_id : mediaId},{$set : org},(err:any, updateData:any) => {
+					new Media().db().update({_id : mediaId},{$set : org},(err:any, updateData:any) => {
 						
-						mediaDb.findOne({_id : data._id},(err:any,media:any) => {
+						new Media().db().findOne({_id : data._id},(err:any,media:any) => {
 							resolve(media);
 						})
 						
 					})
 				}else{
-					mediaDb.insert(Object.assign({
+					new Media().db().insert(Object.assign({
 						is_media : true
 					},org),(err:any, insertData:any) => {
 						
-						mediaDb.findOne({_id : insertData._id},(err:any,media:any) => {
+						new Media().db().findOne({_id : insertData._id},(err:any,media:any) => {
 							resolve(media);
 						})
 					})
@@ -200,19 +201,21 @@ export class TaskParse {
 	}
 	async updateTask(){
 		const _this = this;
+		console.log('[update before task]',this.task)
 		const task = await new Promise((resolve,reject) =>{
 			
 			new Task().db().update({_id : _this.task._id},{
-				$set : {
+				$set : Object.assign(_this.task,{
 					source_media_id : _this.sourceMedia._id,
 					target_media_id : _this.targetMedia._id,
 					source : _this.sourceMedia.path,
 					target : _this.targetMedia.path
-				}
+				})
 			},(err:any, data:any) => {
 				if(data){
 					
 					new Task().db().findOne({_id : _this.task._id},(err:any , taskData:any) => {
+						console.log('[update after task]',this.task)
 						resolve(taskData);
 					})
 				}
@@ -226,11 +229,15 @@ export class TaskParse {
 	getModule(type:any){
 
 		const modules: any = {
-			fs : FileManager
+			fs : FileManager,
+			transcoder : Transcoder
 		};
 
 		return modules[type];
 	}
+
+	
+
 	async getTaskParse(){
 		const task = this.task;
 
@@ -265,13 +272,23 @@ export class TaskParse {
 				path : this.task.source,
 				full_path : path.resolve(sourceStoragePath,this.task.source)
 			})
+
+			const taskType = this.moduleInfo.task_type;
+			const [moduleTypeCode , moduleTypeMethod] = taskType.split('_');
+			console.log('[moduleTypeCode]',moduleTypeCode)
+			console.log('[moduleTypeMethod]',moduleTypeMethod)
+
+			let ext = path.extname(this.task.source);
+			if(moduleTypeMethod.toLowerCase() == 'thumbnail'){
+				ext = '.png';
+			}
 			
 			this.targetMedia = await this.setMedia({
 				content_id : this.task.content_id,
 				type : this.moduleInfo.target_media,
 				storage : this.moduleInfo.target_storage,
 				path : this.task._id+path.extname(this.task.source),
-				full_path : path.resolve(targetStoragePath,this.task._id+path.extname(this.task.source))
+				full_path : path.resolve(targetStoragePath,this.task._id+ext)
 			})
 
 			
@@ -281,12 +298,10 @@ export class TaskParse {
 			
 			
 			
-			const taskType = this.moduleInfo.task_type;
-			const [moduleTypeCode , moduleTypeMethod] = taskType.split('_');
-			
+	
 			const module = this.getModule(moduleTypeCode.toLowerCase());
 			
-			
+			console.log('[this.module]',this.module);
 			this.module = new module({
 				task : newTask,
 				sourceMedia : this.sourceMedia,

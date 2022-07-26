@@ -24,13 +24,13 @@ class WorkFlowRule{
 		console.log('get First rules worfklow id',workflowId);
 			try{
 				console.log('db',db)
-				db.db().findOne({workflow_id : workflowId, parent_id : null},
+				new Model().db().findOne({workflow_id : workflowId, parent_id : null},
 					(err:any,data:any)=>{
 					console.log('findOneerrr',err);
 					console.log('get First rules',data);
 					if(data){
 						const rootId = data._id;
-						db.db().find({parent_id : rootId},(err,data) => {
+						new Model().db().find({parent_id : rootId},(err,data) => {
 							console.log('get First rules find',data);
 							if(data){
 								return event.returnValue = {
@@ -141,7 +141,7 @@ class WorkFlowRule{
 
 	static getByWorkflowId(event,args){
 
-		db.db().find(args,(err:any,data:any) => {
+		new Model().db().find(args,(err:any,data:any) => {
 			console.log('args',args)
 			console.log('data',data);
 			data.map((child) => {

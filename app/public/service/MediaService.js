@@ -44,6 +44,9 @@ var MediaService = /** @class */ (function (_super) {
     MediaService.prototype.findOutByContentId = function (contentId) {
         return this.findTypeByContentId('out', contentId);
     };
+    MediaService.prototype.findThumbnailByContentId = function (contentId) {
+        return this.findTypeByContentId('thumbnail', contentId);
+    };
     return MediaService;
 }(BaseService));
 exports.MediaService = MediaService;

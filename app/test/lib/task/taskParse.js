@@ -8,11 +8,11 @@ const db = new Task();
 // })
 
 db.db().insert({
-	content_id:"nNZg6hAPevBUbh8m",
-	workflow_id:"CEFm95JwruHbRIyN",
+	content_id:"jbnahFAfl4L5hgY5",
+	workflow_id:"upX3kXHDA54DDJkA",
 	module_id:"wclq3LLKdqIVV1ew",
-	rule_id:"zukRUE5cHPBcmjJN",
-	source:"D:\\Folder11.ico",
+	rule_id:"9lIVIBQ4Ixcm5UeW",
+	source:"C:\\Users\\jun\\Desktop\\뱀파이어소녀2.mxf",
 	target:null,
 	status:"queue",
 	priority:0,

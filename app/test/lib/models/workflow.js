@@ -2,6 +2,7 @@
 
 
 require("module-alias/register");
+const path = require('path');
 const {Workflow} = require("@models/Workflow");
 const db = new Workflow();
 const {WorkflowRule} = require("@models/WorkflowRule");
@@ -14,16 +15,22 @@ const {Media} = require("@models/Media");
 const mediaDb = new Media();
 const { createTreeHierarchy } = require('hierarchy-js');
 const { join } = require("path");
-tdb.db().findOne({_id : 'sW5himP0mmlefe6a'},(err,data) => {
+mediaDb.db().findOne({content_id : '3foJzOqBvOY9en7J', type : 'thumbnail'},(err,data) => {
+    console.log(data);
+    return;
+    const thumbnailPath = path.resolve(data.full_path);
+    console.log(thumbnailPath+'.png');
+})
+// tdb.db().findOne({_id : 'sW5himP0mmlefe6a'},(err,data) => {
     
-    tdb.db().update({_id : data._id},{$set:{status : 'complete'}},(err,data) => {
-        console.log('err',err);
-        console.log('update data',data);
-        tdb.db().find({status : 'complete'},(err,data)=>{
-            console.log(data)
-        })
-    })
-});
+//     tdb.db().update({_id : data._id},{$set:{status : 'complete'}},(err,data) => {
+//         console.log('err',err);
+//         console.log('update data',data);
+//         tdb.db().find({status : 'complete'},(err,data)=>{
+//             console.log(data)
+//         })
+//     })
+// });
 return;
 // wdb.db().find({workflow_id : 'CEFm95JwruHbRIyN'},(err,data) => {
 //     data.map((child) => {

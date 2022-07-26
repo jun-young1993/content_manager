@@ -9,17 +9,22 @@ const mediaSv = new MediaService();
 router.get('/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
 	
-	mediaSv.findOutByContentId(contentId).then((media:any)=>{
+	new MediaService().findThumbnailByContentId(contentId).then((media:any)=>{
+		console.log('thumbnail contentId',contentId)
 		if(media.success){
+			console.log('thumbnail media',media)
 			if(media.data){
-				if(media.data.path){
-					const read = fs.createReadStream(path.resolve(media.data.path));
+				if(media.data.full_path){
+					console.log('thumbnail media full path',media.data.full_path);
+					const thumbnailPath = path.resolve(media.data.full_path);
+					const read = fs.createReadStream(thumbnailPath);
 					const pass = new stream.PassThrough();
 					stream.pipeline(
 						read,
 						pass,
 						(err) => {
 							if(err){
+								console.log('thumbnail err',err)
 								return res.sendStatus(400);
 							}
 						}

@@ -22,7 +22,7 @@ var Task = /** @class */ (function () {
     function Task() {
     }
     Task.index = function (event, args) {
-        db.db().find({ is_deleted: 'N' }, function (err, data) {
+        new Task_1.Task().db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -32,7 +32,7 @@ var Task = /** @class */ (function () {
         });
     };
     Task.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
+        new Task_1.Task().db().insert(Object.assign(args, {
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -45,7 +45,7 @@ var Task = /** @class */ (function () {
         });
     };
     Task.update = function (event, args) {
-        db.db().update(args, function (err, data) {
+        new Task_1.Task().db().update(args, function (err, data) {
             return event.returnValue = {
                 success: true,
                 data: data

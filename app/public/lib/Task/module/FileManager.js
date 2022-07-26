@@ -7,7 +7,6 @@ var FileManager = /** @class */ (function () {
     function FileManager(params) {
         console.log('fileManager module ', params.task);
         this.params = params;
-        this.taskUpdater = new TaskUpdater(params.task._id);
     }
     FileManager.prototype.copy = function () {
         var _this = this;
@@ -20,10 +19,8 @@ var FileManager = /** @class */ (function () {
             console.log('write stream error', error);
         })
             .on('finish', function () {
-            setTimeout(function () {
-                console.log('stream finish');
-                _this.taskUpdater.complete();
-            }, 3000);
+            console.log('stream finish');
+            new TaskUpdater(_this.params.task._id).complete();
         });
     };
     return FileManager;

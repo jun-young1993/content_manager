@@ -26,4 +26,7 @@ export class MediaService extends BaseService{
 	findOutByContentId(contentId:any){
 		return this.findTypeByContentId('out',contentId);
 	}
+	findThumbnailByContentId(contentId:any){
+		return this.findTypeByContentId('thumbnail',contentId);
+	}
 }

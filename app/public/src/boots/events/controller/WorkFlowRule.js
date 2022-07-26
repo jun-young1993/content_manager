@@ -21,12 +21,12 @@ var WorkFlowRule = /** @class */ (function () {
         console.log('get First rules worfklow id', workflowId);
         try {
             console.log('db', db);
-            db.db().findOne({ workflow_id: workflowId, parent_id: null }, function (err, data) {
+            new WorkflowRule_1.WorkflowRule().db().findOne({ workflow_id: workflowId, parent_id: null }, function (err, data) {
                 console.log('findOneerrr', err);
                 console.log('get First rules', data);
                 if (data) {
                     var rootId = data._id;
-                    db.db().find({ parent_id: rootId }, function (err, data) {
+                    new WorkflowRule_1.WorkflowRule().db().find({ parent_id: rootId }, function (err, data) {
                         console.log('get First rules find', data);
                         if (data) {
                             return event.returnValue = {
@@ -129,7 +129,7 @@ var WorkFlowRule = /** @class */ (function () {
         });
     };
     WorkFlowRule.getByWorkflowId = function (event, args) {
-        db.db().find(args, function (err, data) {
+        new WorkflowRule_1.WorkflowRule().db().find(args, function (err, data) {
             console.log('args', args);
             console.log('data', data);
             data.map(function (child) {

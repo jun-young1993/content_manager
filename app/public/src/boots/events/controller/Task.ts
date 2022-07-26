@@ -22,7 +22,7 @@ const db = new Model();
 class Task {
     static index(event, args){
 
-        db.db().find({is_deleted : 'N'},(err,data) => {
+        new Model().db().find({is_deleted : 'N'},(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -34,7 +34,7 @@ class Task {
     }
     static insert(event,args){
 
-        db.db().insert(Object.assign(args,{
+        new Model().db().insert(Object.assign(args,{
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
@@ -53,7 +53,7 @@ class Task {
     }
 
     static update(event,args){
-        db.db().update(args,(err,data) => {
+        new Model().db().update(args,(err,data) => {
             return event.returnValue = {
                 success : true,
                 data : data
