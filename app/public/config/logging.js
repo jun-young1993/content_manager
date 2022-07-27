@@ -5,6 +5,9 @@ module.exports = {
 	"channels" : {
 		"ts" : {
 			"path" : "module/transcoder.log"
+		},
+		"api_get_thumbnail" : {
+			"path" : "api/get_thumbnail.log"
 		}
 	}
 	

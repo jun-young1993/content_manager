@@ -22,7 +22,7 @@ var Media = /** @class */ (function () {
     function Media() {
     }
     Media.index = function (event, args) {
-        new Media_1.Media().db().find({ is_deleted: 'N' }, function (err, data) {
+        new Media_1.Media().db().find(args, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,

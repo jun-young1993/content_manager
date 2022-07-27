@@ -22,7 +22,7 @@ const db = new Model();
 class Media {
     static index(event, args){
 
-        new Model().db().find({is_deleted : 'N'},(err,data) => {
+        new Model().db().find(args,(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,

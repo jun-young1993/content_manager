@@ -3,13 +3,14 @@ import * as stream from "stream";
 import * as path from "path";
 
 const router = require('express').Router();
-
+const log = require('../Logger');
 const {MediaService} = require('../../service/MediaService')
 const mediaSv = new MediaService();
 router.get('/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
 	console.log('[request thumbnail] 0 ',contentId);
-	new MediaService().findThumbnailByContentId(contentId).then((media:any)=>{
+	mediaSv.findThumbnailByContentId(contentId)
+	.then((media:any)=>{
 		console.log('thumbnail contentId 1',contentId)
 		if(media.success){
 			console.log('thumbnail media 2')
@@ -43,6 +44,10 @@ router.get('/:contentId', (req:any, res:any) => {
 		}
 	
 		
+	})
+	.catch((reject:any) => {
+		log.channel('api_get_thumbnail').error('[Exception Get Thumbnail]',reject);
+		return res.sendStatus(400);
 	})
   
 });

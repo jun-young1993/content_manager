@@ -3,7 +3,7 @@ import React from 'react';
 window.React = React
 
 import ReactDOM from 'react-dom';
-import './index.css';
+// import './index.css';
 import App from './App';
 
 
@@ -11,7 +11,7 @@ import MainContainer from '@views/main/MainContainer';
 import MainTabBar from '@src/views/main/MainTabBar';
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
-import './views/css/main.css';
+// import './views/css/main.css';
 
 ReactDOM.render(
             <>

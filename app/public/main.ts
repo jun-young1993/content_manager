@@ -28,7 +28,7 @@ const createWindow = () => {
   
   mainWindow = new BrowserWindow({
     width: 1260,
-    height: 600,
+    height: 500,
     center: true,
     kiosk: !isDev,
     resizable: true,
