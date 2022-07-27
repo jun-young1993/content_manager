@@ -245,6 +245,9 @@ var TaskParse = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         mediaDb = new Media().db();
+                        if (org.type) {
+                            org.type = org.type.toLowerCase();
+                        }
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 new Media().db().findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
                                     if (data) {

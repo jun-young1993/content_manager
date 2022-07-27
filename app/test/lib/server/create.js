@@ -27,6 +27,7 @@ const app = express();
 
 
 app.use('/thumbnail',require('../../../public/lib/route/thumbnail'));
+app.use('/play',require('../../../public/lib/route/play'));
 app.listen(11102, function () {
     console.log('Example app listening on port 11101!');
 });

@@ -12,13 +12,14 @@ const ipcRenderer = electron.ipcRenderer;
 // import img from "/Users/junyoungkim/Desktop/a.png";
 
 import ImageViewer from "@views/main/support/content/viewer/Image";
+import VideoViewer from "@views/main/support/content/viewer/Video";
 /**
  * cols 열수
  * @constructor
  */
 export default function Viewer() {
     return (
-       <ImageViewer />
+       <VideoViewer />
     )
 }
 

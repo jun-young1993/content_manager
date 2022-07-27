@@ -2,6 +2,8 @@ import {Nedb} from "./stores/Nedb";
 import {promises} from "dns";
 import {QueryBuilder} from "../lib/QueryBuilder/QueryBuilder";
 import { app, BrowserWindow } from 'electron';
+const {directory} = require('../config/database')
+const path = require('path');
 export enum STORE_TYPE {
     NEDB = "nedb"
 }
@@ -23,10 +25,12 @@ export class BaseModel implements Property{
     private setDb(){
         if(this.isNedb()){
             
-            const path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/'+this.table+'.db';
+            // const path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/'+this.table+'.db';
+            
             // const path = app.getPath("downloads")+'/db/'+this.table+'.db';
-            // const path = 'C:\\Users\\jun\\Downloads\\db'+this.table+'.db';
-            const database = new Nedb(path);
+            const dbpath = path.resolve(directory,`${this.table}.db`);
+            
+            const database = new Nedb(dbpath);
             
             this.database = database;
         }

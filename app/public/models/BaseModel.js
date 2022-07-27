@@ -2,6 +2,8 @@
 exports.__esModule = true;
 exports.BaseModel = exports.STORE_TYPE = void 0;
 var Nedb_1 = require("./stores/Nedb");
+var directory = require('../config/database').directory;
+var path = require('path');
 var STORE_TYPE;
 (function (STORE_TYPE) {
     STORE_TYPE["NEDB"] = "nedb";
@@ -16,10 +18,10 @@ var BaseModel = /** @class */ (function () {
     }
     BaseModel.prototype.setDb = function () {
         if (this.isNedb()) {
-            var path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/' + this.table + '.db';
+            // const path = '/Users/junyoungkim/Desktop/junyoung/app/source/electron/db/'+this.table+'.db';
             // const path = app.getPath("downloads")+'/db/'+this.table+'.db';
-            // const path = 'C:\\Users\\jun\\Downloads\\db'+this.table+'.db';
-            var database = new Nedb_1.Nedb(path);
+            var dbpath = path.resolve(directory, "".concat(this.table, ".db"));
+            var database = new Nedb_1.Nedb(dbpath);
             this.database = database;
         }
     };

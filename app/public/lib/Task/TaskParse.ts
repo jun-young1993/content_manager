@@ -171,6 +171,9 @@ export class TaskParse {
 	}
 	async setMedia(org:any){
 		const mediaDb = new Media().db();
+		if(org.type){
+			org.type = org.type.toLowerCase();
+		}
 		const media = await new Promise((resolve,reject) =>{
 			new Media().db().findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
 				

@@ -5,17 +5,17 @@ import * as path from "path";
 const router = require('express').Router();
 
 const {MediaService} = require('../../service/MediaService')
-const mediaSv = new MediaService();
-router.get('/:contentId', (req:any, res:any) => {
+
+router.get('/original/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
-	console.log('[request thumbnail] 0 ',contentId);
-	new MediaService().findThumbnailByContentId(contentId).then((media:any)=>{
-		console.log('thumbnail contentId 1',contentId)
+	
+	new MediaService().findOriginalByContentId(contentId).then((media:any)=>{
+		
 		if(media.success){
-			console.log('thumbnail media 2')
+			
 			if(media.data){
 				if(media.data.full_path){
-					console.log('thumbnail media full path 3',media.data.full_path);
+					
 					const thumbnailPath = path.resolve(media.data.full_path);
 					const read = fs.createReadStream(thumbnailPath);
 					const pass = new stream.PassThrough();
