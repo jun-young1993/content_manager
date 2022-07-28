@@ -105,9 +105,11 @@ var WorkFlowRule = /** @class */ (function () {
         });
     };
     WorkFlowRule.insert = function (event, args) {
+        console.log('[WorkflowRule Insert]', args);
         db.db().insert(Object.assign(args, {
             'deleted_at': null
         }), function (err, data) {
+            console.log('[WorkflowRule Insert after]', data);
             if (data) {
                 return event.returnValue = {
                     success: true,

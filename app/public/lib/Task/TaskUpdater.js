@@ -4,6 +4,7 @@ exports.TaskUpdater = void 0;
 var Task = require('../../models/Task').Task;
 var WorkflowRule = require('../../models/WorkflowRule').WorkflowRule;
 var TaskManager_1 = require("./TaskManager");
+var log = require('../Logger');
 var TaskUpdater = /** @class */ (function () {
     function TaskUpdater(taskId) {
         this.taskId = null;
@@ -25,6 +26,7 @@ var TaskUpdater = /** @class */ (function () {
                         var insertTaskDatas = [];
                         if (workflowRuleDatas.length != 0) {
                             workflowRuleDatas.map(function (rule) {
+                                log.channel('task_update').info('[Next Workflow Rule]', rule.module_name);
                                 var insertTaskData = {
                                     content_id: taskData.content_id,
                                     workflow_id: taskData.workflow_id,

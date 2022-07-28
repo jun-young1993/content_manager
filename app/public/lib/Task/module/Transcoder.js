@@ -45,19 +45,18 @@ var Transcoder = /** @class */ (function (_super) {
         var taskId = this.getTaskId();
         return ffmpeg(this.getSourceFullPath())
             .on('filenames', function (filenames) {
-            log.channel('ts').info('[thumbnail filenames]', filenames);
-            console.log('Will generate ' + filenames.join(', '));
+            log.channel('ts').info('[transcoder filenames]', filenames);
         })
             .on('progress', function (progress) {
             console.log('Processing: ' + progress.percent + '% done');
         })
             .on('error', function (err, stdout, stderr) {
-            log.channel('ts').error('[thumbnail error]', err);
-            log.channel('ts').error('[thumbnail stdout]', stdout);
-            log.channel('ts').error('[thumbnail stderr]', stderr);
+            log.channel('ts').error('[transcoder error]', err);
+            log.channel('ts').error('[transcoder stdout]', stdout);
+            log.channel('ts').error('[transcoder stderr]', stderr);
         })
             .on('end', function () {
-            log.channel('ts').error('[thumbnail Complete]');
+            log.channel('ts').info('[transcoder Complete]');
             new TaskUpdater(taskId).complete();
         });
     };
@@ -70,6 +69,18 @@ var Transcoder = /** @class */ (function (_super) {
         };
         log.channel('ts').info('[Create Thumbnail [Target Dir] [Target Name]]', options);
         this.initialize().screenshots(options);
+    };
+    Transcoder.prototype.proxy = function () {
+        var fullPath = this.getTargetFullPath();
+        log.channel('ts').info('[Create Proxy [Full Path]]', fullPath);
+        var outStream = fs.createWriteStream(fullPath);
+        this.initialize()
+            // .audioCodec('libfaac')
+            // .videoCodec('libx264')
+            .videoCodec('libx264')
+            .audioCodec('libmp3lame')
+            .size('320x240')
+            .pipe(outStream, { end: true });
     };
     return Transcoder;
 }(Property));

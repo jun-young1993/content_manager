@@ -3,6 +3,7 @@ import {Workflow} from "../../models/Workflow";
 const {Task} = require('../../models/Task');
 const {WorkflowRule} = require('../../models/WorkflowRule')
 import {TaskManager} from "./TaskManager";
+const log = require('../Logger');
 
 export class TaskUpdater {
     private taskId:any = null;
@@ -27,6 +28,7 @@ export class TaskUpdater {
                         if(workflowRuleDatas.length != 0 ){
                             
                             workflowRuleDatas.map((rule:any) => {
+                                log.channel('task_update').info('[Next Workflow Rule]',rule.module_name);
                                 const insertTaskData = {
                                     content_id : taskData.content_id,
                                     workflow_id : taskData.workflow_id,
@@ -62,6 +64,7 @@ export class TaskUpdater {
         const _this = this;
         this.taskModel.update({_id : this.taskId},{$set : {status : 'complete'}},(err:any,update : any) => {
             console.log('update complete task id ',this.taskId)
+            
             this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
                 console.log('after update task info',task);
                 if(update){

@@ -43,6 +43,9 @@ var Task = require("../../models/Task").Task;
 var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
 var Transcoder = require("./module/Transcoder").Transcoder;
+var log = require('../Logger');
+var lodash_1 = require("lodash");
+// const {isEmpty} = require('lodash');
 var path = require("path");
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
@@ -71,16 +74,16 @@ var TaskParse = /** @class */ (function () {
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 if (code) {
                                     new Storage().db().findOne({ code: code }, function (err, storage) {
-                                        if (storage) {
+                                        if (!(0, lodash_1.isEmpty)(storage)) {
                                             resolve(storage);
                                         }
                                         else {
-                                            resolve(null);
+                                            reject('[getStorage] not found storage code' + code);
                                         }
                                     });
                                 }
                                 else {
-                                    resolve(null);
+                                    reject('[getStorage] not found code');
                                 }
                             })];
                     case 1:
@@ -91,104 +94,24 @@ var TaskParse = /** @class */ (function () {
         });
     };
     ;
-    TaskParse.prototype.getMedia2 = function (mediaId) {
-        return __awaiter(this, void 0, void 0, function () {
-            var media;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
-                            if (mediaId) {
-                                new Media().db().findOne({ _id: mediaId }, function (err, media) {
-                                    if (media) {
-                                        resolve(media);
-                                    }
-                                    else {
-                                        resolve(null);
-                                    }
-                                });
-                            }
-                            else {
-                                resolve(null);
-                            }
-                        })];
-                    case 1:
-                        media = _a.sent();
-                        return [2 /*return*/, media];
-                }
-            });
-        });
-    };
-    ;
-    TaskParse.prototype.getSourceStorage = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getStorage(this.task.source_storage)];
-                    case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
-                }
-            });
-        });
-    };
-    TaskParse.prototype.getTargetStorage = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getStorage(this.task.target_storage)];
-                    case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
-                }
-            });
-        });
-    };
-    TaskParse.prototype.getSourceMedia = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getMedia(this.task.source_media_id)];
-                    case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
-                }
-            });
-        });
-    };
-    TaskParse.prototype.getTargetMedia = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getMedia(this.task.target_media_id)];
-                    case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
-                }
-            });
-        });
-    };
-    TaskParse.prototype.getSourceDir = function () {
-        return path.dirname(this.sourceMedia.path);
-    };
-    TaskParse.prototype.getSourceBasenaem = function () {
-        return path.basename(this.sourceMedia.path);
-    };
-    TaskParse.prototype.getSourceExtention = function () {
-        return path.extname(this.sourceMedia.path);
-    };
-    TaskParse.prototype.getSource = function () {
-        if (this.sourceMedia) {
-            if (this.sourceMedia.type === 'out') {
-                // 밖에서 들어온 미디어는 풆경로
-                return this.sourceMedia.path;
-            }
-        }
-        return path.resolve(this.getSourceDir(), this.getSourceBasenaem() + this.getSourceExtention());
-    };
+    // getSourceDir(){
+    // 	return path.dirname(this.sourceMedia.path);
+    // }
+    // getSourceBasenaem(){
+    // 	return path.basename(this.sourceMedia.path);
+    // }
+    // getSourceExtention(){
+    // 	return path.extname(this.sourceMedia.path);
+    // }
+    // getSource(){
+    // 	if(this.sourceMedia){
+    // 		if(this.sourceMedia.type === 'out'){
+    // 			// 밖에서 들어온 미디어는 풆경로
+    // 			return this.sourceMedia.path;
+    // 		}
+    // 	}
+    // 	return path.resolve(this.getSourceDir(),this.getSourceBasenaem()+this.getSourceExtention())
+    // }
     TaskParse.prototype.getModuleInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this, module;
@@ -208,7 +131,7 @@ var TaskParse = /** @class */ (function () {
                                     });
                                 }
                                 else {
-                                    resolve(null);
+                                    reject('[getModuleInfo] not found _this.task.module_id ');
                                 }
                             })];
                     case 1:
@@ -221,14 +144,33 @@ var TaskParse = /** @class */ (function () {
     ;
     TaskParse.prototype.getMedia = function (org) {
         return __awaiter(this, void 0, void 0, function () {
-            var mediaDb, media;
+            var mediaDb, _this, media;
+            var _this_1 = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         mediaDb = new Media().db();
+                        _this = this;
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                mediaDb.findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
-                                    resolve(data);
+                                mediaDb.findOne({ content_id: org.content_id, type: org.type.toLowerCase() }, function (err, data) {
+                                    if (!(0, lodash_1.isEmpty)(data)) {
+                                        resolve(data);
+                                    }
+                                    else {
+                                        if (_this_1.moduleInfo.source_media.toLowerCase() == 'out') {
+                                            _this.sourceStorage = {
+                                                path: ''
+                                            };
+                                            _this.moduleInfo.source_storage = 'out';
+                                            console.log('return resolve', _this.task);
+                                            resolve({
+                                                path: _this.task.source
+                                            });
+                                        }
+                                        else {
+                                            reject("[TaskParse][getMedia] not found media by content_id ".concat(org.content_id, " and type ").concat(org.type));
+                                        }
+                                    }
                                 });
                             })];
                     case 1:
@@ -250,20 +192,45 @@ var TaskParse = /** @class */ (function () {
                         }
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 new Media().db().findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
+                                    if (err) {
+                                        log.channel('task_parse').error('[SetMedia Find]', err);
+                                        reject('[setMedia Err]');
+                                    }
                                     if (data) {
                                         var mediaId = data._id;
                                         new Media().db().update({ _id: mediaId }, { $set: org }, function (err, updateData) {
-                                            new Media().db().findOne({ _id: data._id }, function (err, media) {
-                                                resolve(media);
-                                            });
+                                            if (err) {
+                                                log.channel('task_parse').error('[setMedia Update Fail]', err);
+                                            }
+                                            if (updateData) {
+                                                new Media().db().findOne({ _id: data._id }, function (err, media) {
+                                                    if (media) {
+                                                        resolve(media);
+                                                    }
+                                                    else {
+                                                        reject("[setMedia] not found media by id ".concat(data._id));
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                log.channel('task_parse').error('[setMedia Update Fail]', err);
+                                            }
                                         });
                                     }
                                     else {
                                         new Media().db().insert(Object.assign({
                                             is_media: true
                                         }, org), function (err, insertData) {
+                                            if (err) {
+                                                log.channel('task_parse').error('[setMedia Insert Fail]', err);
+                                            }
                                             new Media().db().findOne({ _id: insertData._id }, function (err, media) {
-                                                resolve(media);
+                                                if (media) {
+                                                    resolve(media);
+                                                }
+                                                else {
+                                                    log.channel('task_parse').error("[setMedia] not found media by _id ".concat(insertData._id));
+                                                }
                                             });
                                         });
                                     }
@@ -279,7 +246,6 @@ var TaskParse = /** @class */ (function () {
     TaskParse.prototype.updateTask = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this, task;
-            var _this_1 = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -294,11 +260,25 @@ var TaskParse = /** @class */ (function () {
                                         target: _this.targetMedia.path
                                     })
                                 }, function (err, data) {
+                                    if (err) {
+                                        log.channel('task_parse').error('[UpdateTask] Update', err);
+                                        reject('[UpdateTask] Update Err');
+                                    }
                                     if (data) {
                                         new Task().db().findOne({ _id: _this.task._id }, function (err, taskData) {
-                                            console.log('[update after task]', _this_1.task);
-                                            resolve(taskData);
+                                            if (err) {
+                                                log.channel('task_parse').error('[UpdateTask] FindOne', err);
+                                            }
+                                            if (taskData) {
+                                                resolve(taskData);
+                                            }
+                                            else {
+                                                reject('[UpdateTask] not found taskData ');
+                                            }
                                         });
+                                    }
+                                    else {
+                                        reject('[UpdateTask] not found data');
                                     }
                                 });
                             })];
@@ -316,12 +296,145 @@ var TaskParse = /** @class */ (function () {
         };
         return modules[type];
     };
+    TaskParse.prototype.setting = function () {
+        var _this_1 = this;
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModuleInfo()
+                .then(function (moduleInfo) {
+                log.channel('task_parse').info('[setting][moduleInfo]', moduleInfo);
+                _this.moduleInfo = moduleInfo;
+                _this.getStorage(_this.moduleInfo.target_storage)
+                    .then(function (targetStorage) {
+                    log.channel('task_parse').info('[setting][targetStorage]', targetStorage);
+                    _this.targetStorage = targetStorage;
+                    if (targetStorage) {
+                        if (!targetStorage.path) {
+                            reject('[sertting][targetStorage] not found targetStorage.path');
+                        }
+                        _this.getStorage(_this.moduleInfo.source_storage)
+                            .then(function (sourceStorage) {
+                            log.channel('task_parse').info('[setting][sourceStorage]', sourceStorage);
+                            if (sourceStorage) {
+                                if (!sourceStorage.path) {
+                                    reject('[setting][sourceStorage] not found sourceStorage.path');
+                                }
+                                _this.sourceStorage = sourceStorage;
+                                _this.getMedia({ content_id: _this.task.content_id,
+                                    type: _this.moduleInfo.source_media
+                                })
+                                    .then(function (sourceMedia) {
+                                    if (sourceMedia) {
+                                        log.channel('task_parse').info('[setting][getSourceMedia]', sourceMedia);
+                                        _this.task.source = sourceMedia.path;
+                                        if (!sourceStorage.path) {
+                                            reject('[setting][sourceMedia] not found sourceMedia.path');
+                                        }
+                                        _this.setMedia({
+                                            content_id: _this.task.content_id,
+                                            type: _this.moduleInfo.source_media,
+                                            storage: _this.moduleInfo.source_storage,
+                                            path: _this.task.source,
+                                            full_path: path.resolve(_this.sourceStorage.path, _this_1.task.source)
+                                        }).then(function (sourceMedia) {
+                                            log.channel('task_parse').info('[setting][seMedia] Insert Or Update', sourceMedia);
+                                            _this.sourceMedia = sourceMedia;
+                                            var taskType = _this.moduleInfo.task_type;
+                                            var _a = taskType.split('_'), moduleTypeCode = _a[0], moduleTypeMethod = _a[1];
+                                            log.channel('task_parse').info('[setting][Module Type]', moduleTypeCode);
+                                            log.channel('task_parse').info('[setting][Module Task]', moduleTypeMethod);
+                                            var ext = path.extname(_this_1.task.source);
+                                            if (moduleTypeMethod.toLowerCase() == 'thumbnail') {
+                                                ext = '.png';
+                                            }
+                                            else if (moduleTypeMethod.toLowerCase() == 'proxy') {
+                                                ext = '.mp4';
+                                            }
+                                            var setTargetOptions = {
+                                                content_id: _this.task.content_id,
+                                                type: _this.moduleInfo.target_media,
+                                                storage: _this.moduleInfo.target_storage,
+                                                path: _this.task._id + path.extname(_this.task.source),
+                                                full_path: path.resolve(_this.targetStorage.path, _this.task._id + ext)
+                                            };
+                                            _this.setMedia(setTargetOptions)
+                                                .then(function (setTargetMedia) {
+                                                log.channel('task_parse').info('[setting][setTargetMedia]', setTargetMedia);
+                                                if (setTargetMedia) {
+                                                    _this.targetMedia = setTargetMedia;
+                                                    _this.updateTask()
+                                                        .then(function (updateTask) {
+                                                        log.channel('task_parse').info('[setting][updateTask]', updateTask);
+                                                        var module = _this.getModule(moduleTypeCode.toLowerCase());
+                                                        _this.module = new module({
+                                                            task: updateTask,
+                                                            sourceMedia: _this.sourceMedia,
+                                                            targetMedia: _this.targetMedia
+                                                        });
+                                                        log.channel('task_parse').info("[setting][Start Task Workflow] ".concat(moduleTypeCode.toLowerCase(), " => ").concat(moduleTypeMethod.toLowerCase()));
+                                                        _this.module[moduleTypeMethod.toLowerCase()]();
+                                                        resolve(_this);
+                                                    })["catch"](function (updateTaskError) {
+                                                        reject(updateTaskError);
+                                                    });
+                                                }
+                                                else {
+                                                    reject('[setting][setTargetMedia] not found setTargetMedia');
+                                                }
+                                            })["catch"](function (setTargetMediaError) {
+                                                reject(setTargetMediaError);
+                                            });
+                                        })["catch"](function (setSourceMediaError) {
+                                            reject(setSourceMediaError);
+                                        });
+                                    }
+                                    else {
+                                        reject("[setting][sourceMedia] not found sourceMedia");
+                                    }
+                                })["catch"](function (sourceMediaErr) {
+                                    reject(sourceMediaErr);
+                                });
+                            }
+                            else {
+                                reject('[setting][sourceStorage] not found sourceStorage');
+                            }
+                        })["catch"](function (sourceStorageErr) {
+                            reject(sourceStorageErr);
+                        });
+                    }
+                    else {
+                        reject('[targetStorage] not found target storage');
+                    }
+                })["catch"](function (targetStorageErr) {
+                    reject(targetStorageErr);
+                });
+            })["catch"](function (moduleInfoErr) {
+                reject(moduleInfoErr);
+            });
+        });
+    };
     TaskParse.prototype.getTaskParse = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this_1 = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        _this_1.setting()
+                            .then(function (complete) {
+                            resolve(complete);
+                        })["catch"](function (error) {
+                            log.channel('task_parse').error(error);
+                        });
+                    })];
+            });
+        });
+    };
+    TaskParse.prototype.getTaskParse_ = function () {
         return __awaiter(this, void 0, void 0, function () {
             var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, sourceMedia, _b, taskType, _c, moduleTypeCode, moduleTypeMethod, ext, _d, newTask, module_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
+                        log.channel('task_parse').info('[Start Task Parse]', this);
                         task = this.task;
                         // base parsing
                         _a = this;
@@ -329,6 +442,7 @@ var TaskParse = /** @class */ (function () {
                     case 1:
                         // base parsing
                         _a.moduleInfo = _e.sent();
+                        log.channel('task_parse').info('[Module Info]', this.moduleInfo);
                         if (!this.moduleInfo) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.getStorage(this.moduleInfo.target_storage)];
                     case 2:
@@ -345,6 +459,7 @@ var TaskParse = /** @class */ (function () {
                     case 4: return [4 /*yield*/, this.getMedia({ content_id: this.task.content_id, type: this.moduleInfo.source_media })];
                     case 5:
                         sourceMedia = _e.sent();
+                        log.channel('task_parse').info('[Get Source Media]', sourceMedia);
                         if (sourceMedia) {
                             this.task.source = sourceMedia.path;
                         }
@@ -367,6 +482,9 @@ var TaskParse = /** @class */ (function () {
                         ext = path.extname(this.task.source);
                         if (moduleTypeMethod.toLowerCase() == 'thumbnail') {
                             ext = '.png';
+                        }
+                        else if (moduleTypeMethod.toLowerCase() == 'proxy') {
+                            ext = '.mp4';
                         }
                         _d = this;
                         return [4 /*yield*/, this.setMedia({

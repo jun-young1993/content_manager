@@ -112,12 +112,12 @@ class WorkFlowRule{
 		})
 	    }
 	    static insert(event,args){
-	
+		console.log('[WorkflowRule Insert]',args)
 		db.db().insert(Object.assign(args,{ 
 		    'deleted_at' : null,
 		}),(err,data) => {
 	
-	
+			console.log('[WorkflowRule Insert after]',data)
 		    if(data){
 			return event.returnValue = {
 				success : true,
