@@ -1,11 +1,14 @@
+import { Property } from "./Property";
+
 const fs = require("fs");
 const {TaskUpdater} = require('../TaskUpdater');
 const log = require('../../Logger');
-export class FileManager {
+export class FileManager extends Property{
 	
 	private params:any;
 	private taskUpdater:any;
 	constructor(params:any){
+		super(params);
 		log.channel('fs').info('[Start Fs]',params);
 		this.params = params;
 		
@@ -13,12 +16,15 @@ export class FileManager {
 	}
 
 	copy(){
-		log.channel('fs').info(`[Start Fs Copy] ${this.params.sourceMedia.full_path} => ${this.params.targetMedia.full_path}`);
-		fs.createReadStream(this.params.sourceMedia.full_path)
+		const taskId = this.getTaskId();
+		const targetFullPath = this.getTargetFullPath();
+		const sourceFullPath = this.getSourceFullPath()
+		log.channel('fs').info(`[Start Fs Copy] ${sourceFullPath} => ${targetFullPath}`);
+		fs.createReadStream(sourceFullPath)
 			.on('error',(error:Error)=>{
 				log.channel('fs').info('[Fs Read Stream Error]',error)
 			})
-			.pipe(fs.createWriteStream(this.params.targetMedia.full_path))
+			.pipe(fs.createWriteStream(targetFullPath))
 			.on('error',(error:Error)=>{
 				log.channel('fs').info('[Fs Write Stream Error]',error)
 			})
@@ -26,7 +32,7 @@ export class FileManager {
 				
 				log.channel('fs').info(`[Fs Complete] TaskId : ${this.params.task._id}`)
 				
-				new TaskUpdater(this.params.task._id).complete();
+				new TaskUpdater(taskId).complete();
 				
 				
 			});

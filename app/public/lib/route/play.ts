@@ -1,35 +1,57 @@
 import * as fs from "fs";
 import * as stream from "stream";
 import * as path from "path";
+const log = require('../Logger');
 
 const router = require('express').Router();
 
 const {MediaService} = require('../../service/MediaService')
 
-router.get('/original/:contentId', (req:any, res:any) => {
+router.get('/proxy/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
-	
-	new MediaService().findOriginalByContentId(contentId).then((media:any)=>{
+	log.channel('play').info(`[play][proxy] content_id ${contentId}`);
+	new MediaService().findProxyByContentId(contentId).then((media:any)=>{
 		
 		if(media.success){
 			
 			if(media.data){
 				if(media.data.full_path){
+					log.channel('play').info(`[play][proxy] path ${media.data.full_path}`);
 					
-					const thumbnailPath = path.resolve(media.data.full_path);
-					const read = fs.createReadStream(thumbnailPath);
-					const pass = new stream.PassThrough();
-					stream.pipeline(
-						read,
-						pass,
-						(err) => {
-							if(err){
-								console.log('thumbnail err',err)
-								return res.sendStatus(400);
-							}
-						}
-					)
-					pass.pipe(res);
+					const proxyPath = path.resolve(media.data.full_path);
+					const read = fs.createReadStream(proxyPath);
+					// const pass = new stream.PassThrough();
+					// stream.pipeline(
+					// 	read,
+					// 	pass,
+					// 	(err) => {
+					// 		if(err){
+					// 			console.log('thumbnail err',err)
+					// 			return res.sendStatus(400);
+					// 		}
+					// 	}
+					// )
+					
+					// res.contentType('video/mp4');
+					// pass.pipe(res);
+					const fileSize = 238303;
+					console.log({
+						'Content-Length': fileSize, 
+						'Content-Type': 'video/mp4',
+						'Content-Range' : `bytes 0-${fileSize-1}/${fileSize}`
+					})
+					res.writeHead(206, {
+						'Content-Length': fileSize, 
+						'Content-Type': 'video/mp4',
+						'Content-Range' : `bytes 0-${fileSize-1}/${fileSize}`
+					});
+					read.on('error',(error) => {
+						console.log('read error',error)
+					})
+					res.on('error',(error) => {
+						console.log('res error',error)
+					})
+					read.pipe(res);
 				}else{
 					return res.sendStatus(400);
 				}

@@ -115,7 +115,7 @@ export default function ContentDialog(props:any) {
                 </AppBar>
                 <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
                     <Grid item xs={6}  style={{height: '50vh'}}>
-                            <Viewer />
+                            <Viewer metadata={metadata}/>
                     </Grid>
                     <Grid item xs={6} style={{height: '50vh'}}>
                         {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>

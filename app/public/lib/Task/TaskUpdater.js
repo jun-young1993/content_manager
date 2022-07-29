@@ -56,11 +56,12 @@ var TaskUpdater = /** @class */ (function () {
     TaskUpdater.prototype.complete = function () {
         var _this_1 = this;
         var _this = this;
-        this.taskModel.update({ _id: this.taskId }, { $set: { status: 'complete' } }, function (err, update) {
-            console.log('update complete task id ', _this_1.taskId);
-            _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
-                console.log('after update task info', task);
-                if (update) {
+        log.channel('task_update').info("[TaskUpdater][complete] ".concat(_this.taskId));
+        this.taskModel.update({ _id: _this.taskId }, { $set: { status: 'complete' } }, function (err, update) {
+            if (update) {
+                log.channel('task_update').info("[TaskUpdater][complete] Update Status  \"Complete ".concat(_this.taskId, "\""));
+                _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
+                    console.log('after update task info', task);
                     _this.nextTaskRule().then(function (resolve) {
                         console.log('next Tassk rule', resolve);
                         _this.taskManager.initialize()
@@ -70,8 +71,11 @@ var TaskUpdater = /** @class */ (function () {
                         })["catch"](function (reject) {
                         });
                     });
-                }
-            });
+                });
+            }
+            else {
+                log.channel('task_update').info("[TaskUpdater][complete] Update Status  \"Complete ".concat(_this.taskId, "\""), err);
+            }
         });
     };
     return TaskUpdater;

@@ -147,24 +147,27 @@ export class TaskParse {
 	}
 	async setMedia(org:any){
 		const mediaDb = new Media().db();
-		if(org.type){
-			org.type = org.type.toLowerCase();
-		}
+		
 		const media = await new Promise((resolve,reject) =>{
+			if(isEmpty(org.type)){
+				reject('[TaskParse][setMedia] not found org.type');
+			}
+			org.type = org.type.toLowerCase();
 			new Media().db().findOne({content_id : org.content_id , type : org.type},(err:any,data:any) => {
 				if(err){
 					log.channel('task_parse').error('[SetMedia Find]',err);
 					reject('[setMedia Err]');
 				}
-				if(data){
+				if(!isEmpty(data)){
 					const mediaId = data._id;
 					new Media().db().update({_id : mediaId},{$set : org},(err:any, updateData:any) => {
 						if(err){
 							log.channel('task_parse').error('[setMedia Update Fail]',err);
+							reject('[TaskParse][setMedia] media update fail');
 						}
 						if(updateData){
 							new Media().db().findOne({_id : data._id},(err:any,media:any) => {
-								if(media){
+								if(!isEmpty(media)){
 									resolve(media);
 								}else{
 									reject(`[setMedia] not found media by id ${data._id}`)
@@ -185,7 +188,7 @@ export class TaskParse {
 							log.channel('task_parse').error('[setMedia Insert Fail]',err);
 						}
 						new Media().db().findOne({_id : insertData._id},(err:any,media:any) => {
-							if(media){
+							if(!isEmpty(media)){
 								resolve(media);
 							}else{
 								log.channel('task_parse').error(`[setMedia] not found media by _id ${insertData._id}`);
@@ -287,7 +290,7 @@ export class TaskParse {
 										if(sourceMedia){
 											log.channel('task_parse').info('[setting][getSourceMedia]',sourceMedia);
 											_this.task.source = sourceMedia.path;
-											if(!sourceStorage.path){
+											if(isEmpty(sourceStorage.path)){
 												reject('[setting][sourceMedia] not found sourceMedia.path');
 											}
 											

@@ -187,24 +187,26 @@ var TaskParse = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         mediaDb = new Media().db();
-                        if (org.type) {
-                            org.type = org.type.toLowerCase();
-                        }
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                if ((0, lodash_1.isEmpty)(org.type)) {
+                                    reject('[TaskParse][setMedia] not found org.type');
+                                }
+                                org.type = org.type.toLowerCase();
                                 new Media().db().findOne({ content_id: org.content_id, type: org.type }, function (err, data) {
                                     if (err) {
                                         log.channel('task_parse').error('[SetMedia Find]', err);
                                         reject('[setMedia Err]');
                                     }
-                                    if (data) {
+                                    if (!(0, lodash_1.isEmpty)(data)) {
                                         var mediaId = data._id;
                                         new Media().db().update({ _id: mediaId }, { $set: org }, function (err, updateData) {
                                             if (err) {
                                                 log.channel('task_parse').error('[setMedia Update Fail]', err);
+                                                reject('[TaskParse][setMedia] media update fail');
                                             }
                                             if (updateData) {
                                                 new Media().db().findOne({ _id: data._id }, function (err, media) {
-                                                    if (media) {
+                                                    if (!(0, lodash_1.isEmpty)(media)) {
                                                         resolve(media);
                                                     }
                                                     else {
@@ -225,7 +227,7 @@ var TaskParse = /** @class */ (function () {
                                                 log.channel('task_parse').error('[setMedia Insert Fail]', err);
                                             }
                                             new Media().db().findOne({ _id: insertData._id }, function (err, media) {
-                                                if (media) {
+                                                if (!(0, lodash_1.isEmpty)(media)) {
                                                     resolve(media);
                                                 }
                                                 else {
@@ -327,7 +329,7 @@ var TaskParse = /** @class */ (function () {
                                     if (sourceMedia) {
                                         log.channel('task_parse').info('[setting][getSourceMedia]', sourceMedia);
                                         _this.task.source = sourceMedia.path;
-                                        if (!sourceStorage.path) {
+                                        if ((0, lodash_1.isEmpty)(sourceStorage.path)) {
                                             reject('[setting][sourceMedia] not found sourceMedia.path');
                                         }
                                         _this.setMedia({

@@ -18,6 +18,9 @@ module.exports = {
 		},
 		"fs" : {
 			"path" : "module/fs.log"
+		},
+		"play" : {
+			"path" : "api/player.log"
 		}
 	}
 	

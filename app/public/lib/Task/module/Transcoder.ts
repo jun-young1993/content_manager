@@ -64,14 +64,13 @@ export class Transcoder extends Property{
 		
 		const fullPath = this.getTargetFullPath();
 		log.channel('ts').info('[Create Proxy [Full Path]]',fullPath);
-		const outStream = fs.createWriteStream(fullPath);
+		// const outStream = fs.createWriteStream(fullPath);
 		this.initialize()
-		// .audioCodec('libfaac')
-		// .videoCodec('libx264')
+		.audioCodec('aac')
 		.videoCodec('libx264')
-		.audioCodec('libmp3lame')
 		.size('320x240')
-		.pipe(outStream, {end : true} );
+		.save(fullPath)
+		// .pipe(outStream, {end : true} );
 	}
 	
 

@@ -39,4 +39,7 @@ export class MediaService extends BaseService{
 	findThumbnailByContentId(contentId:any){
 		return this.findTypeByContentId('thumbnail',contentId);
 	}
+	findProxyByContentId(contentId:any){
+		return this.findTypeByContentId('proxy',contentId);
+	}
 }

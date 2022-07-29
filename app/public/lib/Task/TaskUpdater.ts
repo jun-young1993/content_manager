@@ -62,29 +62,33 @@ export class TaskUpdater {
 
     complete(){
         const _this = this;
-        this.taskModel.update({_id : this.taskId},{$set : {status : 'complete'}},(err:any,update : any) => {
-            console.log('update complete task id ',this.taskId)
+        log.channel('task_update').info(`[TaskUpdater][complete] ${_this.taskId}`);
+        this.taskModel.update({_id : _this.taskId},{$set : {status : 'complete'}},(err:any,update : any) => {
             
-            this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
-                console.log('after update task info',task);
+            log.channel('task_update').info(`[TaskUpdater][complete] ${_this.taskId}`);
+            
                 if(update){
-       
-                    _this.nextTaskRule().then((resolve) => {
-                        console.log('next Tassk rule',resolve);
-                    _this.taskManager.initialize()
-                        .then((taskParse:any) => {
-                            // console.log('update next module start')
-                            // taskParse.start();
-                        })
-                        .catch((reject:any) => {
-                            
-                        })
+                    log.channel('task_update').info(`[TaskUpdater][complete] Update Status  "Complete ${_this.taskId}"`);
+                    this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
+                        console.log('after update task info',task);
+                        _this.nextTaskRule().then((resolve) => {
+                            console.log('next Tassk rule',resolve);
+                            _this.taskManager.initialize()
+                            .then((taskParse:any) => {
+                                // console.log('update next module start')
+                                // taskParse.start();
+                            })
+                            .catch((reject:any) => {
+                                
+                            })
 
-                    })
+                        })
      
-              
-            }
-            })
+                    })  
+               }else{
+                    log.channel('task_update').info(`[TaskUpdater][complete] Update Status  "Complete ${_this.taskId}"`,err);
+               }
+            
      
         })
     }

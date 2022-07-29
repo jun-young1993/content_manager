@@ -17,9 +17,10 @@ import VideoViewer from "@views/main/support/content/viewer/Video";
  * cols 열수
  * @constructor
  */
-export default function Viewer() {
+export default function Viewer(props:any) {
+    
     return (
-       <VideoViewer />
+       <VideoViewer metadata={props.metadata}/>
     )
 }
 
