@@ -34,6 +34,20 @@
 	- build명령어와 같지만 그 후 배포를 해준다. (추가설정 필요)
 	
 
+## npm install
+- npm install ffmpeg-static-electron
+- npm install fluent-ffmpeg
+- npm install ffprobe-static-electron
+- npm install electron-log
+- npm install screenfull
+- npm install react-player
+
+## 참고문서
+- electorn ffmpeg build pakage.json
+	- https://github.com/OpenNewsLabs/autoEdit_2/blob/master/package.json
+- video-player example)
+	- https://codesandbox.io/s/f2uzv?file=/src/Player.js
+
 
 #필수코드 
 --TASK_MODULE_TYPE
