@@ -39,7 +39,6 @@
 - npm install fluent-ffmpeg
 - npm install ffprobe-static-electron
 - npm install electron-log
-- npm install screenfull
 - npm install react-player
 
 ## 참고문서
