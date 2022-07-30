@@ -15,7 +15,11 @@ export class Nedb{
         this.path = path;
         const database:any = new DataStore({
             filename : this.path,
-            timestampData : true
+            timestampData : true,
+            // autoload : true,
+            onLoad : (err:any) => {
+                console.log('load',err)
+            }
         });
         database.loadDatabase();
         this.database = database;

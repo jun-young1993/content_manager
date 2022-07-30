@@ -44,6 +44,7 @@ export class BaseModel implements Property{
     }
 
     public db(){
+        // this.database.database.loadDatabase();
         return this.database.database;
     }
 

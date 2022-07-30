@@ -1,7 +1,7 @@
 import Image from "@views/main/support/content/Image";
 
-export default function ContentList() {
+export default function ContentList(props:any) {
     return(
-        <Image />
+        <Image searchText={props.searchText}/>
     )
 }

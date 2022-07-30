@@ -14,7 +14,17 @@ const ipcRenderer = electron.ipcRenderer;
  * cols 열수
  * @constructor
  */
-export default function Image() {
+export default function Image(props:any) {
+    let where:any = {};
+    if(props.searchText && (props.searchText != '')){
+        where['title'] = props.searchText;
+    }
+    const contens = ipcRenderer.sendSync("@Content/index",where);
+    let contentList:[] = [];
+    if(contens.success){
+        console.log(contens.data);
+        contentList = contens.data;
+    }
     return (
         <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={100}>
             {contentList.map((item:any) => (
@@ -52,12 +62,7 @@ export default function Image() {
         </ImageList>
     );
 }
-const contens = ipcRenderer.sendSync("@Content/index");
-let contentList:[] = [];
-if(contens.success){
-    console.log(contens.data);
-    contentList = contens.data;
-}
+
 const itemData = [
     {
         img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',

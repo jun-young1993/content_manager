@@ -21,7 +21,7 @@ var Content = /** @class */ (function () {
     function Content() {
     }
     Content.index = function (event, args) {
-        new Content_1.Content().db().find({ is_deleted: 'N' }, function (err, data) {
+        db.db().find(Object.assign(args, { is_deleted: 'N' }), function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -32,7 +32,7 @@ var Content = /** @class */ (function () {
     };
     Content.insert = function (event, args) {
         console.log('content insert db');
-        new Content_1.Content().db().insert(Object.assign(args, {
+        db.db().insert(Object.assign(args, {
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -45,7 +45,7 @@ var Content = /** @class */ (function () {
         });
     };
     Content.update = function (event, args) {
-        new Content_1.Content().db().update(args, function (err, data) {
+        db.db().update(args, function (err, data) {
             return event.returnValue = {
                 success: true,
                 data: data

@@ -22,7 +22,7 @@ const db = new Model();
 class Content {
     static index(event, args){
 
-        new Model().db().find({is_deleted : 'N'},(err,data) => {
+        db.db().find(Object.assign(args,{is_deleted : 'N'}),(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -34,7 +34,7 @@ class Content {
     }
     static insert(event,args){
         console.log('content insert db');
-        new Model().db().insert(Object.assign(args,{
+        db.db().insert(Object.assign(args,{
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
@@ -53,7 +53,7 @@ class Content {
     }
 
     static update(event,args){
-        new Model().db().update(args,(err,data) => {
+        db.db().update(args,(err,data) => {
             return event.returnValue = {
                 success : true,
                 data : data

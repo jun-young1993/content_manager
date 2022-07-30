@@ -15,6 +15,7 @@ export class MediaService extends BaseService{
 	}
 	findTypeByContentId(type:any,contentId:any){
 		return new Promise((resolve, reject) => {
+
 			this.getModel('Media').findOne({content_id : contentId, type : type},(err:any,media:any)=>{
 				console.log('[find media by content id]',{content_id : contentId, type : type},media)
 				if(media){

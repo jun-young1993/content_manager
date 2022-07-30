@@ -7,14 +7,16 @@ export class BaseService{
 		property.models.forEach((model:any) => {
 			
 			// @ts-ignore
-			
-			this.model[model] = require('../models/'+model)
+			const modelClass = require('../models/'+model)[model];
+			// @ts-ignore
+			this.model[model] = new modelClass().db();
 		})
 
 	}
 	
 	getModel(modelName:any){
+
 			// @ts-ignore
-		return new this.model[modelName][modelName]().db();
+		return this.model[modelName];
 	}
 }

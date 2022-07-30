@@ -7,12 +7,14 @@ var BaseService = /** @class */ (function () {
         this.model = [];
         property.models.forEach(function (model) {
             // @ts-ignore
-            _this.model[model] = require('../models/' + model);
+            var modelClass = require('../models/' + model)[model];
+            // @ts-ignore
+            _this.model[model] = new modelClass().db();
         });
     }
     BaseService.prototype.getModel = function (modelName) {
         // @ts-ignore
-        return new this.model[modelName][modelName]().db();
+        return this.model[modelName];
     };
     return BaseService;
 }());

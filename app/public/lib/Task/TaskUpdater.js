@@ -58,6 +58,7 @@ var TaskUpdater = /** @class */ (function () {
         var _this = this;
         log.channel('task_update').info("[TaskUpdater][complete] ".concat(_this.taskId));
         this.taskModel.update({ _id: _this.taskId }, { $set: { status: 'complete' } }, function (err, update) {
+            log.channel('task_update').info("[TaskUpdater][complete] ".concat(_this.taskId));
             if (update) {
                 log.channel('task_update').info("[TaskUpdater][complete] Update Status  \"Complete ".concat(_this.taskId, "\""));
                 _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {

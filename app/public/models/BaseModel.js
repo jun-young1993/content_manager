@@ -32,6 +32,7 @@ var BaseModel = /** @class */ (function () {
         return false;
     };
     BaseModel.prototype.db = function () {
+        // this.database.database.loadDatabase();
         return this.database.database;
     };
     return BaseModel;

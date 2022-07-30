@@ -14,7 +14,8 @@ import ContentList from '@views/main/support/content/ContentList';
 //     color: theme.palette.text.secondary,
 // }));
 
-export default function Content() {
+export default function Content(props:any) {
+
     return (
         // <Box sx={{ flexGrow: 1, height:"100%" }} style={{height: '100%'}}>
             <Grid container spacing={2} style={{height: '100vh'}} >
@@ -25,7 +26,7 @@ export default function Content() {
                     
                 </Grid>
                 <Grid item xs={10} style={{height: '100vh'}}>
-                    <ContentList />
+                    <ContentList searchText={props.searchText}/>
                 </Grid>
             </Grid>
         // </Box>

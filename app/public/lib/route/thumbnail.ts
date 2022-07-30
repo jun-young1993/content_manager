@@ -7,6 +7,7 @@ const log = require('../Logger');
 const {MediaService} = require('../../service/MediaService')
 const mediaSv = new MediaService();
 router.get('/:contentId', (req:any, res:any) => {
+
 	const {contentId} = req.params;
 	console.log('[request thumbnail] 0 ',contentId);
 	mediaSv.findThumbnailByContentId(contentId)
