@@ -1,5 +1,5 @@
 console.log('migration start');
-return;
+
 const {db} = require('../../../config/migration');
 const {isEmpty} = require('lodash');
 

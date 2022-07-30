@@ -4,6 +4,7 @@ import {QueryBuilder} from "../lib/QueryBuilder/QueryBuilder";
 import { app, BrowserWindow } from 'electron';
 const {directory} = require('../config/database')
 const path = require('path');
+import {isEmpty} from 'lodash';
 export enum STORE_TYPE {
     NEDB = "nedb"
 }
@@ -11,6 +12,10 @@ interface Property {
     store? : STORE_TYPE,
     table : string
 }
+
+declare var _MODELS: any;
+
+
 export class BaseModel implements Property{
     store : STORE_TYPE = STORE_TYPE.NEDB
     table : string = '';
@@ -29,10 +34,37 @@ export class BaseModel implements Property{
             
             // const path = app.getPath("downloads")+'/db/'+this.table+'.db';
             const dbpath = path.resolve(directory,`${this.table}.db`);
-            
-            const database = new Nedb(dbpath);
-            
-            this.database = database;
+
+            try{
+
+                    if(isEmpty(_MODELS[this.table])){
+                        const database = new Nedb(dbpath);
+                        _MODELS[this.table] = database;
+
+                        this.database = database;
+                    };
+
+            }catch(e){
+
+                    Object.defineProperty(global, '_MODELS', {
+                        enumerable: false,
+                        configurable: false,
+                        writable: true,
+                        value: {}
+                    });
+
+                    const database = new Nedb(dbpath);
+                    _MODELS[this.table] = database;
+
+                    this.database = database;
+            }
+
+
+
+
+
+
+
         }
     }
 
@@ -45,7 +77,8 @@ export class BaseModel implements Property{
 
     public db(){
         // this.database.database.loadDatabase();
-        return this.database.database;
+        // return this.database.database;
+        return _MODELS[this.table].database;
     }
 
 

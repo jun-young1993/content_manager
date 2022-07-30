@@ -103,7 +103,7 @@ export default function Category() {
             defaultEndIcon={<div style={{ width: 24 }} />}
             sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
-            <StyledTreeItem nodeId="1" labelText="All Mail" labelIcon={MailIcon} />
+            <StyledTreeItem nodeId="1" labelText="root" labelIcon={MailIcon} />
             <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />
             <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label}>
                     <StyledTreeItem

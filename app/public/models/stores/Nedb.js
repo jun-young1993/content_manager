@@ -13,12 +13,12 @@ var Nedb = /** @class */ (function () {
         var database = new DataStore({
             filename: this.path,
             timestampData: true,
-            // autoload : true,
+            autoload: true,
             onLoad: function (err) {
                 console.log('load', err);
             }
         });
-        database.loadDatabase();
+        // database.loadDatabase();
         this.database = database;
         this.querySetting();
     }
