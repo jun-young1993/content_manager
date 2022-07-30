@@ -109,3 +109,6 @@ dist
 .idea/
 
 .app/node_modules/
+
+./db/
+./app/public/config/
