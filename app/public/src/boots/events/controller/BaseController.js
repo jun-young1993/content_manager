@@ -32,15 +32,33 @@ var BaseController = /** @class */ (function () {
     BaseController.prototype.ipcOn = function () {
         var allMethods = this.getMethods();
         var _this = this;
-        for (var index = 0; index < allMethods.length; index++) {
+        var _loop_1 = function (index) {
             var methodName = allMethods[index];
             var channel = _this.makeChannel(methodName);
             // ipcMain.on(channel,(event,args) =>{
             //     _this.controller[methodName](event,args);
             // });
             // console.log('start method',methodName);
-            electron_1.ipcMain.on(channel, _this.controller[methodName]);
+            if (_this.isAsyncMethod(methodName)) {
+                //async method
+                electron_1.ipcMain.on(channel, function (event, args) {
+                    event.autoReplay = function (result) {
+                        return event.reply(channel + '/reply', result);
+                    };
+                    _this.controller[methodName](event, args);
+                });
+            }
+            else {
+                // sync method
+                electron_1.ipcMain.on(channel, _this.controller[methodName]);
+            }
+        };
+        for (var index = 0; index < allMethods.length; index++) {
+            _loop_1(index);
         }
+    };
+    BaseController.prototype.isAsyncMethod = function (methodName) {
+        return methodName.charAt(0) === '_';
     };
     BaseController.prototype.makeChannel = function (methodName) {
         var channel = '@' + this.controller.name + '/' + methodName;

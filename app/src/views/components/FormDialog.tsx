@@ -51,7 +51,7 @@ export default function FormDialog(props:any) {
     const [fields, setFields] = React.useState(props.fields);
     const [buttonTitle, setButtonTitle] = React.useState(props.buttonTitle);
 
-    
+
     const [changeFields, setChangeFields] = React.useState(props.changeFields);
     
     if(changeFields){
@@ -126,13 +126,22 @@ export default function FormDialog(props:any) {
         setOpen(false);
 
     };
- 
-    
+
+    let button = (<Button variant="outlined" onClick={handleClickOpen}>
+        {buttonTitle}
+    </Button>);
+    if(props.iconButton){
+
+        button = (<IconButton color="primary"
+                    aria-label="upload picture"
+                    component="label"
+                    onClick={handleClickOpen}>
+            {props.iconButton}
+        </IconButton>)
+    }
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                {buttonTitle}
-            </Button>
+            {button}
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>{buttonTitle}</DialogTitle>
                 <DialogContent>

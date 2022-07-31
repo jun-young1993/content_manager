@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import TreeView from '@mui/lab/TreeView';
 import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
 import Typography from '@mui/material/Typography';
-import MailIcon from '@mui/icons-material/Mail';
+import FolderIcon from '@mui/icons-material/Folder';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Label from '@mui/icons-material/Label';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
@@ -14,7 +15,13 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { SvgIconProps } from '@mui/material/SvgIcon';
-
+import IconButton from "@mui/material/IconButton";
+import FormDialog from "@views/components/FormDialog";
+import electron from "electron";
+import CustomAlert from "@views/components/CustomAlert";
+import {SyntheticEvent} from "react";
+import {functions} from "electron-log";
+const ipcRenderer = electron.ipcRenderer;
 declare module 'react' {
     interface CSSProperties {
         '--tree-view-color'?: string;
@@ -92,87 +99,89 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         />
     );
 }
+const laodByNode:any = (nodeId:string,callback:any) => {
+    ipcRenderer.send("@Category/_index",{parent_id : nodeId})
+    ipcRenderer.on("@Category/_index/reply",(event:any,result) => {
+        console.log('result node by id')
+        callback(result);
+
+    });
+}
+
 
 export default function Category() {
+    const baseAlert = ((<CustomAlert open={false} />));
+
+    const [alert, setALert] = React.useState(baseAlert)
+    const [alertOpen, setAlertOpen] = React.useState(false);
+
+
+
+    const [children , setChildren] = React.useState([<StyledTreeItem nodeId={'sample'} labelText={''} labelIcon={FolderIcon} />])
+    const load = () => {
+        laodByNode('folder',(result:any) => {
+            console.log(result);
+            if(result.success){
+                setChildren(result.data);
+            }
+        });
+    }
+
+
     return (
-        <TreeView
-            aria-label="gmail"
-            defaultExpanded={['3']}
-            defaultCollapseIcon={<ArrowDropDownIcon />}
-            defaultExpandIcon={<ArrowRightIcon />}
-            defaultEndIcon={<div style={{ width: 24 }} />}
-            sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-        >
-            <StyledTreeItem nodeId="1" labelText="root" labelIcon={MailIcon} />
-            <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />
-            <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label}>
-                    <StyledTreeItem
-                    nodeId="5"
-                    labelText="Social"
-                    labelIcon={SupervisorAccountIcon}
-                    labelInfo="90"
-                    color="#1a73e8"
-                    bgColor="#e8f0fe"
-                    >
-                    <StyledTreeItem
-                        nodeId="5-1"
-                        labelText="Social"
-                        labelIcon={SupervisorAccountIcon}
-                        labelInfo="90"
-                        color="#1a73e8"
-                        bgColor="#e8f0fe"
-                    />
-                    <StyledTreeItem
-                        nodeId="5-2"
-                        labelText="Updates"
-                        labelIcon={InfoIcon}
-                        labelInfo="2,294"
-                        color="#e3742f"
-                        bgColor="#fcefe3"
-                    />
-                    <StyledTreeItem
-                        nodeId="5-3"
-                        labelText="Forums"
-                        labelIcon={ForumIcon}
-                        labelInfo="3,566"
-                        color="#a250f5"
-                        bgColor="#f3e8fd"
-                    />
-                    <StyledTreeItem
-                        nodeId="5-4"
-                        labelText="Promotions"
-                        labelIcon={LocalOfferIcon}
-                        labelInfo="733"
-                        color="#3c8039"
-                        bgColor="#e6f4ea"
-                    />
-                </StyledTreeItem>
-                <StyledTreeItem
-                    nodeId="6"
-                    labelText="Updates"
-                    labelIcon={InfoIcon}
-                    labelInfo="2,294"
-                    color="#e3742f"
-                    bgColor="#fcefe3"
+        <>
+            <Typography gutterBottom component="div" align="left" sx={{ borderBottom: 1 }}>
+                <FormDialog
+                    iconButton={<PlaylistAddIcon />}
+                    buttonTitle={"추가"}
+                    values={{
+                        name : ''
+                    }}
+                    fields={[{
+                        name : "name",
+                        label : "카테고리명",
+                        variant:"standard"
+                    }]}
+                    onSaveClick={(result:any) => {
+                        if(result){
+                            const values = result.values;
+                            values.parent_id = 'folder';
+
+                            ipcRenderer.send("@Category/_insert",values)
+                            result.setOpen(false)
+                            ipcRenderer.on("@Category/_insert/reply",(event:any,result:any) => {
+
+                                load();
+                            })
+                        }
+                    }}
                 />
-                <StyledTreeItem
-                    nodeId="7"
-                    labelText="Forums"
-                    labelIcon={ForumIcon}
-                    labelInfo="3,566"
-                    color="#a250f5"
-                    bgColor="#f3e8fd"
-                />
-                <StyledTreeItem
-                    nodeId="8"
-                    labelText="Promotions"
-                    labelIcon={LocalOfferIcon}
-                    labelInfo="733"
-                    color="#3c8039"
-                    bgColor="#e6f4ea"
-                />
+
+            </Typography>
+            <TreeView
+                aria-label="gmail"
+                defaultExpanded={[]}
+                defaultCollapseIcon={<ArrowDropDownIcon />}
+                defaultExpandIcon={<ArrowRightIcon />}
+                defaultEndIcon={<div style={{ width: 24 }} />}
+                sx={{ height: '100vh', flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                onNodeSelect={(event:SyntheticEvent,nodeIds:string|string[])=>{
+                    if(nodeIds == 'folder'){
+                        load();
+                    }
+
+                }}
+            >
+
+            <StyledTreeItem nodeId="folder" labelText="카테고리" labelIcon={FolderIcon} >
+                {children.map((children:any) => {
+                    return <StyledTreeItem nodeId={children._id} labelText={children.name} labelIcon={FolderIcon} />;
+                })}
             </StyledTreeItem>
-            <StyledTreeItem nodeId="4" labelText="History" labelIcon={Label} />
+
+
         </TreeView>
+
+        </>
     );
 }
