@@ -31,25 +31,31 @@
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.1",
-    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "@types/uniqid": "^5.3.2",
     "bootstrap": "^5.1.3",
-    "craco-alias": "^3.0.1",
     "electron-is-dev": "^2.0.0",
+    "electron-log": "^4.4.8",
+    "ffmpeg-static-electron": "^2.0.3",
+    "ffprobe-static-electron": "^2.0.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "hierarchy-js": "^1.0.4",
     "install": "^0.13.0",
     "kalend": "^0.14.3",
-    "module-alias": "^2.2.2",
     "nedb": "^1.8.0",
     "nedb-promises": "^6.0.3",
     "node-sass": "^7.0.1",
     "npm": "^8.10.0",
     "react": "^17.0.2",
     "react-alert": "^7.0.3",
+    "react-bootstrap": "^2.4.0",
+    "react-bootstrap-calendar": "^0.0.3",
     "react-dom": "^17.0.2",
+    "react-player": "^2.10.1",
     "react-scripts": "^2.1.3",
+    "screenfull": "^6.0.2",
     "uniqid": "^5.4.0",
     "web-vitals": "^2.1.4"
   },
@@ -57,17 +63,14 @@
     "react-start": "craco start",
     "react-build": "craco build",
     "test": "react-scripts test",
-    "eject": "craco eject",
+    "eject": "react-scripts eject",
     "start": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "npm run react-build && electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
     "lint": "eslint './src**/*.{ts,tsx}'",
     "electron-start": "electron .",
     "start-mac": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && npm run electron-start\"",
-    "deploy:win32": "npm run react-build && electron-builder --windows nsis:ia32",
-    "deploy:win64": "npm run react-build && electron-builder --windows nsis:x64",
-    "deploy:mac": "npm run react-build && electron-builder --macos",
-    "electron-pack": "npm run react-build && electron-builder build -c.extraMetadata.main=build/main.js"
+    "build-win": "npm run react-build && electron-builder -c.extraMetadata.main=build/main.js"
   },
   "eslintConfig": {
     "extends": [
@@ -95,6 +98,7 @@
     "cross-env": "^7.0.3",
     "electron": "^17.2.0",
     "electron-builder": "^22.14.13",
+    "module-alias": "^2.2.2",
     "typescript": "^4.6.3",
     "wait-on": "^6.0.1"
   },
@@ -108,24 +112,21 @@
   "optionalDependencies": {
     "fsevents": "^2.3.2"
   },
-  "author": {
-    "name": "junyoung kim",
-    "email": "juny3738@gmail.com"
+  "_moduleAliases": {
+    "@": "./",
+    "@src": "./src",
+    "@lib": "./public/lib",
+    "@models": "./public/models",
+    "@task": "./public/lib/Task"
   },
   "build": {
-    "asar": true,
-    "appId": "CM",
-    "directories": {
-      "buildResources": "src/public",
-      "output": "dist/",
-      "app": "."
-    },
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
+    "asar": false,
+    "appId": "CM.com",
     "productName": "CM",
-    "copyright": "Copyright © 2019 ${author}",
+    "publish": {
+      "provider": "generic",
+      "url": "https://sdarchive.cj.net/"
+    },
     "mac": {
       "target": [
         "default"
@@ -133,14 +134,21 @@
       "icon": "./electron-root/favicon.ico"
     },
     "dmg": {
-      "title": "${productName}-Setup-${arch}"
+      "title": "${productName}-Setup-${version}-${arch}"
     },
     "win": {
-      "target": [
-        "nsis",
-        "nsis"
-      ],
-      "icon": "./electron-root/favicon.ico"
+      "target": "nsis",
+      "icon": "./electron-root/favicon.ico",
+      "files": [
+        "node_modules/ffmpeg-static-electron/bin/win/${arch}/ffmpeg",
+        "!node_modules/ffmpeg-static-electron/bin/win/ia32${/*}",
+        "!node_modules/ffmpeg-static-electron/bin/linux${/*}",
+        "!node_modules/ffmpeg-static-electron/bin/mac${/*}",
+        "node_modules/ffprobe-static-electron/bin/win/${arch}/ffprobe",
+        "!node_modules/ffprobe-static-electron/bin/win/ia32${/*}",
+        "!node_modules/ffprobe-static-electron/bin/linux${/*}",
+        "!node_modules/ffprobe-static-electron/bin/mac${/*}"
+      ]
     },
     "nsis": {
       "oneClick": true,
@@ -148,12 +156,24 @@
       "installerIcon": "",
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
-      "artifactName": "${productName}-Setup-${arch}.${ext}",
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
       "installerLanguages": [
         "en_US",
         "ko_KR"
       ],
       "language": "1042"
+    },
+    "files": [
+      "!dist/**/*",
+      "!.vscode${/*}",
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "resources/installer/",
+      "output": "./dist",
+      "app": "."
     }
   }
 }
