@@ -124,8 +124,8 @@ export default function ContentDialog(props:any) {
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                             <Tab label="메타데이터" {...a11yProps(0)} />
-                            <Tab label="Item Two" {...a11yProps(1)} />
-                            <Tab label="Item Three" {...a11yProps(2)} />
+                            <Tab label="미디어 정보" {...a11yProps(1)} />
+                            <Tab label="작업모니터링" {...a11yProps(2)} />
                         </Tabs>
                         </Box>
                         <TabPanel value={value} index={0}>
@@ -135,7 +135,7 @@ export default function ContentDialog(props:any) {
                             <MediaInfo metadata={metadata}/>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                        Item Three
+                        작업모니터링
                         </TabPanel>
                     </Grid>
                 </Grid>

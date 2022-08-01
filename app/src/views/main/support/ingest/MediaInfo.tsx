@@ -10,13 +10,18 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
-    TextField, Box
+    TextField, 
+    Box,
+    Tooltip ,
+    IconButton
 } from '@mui/material';
 import InputLabel from "@mui/material/InputLabel";
 import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import electron from "electron";
 const ipcRenderer = electron.ipcRenderer;
+import {isEmpty} from 'lodash';
 
 
 // const rows: GridRowsProp = [
@@ -70,27 +75,56 @@ export default function MediaInfo(props : any) {
 
     
     const [rows,setRows] = React.useState(getRows(metadata._id,mediaCodeMap,storageMap));
-    
+    const [selectedId, setSelectedId] = React.useState(null);
 
+    const baseAlert = ((<CustomAlert open={false} />));
+    const [alert, setALert] = React.useState(baseAlert)
     
     
     
-    
+    const handleDownloadButton = (event:any) => {
+        if(isEmpty(selectedId)){
+            setALert((<CustomAlert serverity="warning" title="미디어 항목을 선택후 다운로드 요청해주세요." />));
+            return;    
+        }
+        ipcRenderer.send('download-request',selectedId)
 
+        setALert((<CustomAlert serverity="success" title="다운로드작업이 요청되었습니다." />));
+    }
     
     
     return (
-        <div style={{ height: '300px', width: '100%' }}>
+        <div style={{ height: '70vh', width: '100%' }}>
             <DataGrid
                 rows={rows}
                 columns={columns}
                 hideFooter={true}
                 editMode="row"
                 onRowClick={(params: any, event: any, details: GridCallbackDetails)=>{
-                     
+                     console.log('params',params)
+                     console.log('details',details);
+                     setSelectedId(params.id);
+                     setALert(baseAlert);
+                }}
+                components={{
+                    Toolbar : () => {
+                        return (
+                            <GridToolbarContainer>
+                                <Stack  direction="row">
+                                    <Tooltip title="미디어 다운로드">
+                                        <IconButton onClick={handleDownloadButton}>
+                                            <FileDownloadIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Stack>
+                                {alert}
+                            </GridToolbarContainer>
+                        );
+                    }
                 }}
           
             />
+            
         </div>
     );
 }

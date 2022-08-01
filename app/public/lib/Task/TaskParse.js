@@ -356,7 +356,7 @@ var TaskParse = /** @class */ (function () {
                                                 content_id: _this.task.content_id,
                                                 type: _this.moduleInfo.target_media,
                                                 storage: _this.moduleInfo.target_storage,
-                                                path: _this.task._id + path.extname(_this.task.source),
+                                                path: _this.task._id + ext,
                                                 full_path: path.resolve(_this.targetStorage.path, _this.task._id + ext)
                                             };
                                             _this.setMedia(setTargetOptions)

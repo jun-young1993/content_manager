@@ -65,15 +65,18 @@ export default function CustomAlert(props:any) {
     const handleClose = (event:any,reason:any) => {
         
         if(!disableBackDrop){
-            
+            console.log('custom alert',1)
             if(reason == "backdropClick"){
+                console.log('custom alert',2)
                 return;
             }
-            
+            console.log('custom alert',3)
         }else{
+            console.log('custom alert',4)
             setDisableBackDrop(false);
             
         }
+        console.log('custom alert',5)
         setOpen(false);
         
 
