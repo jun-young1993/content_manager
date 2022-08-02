@@ -112,3 +112,4 @@ dist
 
 ./db/
 ./app/public/config/
+./public/config/
