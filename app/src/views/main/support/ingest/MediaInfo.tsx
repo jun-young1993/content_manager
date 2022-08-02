@@ -88,8 +88,11 @@ export default function MediaInfo(props : any) {
             return;    
         }
         ipcRenderer.send('download-request',selectedId)
-
-        setALert((<CustomAlert serverity="success" title="다운로드작업이 요청되었습니다." />));
+        ipcRenderer.on('download-request-reply',(event, result) => {
+            console.log('download-request-reply result',result)
+            setALert((<CustomAlert serverity="success" title="다운로드작업이 요청되었습니다." />));
+        })
+        
     }
     
     

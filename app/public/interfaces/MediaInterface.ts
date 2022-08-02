@@ -4,7 +4,7 @@ export default interface MediaInterface {
 	content_id : string,
 	type : Type.TaskTypes,
 	storage : string,
-	path : string | null,
+	path : string,
 	full_path : string,
 	_id : string,
 	createdAt : any,
