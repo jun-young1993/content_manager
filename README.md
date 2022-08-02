@@ -40,6 +40,7 @@
 - npm install ffprobe-static-electron
 - npm install electron-log
 - npm install react-player
+- npm install electron-updater
 
 ## 참고문서
 - electorn ffmpeg build pakage.json
