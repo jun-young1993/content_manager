@@ -21,6 +21,9 @@ module.exports = {
 		},
 		"play" : {
 			"path" : "api/player.log"
+		},
+		"download"  : {
+			"path" : "task/download.log"
 		}
 	}
 	

@@ -1,7 +1,7 @@
 // const {app} = require('electron');
 const path = require('path');
 
-const {Field} = require('../../public/models/Field');
+const {Field} = require('../models/Field');
 module.exports = {
     // "directory" : path.resolve(app.getPath('downloads'),'db')
     "db" : [{

@@ -8,6 +8,7 @@ const log = require('../Logger');
 import {isEmpty} from 'lodash';
 // const {isEmpty} = require('lodash');
 import * as path from "path";
+import { apiReject, apiResolve } from '../helper/ApiHelper';
 export class TaskParse {
 	private sourceMediaId : any = null;
 	private targetMediaId : any = null;
@@ -396,19 +397,58 @@ export class TaskParse {
 		})
 		
 	}
+
+	onlineSetting()
+	{
+		return new Promise((resolve ,reject) => {
+			const _this = this;
+			const moduleTypeCode = "fs";
+			const moduleTypeMethod = "copy";
+			const task = this.task;
+				log.channel('task_parse').info('[onlineSetting][updateTask]',task);
+				const module = _this.getModule(moduleTypeCode.toLowerCase())
+				_this.module = new module({
+					task : task,
+					sourceMedia : {
+						full_path : task.source
+					},
+					targetMedia : {
+						full_path : task.target
+					}
+				});
+				log.channel('task_parse').info(`[setting][Start Task Workflow] ${moduleTypeCode.toLowerCase()} => ${moduleTypeMethod.toLowerCase()}`);
+				_this.module[moduleTypeMethod.toLowerCase()]();
+				
+				
+				resolve(apiResolve(_this));
+			})
+		
+	
+		
+	}
 	
 	async getTaskParse(){
 		return new Promise((resolve , reject) => {
-			this.setting()
+			let taskSetting:any = null;
+			if(!isEmpty(this.task.source) && !isEmpty(this.task.target)){
+				taskSetting = this.onlineSetting();	
+			}else{
+				taskSetting = this.setting()
+				
+			}
+			taskSetting
 			.then((complete:any) => {
 				resolve(complete);
 			})
 			.catch((error:string) => {
 				log.channel('task_parse').error(error);
 			})
+			
 		})
 		
 	}
+
+
 	async getTaskParse_(){
 		log.channel('task_parse').info('[Start Task Parse]',this);
 		const task = this.task;

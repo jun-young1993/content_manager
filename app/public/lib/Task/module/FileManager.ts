@@ -20,22 +20,27 @@ export class FileManager extends Property{
 		const targetFullPath = this.getTargetFullPath();
 		const sourceFullPath = this.getSourceFullPath()
 		log.channel('fs').info(`[Start Fs Copy] ${sourceFullPath} => ${targetFullPath}`);
+		this._copy(sourceFullPath,targetFullPath,taskId);
+	}
+
+
+	_copy(sourceFullPath:string,targetFullPath:string,taskId:string){
 		fs.createReadStream(sourceFullPath)
-			.on('error',(error:Error)=>{
-				log.channel('fs').info('[Fs Read Stream Error]',error)
-			})
-			.pipe(fs.createWriteStream(targetFullPath))
-			.on('error',(error:Error)=>{
-				log.channel('fs').info('[Fs Write Stream Error]',error)
-			})
-			.on('finish',()=>{
-				
-				log.channel('fs').info(`[Fs Complete] TaskId : ${this.params.task._id}`)
-				
-				new TaskUpdater(taskId).complete();
-				
-				
-			});
+		.on('error',(error:Error)=>{
+			log.channel('fs').info('[Fs Read Stream Error]',error)
+		})
+		.pipe(fs.createWriteStream(targetFullPath))
+		.on('error',(error:Error)=>{
+			log.channel('fs').info('[Fs Write Stream Error]',error)
+		})
+		.on('finish',()=>{
+			
+			log.channel('fs').info(`[Fs Complete] TaskId : ${taskId}`)
+			
+			new TaskUpdater(taskId).complete();
+			
+			
+	});
 	}
 
 

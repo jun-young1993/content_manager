@@ -3,9 +3,12 @@ exports.__esModule = true;
 exports.TaskManager = void 0;
 var Task = require('../../models/Task').Task;
 var TaskParse = require('./TaskParse').TaskParse;
+var FileManager = require('./module/FileManager').FileManager;
+var Media_1 = require("../../models/Media");
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();
+        this.MediaDb = new Media_1.Media().db();
         /*
         {
             status : 'queue'

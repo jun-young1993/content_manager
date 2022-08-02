@@ -47,6 +47,7 @@ var log = require('../Logger');
 var lodash_1 = require("lodash");
 // const {isEmpty} = require('lodash');
 var path = require("path");
+var ApiHelper_1 = require("../helper/ApiHelper");
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
         this.sourceMediaId = null;
@@ -415,12 +416,42 @@ var TaskParse = /** @class */ (function () {
             });
         });
     };
+    TaskParse.prototype.onlineSetting = function () {
+        var _this_1 = this;
+        return new Promise(function (resolve, reject) {
+            var _this = _this_1;
+            var moduleTypeCode = "fs";
+            var moduleTypeMethod = "copy";
+            var task = _this_1.task;
+            log.channel('task_parse').info('[onlineSetting][updateTask]', task);
+            var module = _this.getModule(moduleTypeCode.toLowerCase());
+            _this.module = new module({
+                task: task,
+                sourceMedia: {
+                    full_path: task.source
+                },
+                targetMedia: {
+                    full_path: task.target
+                }
+            });
+            log.channel('task_parse').info("[setting][Start Task Workflow] ".concat(moduleTypeCode.toLowerCase(), " => ").concat(moduleTypeMethod.toLowerCase()));
+            _this.module[moduleTypeMethod.toLowerCase()]();
+            resolve((0, ApiHelper_1.apiResolve)(_this));
+        });
+    };
     TaskParse.prototype.getTaskParse = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this_1 = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _this_1.setting()
+                        var taskSetting = null;
+                        if (!(0, lodash_1.isEmpty)(_this_1.task.source) && !(0, lodash_1.isEmpty)(_this_1.task.target)) {
+                            taskSetting = _this_1.onlineSetting();
+                        }
+                        else {
+                            taskSetting = _this_1.setting();
+                        }
+                        taskSetting
                             .then(function (complete) {
                             resolve(complete);
                         })["catch"](function (error) {

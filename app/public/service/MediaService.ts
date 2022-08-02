@@ -1,5 +1,8 @@
 
 const {BaseService} = require('../service/BaseService');
+import MediaInterface from "../interfaces/MediaInterface";
+import {isEmpty} from "lodash";
+import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
 export class MediaService extends BaseService{
 	constructor(){
 		super({
@@ -31,6 +34,17 @@ export class MediaService extends BaseService{
 					})
 				}
 				
+			})
+		})
+	}
+	findByMediaId(mediaId:string){
+		return new Promise((resolve, reject) => {
+			this.getModel('Media')
+			.findOne({_id : mediaId},(error, media:MediaInterface | null) => {
+				if(isEmpty(media)){
+					reject(apiReject(`not found media by media_id : ${mediaId}`))
+				}
+				resolve(apiResolve(media));
 			})
 		})
 	}

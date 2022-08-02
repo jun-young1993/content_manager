@@ -1,10 +1,19 @@
+import {BaseModel} from "../models/BaseModel";
+type modelClassName = string;
+type models = typeof BaseModel;
+interface Models{
+	models : modelClassName[]
+}
+interface Property{
+	 model : models[]
+}
 
-export class BaseService{
-	private model:any = [];
+export class BaseService implements Property{
+	model = [];
 	
-	constructor(property:any){
+	constructor(property:Models){
 		
-		property.models.forEach((model:any) => {
+		property.models.forEach((model:modelClassName) => {
 			
 			// @ts-ignore
 			const modelClass = require('../models/'+model)[model];
@@ -14,7 +23,7 @@ export class BaseService{
 
 	}
 	
-	getModel(modelName:any){
+	getModel(modelName:modelClassName){
 
 			// @ts-ignore
 		return this.model[modelName];

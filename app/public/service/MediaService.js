@@ -17,6 +17,8 @@ var __extends = (this && this.__extends) || (function () {
 exports.__esModule = true;
 exports.MediaService = void 0;
 var BaseService = require('../service/BaseService').BaseService;
+var lodash_1 = require("lodash");
+var ApiHelper_1 = require("../lib/helper/ApiHelper");
 var MediaService = /** @class */ (function (_super) {
     __extends(MediaService, _super);
     function MediaService() {
@@ -48,6 +50,18 @@ var MediaService = /** @class */ (function (_super) {
                         err: err
                     });
                 }
+            });
+        });
+    };
+    MediaService.prototype.findByMediaId = function (mediaId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Media')
+                .findOne({ _id: mediaId }, function (error, media) {
+                if ((0, lodash_1.isEmpty)(media)) {
+                    reject((0, ApiHelper_1.apiReject)("not found media by media_id : ".concat(mediaId)));
+                }
+                resolve((0, ApiHelper_1.apiResolve)(media));
             });
         });
     };

@@ -17,6 +17,10 @@ var __extends = (this && this.__extends) || (function () {
 exports.__esModule = true;
 exports.DownloadService = void 0;
 var BaseService = require('../service/BaseService').BaseService;
+var lodash_1 = require("lodash");
+var ApiHelper_1 = require("../lib/helper/ApiHelper");
+var log = require('../lib/Logger');
+var TaskManager_1 = require("../lib/Task/TaskManager");
 var DownloadService = /** @class */ (function (_super) {
     __extends(DownloadService, _super);
     function DownloadService() {
@@ -27,7 +31,28 @@ var DownloadService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
-    DownloadService.prototype.downloadByMediaId = function () {
+    DownloadService.prototype.findMedia = function (mediaId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Media')
+                .findOne({ _id: mediaId }, function (error, media) {
+                if ((0, lodash_1.isEmpty)(media)) {
+                    reject((0, ApiHelper_1.apiReject)("not found media by media_id : ".concat(mediaId)));
+                }
+                resolve((0, ApiHelper_1.apiResolve)(media));
+            });
+        });
+    };
+    DownloadService.prototype.downloadByMediaId = function (mediaId) {
+        log.channel("download").info("[DownloadService][downloadByMediaId][START DOWNLOAD] MEDIA_ID : ".concat(mediaId));
+        this.findMedia(mediaId)
+            .then(function (resolve) {
+            log.channel("download").info("[DownloadService][downloadByMediaId][DATA]", resolve);
+            new TaskManager_1.TaskManager()
+                .onlineDownload();
+        })["catch"](function (reject) {
+            log.channel("download").info("[DownloadService][downloadByMediaId][reject]:", reject);
+        });
     };
     return DownloadService;
 }(BaseService));

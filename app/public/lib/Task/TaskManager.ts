@@ -3,12 +3,20 @@ const {Task} = require('../../models/Task');
 
 
 const {TaskParse} = require('./TaskParse');
-
-export class TaskManager{
-	private TaskDb:any;
+const {FileManager} = require('./module/FileManager');
+import MediaInterface from "../../interfaces/MediaInterface";
+import { Media } from "../../models/Media";
+import {apiReject,apiResolve} from "../helper/ApiHelper";
+interface Property{
+	TaskDb : typeof Task,
+	MediaDb : typeof Media
+}
+export class TaskManager implements Property{
+	TaskDb
+	MediaDb
 	constructor(){
 		this.TaskDb = new Task().db();
-		
+		this.MediaDb = new Media().db();
 		/*
 		{
 			status : 'queue'
@@ -104,6 +112,10 @@ export class TaskManager{
 		
 	}
 
+	
+
+	
+
 	start(){
 		
 	}
@@ -112,5 +124,8 @@ export class TaskManager{
 	ingest(){
 		
 	}
+
+
+
 
 }
