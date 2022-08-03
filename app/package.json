@@ -1,8 +1,15 @@
 {
   "name": "ContentManager",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "main": "public/main.js",
   "homepage": "./",
+  "publish": {
+    "provider": "github",
+    "protocol" : "https",
+    "host ": "github.com/jun-young1993/electron.git",
+    "owner" : "jun-young1993",
+    "repo" : "electron"
+  },
   "dependencies": {
     "@craco/craco": "5.8",
     "@electron/remote": "^2.0.8",
@@ -71,7 +78,7 @@
     "lint": "eslint './src**/*.{ts,tsx}'",
     "electron-start": "electron .",
     "start-mac": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && npm run electron-start\"",
-    "build-win": "npm run react-build && electron-builder -c.extraMetadata.main=build/main.js"
+    "build-win": "npm run react-build && electron-builder -c.extraMetadata.main=build/main.js -c.snap.publish=github"
   },
   "repository": {
     "type" : "git",
@@ -128,12 +135,6 @@
     "asar": false,
     "appId": "ContentManager.com",
     "productName": "ContentManager",
-    "publish": {
-      "provider": "github",
-      "url": "https://github.com/jun-young1993/electron.git",
-      "owner" : "jun-young1993",
-      "repo" : "electron"
-    },
     "mac": {
       "target": [
         "default"
@@ -145,7 +146,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "./build/favicon.ico",
+      "icon": "./electron-root/favicon.ico",
       "files": [
         "node_modules/ffmpeg-static-electron/bin/win/${arch}/ffmpeg",
         "!node_modules/ffmpeg-static-electron/bin/win/ia32${/*}",
