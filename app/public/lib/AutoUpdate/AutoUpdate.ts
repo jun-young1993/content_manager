@@ -27,15 +27,13 @@ export class AutoUpdate {
 
 		// event.reply('auto-update/available','available');
 		
-		if(isFunction(methods.available)){
-			methods.available()
-		}
+
 		
 		autoUpdater.on('update-downloaded', (info) => {
 			// log.info('update-downloaded')
 			log.channel("main").info("[AutoUpdater][update-downloaded] quit and install",info)
 			if(isFunction(methods.update)){	
-				
+				log.channel("main").info("[AutoUpdater][update-downloaded] quit and install start")
 				autoUpdater.quitAndInstall()
 				methods.update()
 			}
@@ -55,6 +53,10 @@ export class AutoUpdate {
 		});
 		autoUpdater.on('update-available', (info) => {
 			log.channel("main").info("[AutoUpdater][update-available]",info)
+			if(isFunction(methods.available)){
+				log.channel("main").info("[AutoUpdater][update-available] available");
+				methods.available()
+			}
 		// log.info('available.');
 			// createDefaultUpdateWindow()
 		// updateWin.webContents.send('message','업데이트가 가능합니다.','auto-update')
