@@ -24,6 +24,9 @@ module.exports = {
 		},
 		"download"  : {
 			"path" : "task/download.log"
+		},
+		"main" : {
+			"main" : "main.log"
 		}
 	}
 	

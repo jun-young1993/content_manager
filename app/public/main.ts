@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from 'electron';
+import { app, BrowserWindow, session, Event} from 'electron';
 import {ipcMain,ipcRenderer} from "electron";
 // import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
@@ -70,6 +70,7 @@ app.whenReady().then(async () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', ()=>{
+  
   createWindow();
   const boots = new AutoLoader(path.join(__dirname,'./src/events/ready/**/*.js'));
   boots.loader();
@@ -87,3 +88,11 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.on('web-contents-created',(event:Event, browserWindow) => {
+  
+    // AutoUpdate.checkForUpdates();
+    // const boots = new AutoLoader(path.join(__dirname,'./src/events/web-contents-created/**/*.js'));
+    // boots.loader();
+    // console.log('borwser window',browserWindow);
+})
