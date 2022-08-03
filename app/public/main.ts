@@ -4,6 +4,7 @@ import {ipcMain,ipcRenderer} from "electron";
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
+
 // import 'module-alias/register';
 
 let mainWindow: BrowserWindow;
@@ -89,10 +90,10 @@ app.on('activate', () => {
   }
 });
 
-app.on('web-contents-created',(event:Event, browserWindow) => {
-  
-    // AutoUpdate.checkForUpdates();
-    // const boots = new AutoLoader(path.join(__dirname,'./src/events/web-contents-created/**/*.js'));
-    // boots.loader();
-    // console.log('borwser window',browserWindow);
-})
+// app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
+    
+//     // AutoUpdate.checkForUpdates();
+//     // const boots = new AutoLoader(path.join(__dirname,'./src/events/web-contents-created/**/*.js'));
+//     // boots.loader();
+//     // console.log('borwser window',browserWindow);
+// })

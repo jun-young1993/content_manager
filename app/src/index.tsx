@@ -12,12 +12,12 @@ import MainTabBar from '@src/views/main/MainTabBar';
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
 // import './views/css/main.css';
+import {ipcRenderer, IpcRendererEvent} from "electron";
 
+ipcRenderer.send('auto-update-check','auto-update-check')
 ReactDOM.render(
             <>
                 <MainContainer />
-                {/*<div id="main" style = {{height:"100vh"}}>*/}
-                {/*</div>*/}
             </>,
     document.getElementById('root')
 );

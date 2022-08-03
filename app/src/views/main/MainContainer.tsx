@@ -21,13 +21,13 @@ import Config from "@views/main/Config";
 import TaskMonitor from '@views/main/TaskMonitor';
 import MenuAppBar from '@views/main/support/main/MenuAppBar';
 import ContentDialog from "@views/main/support/content/ContentDialog";
-
-
+import UpdateSnackbar from './support/snackbar/UpdateSnackbar';
 
 
 export default function MainContainer(props:any) {
     const [value, setValue] = React.useState(<Content />);
-
+    
+   
     // const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     //     setValue(newValue);
     // };
@@ -37,7 +37,7 @@ export default function MainContainer(props:any) {
 
         
         <Box sx={{ width: '100%', typography: 'body1' , height:'100vh'}}>
-
+            <UpdateSnackbar />
             <Box sx={{ width: '100%',height:'20vh'}}>
             <MenuAppBar
                 onSearch={(searchText:any)=>{

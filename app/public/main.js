@@ -111,9 +111,9 @@ electron_1.app.on('activate', function () {
         createWindow();
     }
 });
-electron_1.app.on('web-contents-created', function (event, browserWindow) {
-    // AutoUpdate.checkForUpdates();
-    // const boots = new AutoLoader(path.join(__dirname,'./src/events/web-contents-created/**/*.js'));
-    // boots.loader();
-    // console.log('borwser window',browserWindow);
-});
+// app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
+//     // AutoUpdate.checkForUpdates();
+//     // const boots = new AutoLoader(path.join(__dirname,'./src/events/web-contents-created/**/*.js'));
+//     // boots.loader();
+//     // console.log('borwser window',browserWindow);
+// })

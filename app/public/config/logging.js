@@ -2,7 +2,7 @@ const {app} = require('electron');
 const path = require('path');
 module.exports = {
 	// "directory" : path.resolve(app.getPath('downloads'),'logs'),
-	"directory" : '/Users/junyoungkim/Desktop/cm/logs',
+	"directory" : 'C:\\Users\\jun\\Downloads\\logs',
 	"channels" : {
 		"ts" : {
 			"path" : "module/transcoder.log"
@@ -26,7 +26,7 @@ module.exports = {
 			"path" : "task/download.log"
 		},
 		"main" : {
-			"main" : "main.log"
+			"path" : "main/autoUpdater.log"
 		}
 	}
 	
