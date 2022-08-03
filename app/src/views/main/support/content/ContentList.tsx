@@ -1,7 +1,10 @@
 import Image from "@views/main/support/content/Image";
-
-export default function ContentList(props:any) {
+type ContentListType = {
+    searchText : string | null,
+    category : string | null
+}
+export default function ContentList(props:ContentListType) {
     return(
-        <Image searchText={props.searchText}/>
+        <Image searchText={props.searchText} category={props.category}/>
     )
 }

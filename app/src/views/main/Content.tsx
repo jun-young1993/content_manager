@@ -16,18 +16,24 @@ import Typography from "@mui/material/Typography";
 // }));
 
 export default function Content(props:any) {
-
+    const [selectedNode, setSelectedNode] = React.useState<string|null>(null);
     return (
         // <Box sx={{ flexGrow: 1, height:"100%" }} style={{height: '100%'}}>
             <Grid container spacing={2} style={{height: '100vh'}} >
                 <Grid item xs={2}  style={{height: '100vh'}}>
                     <Box sx={{borderRight:1, height:'100vh'}}>
-                        <Category />
+                        <Category onClickCategory={(nodeId:string)=>{
+                            if(nodeId === 'folder'){
+                                setSelectedNode(null);
+                            }else{
+                                setSelectedNode(nodeId);
+                            }
+                        }}/>
                     </Box>
                     
                 </Grid>
                 <Grid item xs={10} style={{height: '100vh'}}>
-                    <ContentList searchText={props.searchText}/>
+                    <ContentList searchText={props.searchText} category={selectedNode}/>
                 </Grid>
             </Grid>
         // </Box>

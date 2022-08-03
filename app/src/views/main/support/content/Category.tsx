@@ -108,8 +108,10 @@ const laodByNode:any = (nodeId:string,callback:any) => {
     });
 }
 
-
-export default function Category() {
+type CategoryProps = {
+    onClickCategory : Function;
+}
+const Category = ({onClickCategory} : CategoryProps) => {
     const baseAlert = ((<CustomAlert open={false} />));
 
     const [alert, setALert] = React.useState(baseAlert)
@@ -165,7 +167,8 @@ export default function Category() {
                 defaultExpandIcon={<ArrowRightIcon />}
                 defaultEndIcon={<div style={{ width: 24 }} />}
                 sx={{ height: '100vh', flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-                onNodeSelect={(event:SyntheticEvent,nodeIds:string|string[])=>{
+                onNodeSelect={(event:SyntheticEvent,nodeIds:string)=>{
+                    onClickCategory(nodeIds);
                     if(nodeIds == 'folder'){
                         load();
                     }
@@ -185,3 +188,5 @@ export default function Category() {
         </>
     );
 }
+
+export default Category;
