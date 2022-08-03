@@ -20,6 +20,17 @@ var db = new Content_1.Content();
 var Content = /** @class */ (function () {
     function Content() {
     }
+    Content._index = function (event, args) {
+        db.db()
+            .find(Object.assign(args, { is_deleted: 'N' }), function (err, data) {
+            if (data) {
+                event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Content.index = function (event, args) {
         db.db().find(Object.assign(args, { is_deleted: 'N' }), function (err, data) {
             if (data) {

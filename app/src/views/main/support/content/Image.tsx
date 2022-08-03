@@ -5,36 +5,28 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ContentItemBar from '@views/main/support/content/ContentItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
-import electron from "electron";
+
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
-const ipcRenderer = electron.ipcRenderer;
+
 import {isEmpty} from 'lodash';
+import {ipcRenderer , IpcRendererEvent} from "electron";
 // import img from "/Users/junyoungkim/Desktop/a.png";
 type ImageProps = {
-    searchText : string | null
-    category : string | null
+    contents : []
 }
 /**
  * cols 열수
  * @constructor
  */
-export default function Image(props:ImageProps) {
-    let where:any = {};
-    if(!isEmpty(props.searchText)){
-        where['title'] = props.searchText;
-    }
-
-    if(!isEmpty(props.category)){
-        where['category'] = props.category;
-    }
-
-    const contens = ipcRenderer.sendSync("@Content/index",where);
-    let contentList:[] = [];
-    if(contens.success){
-        console.log(contens.data);
-        contentList = contens.data;
-    }
+export default function Image() {
+    const [contentList , setContentList] = React.useState<[]>([]);
+    ipcRenderer.on("@Content/_index/reply",(event:IpcRendererEvent,result:any)=>{
+        if(result.success){
+            setContentList(result.data);
+        }
+    })
+    
     return (
         <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={100}>
             {contentList.map((item:any) => (

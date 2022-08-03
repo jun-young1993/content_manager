@@ -20,6 +20,19 @@ const db = new Model();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Content {
+    static _index(event, args){
+
+        db.db()
+        .find(Object.assign(args,{is_deleted : 'N'}),(err,data) => {
+            if(data){
+                event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
     static index(event, args){
 
         db.db().find(Object.assign(args,{is_deleted : 'N'}),(err,data) => {
