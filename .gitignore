@@ -110,6 +110,6 @@ dist
 
 .app/node_modules/
 
-./db/
+.db
 ./app/public/config/
 ./public/config/
