@@ -1,0 +1,1 @@
+export type TaskTypes = "thumbnail" | "proxy" | "out" | "original";

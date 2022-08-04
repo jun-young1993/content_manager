@@ -1,8 +1,9 @@
 # electron
 ## 개발 환경
 - version
-	- node : 14.17.3
-	- npm : 6.14.13
+    - node : 14.17.3
+    - npm : 6.14.13
+    - craco : 5.8 (리액트 버전에 따라 다름)
 
 ## 실행
 - npx create-react-app app --typescript or npx create-react-app app --template typescript
@@ -32,3 +33,39 @@
 - [release]
 	- build명령어와 같지만 그 후 배포를 해준다. (추가설정 필요)
 	
+
+## npm install
+- npm install ffmpeg-static-electron
+- npm install fluent-ffmpeg
+- npm install ffprobe-static-electron
+- npm install electron-log
+- npm install react-player
+- npm install electron-updater
+
+## 참고문서
+- electorn ffmpeg build pakage.json
+	- https://github.com/OpenNewsLabs/autoEdit_2/blob/master/package.json
+- video-player example)
+	- https://codesandbox.io/s/f2uzv?file=/src/Player.js
+
+
+#필수코드 
+--TASK_MODULE_TYPE
+---fs_copy
+
+--MEDIA_TYPE
+---out
+---original
+
+- tsconfig.path.json
+      "@route/*" : [
+        "./public/lib/route/*"
+      ],
+      "@service/*" :[
+        "./public/service/*"
+      ]
+
+
+-pakage.json
+  "@route" : "./public/lib/route",
+    "@service" : "./public/service"

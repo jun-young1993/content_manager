@@ -103,4 +103,13 @@ dist
 # TernJS port file
 .tern-port
 
+
 .history
+
+.idea/
+
+.app/node_modules/
+
+./db/
+./app/public/config/
+./public/config/
