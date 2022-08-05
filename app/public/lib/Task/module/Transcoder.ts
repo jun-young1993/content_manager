@@ -68,7 +68,7 @@ export class Transcoder extends Property{
 		this.initialize()
 		.audioCodec('aac')
 		.videoCodec('libx264')
-		.size('320x240')
+		.size('640x480')
 		.save(fullPath)
 		// .pipe(outStream, {end : true} );
 	}

@@ -18,9 +18,20 @@ class Field {
 
         })
     }
+    static _index(event, args){
+        db.db().find(Object.assign(args),(err,data) => {
 
+            if(data){
+                event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
     static index(event, args){
-        db.db().find({use_yn : 'N'},(err,data) => {
+        db.db().find({use_yn : 'Y'},(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -33,7 +44,7 @@ class Field {
     static insert(event,...args){
 
         db.db().insert(Object.assign(args[0],{
-            'use_yn' : "N",
+            'use_yn' : "Y",
             'deleted_at' : null,
         }),(err,data) => {
 

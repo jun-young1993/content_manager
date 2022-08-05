@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ContentMetadata from "@views/main/support/ingest/ContentMetadata";
-import Contents from "@views/main/support/ingest/contents/Contents";
+// import Contents from "@views/main/support/ingest/contents/Contents";
 import IngestRequest from "@views/main/support/ingest/IngestRequest";
 import IngestInfo from "@views/main/support/ingest/IngestInfo";
 const electron = window.require('electron');
@@ -27,7 +27,7 @@ export default function IngestStep(props:Props) {
             setMetadataValues={setMetadataValues}
         ></ContentMetadata>;
     }else if(props.activeStep == 1){
-        step = <Contents setFiles={setFiles}></Contents>;
+        // step = <Contents setFiles={setFiles}></Contents>;
     }else if(props.activeStep == 2){
         console.log('content insert');
         const metadata = metadataValues;

@@ -36,9 +36,9 @@ export default function MainContainer(props:any) {
 
 
         
-        <Box sx={{ width: '100%', typography: 'body1' , height:'100vh'}}>
+        <Box sx={{ width: '100%', typography: 'body1' , height:'auto'}}>
             <UpdateSnackbar />
-            <Box sx={{ width: '100%',height:'20vh'}}>
+            <Box sx={{ width: '100%',height:'auto'}}>
             <MenuAppBar
                 onSearch={(searchText:any)=>{
                     console.log(searchText);
@@ -55,7 +55,7 @@ export default function MainContainer(props:any) {
                 }}
             />
             </Box>
-            <Box sx={{ width: '100%',height:'80vh'}}>
+            <Box sx={{ width: '100%',height:'auto'}}>
             {value}
             </Box>
         </Box>
