@@ -18,8 +18,18 @@ var Field = /** @class */ (function () {
             }
         });
     };
+    Field._index = function (event, args) {
+        db.db().find(Object.assign(args), function (err, data) {
+            if (data) {
+                event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Field.index = function (event, args) {
-        db.db().find({ use_yn: 'N' }, function (err, data) {
+        db.db().find({ use_yn: 'Y' }, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -34,7 +44,7 @@ var Field = /** @class */ (function () {
             args[_i - 1] = arguments[_i];
         }
         db.db().insert(Object.assign(args[0], {
-            'use_yn': "N",
+            'use_yn': "Y",
             'deleted_at': null
         }), function (err, data) {
             if (data) {

@@ -3,7 +3,9 @@
 - version
     - node : 14.17.3
     - npm : 6.14.13
-    - craco : 5.8 (리액트 버전에 따라 다름)
+    - craco : 5.8
+    - electron : 17.2.0
+    - typescript : 4.6.3
 
 ## 실행
 - npx create-react-app app --typescript or npx create-react-app app --template typescript
@@ -41,6 +43,7 @@
 - npm install electron-log
 - npm install react-player
 - npm install electron-updater
+- npm install react-redux
 
 ## 참고문서
 - electorn ffmpeg build pakage.json

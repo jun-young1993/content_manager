@@ -28,15 +28,55 @@ export class AutoUpdate {
 		// event.reply('auto-update/available','available');
 		
 
+
+		if(isFunction(methods.available)){
+			this.isCheck(autoUpdater,methods)
+		}
+		if(isFunction(methods.update)){	
+			this.update(autoUpdater,methods)
+		}
+
+			if(isDev){
+				Object.defineProperty(app,'isPackaged',{
+					get(){
+						return true;
+					}
+				})
+				
+			}
+			autoUpdater.checkForUpdates()
+			
+			
+	
+
+	
+	
+	}
+
+	isCheck(autoUpdater, methods){
+		autoUpdater.on('update-available', (info) => {
+			log.channel("main").info("[AutoUpdater][update-available]",info)
+			
+				log.channel("main").info("[AutoUpdater][update-available] available");
+				methods.available()
+		
+		// log.info('available.');
+			// createDefaultUpdateWindow()
+		// updateWin.webContents.send('message','업데이트가 가능합니다.','auto-update')
+		
+		});
+	}
+
+	update(autoUpdater,methods){
 		
 		autoUpdater.on('update-downloaded', (info) => {
 			// log.info('update-downloaded')
 			log.channel("main").info("[AutoUpdater][update-downloaded] quit and install",info)
-			if(isFunction(methods.update)){	
+			
 				log.channel("main").info("[AutoUpdater][update-downloaded] quit and install start")
 				autoUpdater.quitAndInstall()
 				methods.update()
-			}
+			
 			
 		})
 		autoUpdater.on('checking-for-update',()=>{
@@ -80,29 +120,12 @@ export class AutoUpdate {
 		
 		})
 		autoUpdater.on('update-downloaded', (info) => {
-		// log.info('업데이트가 완료되었습니다.');
-		log.channel("main").info("[AutoUpdater][update-downloaded] update completed",info)
-		// updateWin.webContents.send('message','','update_complete')
-		// app.quit()
+			// log.info('업데이트가 완료되었습니다.');
+			log.channel("main").info("[AutoUpdater][update-downloaded] update completed",info)
+			// updateWin.webContents.send('message','','update_complete')
+			// app.quit()
 		
 		});
-
-		
-			if(isDev){
-				Object.defineProperty(app,'isPackaged',{
-					get(){
-						return true;
-					}
-				})
-				
-			}
-			autoUpdater.checkForUpdatesAndNotify()
-			
-			
-	
-
-	
-	
 	}
 
 }
