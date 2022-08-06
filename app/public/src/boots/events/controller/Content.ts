@@ -23,7 +23,7 @@ class Content {
     static _index(event, args){
 
         db.db()
-        .find(Object.assign(args,{is_deleted : 'N'}),(err,data) => {
+        .find(Object.assign(args),(err,data) => {
             if(data){
                 event.autoReplay({
                     success : true,
@@ -35,7 +35,7 @@ class Content {
     }
     static index(event, args){
 
-        db.db().find(Object.assign(args,{is_deleted : 'N'}),(err,data) => {
+        db.db().find(Object.assign(args),(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,

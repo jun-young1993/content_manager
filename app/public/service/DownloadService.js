@@ -48,8 +48,8 @@ var DownloadService = /** @class */ (function (_super) {
         this.findMedia(mediaId)
             .then(function (resolve) {
             log.channel("download").info("[DownloadService][downloadByMediaId][DATA]", resolve);
-            new TaskManager_1.TaskManager()
-                .onlineDownload();
+            new TaskManager_1.TaskManager();
+            // .onlineDownload();
         })["catch"](function (reject) {
             log.channel("download").info("[DownloadService][downloadByMediaId][reject]:", reject);
         });

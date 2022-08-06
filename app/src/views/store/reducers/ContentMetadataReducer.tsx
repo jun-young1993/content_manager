@@ -16,9 +16,9 @@ const initialState:initialStateInterface = {
 export default function ContentMetadataReducer(state = initialState,action:ActionInterface){
 	switch(action.type){
 		case 'metadata.patch':
-			return {
-				...action.value
-			};
+			state.metadata = Object.assign(state.metadata,action.value)
+
+			return state;
 		default : 
 			return state;
 	}

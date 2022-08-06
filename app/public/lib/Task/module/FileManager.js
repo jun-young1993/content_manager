@@ -29,11 +29,13 @@ var FileManager = /** @class */ (function (_super) {
         return _this;
     }
     FileManager.prototype.copy = function () {
-        var _this = this;
         var taskId = this.getTaskId();
         var targetFullPath = this.getTargetFullPath();
         var sourceFullPath = this.getSourceFullPath();
         log.channel('fs').info("[Start Fs Copy] ".concat(sourceFullPath, " => ").concat(targetFullPath));
+        this._copy(sourceFullPath, targetFullPath, taskId);
+    };
+    FileManager.prototype._copy = function (sourceFullPath, targetFullPath, taskId) {
         fs.createReadStream(sourceFullPath)
             .on('error', function (error) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
@@ -43,7 +45,7 @@ var FileManager = /** @class */ (function (_super) {
             log.channel('fs').info('[Fs Write Stream Error]', error);
         })
             .on('finish', function () {
-            log.channel('fs').info("[Fs Complete] TaskId : ".concat(_this.params.task._id));
+            log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
             new TaskUpdater(taskId).complete();
         });
     };

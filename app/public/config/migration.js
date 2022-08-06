@@ -16,6 +16,11 @@ module.exports = {
             "code":"content_type",
             "name":"콘텐츠 유형 테스트",
             "_id" : "field_content_type"
+        },{
+            "type":"text",
+            "code":"title",
+            "name":"콘텐츠 명",
+            "_id" : "field_content_title"
         }]
     }]
 };

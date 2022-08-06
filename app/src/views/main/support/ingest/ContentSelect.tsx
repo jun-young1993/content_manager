@@ -21,6 +21,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import * as Path from "path";
+import {ipcRenderer, IpcRendererEvent} from "electron";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -38,6 +39,7 @@ const Input = styled('input')({
 
 export default function ContentSelect() {
     // const [dense, setDense] = React.useState(false);
+    const { metadata} = useSelector((state:any) => {return state.metadata})
     const { fields} = useSelector((state:any) => {return state.fields})
       const {files} = useSelector((state:any) => state.files);
       console.log('files useSelector',files);
@@ -138,6 +140,14 @@ const makeListItem = function(files:any){
                   
                         <Button variant="contained" component="span" endIcon={<ArchiveIcon />}
                             onClick={()=>{
+                                ipcRenderer.send("@Ingest/_ingest",{
+                                    metadata : metadata,
+                                    files : files
+                                });
+                                ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
+                                    console.log('renderer',result);
+                                })
+                                console.log('metadta',metadata);
                                 console.log('fields',fields)
                                 console.log('files',files);
                             }}
