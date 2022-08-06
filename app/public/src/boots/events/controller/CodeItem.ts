@@ -32,20 +32,42 @@ class CodeItem {
         })
     }
 
-    static indexByParentCode(event, parentCode){
+    static _indexByParentCode(event, args){
 
         codeItemDb.db().find({use_yn : 'Y',
-                                parent_code : parentCode},(err,data) => {
+                                parent_code : args[0]},(err,data) => {
             if(data){
-                return event.returnValue = {
+                return event.autoReplay( {
                     success : true,
                     data : data
+                })
+            }else{
+                return event.autoReplay( {
+                    success : false,
+                    data : data
+                })
+            }
+        })
+    }
+    static indexByParentCode(event, args){
+
+        codeItemDb.db().find({use_yn : 'Y',
+            parent_code : args},(err,data) => {
+            if(data){
+                return event.returnValue = {
+                    success: true,
+                    data: data
+                }
+            }else{
+                return event.returnValue = {
+                    success: false,
+                    data: data
                 }
             }
         })
     }
 
-    static findByParentCode(event, ...codes){
+    static _findByParentCode(event, codes){
 
         codeItemDb.db().findOne({use_yn : 'Y',
                                 parent_code : codes[0],
@@ -64,7 +86,7 @@ class CodeItem {
         })
     }
 
-    static insert(event,args){
+    static _insert(event,args){
 
         codeItemDb.db().insert(Object.assign(args,{
             'use_yn' : "Y",
@@ -76,33 +98,47 @@ class CodeItem {
             if(data){
 
 
-                return event.returnValue = {
+                return event.autoReplay({
                     success : true,
                     data :data
-                }
+                })
+            }else{
+                return event.autoReplay({
+                    success : false,
+                    data :data
+                })
             }
 
         });
     }
 
-    static update(event,...args){
-        codeItemDb.db().update(args,(err,data) => {
-            return event.returnValue = data;
+    static _update(event,args){
+        codeItemDb.db().update(args[0],(err,data) => {
+            if(data){
+                return event.autoReplay({
+                    success : true
+                });
+            }else{
+                return event.autoReplay({
+                    success : false
+                });
+            }
+
         })
     }
-    static delete(event, ...args){
+    static _delete(event, args){
 
         if(args.length >= 1){
             codeItemDb.db().remove(args[0],(err,data) => {
                 if(data){
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success : true,
                         data : data
-                    }
+                    })
                 }else{
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success : false
-                    }
+                    })
                 }
 
             });

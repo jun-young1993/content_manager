@@ -30,22 +30,41 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
-    CodeItem.indexByParentCode = function (event, parentCode) {
+    CodeItem._indexByParentCode = function (event, args) {
         codeItemDb.db().find({ use_yn: 'Y',
-            parent_code: parentCode }, function (err, data) {
+            parent_code: args[0] }, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+            else {
+                return event.autoReplay({
+                    success: false,
+                    data: data
+                });
+            }
+        });
+    };
+    CodeItem.indexByParentCode = function (event, args) {
+        codeItemDb.db().find({ use_yn: 'Y',
+            parent_code: args }, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
                     data: data
                 };
             }
+            else {
+                return event.returnValue = {
+                    success: false,
+                    data: data
+                };
+            }
         });
     };
-    CodeItem.findByParentCode = function (event) {
-        var codes = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            codes[_i - 1] = arguments[_i];
-        }
+    CodeItem._findByParentCode = function (event, codes) {
         codeItemDb.db().findOne({ use_yn: 'Y',
             parent_code: codes[0],
             code: codes[1]
@@ -62,46 +81,53 @@ var CodeItem = /** @class */ (function () {
             };
         });
     };
-    CodeItem.insert = function (event, args) {
+    CodeItem._insert = function (event, args) {
         codeItemDb.db().insert(Object.assign(args, {
             'use_yn': "Y",
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
             if (data) {
-                return event.returnValue = {
+                return event.autoReplay({
                     success: true,
                     data: data
-                };
+                });
+            }
+            else {
+                return event.autoReplay({
+                    success: false,
+                    data: data
+                });
             }
         });
     };
-    CodeItem.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        codeItemDb.db().update(args, function (err, data) {
-            return event.returnValue = data;
+    CodeItem._update = function (event, args) {
+        codeItemDb.db().update(args[0], function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true
+                });
+            }
+            else {
+                return event.autoReplay({
+                    success: false
+                });
+            }
         });
     };
-    CodeItem["delete"] = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    CodeItem._delete = function (event, args) {
         if (args.length >= 1) {
             codeItemDb.db().remove(args[0], function (err, data) {
                 if (data) {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: true,
                         data: data
-                    };
+                    });
                 }
                 else {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: false
-                    };
+                    });
                 }
             });
         }

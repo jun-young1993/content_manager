@@ -31,6 +31,16 @@ var Module = /** @class */ (function () {
             }
         });
     };
+    Module._all = function (event, args) {
+        db.db().find({}, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Module.index = function (event, args) {
         db.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
@@ -41,8 +51,18 @@ var Module = /** @class */ (function () {
             }
         });
     };
+    Module._index = function (event, args) {
+        db.db().find({ is_deleted: 'N' }, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Module.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
+        db.db().insert(Object.assign(args[0], {
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
@@ -61,11 +81,27 @@ var Module = /** @class */ (function () {
             }
         });
     };
-    Module.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Module._insert = function (event, args) {
+        db.db().insert(Object.assign(args[0], {
+            'is_deleted': "N",
+            'deleted_at': null
+        }), function (err, data) {
+            if (err) {
+                return event.autoReplay({
+                    success: false,
+                    data: null,
+                    msg: err
+                });
+            }
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
+    Module.update = function (event, args) {
         db.db().update(args[1], { $set: args[0] }, function (err, data) {
             return event.returnValue = {
                 success: true,
@@ -73,8 +109,16 @@ var Module = /** @class */ (function () {
             };
         });
     };
+    Module._update = function (event, args) {
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
+            return event.autoReplay({
+                success: true,
+                data: data
+            });
+        });
+    };
     Module.first = function (event, args) {
-        db.db().findOne(Object.assign(args, {
+        db.db().findOne(Object.assign(args[0], {
             'deleted_at': null
         }), function (err, data) {
             if (data) {
@@ -90,11 +134,7 @@ var Module = /** @class */ (function () {
             }
         });
     };
-    Module["delete"] = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Module["delete"] = function (event, args) {
         if (args.length >= 1) {
             db.db().remove(args[0], function (err, data) {
                 if (data) {
@@ -107,6 +147,23 @@ var Module = /** @class */ (function () {
                     return event.returnValue = {
                         success: false
                     };
+                }
+            });
+        }
+    };
+    Module._delete = function (event, args) {
+        if (args.length >= 1) {
+            db.db().remove(args[0], function (err, data) {
+                if (data) {
+                    return event.autoReplay({
+                        success: true,
+                        data: data
+                    });
+                }
+                else {
+                    return event.autoReplay({
+                        success: false
+                    });
                 }
             });
         }

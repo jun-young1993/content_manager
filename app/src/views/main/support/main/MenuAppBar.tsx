@@ -154,7 +154,13 @@ const MenuAppBar = (props:any) => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.key} value={page.key} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.key} value={page.key} onClick={() => {
+                    handleCloseNavMenu({
+                        target : {
+                            value : page.key
+                        }
+                    })
+                }}>
                   <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
               ))}

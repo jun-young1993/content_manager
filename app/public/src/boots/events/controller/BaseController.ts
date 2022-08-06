@@ -37,11 +37,15 @@ export class BaseController implements Property{
             // console.log('start method',methodName);
             if(_this.isAsyncMethod(methodName)){
                 //async method
-                ipcMain.on(channel,(event,args)=>{
+                ipcMain.on(channel,(event,...args)=>{
+                    console.log('[baseController]',args);
                     event.autoReplay = (result) => {
                         return event.reply(channel+'/reply',result);
                     }
+
                     _this.controller[methodName](event,args);
+
+
                 })
             }else{
                 // sync method

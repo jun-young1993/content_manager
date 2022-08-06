@@ -13,10 +13,11 @@ import {
     TextField, Box
 } from '@mui/material';
 import InputLabel from "@mui/material/InputLabel";
-import electron from "electron";
+import electron, {IpcRendererEvent} from "electron";
 import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
 import {codeItemByMenuItem} from "@src/helper/meterialHelper";
+
 const ipcRenderer = electron.ipcRenderer;
 
 
@@ -50,6 +51,7 @@ const columns: GridColDef[] = [
     { field: 'description', headerName: '설명', width: 150 },
 ];
 function storageByMenuItem(){
+
 	const data = ipcRenderer.sendSync("@Storage/all");
 	const items = []
 	if(data.success){
@@ -70,9 +72,9 @@ function codeNameMapping(result:any){
         target_media_nm : '',
         target_storage_nm : ''
     };
-
+    return nm;
     if(result.values.task_type){
-        const taskType = ipcRenderer.sendSync('@CodeItem/findByParentCode','TASK_MODULE_TYPE',result.values.task_type);
+        const taskType = ipcRenderer.sendSync('@CodeItem/_findByParentCode','TASK_MODULE_TYPE',result.values.task_type);
         console.log(taskType);
         if(taskType){
             if(taskType.success){
@@ -124,7 +126,12 @@ const reducer = (prevState:any, newState:any) => ({
 })
 export default function Module() {
 
-    const [rows,setRows] = React.useState(getRows);
+    const [rows,setRows] = React.useState([]);
+    ipcRenderer.send("@Module/_all");
+    ipcRenderer.on("@Module/_all/reply",(event:IpcRendererEvent,result) => {
+        setRows(result.data);
+        ipcRenderer.removeAllListeners("@Module/_all/reply");
+    })
     const [values, setValues] = React.useReducer(reducer,{
         type : '',
         code : '',
@@ -147,7 +154,11 @@ export default function Module() {
     
 
     const reload = () => {
-        setRows(getRows);
+        ipcRenderer.send("@Module/_all");
+        ipcRenderer.on("@Module/_all/reply",(event:IpcRendererEvent,result) => {
+            setRows(result.data);
+            ipcRenderer.removeAllListeners("@Module/_all/reply");
+        })
     }
     
     return (
@@ -184,7 +195,7 @@ export default function Module() {
                                             {
                                                 select : true,
                                                 name : "task_type",
-                                                label : "작업타입",
+                                                label : "작업모듈 타입",
                                                 fullWidth: true,
                                                 variant:"standard",
                                                 children : codeItemByMenuItem('TASK_MODULE_TYPE')

@@ -32,6 +32,18 @@ class Module {
 
         })
     }
+    static _all(event, args){
+
+        db.db().find({},(err,data) => {
+            if(data){
+                return event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
     static index(event, args){
         
         db.db().find({is_deleted : 'N'},(err,data) => {
@@ -44,9 +56,21 @@ class Module {
 
         })
     }
+    static _index(event, args){
+
+        db.db().find({is_deleted : 'N'},(err,data) => {
+            if(data){
+                return event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
     static insert(event,args){
         
-        db.db().insert(Object.assign(args,{
+        db.db().insert(Object.assign(args[0],{
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
@@ -70,8 +94,32 @@ class Module {
         });
     }
 
+    static _insert(event,args){
 
-    static update(event,...args){
+        db.db().insert(Object.assign(args[0],{
+            'is_deleted' : "N",
+            'deleted_at' : null,
+        }),(err,data) => {
+
+            if(err){
+                return event.autoReplay({
+                    success : false,
+                    data : null,
+                    msg : err
+                })
+            }
+            if(data){
+
+
+                return event.autoReplay( {
+                    success : true,
+                    data :data
+                })
+            }
+
+        });
+    }
+    static update(event,args){
 
         db.db().update(args[1],{$set : args[0]},(err,data) => {
             return event.returnValue = {
@@ -81,9 +129,19 @@ class Module {
         })
     }
 
+    static _update(event,args){
+
+        db.db().update(args[1],{$set : args[0]},(err,data) => {
+            return event.autoReplay({
+                success : true,
+                data : data
+            })
+        })
+    }
+
     static first(event,args){
 
-        db.db().findOne(Object.assign(args,{
+        db.db().findOne(Object.assign(args[0],{
             'deleted_at' : null,
         }),(err,data) => {
             if(data){
@@ -100,7 +158,7 @@ class Module {
         })
     }
 
-    static delete(event, ...args){
+    static delete(event, args){
 
         if(args.length >= 1){
             db.db().remove(args[0],(err,data) => {
@@ -113,6 +171,25 @@ class Module {
                     return event.returnValue = {
                         success : false
                     }
+                }
+
+            });
+        }
+
+    }
+    static _delete(event, args){
+
+        if(args.length >= 1){
+            db.db().remove(args[0],(err,data) => {
+                if(data){
+                    return event.autoReplay({
+                        success : true,
+                        data : data
+                    })
+                }else{
+                    return event.autoReplay({
+                        success : false
+                    })
                 }
 
             });
