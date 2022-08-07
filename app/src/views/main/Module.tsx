@@ -72,9 +72,9 @@ function codeNameMapping(result:any){
         target_media_nm : '',
         target_storage_nm : ''
     };
-    return nm;
+
     if(result.values.task_type){
-        const taskType = ipcRenderer.sendSync('@CodeItem/_findByParentCode','TASK_MODULE_TYPE',result.values.task_type);
+        const taskType = ipcRenderer.sendSync('@CodeItem/findByParentCode','TASK_MODULE_TYPE',result.values.task_type);
         console.log(taskType);
         if(taskType){
             if(taskType.success){
@@ -129,7 +129,9 @@ export default function Module() {
     const [rows,setRows] = React.useState([]);
     ipcRenderer.send("@Module/_all");
     ipcRenderer.on("@Module/_all/reply",(event:IpcRendererEvent,result) => {
+        console.log('result data',result.data);
         setRows(result.data);
+
         ipcRenderer.removeAllListeners("@Module/_all/reply");
     })
     const [values, setValues] = React.useReducer(reducer,{
@@ -164,7 +166,10 @@ export default function Module() {
     return (
         <div style={{ height: 300, width: '100%' }}>
             <DataGrid
-                rows={rows}
+                rows={rows.map((module:{_id : string, id? : string})=>{
+                    module.id = module._id;
+                    return module;
+                })}
                 columns={columns}
                 // autoHeight={true}
                 // rowCount={10}
@@ -252,23 +257,28 @@ export default function Module() {
                                                 
                                                 if(values){
                                                   
-                                                    const nm = codeNameMapping(result);
-                                                    
-                                                    Object.assign(result.values,nm);
-                                                    
 
                                                     
-                                                    const insert = ipcRenderer.sendSync("@Module/insert",result.values);
-                                                    if(insert.success){
-                                                        reload();
-                                                        setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
-                                                        return  true;
-                                                    }
 
-                                                    console.log('insert',insert);
+
+
+                                                    // const insert =
+                                                        ipcRenderer.send("@Module/_insert",result.values);
+                                                        ipcRenderer.on("@Module/_insert/reply",(event:IpcRendererEvent,insert) => {
+                                                            if(insert.success){
+                                                                reload();
+                                                                setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                                return  true;
+                                                            }
+
+                                                            console.log('insert',insert);
+                                                            setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                            return false;
+                                                        })
+
+
                                                 }
-                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
-                                                return false;
+
                                             }
 
                                             
@@ -335,22 +345,26 @@ export default function Module() {
                                             let errorMsg:string = '';
                                             
                                             if(result){
-                                                const nm = codeNameMapping(result);
+
 
 
                                                 
                                                     
-                                                Object.assign(result.values,nm);
-                                                const update = ipcRenderer.sendSync("@Module/update",result.values,{
-                                                    _id : result.oldValues._id
-                                                });
-                                                if(update.success){
-                                                    reload();
-                                                    setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
-                                                    return  true;
-                                                }
-                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
-                                                return false;
+
+                                                // const update =
+                                                    ipcRenderer.send("@Module/_update",result.values,{
+                                                        _id : result.oldValues._id
+                                                    });
+                                                    ipcRenderer.on("@Module/_update/reply",(event:IpcRendererEvent,update) => {
+                                                        if(update.success){
+                                                            reload();
+                                                            setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                            return  true;
+                                                        }
+                                                        setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                        return false;
+                                                    })
+
                                             }
 
                                             
@@ -360,15 +374,19 @@ export default function Module() {
                                        onClick={(evt:any)=>{
                                            const id:any = selected._id;
                                            if(id){
-                                               const result = ipcRenderer.sendSync("@Module/delete",{
+                                               ipcRenderer.send("@Module/_delete",{
                                                    _id : id
                                                });
-                                               if(result.success){
-                                                   reload();
-                                                   setALert((<CustomAlert serverity="success" title="삭제 되었습니다." />));
-                                               }else{
-                                                   setALert((<CustomAlert serverity="error" title="삭제 실패 했습니다." />));
-                                               }
+
+                                               ipcRenderer.on("@Module/_delete/reply",(event:IpcRendererEvent,result) => {
+                                                   if(result.success){
+                                                       reload();
+                                                       setALert((<CustomAlert serverity="success" title="삭제 되었습니다." />));
+                                                   }else{
+                                                       setALert((<CustomAlert serverity="error" title="삭제 실패 했습니다." />));
+                                                   }
+                                               })
+
                                            }else{
                                                setALert((<CustomAlert serverity="error" title="선택된 항목이 없습니다." />));
                                            }

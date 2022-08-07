@@ -1,6 +1,7 @@
 // const {app} = require('electron');
 const path = require('path');
 
+const {app} = require("electron");
 
 module.exports = {
     // "directory" : path.resolve(app.getPath('downloads'),'db')
@@ -22,6 +23,26 @@ module.exports = {
             "name":"콘텐츠 명",
             "_id" : "field_content_title"
         }]
+    },{
+        model : 'Storage',
+        default : {
+            "description":"migration data",
+            "use_yn":"Y"
+        },
+        items:[{
+            "type": "local",
+            "code": "online",
+            "name": " 온라인 스토리지",
+            "path": path.resolve(app.getPath('downloads'), 'storage/online'),
+            "_id": "online"
+        },{
+            "type": "local",
+            "code": "proxy",
+            "name": "저해상도 스토리지",
+            "path": path.resolve(app.getPath('downloads'), 'storage/proxy'),
+            "_id": "proxy"
+        }]
+
     },{
         model : 'Code',
         default : {

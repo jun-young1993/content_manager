@@ -3,6 +3,10 @@
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var Module_1 = require("../../../../models/Module");
+var CodeItemService_1 = require("../../../../service/CodeItemService");
+var StorageService_1 = require("../../../../service/StorageService");
+var codeItemService = new CodeItemService_1.CodeItemService();
+var storageService = new StorageService_1.StorageService();
 // import {User} from "@model/User";
 var db = new Module_1.Module();
 // ipcMain.on('asynchronous-message', (event, arg) => {
@@ -32,13 +36,31 @@ var Module = /** @class */ (function () {
         });
     };
     Module._all = function (event, args) {
-        db.db().find({}, function (err, data) {
-            if (data) {
-                return event.autoReplay({
-                    success: true,
-                    data: data
+        codeItemService.findByParentCodeUsingArray("media_type")
+            .then(function (mediaTypeCodes) {
+            console.log('emdiaTypeCodes', mediaTypeCodes);
+            codeItemService.findByParentCodeUsingArray("task_module_type")
+                .then(function (taskTypeCodes) {
+                storageService.getUsingArray()
+                    .then(function (storageCodes) {
+                    db.db().find({}, function (err, data) {
+                        if (data) {
+                            data.map(function (dataElement) {
+                                dataElement.source_media_nm = mediaTypeCodes.data[dataElement.source_media];
+                                dataElement.target_media_nm = mediaTypeCodes.data[dataElement.target_media];
+                                dataElement.task_type_nm = taskTypeCodes.data[dataElement.task_type];
+                                dataElement.source_storage_nm = storageCodes.data[dataElement.source_storage];
+                                dataElement.target_storage_nm = storageCodes.data[dataElement.target_storage];
+                                return dataElement;
+                            });
+                            return event.autoReplay({
+                                success: true,
+                                data: data
+                            });
+                        }
+                    });
                 });
-            }
+            });
         });
     };
     Module.index = function (event, args) {
@@ -62,7 +84,7 @@ var Module = /** @class */ (function () {
         });
     };
     Module.insert = function (event, args) {
-        db.db().insert(Object.assign(args[0], {
+        db.db().insert(Object.assign(args, {
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {

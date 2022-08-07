@@ -2,8 +2,14 @@
 
 import {BaseController} from "./BaseController";
 import {Module as Modle} from "../../../../models/Module";
+
+import {CodeItemService} from "../../../../service/CodeItemService";
+import {StorageService} from "../../../../service/StorageService";
+const codeItemService =  new CodeItemService();
+const storageService = new StorageService();
 // import {User} from "@model/User";
 const db = new Modle();
+
 
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
@@ -33,16 +39,39 @@ class Module {
         })
     }
     static _all(event, args){
+        codeItemService.findByParentCodeUsingArray("media_type")
+            .then((mediaTypeCodes) => {
+                console.log('emdiaTypeCodes',mediaTypeCodes);
+                codeItemService.findByParentCodeUsingArray("task_module_type")
+                    .then((taskTypeCodes) => {
+                        storageService.getUsingArray()
+                            .then((storageCodes) => {
+                                db.db().find({}, (err, data) => {
+                                    if (data) {
 
-        db.db().find({},(err,data) => {
-            if(data){
-                return event.autoReplay({
-                    success : true,
-                    data : data
-                })
-            }
+                                        data.map((dataElement) => {
+                                            dataElement.source_media_nm = mediaTypeCodes.data[dataElement.source_media];
+                                            dataElement.target_media_nm = mediaTypeCodes.data[dataElement.target_media];
+                                            dataElement.task_type_nm = taskTypeCodes.data[dataElement.task_type];
+                                            dataElement.source_storage_nm = storageCodes.data[dataElement.source_storage];
+                                            dataElement.target_storage_nm = storageCodes.data[dataElement.target_storage];
+                                            return dataElement;
+                                        })
 
-        })
+                                        return event.autoReplay({
+                                            success: true,
+                                            data: data
+                                        })
+                                    }
+
+                                })
+                            })
+
+
+                    })
+            })
+
+
     }
     static index(event, args){
         
@@ -70,7 +99,7 @@ class Module {
     }
     static insert(event,args){
         
-        db.db().insert(Object.assign(args[0],{
+        db.db().insert(Object.assign(args,{
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
