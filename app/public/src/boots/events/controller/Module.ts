@@ -168,20 +168,20 @@ class Module {
         })
     }
 
-    static first(event,args){
+    static _first(event,args:[{}]){
 
         db.db().findOne(Object.assign(args[0],{
             'deleted_at' : null,
         }),(err,data) => {
             if(data){
-                return event.returnValue = {
+                return event.autoReply({
                     success : true,
                     data : data
-                }
+                })
             }else{
-                return event.returnValue = {
+                return event.autoReply({
                     success : false
-                }
+                })
             }
 
         })

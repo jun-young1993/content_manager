@@ -139,20 +139,20 @@ var Module = /** @class */ (function () {
             });
         });
     };
-    Module.first = function (event, args) {
+    Module._first = function (event, args) {
         db.db().findOne(Object.assign(args[0], {
             'deleted_at': null
         }), function (err, data) {
             if (data) {
-                return event.returnValue = {
+                return event.autoReply({
                     success: true,
                     data: data
-                };
+                });
             }
             else {
-                return event.returnValue = {
+                return event.autoReply({
                     success: false
-                };
+                });
             }
         });
     };

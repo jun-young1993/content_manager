@@ -2,7 +2,8 @@
 
 import {BaseController} from "./BaseController";
 import {WorkflowRule as Model} from "../../../../models/WorkflowRule";
-
+import {WorkflowService} from "../../../../service/WorkflowService";
+const workflowService = new WorkflowService();
 const db = new Model();
 class WorkFlowRule{
 
@@ -111,22 +112,22 @@ class WorkFlowRule{
 	
 		})
 	    }
-	    static insert(event,args){
-		console.log('[WorkflowRule Insert]',args)
-		db.db().insert(Object.assign(args,{ 
-		    'deleted_at' : null,
-		}),(err,data) => {
-	
-			console.log('[WorkflowRule Insert after]',data)
-		    if(data){
-			return event.returnValue = {
-				success : true,
-				data :data
-			}
-		
-		    }
-	
-		});
+	    static _insert(event,args){
+			console.log('[WorkflowRule Insert]',args)
+			db.db().insert(Object.assign(args[0],{
+				'deleted_at' : null,
+			}),(err,data) => {
+
+				console.log('[WorkflowRule Insert after]',data)
+				if(data){
+					return event.autoReply({
+						success : true,
+						data :data
+					})
+
+				}
+
+			});
 	    }
 	
 	    static update(event,...args){
@@ -139,26 +140,19 @@ class WorkFlowRule{
 	    }
 
 
-	static getByWorkflowId(event,args){
+	static _getByWorkflowId(event,args:[{workflow_id : string}]){
 
-		new Model().db().find(args,(err:any,data:any) => {
-			console.log('args',args)
-			console.log('data',data);
-			data.map((child) => {
-				child.id = child._id;
-				child.name = child.module_name
-				child.parentId = child.parent_id;
-				return child;
-			});
-			if(data){
-				return event.returnValue = {
-					success : true,
-					data : data
-				};
-			}
-			
-			
-		})
+		console.log('args',args);
+		workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
+			.then((result) => {
+				console.log('get By workflow Idresult',result)
+				event.autoReply(result);
+			})
+			.catch((err) => {
+				console.log('get By workflow Idresult',err)
+				event.autoReply(err);
+			})
+
 	}
 }
 	 

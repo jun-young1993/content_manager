@@ -5,8 +5,8 @@ var BaseController_1 = require("./BaseController");
 var TaskManager = require("../../../../lib/Task/TaskManager").TaskManager;
 var Workflow_1 = require("../../../../models/Workflow");
 var db = new Workflow_1.Workflow();
-var WorkflowRule_1 = require("../../../../models/WorkflowRule");
-var ruleModle = new WorkflowRule_1.WorkflowRule();
+var WorkflowService_1 = require("../../../../service/WorkflowService");
+var workflowService = new WorkflowService_1.WorkflowService();
 var WorkFlow = /** @class */ (function () {
     function WorkFlow() {
     }
@@ -37,6 +37,16 @@ var WorkFlow = /** @class */ (function () {
                     success: true,
                     data: data
                 };
+            }
+        });
+    };
+    WorkFlow._all = function (event) {
+        db.db().find({}, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
             }
         });
     };
@@ -88,23 +98,12 @@ var WorkFlow = /** @class */ (function () {
             }
         });
     };
-    WorkFlow.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
-            'deleted_at': null
-        }), function (err, data) {
-            if (data) {
-                ruleModle.db().insert({
-                    workflow_id: data._id,
-                    module_id: null,
-                    module_name: 'start workflow',
-                    parent_id: null
-                }, function (err, data) {
-                    return event.returnValue = {
-                        success: true,
-                        data: data
-                    };
-                });
-            }
+    WorkFlow._insert = function (event, args) {
+        workflowService.create(args[0])
+            .then(function (result) {
+            event.autoReplay(result);
+        })["catch"](function (err) {
+            console.log('[err]', err);
         });
     };
     WorkFlow.update = function (event) {

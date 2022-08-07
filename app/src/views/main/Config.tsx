@@ -23,8 +23,9 @@ export default function Config() {
 
 				<Grid container spacing={2} style={{height: 'auto'}}>
 						<Grid item xs={3} style={{height: 'auto'}}>
-							<Box sx={{borderRight: 1, height: 'auto'}}>
+							<Box sx={{borderRight: 1}} style={{height : 'auto'}}>
 								<MenuList
+									style={{height : 'auto'}}
 									onClick={(menuId: string) => {
 										if (menuId == 'metadata') {
 											setView(<Metadata/>);

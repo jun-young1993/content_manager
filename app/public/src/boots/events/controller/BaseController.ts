@@ -42,6 +42,9 @@ export class BaseController implements Property{
                     event.autoReplay = (result) => {
                         return event.reply(channel+'/reply',result);
                     }
+                    event.autoReply = (result) => {
+                        return event.reply(channel+'/reply',result);
+                    }
 
                     _this.controller[methodName](event,args);
 

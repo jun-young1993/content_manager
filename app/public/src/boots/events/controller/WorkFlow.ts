@@ -4,8 +4,10 @@ import {BaseController} from "./BaseController";
 const {TaskManager} = require("../../../../lib/Task/TaskManager");
 import {Workflow as Model} from "../../../../models/Workflow";
 const db = new Model();
-import {WorkflowRule as RuleModel} from "../../../../models/WorkflowRule";
-const ruleModle = new RuleModel();
+
+import {WorkflowService} from "../../../../service/WorkflowService";
+
+const workflowService = new WorkflowService();
 class WorkFlow{
 	static ingest(event,args){
 		new TaskManager()
@@ -40,7 +42,21 @@ class WorkFlow{
 		    }
 	
 		})
-	    }
+	}
+
+	static _all(event){
+
+		db.db().find({},(err,data) => {
+			if(data){
+				return event.autoReplay({
+					success : true,
+					data : data
+				})
+			}
+
+		})
+	}
+
 	    static first(event,args){
 
 		db.db().findOne(Object.assign(args,{
@@ -91,30 +107,15 @@ class WorkFlow{
 	
 		})
 	    }
-	    static insert(event,args){
-	
-		db.db().insert(Object.assign(args,{ 
-		    'deleted_at' : null,
-		}),(err,data) => {
-	
-	
-		    if(data){
-			ruleModle.db().insert({
-				workflow_id : data._id,
-				module_id : null,
-				module_name : 'start workflow',
-				parent_id : null
-			},(err , data) => {
-				return event.returnValue = {
-					success : true,
-					data :data
-				}
-			})
-		
-		
-		    }
-	
-		});
+	    static _insert(event,args){
+
+			workflowService.create(args[0])
+				.then((result) => {
+					event.autoReplay(result);
+				})
+				.catch((err) => {
+					console.log('[err]',err);
+				})
 	    }
 	
 	    static update(event,...args){

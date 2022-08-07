@@ -50,6 +50,9 @@ var BaseController = /** @class */ (function () {
                     event.autoReplay = function (result) {
                         return event.reply(channel + '/reply', result);
                     };
+                    event.autoReply = function (result) {
+                        return event.reply(channel + '/reply', result);
+                    };
                     _this.controller[methodName](event, args);
                 });
             }
