@@ -1,4 +1,0 @@
-{"description":"migration data","use_yn":"Y","search_yn":"Y","type":"text","code":"title","name":"콘텐츠 명","_id":"field_content_title","createdAt":{"$$date":1659757818055},"updatedAt":{"$$date":1659757818055}}
-{"description":"migration data","use_yn":"Y","search_yn":"Y","type":"code","code":"content_type","name":"콘텐츠 유형 테스트","_id":"field_content_type","createdAt":{"$$date":1659757373186},"updatedAt":{"$$date":1659757373186}}
-{"$$deleted":true,"_id":"field_content_title"}
-{"description":"migration data","use_yn":"Y","search_yn":"Y","type":"text","code":"title","name":"콘텐츠 명","_id":"field_content_title","createdAt":{"$$date":1659758016764},"updatedAt":{"$$date":1659758016764}}
