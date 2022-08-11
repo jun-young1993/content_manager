@@ -24,8 +24,8 @@ if(db){
 
             for(let itemIndex=0; itemIndex<items.length; itemIndex++){
                 const itemData = items[itemIndex];
-
-                const insertData = Object.assign(defaultData,itemData);
+               
+                
                 new MigrationService(model).findOrInsert({...defaultData,...itemData});
                 // migrationDb.findOne({_id : insertData._id},(err,data) => {
                 //     // console.log('migration data',data);

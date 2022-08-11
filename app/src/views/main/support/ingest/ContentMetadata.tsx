@@ -82,14 +82,18 @@ const settingField = (metaFields:[]) => {
 export default function ContentMetadata(props:any){
 
     const dispatch = useDispatch()
-
+    const { metadata} = useSelector((state:any) => {return state.metadata})
+    console.log('[contentMetadata]metadata',metadata)
 	const { fields} = useSelector((state:any) => {return state.fields})
+    ipcRenderer.send("@Field/_index");
 	ipcRenderer.on('@Field/_index/reply',(event,result)=>{
 		console.log('@Field/_index/reply',result)  
         console.log('settingField(result.data)',settingField(result.data))
 		if(result.success){
             
 			dispatch({type : 'field.push', value : settingField(result.data)});
+
+            ipcRenderer.removeAllListeners("@Field/_index/reply");
 		}
 			
 			
@@ -104,8 +108,10 @@ export default function ContentMetadata(props:any){
             {fields.map((field:any)=>{
 
                 let element = <TextField  onChange={updateFiledValue}/>;
-
-
+                if(metadata && metadata[field.name]){
+                    field.defaultValue = metadata[field.name];
+                }
+                // field.defaultValue
                 return(<div>{React.cloneElement(element,field)}</div>)
 
             })}

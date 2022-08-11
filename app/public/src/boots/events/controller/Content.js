@@ -22,7 +22,7 @@ var Content = /** @class */ (function () {
     }
     Content._index = function (event, args) {
         db.db()
-            .find(Object.assign(args), function (err, data) {
+            .find(Object.assign(args[0]), function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,

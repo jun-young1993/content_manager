@@ -22,8 +22,9 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import * as Path from "path";
 import {ipcRenderer, IpcRendererEvent} from "electron";
-
+import CustomAlert from "@views/components/CustomAlert";
 import { useSelector, useDispatch } from "react-redux";
+import ContentDialog from '../content/ContentDialog';
 
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
@@ -39,10 +40,11 @@ const Input = styled('input')({
 
 export default function ContentSelect() {
     // const [dense, setDense] = React.useState(false);
+    
     const { metadata} = useSelector((state:any) => {return state.metadata})
     const { fields} = useSelector((state:any) => {return state.fields})
       const {files} = useSelector((state:any) => state.files);
-      console.log('files useSelector',files);
+      const [showContentDialog , setContentDialog] =  React.useState(<></>)
     // const files = [];
     const dispatch = useDispatch();
     const setFiles = (path:string) => {
@@ -51,53 +53,53 @@ export default function ContentSelect() {
     const putFiles = (path:string) => {
         dispatch({type : 'files.put', value : path})
     }
-const listItemSecondaryButton = (files:any,file:string) => {
-    return (
-        <IconButton edge="end" 
-        aria-label="delete" 
-        onClick={() => {
-            
-            console.log('file',file)
-            let newFiles:any = [];
-            files.map((oldFile:string) => {
-                 if(oldFile !== file){
-                    newFiles.push(oldFile);
-                 };
-            })
-            console.log('before new Files',newFiles);
-            putFiles(newFiles);
-            setLists(makeListItem(newFiles));
-            
-        }}>
-            <DeleteIcon />
-        </IconButton>
-    )
-
-}
-const makeListItem = function(files:any){
-    console.log('first files',files);
-
-    
-    if(files.length == 0){
+    const listItemSecondaryButton = (files:any,file:string) => {
         return (
-            <div>파일을 선택해주세요.</div>
-        );
+            <IconButton edge="end" 
+            aria-label="delete" 
+            onClick={() => {
+                
+                console.log('file',file)
+                let newFiles:any = [];
+                files.map((oldFile:string) => {
+                    if(oldFile !== file){
+                        newFiles.push(oldFile);
+                    };
+                })
+                console.log('before new Files',newFiles);
+                putFiles(newFiles);
+                setLists(makeListItem(newFiles));
+                
+            }}>
+                <DeleteIcon />
+            </IconButton>
+        )
+
     }
-    // @ts-ignore
-    return (files.map((file:string, index:any) =>
-        <ListItem
-            key={index}
-            secondaryAction={
-                listItemSecondaryButton(files,file)
-            }
-        >
-            <ListItemText sx={{width:'100%'}}
-                primary={Path.basename(file)}
-            />
-        </ListItem>
-    )
-    )
-}
+    const makeListItem = function(files:any){
+        console.log('first files',files);
+
+        
+        if(files.length == 0){
+            return (
+                <div>파일을 선택해주세요.</div>
+            );
+        }
+        // @ts-ignore
+        return (files.map((file:string, index:any) =>
+            <ListItem
+                key={index}
+                secondaryAction={
+                    listItemSecondaryButton(files,file)
+                }
+            >
+                <ListItemText sx={{width:'100%'}}
+                    primary={Path.basename(file)}
+                />
+            </ListItem>
+        )
+        )
+    }
     const [lists, setLists] = React.useState(makeListItem(files));
     console.log('files',files);
     return (
@@ -140,13 +142,27 @@ const makeListItem = function(files:any){
                   
                         <Button variant="contained" component="span" endIcon={<ArchiveIcon />}
                             onClick={()=>{
+                                console.log('ingest  button click')
                                 ipcRenderer.send("@Ingest/_ingest",{
                                     metadata : metadata,
                                     files : files
                                 });
                                 ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
-                                    console.log('renderer',result);
+                                    console.log('show ingest request',result)
+                                    setContentDialog(<ContentDialog 
+                                        open={true}
+                                        metadata={metadata}
+                                        onClose={()=>{
+                                            console.log('close');
+                                        }}
+                                    />)
                                 })
+                                // setALert((<CustomAlert serverity="info" 
+                                // title="요청완료되었습니다." 
+                                // onClose={()=>{
+                                //     console.log('request complete');
+                                // }}
+                                // />));
                                 console.log('metadta',metadata);
                                 console.log('fields',fields)
                                 console.log('files',files);
@@ -154,7 +170,7 @@ const makeListItem = function(files:any){
                         >
                             인제스트
                         </Button>
-                    
+                        
             </Stack>
             <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
@@ -199,6 +215,8 @@ const makeListItem = function(files:any){
                     </Demo>
                 </Grid>
             </Grid>
+            {showContentDialog}       
         </Box>
+     
     );
 }

@@ -15,7 +15,7 @@ import {ipcRenderer} from 'electron';
 
 export default function Ingest(){
 	// ipcRenderer.send("@WorkFlow/_all");
-	ipcRenderer.send("@Field/_index",{use_yn : "Y"});
+	
 	return (
 	<Provider store={ContentMetadataStore}>
 		<Box sx={{height:'auto'}}>

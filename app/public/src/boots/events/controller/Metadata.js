@@ -23,7 +23,7 @@ var Metadata = /** @class */ (function () {
     function Metadata() {
     }
     Metadata.index = function (event, args) {
-        metadataDb.db().find({ is_deleted: 'N' }, function (err, data) {
+        metadataDb.db().find({}, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -33,10 +33,7 @@ var Metadata = /** @class */ (function () {
         });
     };
     Metadata.insert = function (event, args) {
-        metadataDb.db().insert(Object.assign(args, {
-            'is_deleted': "N",
-            'deleted_at': null
-        }), function (err, data) {
+        metadataDb.db().insert(Object.assign(args, {}), function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,

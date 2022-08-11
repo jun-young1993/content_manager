@@ -57,4 +57,5 @@ export class MediaService extends BaseService{
 	findProxyByContentId(contentId:any){
 		return this.findTypeByContentId('proxy',contentId);
 	}
+
 }

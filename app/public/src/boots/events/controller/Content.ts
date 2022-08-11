@@ -23,7 +23,7 @@ class Content {
     static _index(event, args){
 
         db.db()
-        .find(Object.assign(args),(err,data) => {
+        .find(Object.assign(args[0]),(err,data) => {
             if(data){
                 event.autoReplay({
                     success : true,

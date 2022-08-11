@@ -18,7 +18,7 @@ exports.__esModule = true;
 exports.FileManager = void 0;
 var Property_1 = require("./Property");
 var fs = require("fs");
-var TaskUpdater = require('../TaskUpdater').TaskUpdater;
+var TaskUpdater_1 = require("../TaskUpdater");
 var log = require('../../Logger');
 var FileManager = /** @class */ (function (_super) {
     __extends(FileManager, _super);
@@ -26,6 +26,10 @@ var FileManager = /** @class */ (function (_super) {
         var _this = _super.call(this, params) || this;
         log.channel('fs').info('[Start Fs]', params);
         _this.params = params;
+        var targetDir = _this.getTargetDir();
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+        }
         return _this;
     }
     FileManager.prototype.copy = function () {
@@ -46,7 +50,7 @@ var FileManager = /** @class */ (function (_super) {
         })
             .on('finish', function () {
             log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
-            new TaskUpdater(taskId).complete();
+            new TaskUpdater_1.TaskUpdater(taskId).complete();
         });
     };
     return FileManager;

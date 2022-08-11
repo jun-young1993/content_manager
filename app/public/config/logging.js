@@ -27,6 +27,9 @@ module.exports = {
 		},
 		"main" : {
 			"path" : "main/autoUpdater.log"
+		},
+		"ingest" : {
+			"path" : "task/ingest.log"
 		}
 	}
 	

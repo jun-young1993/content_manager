@@ -297,12 +297,13 @@ export default function WorkflowList() {
 					onSaveClick={(result:any)=>{
 						if(result){
 							const values = result.values;
-							console.log(values);
+							console.log('values',values);
 							if(values){
+								
 								ipcRenderer.send("@Module/_first",{_id : values.module_id});
 
 								ipcRenderer.on("@Module/_first/reply",(err,moduleInfo) => {
-									console.log(moduleInfo);
+									console.log('moduleInfo',moduleInfo);
 									let addChildrenModule:any =  null;
 									let children:any = null;
 
@@ -312,29 +313,33 @@ export default function WorkflowList() {
 										id : values.module_id,
 										name : moduleInfo.data.name
 									}];
-									console.log('props.treeData',treeData);
+									// console.log('props.treeData',treeData);
 									treeData['children'] = children;
+									if(values.module_id == moduleInfo.data._id) {
+										ipcRenderer.send("@WorkFlowRule/_insert",{
+											workflow_id : workflowId,
+											module_id : values.module_id,
+											module_name : moduleInfo.data.name,
+											parent_id : selectedId
+										})
+										ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
+											console.log('workflow callback insert',insert);
+											
+											if(insert.data){
+												makeHierarchy(insert.data.workflow_id)
+													.then((children) => {
 
-									ipcRenderer.send("@WorkFlowRule/_insert",{
-										workflow_id : workflowId,
-										module_id : values.module_id,
-										module_name : moduleInfo.data.name,
-										parent_id : selectedId
-									})
-									ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
-										console.log('workflow callback insert',insert);
-										if(insert.data){
-											makeHierarchy(insert.data.workflow_id)
-												.then((children) => {
-													setTree(renderTree(children));
-													result.setOpen(false);
-												})
-										}
-										ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
-									})
+														setTree(renderTree(children));
+														result.setOpen(false);						
+													})
+											}
+											ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
+										})
+	
+									}
+								
 
-
-
+									ipcRenderer.removeAllListeners("@WorkFlowRule/_first/reply");
 
 								})
 

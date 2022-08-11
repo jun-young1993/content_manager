@@ -49,7 +49,7 @@ export class TaskParse {
 
 					})
 			}else{
-				reject('[getStorage] not found code');
+				reject('[getStorage] not found storage code by get storage params 1');
 			}
 
 		})

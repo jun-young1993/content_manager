@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Provider } from 'react-redux'
 import ImageList from '@mui/material/ImageList';
 import Button from '@mui/material/Button';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -8,6 +9,7 @@ import electron from "electron";
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import ContentDialog from '@views/main/support/content/ContentDialog';
+import ContentMetadataStore from "@views/store/ContentMetadataStore";
 const ipcRenderer = electron.ipcRenderer;
 // import img from "/Users/junyoungkim/Desktop/a.png";
 /**
@@ -21,6 +23,7 @@ export default function ContentItemBar(props : any) {
     const [showMeta, setShowMeta] = React.useState((<></>))
     return (
         <div>
+            <Provider store={ContentMetadataStore}>
                     <ImageListItemBar
                         title={content.title}
                         position="below"
@@ -43,6 +46,7 @@ export default function ContentItemBar(props : any) {
                         }
                     />
             {showMeta}
+            </Provider>
         </div>
     );
 }

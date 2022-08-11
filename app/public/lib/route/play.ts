@@ -5,7 +5,7 @@ const log = require('../Logger');
 
 const router = require('express').Router();
 
-const {MediaService} = require('../../service/MediaService')
+import {MediaService} from '../../service/MediaService'
 
 router.get('/proxy/:contentId', (req:any, res:any) => {
 	const {contentId} = req.params;
@@ -34,8 +34,9 @@ router.get('/proxy/:contentId', (req:any, res:any) => {
 					
 					// res.contentType('video/mp4');
 					// pass.pipe(res);
-					const fileSize = 238303;
-					console.log({
+					
+					const fileSize = fs.statSync(media.data.full_path).size;
+					log.channel('play').info({
 						'Content-Length': fileSize, 
 						'Content-Type': 'video/mp4',
 						'Content-Range' : `bytes 0-${fileSize-1}/${fileSize}`

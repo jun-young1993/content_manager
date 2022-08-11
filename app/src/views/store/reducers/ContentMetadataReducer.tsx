@@ -17,7 +17,6 @@ export default function ContentMetadataReducer(state = initialState,action:Actio
 	switch(action.type){
 		case 'metadata.patch':
 			state.metadata = Object.assign(state.metadata,action.value)
-
 			return state;
 		default : 
 			return state;

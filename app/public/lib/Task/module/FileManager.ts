@@ -1,7 +1,8 @@
 import { Property } from "./Property";
 
 const fs = require("fs");
-const {TaskUpdater} = require('../TaskUpdater');
+import {TaskUpdater} from '../TaskUpdater';
+
 const log = require('../../Logger');
 export class FileManager extends Property{
 	
@@ -11,6 +12,10 @@ export class FileManager extends Property{
 		super(params);
 		log.channel('fs').info('[Start Fs]',params);
 		this.params = params;
+		const targetDir = this.getTargetDir();
+		if(!fs.existsSync(targetDir)){
+			fs.mkdirSync(targetDir, { recursive: true });
+		}
 		
 		
 	}

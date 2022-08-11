@@ -19,7 +19,8 @@ var Field = /** @class */ (function () {
         });
     };
     Field._index = function (event, args) {
-        db.db().find(Object.assign(args), function (err, data) {
+        console.log('_index field', args);
+        db.db().find({ use_yn: "Y" }, function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,

@@ -19,7 +19,8 @@ class Field {
         })
     }
     static _index(event, args){
-        db.db().find(Object.assign(args),(err,data) => {
+        console.log('_index field',args);
+        db.db().find({use_yn : "Y"},(err,data) => {
 
             if(data){
                 event.autoReplay({

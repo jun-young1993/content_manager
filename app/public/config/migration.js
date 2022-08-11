@@ -41,6 +41,12 @@ module.exports = {
             "name": "저해상도 스토리지",
             "path": path.resolve(app.getPath('downloads'), 'storage/proxy'),
             "_id": "proxy"
+        },{
+            "type": "local",
+            "code": "out",
+            "name": "사용자 로컬 스토리지",
+            "path": "",
+            "_id": "out"
         }]
 
     },{
@@ -99,6 +105,87 @@ module.exports = {
             code : "transcoder_proxy",
             name : "트랜스코딩(저해상도)",
             _id : "task_module_type_transcoder_proxy"
+        }]
+    },{
+        model : 'Module',
+        default : {
+            description : "migration data"
+        },
+        items : [{
+            task_type : "fs_copy",
+            name : "원본 입수(로컬->온라인)",
+            source_media : "out",
+            target_media : "original",
+            target_storage : "online",
+            source_storage : "out",
+            _id:"fs_copy_local_to_online"
+        },{
+            task_type : "transcoder_thumbnail",
+            name : "썸네일 생성(온라인->썸네일)",
+            source_media : "original",
+            target_media : "thumbnail",
+            source_storage : "online",
+            target_storage : "proxy",
+            _id:"transcoder_thumbnail_online_to_proxy"
+        },{
+            task_type : "transcoder_proxy",
+            name : "저해상도 생성(온라인->프록시)",
+            source_media : "original",
+            target_media : "proxy",
+            source_storage : "online",
+            target_storage : "proxy",
+            _id:"transcoder_proxy_online_to_proxy"
+        }]
+    },{
+        model : "Workflow",
+        default : {
+            description : "migration data"
+        },
+        items : [{
+            name : "사용자 로컬 인제스트(Sample)",
+            _id : "user_out_ingest"
+        }]
+    },{
+        model : "WorkflowRule",
+        default : {
+
+        },
+        items : [{
+            workflow_id : "user_out_ingest",
+            module_id : null,
+            module_name : "start workflow",
+            parent_id : null,
+            _id : "user_out_ingest_start_workflow",
+        },{
+            workflow_id : "user_out_ingest",
+            module_id : "fs_copy_local_to_online",
+            module_name : "원본 입수(로컬->온라인)",
+            parent_id : "user_out_ingest_start_workflow",
+            _id : "user_out_ingest_fs_copy_local_to_online",
+        },{
+            workflow_id : "user_out_ingest",
+            module_id : "transcoder_thumbnail_online_to_proxy",
+            module_name : "썸네일 생성(온라인->썸네일)",
+            parent_id : "user_out_ingest_fs_copy_local_to_online",
+            _id : "user_out_transcoder_thumbnail_online_to_proxy",
+        },{
+            workflow_id : "user_out_ingest",
+            module_id : "transcoder_proxy_online_to_proxy",
+            module_name : "저해상도 생성(온라인->프록시)",
+            parent_id : "user_out_transcoder_thumbnail_online_to_proxy",
+            _id : "user_out_transcoder_proxy_online_to_proxy",
+        }]
+
+    },{
+        model : "Category",
+       items : [{
+            name : "sample_1",
+            parent_id : "folder",
+            _id : "sample_1"
+       },{
+            name : "sample_2",
+            parent_id : "folder",
+            _id : "sample_2"
         }]
     }]
 };

@@ -4,11 +4,11 @@ var fs = require("fs");
 var path = require("path");
 var log = require('../Logger');
 var router = require('express').Router();
-var MediaService = require('../../service/MediaService').MediaService;
+var MediaService_1 = require("../../service/MediaService");
 router.get('/proxy/:contentId', function (req, res) {
     var contentId = req.params.contentId;
     log.channel('play').info("[play][proxy] content_id ".concat(contentId));
-    new MediaService().findProxyByContentId(contentId).then(function (media) {
+    new MediaService_1.MediaService().findProxyByContentId(contentId).then(function (media) {
         if (media.success) {
             if (media.data) {
                 if (media.data.full_path) {
@@ -28,8 +28,8 @@ router.get('/proxy/:contentId', function (req, res) {
                     // )
                     // res.contentType('video/mp4');
                     // pass.pipe(res);
-                    var fileSize = 238303;
-                    console.log({
+                    var fileSize = fs.statSync(media.data.full_path).size;
+                    log.channel('play').info({
                         'Content-Length': fileSize,
                         'Content-Type': 'video/mp4',
                         'Content-Range': "bytes 0-".concat(fileSize - 1, "/").concat(fileSize)
