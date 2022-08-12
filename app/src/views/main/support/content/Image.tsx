@@ -13,6 +13,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import {isEmpty} from 'lodash';
 import ContentMetadataStore from "@views/store/ContentMetadataStore";
 import {ipcRenderer , IpcRendererEvent} from "electron";
+// import noimage from "../../../../assets/image/noimg.jpg"
 // import img from "/Users/junyoungkim/Desktop/a.png";
 type ImageProps = {
     contents : []
@@ -32,14 +33,22 @@ export default function Image() {
     
     return (
         // <Provider store={ContentMetadataStore}>
-            <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={100}>
+            <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={200}>
                 {contentList.map((item:any) => (
                     <ImageListItem key={item.img}>
                         <img
                             // src={`${item.img}?w=248&fit=crop&auto=format`}
                             // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                            src={"http://localhost:11101/thumbnail/"+item._id+"?w=100&fit=crop&auto=format"}
-                            srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=100&fit=crop&auto=format&dpr=2 2x"}
+                            src={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format"}
+                            srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format&dpr=2 2x"}
+                            onError={( currentTarget : any) => {
+                                
+                                currentTarget.onerror = null; // prevents looping
+                                currentTarget.onError = null;
+                                // console.log(currentTarget);
+                                // this = <div>no image</div>;
+                                // currentTarget = <div>no image</div>;
+                              }}
                             alt={item.title}
                             loading="lazy"
                         />

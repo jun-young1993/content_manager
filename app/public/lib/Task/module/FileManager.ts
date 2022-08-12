@@ -33,10 +33,12 @@ export class FileManager extends Property{
 		fs.createReadStream(sourceFullPath)
 		.on('error',(error:Error)=>{
 			log.channel('fs').info('[Fs Read Stream Error]',error)
+			new TaskUpdater(taskId).error();
 		})
 		.pipe(fs.createWriteStream(targetFullPath))
 		.on('error',(error:Error)=>{
 			log.channel('fs').info('[Fs Write Stream Error]',error)
+			new TaskUpdater(taskId).error();
 		})
 		.on('finish',()=>{
 			

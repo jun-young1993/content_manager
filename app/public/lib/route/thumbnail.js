@@ -45,4 +45,17 @@ router.get('/:contentId', function (req, res) {
         return res.sendStatus(400);
     });
 });
+router.get('/noimage/:extention', function (req, res) {
+    var extention = req.params.extention;
+    var thumbnailPath = "../logo192.".concat(extention);
+    var read = fs.createReadStream(thumbnailPath);
+    var pass = new stream.PassThrough();
+    stream.pipeline(read, pass, function (err) {
+        if (err) {
+            console.log('thumbnail err', err);
+            return res.sendStatus(400);
+        }
+    });
+    pass.pipe(res);
+});
 module.exports = router;

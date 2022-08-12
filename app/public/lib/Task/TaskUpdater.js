@@ -53,29 +53,38 @@ var TaskUpdater = /** @class */ (function () {
             });
         });
     };
+    TaskUpdater.prototype.nextTask = function () {
+        var _this = this;
+        _this.nextTaskRule().then(function (resolve) {
+            _this.taskManager.initialize()
+                .then(function (taskParse) {
+                // console.log('update next module start')
+                // taskParse.start();
+            })["catch"](function (reject) {
+            });
+        });
+    };
     TaskUpdater.prototype.complete = function () {
+        this.updateTaskStatus('complete');
+    };
+    TaskUpdater.prototype.error = function () {
+        this.updateTaskStatus('error');
+    };
+    TaskUpdater.prototype.updateTaskStatus = function (status) {
         var _this_1 = this;
         var _this = this;
-        log.channel('task_update').info("[TaskUpdater][complete] ".concat(_this.taskId));
-        this.taskModel.update({ _id: _this.taskId }, { $set: { status: 'complete' } }, function (err, update) {
-            log.channel('task_update').info("[TaskUpdater][complete] ".concat(_this.taskId));
+        log.channel('task_update').info("[TaskUpdater][".concat(status, "] ").concat(_this.taskId));
+        this.taskModel.update({ _id: _this.taskId }, { $set: { status: status } }, function (err, update) {
+            log.channel('task_update').info("[TaskUpdater][".concat(status, "] ").concat(_this.taskId));
             if (update) {
-                log.channel('task_update').info("[TaskUpdater][complete] Update Status  \"Complete ".concat(_this.taskId, "\""));
+                log.channel('task_update').info("[TaskUpdater][".concat(status, "] Update Status  \"").concat(status, " ").concat(_this.taskId, "\""));
                 _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
                     console.log('after update task info', task);
-                    _this.nextTaskRule().then(function (resolve) {
-                        console.log('next Tassk rule', resolve);
-                        _this.taskManager.initialize()
-                            .then(function (taskParse) {
-                            // console.log('update next module start')
-                            // taskParse.start();
-                        })["catch"](function (reject) {
-                        });
-                    });
+                    _this.nextTask();
                 });
             }
             else {
-                log.channel('task_update').info("[TaskUpdater][complete] Update Status  \"Complete ".concat(_this.taskId, "\""), err);
+                log.channel('task_update').info("[TaskUpdater][".concat(status, "] Update Status  \"").concat(status, " ").concat(_this.taskId, "\""), err);
             }
         });
     };
