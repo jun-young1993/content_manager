@@ -33,7 +33,7 @@ export default function Image() {
     
     return (
         // <Provider store={ContentMetadataStore}>
-            <ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight={200}>
+            <ImageList sx={{ width: "100%", height: "100%", maxHeight:"500px"}} cols={5} rowHeight={200}>
                 {contentList.map((item:any) => (
                     <ImageListItem key={item.img}>
                         <img
