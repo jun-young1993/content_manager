@@ -319,8 +319,8 @@ var TaskParse = /** @class */ (function () {
                             .then(function (sourceStorage) {
                             log.channel('task_parse').info('[setting][sourceStorage]', sourceStorage);
                             if (sourceStorage) {
-                                if (!sourceStorage.path) {
-                                    reject('[setting][sourceStorage] not found sourceStorage.path');
+                                if (!sourceStorage.path && sourceStorage.code != 'out') {
+                                    return reject('[setting][sourceStorage] not found sourceStorage.path');
                                 }
                                 _this.sourceStorage = sourceStorage;
                                 _this.getMedia({ content_id: _this.task.content_id,
@@ -330,8 +330,8 @@ var TaskParse = /** @class */ (function () {
                                     if (sourceMedia) {
                                         log.channel('task_parse').info('[setting][getSourceMedia]', sourceMedia);
                                         _this.task.source = sourceMedia.path;
-                                        if ((0, lodash_1.isEmpty)(sourceStorage.path)) {
-                                            reject('[setting][sourceMedia] not found sourceMedia.path');
+                                        if ((0, lodash_1.isEmpty)(sourceMedia.path)) {
+                                            return reject('[setting][sourceMedia] not found sourceMedia.path');
                                         }
                                         _this.setMedia({
                                             content_id: _this.task.content_id,

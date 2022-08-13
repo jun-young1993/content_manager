@@ -22,12 +22,24 @@ import TaskMonitor from '@views/main/TaskMonitor';
 import MenuAppBar from '@views/main/support/main/MenuAppBar';
 import ContentDialog from "@views/main/support/content/ContentDialog";
 import UpdateSnackbar from './support/snackbar/UpdateSnackbar';
+import {ipcRenderer, IpcRendererEvent} from "electron";
 
 
 export default function MainContainer(props:any) {
     const [value, setValue] = React.useState(<Content />);
-    
-   
+
+    ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
+        console.log('show ingest request',result)
+        setValue(<Content />);
+        ipcRenderer.removeAllListeners("@Ingest/_ingest/reply");
+        // setContentDialog(<ContentDialog
+        //     open={true}
+        //     metadata={metadata}
+        //     onClose={()=>{
+        //         console.log('close');
+        //     }}
+        // />)
+    })
     // const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     //     setValue(newValue);
     // };

@@ -35,7 +35,7 @@ class Content {
     }
     static index(event, args){
 
-        db.db().find(Object.assign(args),(err,data) => {
+        db.db().find(Object.assign(args)).sort({createdAt : -1}).exec((err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,

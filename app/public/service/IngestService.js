@@ -41,7 +41,7 @@ var IngestService = /** @class */ (function (_super) {
                 if ((0, lodash_1.isEmpty)(content)) {
                     reject((0, ApiHelper_1.apiReject)("[IngestService][ingestByContentId] not found content content_id : ".concat(contentId)));
                 }
-                log.channel('ingest').info("[IngestService][ingestByContentId] find content : ".concat(content));
+                log.channel('ingest').info("[IngestService][ingestByContentId] find content : ", content);
                 var workflowId = content.workflow_id;
                 log.channel('ingest').info("[IngestService][ingestByContentId] workflow_id : ".concat(workflowId));
                 _this.getModel('WorkflowRule').findOne({ workflow_id: workflowId, parent_id: null }, function (workflowError, startWorkflowRule) {
@@ -49,7 +49,7 @@ var IngestService = /** @class */ (function (_super) {
                         if ((0, lodash_1.isEmpty)(workflowFirstRule)) {
                             reject((0, ApiHelper_1.apiReject)("[IngestService][ingestByContentId] not found first workflow rule workflowId : ".concat(workflowId)));
                         }
-                        log.channel('ingest').info("[IngestService][ingestByContentId] Find WorkflowRule : ".concat(workflowFirstRule));
+                        log.channel('ingest').info("[IngestService][ingestByContentId] Find WorkflowRule : ", workflowFirstRule);
                         var insertTaskData = {
                             content_id: contentId,
                             workflow_id: workflowId,
@@ -64,7 +64,7 @@ var IngestService = /** @class */ (function (_super) {
                             if ((0, lodash_1.isEmpty)(task)) {
                                 reject((0, ApiHelper_1.apiReject)("[IngestService][ingestByContentId] not found task"));
                             }
-                            log.channel('ingest').info("[IngestService][ingestByContentId] Insert Task : ".concat(task));
+                            log.channel('ingest').info("[IngestService][ingestByContentId] Insert Task : ", task);
                             new TaskManager_1.TaskManager()
                                 .initialize()
                                 .then(function (taskParse) {

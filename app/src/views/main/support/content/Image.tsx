@@ -43,8 +43,10 @@ export default function Image() {
                             srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format&dpr=2 2x"}
                             onError={( currentTarget : any) => {
                                 
-                                currentTarget.onerror = null; // prevents looping
-                                currentTarget.onError = null;
+                                // currentTarget.onerror = null; // prevents looping
+                                // currentTarget.onError = null;
+                                // currentTarget.target.src = "https://raw.githubusercontent.com/jun-young1993/electron/83e37f3c1af830627fd11ab54daf563fdce67b0b/app/src/logo.svg?w=248&fit=crop&auto=format";
+                                // console.log('currentTarget',currentTarget);
                                 // console.log(currentTarget);
                                 // this = <div>no image</div>;
                                 // currentTarget = <div>no image</div>;

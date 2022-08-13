@@ -147,16 +147,7 @@ export default function ContentSelect() {
                                     metadata : metadata,
                                     files : files
                                 });
-                                ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
-                                    console.log('show ingest request',result)
-                                    setContentDialog(<ContentDialog 
-                                        open={true}
-                                        metadata={metadata}
-                                        onClose={()=>{
-                                            console.log('close');
-                                        }}
-                                    />)
-                                })
+
                                 // setALert((<CustomAlert serverity="info" 
                                 // title="요청완료되었습니다." 
                                 // onClose={()=>{

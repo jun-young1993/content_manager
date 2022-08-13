@@ -54,6 +54,7 @@ var Transcoder = /** @class */ (function (_super) {
             log.channel('ts').error('[transcoder error]', err);
             log.channel('ts').error('[transcoder stdout]', stdout);
             log.channel('ts').error('[transcoder stderr]', stderr);
+            new TaskUpdater(taskId).error();
         })
             .on('end', function () {
             log.channel('ts').info('[transcoder Complete]');

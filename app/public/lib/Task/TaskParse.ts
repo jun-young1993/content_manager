@@ -276,8 +276,8 @@ export class TaskParse {
 						.then((sourceStorage:any) => {
 							log.channel('task_parse').info('[setting][sourceStorage]',sourceStorage);	
 							if(sourceStorage){
-								if(!sourceStorage.path){
-									reject('[setting][sourceStorage] not found sourceStorage.path');
+								if(!sourceStorage.path && sourceStorage.code != 'out'){
+									return reject('[setting][sourceStorage] not found sourceStorage.path');
 								}
 								_this.sourceStorage = sourceStorage;
 								
@@ -291,8 +291,8 @@ export class TaskParse {
 										if(sourceMedia){
 											log.channel('task_parse').info('[setting][getSourceMedia]',sourceMedia);
 											_this.task.source = sourceMedia.path;
-											if(isEmpty(sourceStorage.path)){
-												reject('[setting][sourceMedia] not found sourceMedia.path');
+											if(isEmpty(sourceMedia.path)){
+												return reject('[setting][sourceMedia] not found sourceMedia.path');
 											}
 											
 										

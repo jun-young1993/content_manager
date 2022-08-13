@@ -14,18 +14,17 @@ var Ingest = /** @class */ (function () {
         log.channel('ingest').log("[_ingest][create content]");
         contentService.createContent(metadata)
             .then(function (content) {
-            console.log('content', content);
             var contentId = content.data._id;
             ingestService.outIngestByContentId(contentId, files[0])
                 .then(function (ingestTask) {
-                log.channel('ingest').log("[_ingest][ingestTask] ".concat(ingestTask));
+                log.channel('ingest').log("[_ingest][ingestTask] ", ingestTask);
                 event.autoReply(ingestTask);
             })["catch"](function (ingestTaskError) {
-                log.channel('ingest').log("[_ingest][ingestTask][Catch] ".concat(ingestTaskError));
+                log.channel('ingest').log("[_ingest][ingestTask][Catch]", ingestTaskError);
                 event.autoReply(ingestTaskError);
             });
         })["catch"](function (contentInsertError) {
-            log.channel('ingest').log("[_ingest][create content][Catch] ".concat(contentInsertError));
+            log.channel('ingest').log("[_ingest][create content][Catch]", contentInsertError);
         });
     };
     return Ingest;

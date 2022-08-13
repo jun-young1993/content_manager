@@ -10,21 +10,23 @@ class Ingest{
         log.channel('ingest').log(`[_ingest][create content]`)
             contentService.createContent(metadata)
             .then((content:any) => {
-                console.log('content',content);
+
+
+
                 const contentId : string = content.data._id;
                 ingestService.outIngestByContentId(contentId , files[0])
                 .then((ingestTask) => {
-                    log.channel('ingest').log(`[_ingest][ingestTask] ${ingestTask}`);
+                    log.channel('ingest').log(`[_ingest][ingestTask] `,ingestTask);
                     event.autoReply(ingestTask)
                 })
                 .catch((ingestTaskError) => {
-                    log.channel('ingest').log(`[_ingest][ingestTask][Catch] ${ingestTaskError}`);
+                    log.channel('ingest').log(`[_ingest][ingestTask][Catch]`,ingestTaskError);
                     event.autoReply(ingestTaskError)
                 })
                 
             })
             .catch((contentInsertError) => {
-                log.channel('ingest').log(`[_ingest][create content][Catch] ${contentInsertError}`);
+                log.channel('ingest').log(`[_ingest][create content][Catch]`,contentInsertError);
             })
     }
 }

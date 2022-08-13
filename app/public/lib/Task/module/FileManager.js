@@ -43,10 +43,12 @@ var FileManager = /** @class */ (function (_super) {
         fs.createReadStream(sourceFullPath)
             .on('error', function (error) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
+            new TaskUpdater_1.TaskUpdater(taskId).error();
         })
             .pipe(fs.createWriteStream(targetFullPath))
             .on('error', function (error) {
             log.channel('fs').info('[Fs Write Stream Error]', error);
+            new TaskUpdater_1.TaskUpdater(taskId).error();
         })
             .on('finish', function () {
             log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));

@@ -32,7 +32,7 @@ var Content = /** @class */ (function () {
         });
     };
     Content.index = function (event, args) {
-        db.db().find(Object.assign(args), function (err, data) {
+        db.db().find(Object.assign(args)).sort({ createdAt: -1 }).exec(function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,

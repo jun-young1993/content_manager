@@ -37,7 +37,7 @@ export class IngestService extends BaseService{
                 if(isEmpty(content)){
                     reject(apiReject(`[IngestService][ingestByContentId] not found content content_id : ${contentId}`))
                 }
-                log.channel('ingest').info(`[IngestService][ingestByContentId] find content : ${content}`)
+                log.channel('ingest').info(`[IngestService][ingestByContentId] find content : `,content)
                 const workflowId:string = content.workflow_id;
                 
                 log.channel('ingest').info(`[IngestService][ingestByContentId] workflow_id : ${workflowId}`);
@@ -48,7 +48,7 @@ export class IngestService extends BaseService{
                                 if(isEmpty(workflowFirstRule)){
                                     reject(apiReject(`[IngestService][ingestByContentId] not found first workflow rule workflowId : ${workflowId}`))
                                 }   
-                                log.channel('ingest').info(`[IngestService][ingestByContentId] Find WorkflowRule : ${workflowFirstRule}`)    
+                                log.channel('ingest').info(`[IngestService][ingestByContentId] Find WorkflowRule : `,workflowFirstRule)
                                 const insertTaskData : outIngestFirstTask = {
                                     content_id : contentId,
                                     workflow_id : workflowId,
@@ -63,7 +63,7 @@ export class IngestService extends BaseService{
                                     if(isEmpty(task)){
                                         reject(apiReject(`[IngestService][ingestByContentId] not found task`))
                                     }
-                                    log.channel('ingest').info(`[IngestService][ingestByContentId] Insert Task : ${task}`)
+                                    log.channel('ingest').info(`[IngestService][ingestByContentId] Insert Task : `,task)
                                     new TaskManager()
                                     .initialize()
                                     .then((taskParse:any) => {
