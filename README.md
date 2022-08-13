@@ -1,7 +1,9 @@
 # Content Manager
 
-## 다운로드
-
+<br>
+<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.5/ContentManager-Setup-1.1.5-x64.exe"><strong>App Download for Windows x64 »</strong></a>
+<br>
+<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.5/ContentManager-1.1.5-arm64.dmg"><strong>App Download for mac »</strong></a>
 
 ## 스크린샷
 ![main](https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png)
