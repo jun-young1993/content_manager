@@ -13,6 +13,24 @@ export class WorkflowService extends BaseService{
 			]
 		});
 	}
+
+	indexByWorkflow(){
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			_this.getModel('Workflow').find({},(err,datas) => {
+				resolve(apiResolve(datas));
+			})
+		})
+	}
+	indexByWorkflowRule(){
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			_this.getModel('WorkflowRule').find({},(err,datas) => {
+				resolve(apiResolve(datas));
+			})
+		})
+	}
+
 	hierarchyRuleByWorkflowId(workflowId : any){
 		return new Promise((resolve, reject) => {
 			this.getModel('WorkflowRule').find({workflow_id : workflowId},(err:any,data:any) => {

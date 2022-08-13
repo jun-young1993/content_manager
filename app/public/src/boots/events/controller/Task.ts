@@ -2,9 +2,17 @@
 
 import {BaseController} from "./BaseController";
 import {Task as Model} from "../../../../models/Task";
+import {TaskService} from "../../../../service/TaskService";
+
+import convert = require("lodash/fp/convert");
+import {ModuleService} from "../../../../service/ModuleService";
+import {convertArrayToKeyValue} from "../../../../lib/helper/ApiHelper";
+import {WorkflowService} from "../../../../service/WorkflowService";
 // import {User} from "@model/User";
 const db = new Model();
-
+const taskService = new TaskService();
+const moduleService = new ModuleService();
+const workflowService = new WorkflowService();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
 //     event.reply('asynchronous-reply', 'pong')
@@ -20,6 +28,34 @@ const db = new Model();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Task {
+    static _index(event, args){
+        moduleService.index()
+            .then((modules) => {
+                const moduleCodes = convertArrayToKeyValue(modules.data,{
+                    key : '_id',
+                    value : 'name'
+                });
+                workflowService.indexByWorkflow()
+                    .then((workflows) => {
+                        const workflowCodes = convertArrayToKeyValue(workflows.data,{
+                            key : '_id',
+                            value : 'name'
+                        })
+
+                        taskService.index()
+                            .then((tasks) => {
+                                tasks.data.map((task) => {
+                                    task.module_nm = moduleCodes[task.module_id];
+                                    task.workflow_nm = workflowCodes[task.workflow_id];
+                                })
+                                event.autoReply(tasks);
+                            })
+                    })
+
+            })
+
+    }
+
     static index(event, args){
 
         new Model().db().find({is_deleted : 'N'},(err,data) => {

@@ -12,6 +12,12 @@ module.exports = {
 			data : data,
 			msg : null
 		}
+	},
+	convertArrayToKeyValue : (datas,options) => {
+		let convert = [];
+		datas.map((data) => {
+			convert[data[options.key]] = data[options.value];
+		})
+		return convert;
 	}
-
 }

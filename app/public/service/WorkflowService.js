@@ -30,6 +30,22 @@ var WorkflowService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
+    WorkflowService.prototype.indexByWorkflow = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Workflow').find({}, function (err, datas) {
+                resolve((0, ApiHelper_1.apiResolve)(datas));
+            });
+        });
+    };
+    WorkflowService.prototype.indexByWorkflowRule = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('WorkflowRule').find({}, function (err, datas) {
+                resolve((0, ApiHelper_1.apiResolve)(datas));
+            });
+        });
+    };
     WorkflowService.prototype.hierarchyRuleByWorkflowId = function (workflowId) {
         var _this_1 = this;
         return new Promise(function (resolve, reject) {

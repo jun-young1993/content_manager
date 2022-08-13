@@ -26,6 +26,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ContentMetadataStore from "@views/store/ContentMetadataStore";
 import { useSelector, useDispatch } from "react-redux";
+import TaskMonitor from "@views/main/TaskMonitor";
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const Transition = React.forwardRef(function Transition(
@@ -67,17 +68,22 @@ function TabPanel(props: TabPanelProps) {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
-  
+
 export default function ContentDialog(props:any) {
     console.log(props);
     const dispatch = useDispatch()
     const [open, setOpen] = React.useState(props.open);
     const [value, setValue] = React.useState(0);
+    const [playerValue, setPlayerValue] = React.useState(100);
     const metadata = props.metadata;
     dispatch({type : 'metadata.patch', value : metadata})
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
-      };
+    };
+
+    const handlePlayerChange = (event: React.SyntheticEvent, newValue: number) => {
+        setPlayerValue(newValue);
+    };
 
 
     const handleClickOpen = () => {
@@ -121,8 +127,10 @@ export default function ContentDialog(props:any) {
                     </AppBar>
                     <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
                         <Grid item xs={6}  style={{height: '50vh'}}>
-                            <label>미리보기</label>
+
                                 <Viewer metadata={metadata}/>
+
+
                         </Grid>
                         <Grid item xs={6} style={{height: '50vh'}}>
                             {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>
@@ -143,7 +151,7 @@ export default function ContentDialog(props:any) {
                                     <MediaInfo metadata={metadata}/>
                                 </TabPanel>
                                 <TabPanel value={value} index={2}>
-                                작업모니터링
+                                    <TaskMonitor />
                                 </TabPanel>
                             
                         </Grid>
