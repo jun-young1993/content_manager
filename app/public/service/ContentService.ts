@@ -8,7 +8,8 @@ export class ContentService extends BaseService{
         super({
             models : [
                 'Content',
-                'Media'
+                'Media',
+                'Field'
             ]
         });
     }
@@ -22,6 +23,18 @@ export class ContentService extends BaseService{
                 }
 
                 resolve(apiResolve(content));
+            })
+        })
+   }
+
+   getContent(search:{} = {}){
+        const _this = this;
+        return  new Promise((resolve,reject) => {
+            _this.getModel('Content').find(search).sort({createdAt: -1}).exec((err,data) => {
+                if(err){
+                    return reject(apiReject("[ContentService][getContent] find fail by content"))
+                }
+                return resolve(apiResolve(data));
             })
         })
    }

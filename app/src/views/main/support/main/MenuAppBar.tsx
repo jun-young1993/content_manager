@@ -212,7 +212,7 @@ const MenuAppBar = (props:any) => {
                             if(event.key === 'Enter'){
                                 if(props.onSearch){
                                     props.onSearch(event.target.value);
-                                    event.target.value = '';
+                                    // event.target.value = '';
                                 }
 
                             }

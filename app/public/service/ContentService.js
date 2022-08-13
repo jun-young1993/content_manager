@@ -25,7 +25,8 @@ var ContentService = /** @class */ (function (_super) {
         return _super.call(this, {
             models: [
                 'Content',
-                'Media'
+                'Media',
+                'Field'
             ]
         }) || this;
     }
@@ -37,6 +38,18 @@ var ContentService = /** @class */ (function (_super) {
                     reject((0, ApiHelper_1.apiReject)("[ContentService][createContent] fail content insert"));
                 }
                 resolve((0, ApiHelper_1.apiResolve)(content));
+            });
+        });
+    };
+    ContentService.prototype.getContent = function (search) {
+        if (search === void 0) { search = {}; }
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Content').find(search).sort({ createdAt: -1 }).exec(function (err, data) {
+                if (err) {
+                    return reject((0, ApiHelper_1.apiReject)("[ContentService][getContent] find fail by content"));
+                }
+                return resolve((0, ApiHelper_1.apiResolve)(data));
             });
         });
     };
