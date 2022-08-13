@@ -25,6 +25,7 @@ import {ipcRenderer, IpcRendererEvent} from "electron";
 import CustomAlert from "@views/components/CustomAlert";
 import { useSelector, useDispatch } from "react-redux";
 import ContentDialog from '../content/ContentDialog';
+import {isEmpty} from "lodash";
 
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
@@ -44,7 +45,8 @@ export default function ContentSelect() {
     const { metadata} = useSelector((state:any) => {return state.metadata})
     const { fields} = useSelector((state:any) => {return state.fields})
       const {files} = useSelector((state:any) => state.files);
-      const [showContentDialog , setContentDialog] =  React.useState(<></>)
+    const baseAlert = ((<CustomAlert open={false} />));
+    const [alert, setALert] = React.useState(baseAlert)
     // const files = [];
     const dispatch = useDispatch();
     const setFiles = (path:string) => {
@@ -104,6 +106,7 @@ export default function ContentSelect() {
     console.log('files',files);
     return (
         <Box sx={{ flexGrow: 1, width: '100%' }}>
+            {alert}
             <Stack direction="row" spacing={2} sx={{width:'100%'}} >
                         <FormGroup row>
                             <label htmlFor="contained-button-file">
@@ -139,14 +142,26 @@ export default function ContentSelect() {
                         
                             </label>
                         </FormGroup>
-                  
+
                         <Button variant="contained" component="span" endIcon={<ArchiveIcon />}
                             onClick={()=>{
                                 console.log('ingest  button click')
+                                if(isEmpty(files)){
+
+
+                                    return false;
+                                }
+
+                                if(isEmpty(metadata.workflow_id) || isEmpty(metadata.category)){
+
+                                    return false;
+                                }
+
                                 ipcRenderer.send("@Ingest/_ingest",{
                                     metadata : metadata,
                                     files : files
                                 });
+
 
                                 // setALert((<CustomAlert serverity="info" 
                                 // title="요청완료되었습니다." 
@@ -159,9 +174,10 @@ export default function ContentSelect() {
                                 console.log('files',files);
                             }}
                         >
+
                             인제스트
                         </Button>
-                        
+
             </Stack>
             <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
@@ -206,7 +222,7 @@ export default function ContentSelect() {
                     </Demo>
                 </Grid>
             </Grid>
-            {showContentDialog}       
+
         </Box>
      
     );
