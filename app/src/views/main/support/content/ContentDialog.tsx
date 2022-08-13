@@ -151,7 +151,11 @@ export default function ContentDialog(props:any) {
                                     <MediaInfo metadata={metadata}/>
                                 </TabPanel>
                                 <TabPanel value={value} index={2}>
-                                    <TaskMonitor />
+                                    <TaskMonitor
+                                        search={{
+                                            content_id : metadata._id
+                                        }}
+                                    />
                                 </TabPanel>
                             
                         </Grid>

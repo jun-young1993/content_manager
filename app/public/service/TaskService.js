@@ -27,10 +27,10 @@ var TaskService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
-    TaskService.prototype.index = function () {
+    TaskService.prototype.index = function (search) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('Task').find({}).sort({ createdAt: -1 }).exec(function (err, data) {
+            _this.getModel('Task').find(search).sort({ createdAt: -1 }).exec(function (err, data) {
                 resolve((0, ApiHelper_1.apiResolve)(data));
             });
         });

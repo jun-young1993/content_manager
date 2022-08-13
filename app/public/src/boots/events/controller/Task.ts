@@ -42,7 +42,7 @@ class Task {
                             value : 'name'
                         })
 
-                        taskService.index()
+                        taskService.index(args[0])
                             .then((tasks) => {
                                 tasks.data.map((task) => {
                                     task.module_nm = moduleCodes[task.module_id];

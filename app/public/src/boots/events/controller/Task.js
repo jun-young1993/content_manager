@@ -41,7 +41,7 @@ var Task = /** @class */ (function () {
                     key: '_id',
                     value: 'name'
                 });
-                taskService.index()
+                taskService.index(args[0])
                     .then(function (tasks) {
                     tasks.data.map(function (task) {
                         task.module_nm = moduleCodes[task.module_id];

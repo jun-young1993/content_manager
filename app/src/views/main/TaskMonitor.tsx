@@ -59,10 +59,19 @@ const reducer = (prevState:any, newState:any) => ({
     ...prevState,
     ...newState
 })
-export default function TaskMonitor() {
+export interface TaskMonitorSearchInterface {
+    content_id ? :string
+}
+export interface TaskMonitorInterface {
+    search : TaskMonitorSearchInterface
+}
+export default function TaskMonitor(props:TaskMonitorInterface) {
+
+    const search:TaskMonitorSearchInterface = props.search ?? {};
+
 
     const [rows, setRows] = React.useState([]);
-    ipcRenderer.send("@Task/_index");
+    ipcRenderer.send("@Task/_index",search);
     ipcRenderer.on("@Task/_index/reply",(err,rows) => {
         console.log('rows',rows);
         setRows(rows.data);
