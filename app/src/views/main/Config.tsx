@@ -13,6 +13,7 @@ import Module from "@views/main/Module";
 import Workflow from "@views/main/Workflow";
 import ConfigStore from "@views/store/ConfigStore";
 import {ipcRenderer, IpcRendererEvent} from "electron";
+import TaskMonitor from "@views/main/TaskMonitor";
 export default function Config() {
 	const [view, setView] = React.useState(<Metadata />)
 
@@ -42,10 +43,13 @@ export default function Config() {
 										if (menuId == 'workflow') {
 											setView(<Workflow/>);
 										}
+										if (menuId == 'task_monitor'){
+											setView(<TaskMonitor/>);
+										}
 									}}/>
 							</Box>
 						</Grid>
-						<Grid item xs={9} style={{height: '100vh'}}>
+						<Grid item xs={9} style={{height: 'auto'}}>
 
 							<Provider store={ConfigStore} children={view} />
 

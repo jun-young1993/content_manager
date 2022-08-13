@@ -46,13 +46,7 @@ import {useDispatch} from "react-redux";
 // updatedAt: Sat Aug 13 2022 12:31:49 GMT+0900 (한국 표준시) {}
 // workflow_id: "user_out_ingest"
 // _id: "Ap3FtJJwzTrggTQK"
-const columns: GridColDef[] = [
-    { field: 'status', headerName: '상태', width: 150 },
-    { field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
-    { field: 'module_nm', headerName: '모듈명', width: 250 },
-    { field: 'source', headerName: '소스파일', width: 200 },
-    { field: 'target', headerName: '타겟파일', width: 200 },
-];
+
 
 
 const reducer = (prevState:any, newState:any) => ({
@@ -63,11 +57,23 @@ export interface TaskMonitorSearchInterface {
     content_id ? :string
 }
 export interface TaskMonitorInterface {
-    search : TaskMonitorSearchInterface
+    search? : TaskMonitorSearchInterface
 }
 export default function TaskMonitor(props:TaskMonitorInterface) {
 
-    const search:TaskMonitorSearchInterface = props.search;
+    let search:TaskMonitorSearchInterface = {}
+    let fullInfo:boolean = true;
+    if (props.search) {
+        fullInfo = false;
+        search = props.search;
+    }
+    const columns: GridColDef[] = [
+        { field: 'status', headerName: '상태', width: 150 },
+        { field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
+        { field: 'module_nm', headerName: '모듈명', width: 250 },
+        { field: 'source', headerName: '소스파일', width: 200 },
+        { field: 'target', headerName: '타겟파일', width: 200 },
+    ];
 
 
     const [rows, setRows] = React.useState([]);
@@ -79,18 +85,21 @@ export default function TaskMonitor(props:TaskMonitorInterface) {
     })
 
 
-
+    if(fullInfo){
+        columns.push({field : 'content_id' , headerName : '콘텐츠 아이디', width:200})
+    }
 
 
     return (
-        <div style={{ height: '70vh', width: '100%' }}>
+        <div style={{ height: '75vh', width: '100%' }}>
             <DataGrid
+                style={{height:'75vh'}}
                 rows={rows.map((task:{_id : string, id? : string}) => {
                     task.id = task._id;
                     return task;
                 })}
                 columns={columns}
-                hideFooter={true}
+                hideFooter={!fullInfo}
                 editMode="row"
 
             />
