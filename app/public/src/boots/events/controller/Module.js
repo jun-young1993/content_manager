@@ -3,6 +3,10 @@
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var Module_1 = require("../../../../models/Module");
+var CodeItemService_1 = require("../../../../service/CodeItemService");
+var StorageService_1 = require("../../../../service/StorageService");
+var codeItemService = new CodeItemService_1.CodeItemService();
+var storageService = new StorageService_1.StorageService();
 // import {User} from "@model/User";
 var db = new Module_1.Module();
 // ipcMain.on('asynchronous-message', (event, arg) => {
@@ -31,6 +35,34 @@ var Module = /** @class */ (function () {
             }
         });
     };
+    Module._all = function (event, args) {
+        codeItemService.findByParentCodeUsingArray("media_type")
+            .then(function (mediaTypeCodes) {
+            console.log('emdiaTypeCodes', mediaTypeCodes);
+            codeItemService.findByParentCodeUsingArray("task_module_type")
+                .then(function (taskTypeCodes) {
+                storageService.getUsingArray()
+                    .then(function (storageCodes) {
+                    db.db().find({}, function (err, data) {
+                        if (data) {
+                            data.map(function (dataElement) {
+                                dataElement.source_media_nm = mediaTypeCodes.data[dataElement.source_media];
+                                dataElement.target_media_nm = mediaTypeCodes.data[dataElement.target_media];
+                                dataElement.task_type_nm = taskTypeCodes.data[dataElement.task_type];
+                                dataElement.source_storage_nm = storageCodes.data[dataElement.source_storage];
+                                dataElement.target_storage_nm = storageCodes.data[dataElement.target_storage];
+                                return dataElement;
+                            });
+                            return event.autoReplay({
+                                success: true,
+                                data: data
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    };
     Module.index = function (event, args) {
         db.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
@@ -38,6 +70,16 @@ var Module = /** @class */ (function () {
                     success: true,
                     data: data
                 };
+            }
+        });
+    };
+    Module._index = function (event, args) {
+        db.db().find({ is_deleted: 'N' }, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
             }
         });
     };
@@ -61,11 +103,27 @@ var Module = /** @class */ (function () {
             }
         });
     };
-    Module.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Module._insert = function (event, args) {
+        db.db().insert(Object.assign(args[0], {
+            'is_deleted': "N",
+            'deleted_at': null
+        }), function (err, data) {
+            if (err) {
+                return event.autoReplay({
+                    success: false,
+                    data: null,
+                    msg: err
+                });
+            }
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
+    Module.update = function (event, args) {
         db.db().update(args[1], { $set: args[0] }, function (err, data) {
             return event.returnValue = {
                 success: true,
@@ -73,28 +131,32 @@ var Module = /** @class */ (function () {
             };
         });
     };
-    Module.first = function (event, args) {
-        db.db().findOne(Object.assign(args, {
+    Module._update = function (event, args) {
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
+            return event.autoReplay({
+                success: true,
+                data: data
+            });
+        });
+    };
+    Module._first = function (event, args) {
+        db.db().findOne(Object.assign(args[0], {
             'deleted_at': null
         }), function (err, data) {
             if (data) {
-                return event.returnValue = {
+                return event.autoReply({
                     success: true,
                     data: data
-                };
+                });
             }
             else {
-                return event.returnValue = {
+                return event.autoReply({
                     success: false
-                };
+                });
             }
         });
     };
-    Module["delete"] = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Module["delete"] = function (event, args) {
         if (args.length >= 1) {
             db.db().remove(args[0], function (err, data) {
                 if (data) {
@@ -107,6 +169,23 @@ var Module = /** @class */ (function () {
                     return event.returnValue = {
                         success: false
                     };
+                }
+            });
+        }
+    };
+    Module._delete = function (event, args) {
+        if (args.length >= 1) {
+            db.db().remove(args[0], function (err, data) {
+                if (data) {
+                    return event.autoReplay({
+                        success: true,
+                        data: data
+                    });
+                }
+                else {
+                    return event.autoReplay({
+                        success: false
+                    });
                 }
             });
         }

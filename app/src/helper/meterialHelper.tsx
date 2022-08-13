@@ -11,8 +11,10 @@ import {
 	TextField, Box
     } from '@mui/material';
 function codeItemByMenuItem(parentCode:string){
-	const data = ipcRenderer.sendSync("@CodeItem/indexByParentCode",parentCode);
-	const items = []
+
+	const data = ipcRenderer.sendSync("@CodeItem/indexByParentCode",parentCode.toLowerCase());
+	console.log('codeItemByMenuItem',data);
+	const items = [];
 	if(data.success){
 		const codeItem = data.data;
 		for(let codeItemIndex = 0; codeItemIndex < codeItem.length; codeItemIndex++){

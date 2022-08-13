@@ -10,7 +10,7 @@ type ContentListType = {
 export default function ContentList(props:ContentListType) {
     let where:any = {};
     if(!isEmpty(props.searchText)){
-        where['title'] = props.searchText;
+        where['searchText'] = props.searchText;
     }
 
     if(!isEmpty(props.category)){

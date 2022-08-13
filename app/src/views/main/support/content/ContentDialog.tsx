@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Provider } from 'react-redux'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
@@ -23,6 +24,9 @@ import MediaInfo from "@views/main/support/ingest/MediaInfo";
 import Viewer from "@views/main/support/content/viewer/Viewer";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import ContentMetadataStore from "@views/store/ContentMetadataStore";
+import { useSelector, useDispatch } from "react-redux";
+import TaskMonitor from "@views/main/TaskMonitor";
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const Transition = React.forwardRef(function Transition(
@@ -64,15 +68,22 @@ function TabPanel(props: TabPanelProps) {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
-  
+
 export default function ContentDialog(props:any) {
     console.log(props);
+    const dispatch = useDispatch()
     const [open, setOpen] = React.useState(props.open);
     const [value, setValue] = React.useState(0);
+    const [playerValue, setPlayerValue] = React.useState(100);
     const metadata = props.metadata;
+    dispatch({type : 'metadata.patch', value : metadata})
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
-      };
+    };
+
+    const handlePlayerChange = (event: React.SyntheticEvent, newValue: number) => {
+        setPlayerValue(newValue);
+    };
 
 
     const handleClickOpen = () => {
@@ -92,54 +103,65 @@ export default function ContentDialog(props:any) {
             {/*<Button variant="outlined" onClick={handleClickOpen}>*/}
             {/*    Open full-screen dialog*/}
             {/*</Button>*/}
-            <Dialog
-                fullScreen
-                open={open}
-                onClose={handleClose}
-                TransitionComponent={Transition}
-            >
-                <AppBar sx={{ position: 'relative' }}>
-                    <Toolbar>
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                            콘텐츠 상세정보
-                        </Typography>
-                        <IconButton 
-                            edge="start"
-                            color="inherit"
-                            aria-label="close"
-                            onClick={handleClose}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
-                    <Grid item xs={6}  style={{height: '50vh'}}>
-                            <Viewer metadata={metadata}/>
+            {/* <Provider store={ContentMetadataStore}> */}
+                <Dialog
+                    fullScreen
+                    open={open}
+                    onClose={handleClose}
+                    TransitionComponent={Transition}
+                >
+                    <AppBar sx={{ position: 'relative' }}>
+                        <Toolbar>
+                            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                                콘텐츠 상세정보
+                            </Typography>
+                            <IconButton 
+                                edge="start"
+                                color="inherit"
+                                aria-label="close"
+                                onClick={handleClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                    <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
+                        <Grid item xs={6}  style={{height: '50vh'}}>
+
+                                <Viewer metadata={metadata}/>
+
+
+                        </Grid>
+                        <Grid item xs={6} style={{height: '50vh'}}>
+                            {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>
+                                <ContentMetadata metadata={metadata}/>
+                            </Box> */}
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                                <Tab label="메타데이터" {...a11yProps(0)} />
+                                <Tab label="미디어 정보" {...a11yProps(1)} />
+                                <Tab label="작업모니터링" {...a11yProps(2)} />
+                            </Tabs>
+                            </Box>
+                            
+                                <TabPanel value={value} index={0}>
+                                    <ContentMetadata />
+                                </TabPanel>
+                                <TabPanel value={value} index={1}>
+                                    <MediaInfo metadata={metadata}/>
+                                </TabPanel>
+                                <TabPanel value={value} index={2} >
+                                    <TaskMonitor
+                                        search={{
+                                            content_id : metadata._id
+                                        }}
+                                    />
+                                </TabPanel>
+                            
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6} style={{height: '50vh'}}>
-                        {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>
-                            <ContentMetadata metadata={metadata}/>
-                        </Box> */}
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="메타데이터" {...a11yProps(0)} />
-                            <Tab label="미디어 정보" {...a11yProps(1)} />
-                            <Tab label="작업모니터링" {...a11yProps(2)} />
-                        </Tabs>
-                        </Box>
-                        <TabPanel value={value} index={0}>
-                            <ContentMetadata metadata={metadata}/>
-                        </TabPanel>
-                        <TabPanel value={value} index={1}>
-                            <MediaInfo metadata={metadata}/>
-                        </TabPanel>
-                        <TabPanel value={value} index={2}>
-                        작업모니터링
-                        </TabPanel>
-                    </Grid>
-                </Grid>
-            </Dialog>
+                </Dialog>
+            {/* </Provider> */}
         </div>
     );
 }

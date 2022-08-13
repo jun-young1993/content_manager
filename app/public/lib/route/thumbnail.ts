@@ -6,6 +6,7 @@ const router = require('express').Router();
 const log = require('../Logger');
 const {MediaService} = require('../../service/MediaService')
 const mediaSv = new MediaService();
+
 router.get('/:contentId', (req:any, res:any) => {
 
 	const {contentId} = req.params;
@@ -50,6 +51,27 @@ router.get('/:contentId', (req:any, res:any) => {
 		log.channel('api_get_thumbnail').error('[Exception Get Thumbnail]',reject);
 		return res.sendStatus(400);
 	})
+  
+});
+
+router.get('/noimage/:extention', (req:any, res:any) => {
+
+	const {extention} = req.params;
+	
+	const thumbnailPath = `../logo192.${extention}`;
+	const read = fs.createReadStream(thumbnailPath);
+	const pass = new stream.PassThrough();
+	stream.pipeline(
+		read,
+		pass,
+		(err) => {
+			if(err){
+				console.log('thumbnail err',err)
+				return res.sendStatus(400);
+			}
+		}
+	)
+	pass.pipe(res);
   
 });
 

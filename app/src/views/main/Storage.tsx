@@ -15,7 +15,7 @@ import {
 import InputLabel from "@mui/material/InputLabel";
 import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
-import electron from "electron";
+import electron, {IpcRendererEvent} from "electron";
 const ipcRenderer = electron.ipcRenderer;
 
 
@@ -54,7 +54,13 @@ const reducer = (prevState:any, newState:any) => ({
     ...newState
 })
 export default function Storage() {
-    const [rows,setRows] = React.useState(getRows);
+    const [rows,setRows] = React.useState([]);
+    ipcRenderer.send("@Storage/_all");
+    ipcRenderer.on("@Storage/_all/reply",(event:IpcRendererEvent, codeResult) => {
+
+        setRows(codeResult.data);
+        ipcRenderer.removeAllListeners("@Storage/_all/reply");
+    })
     const [values, setValues] = React.useReducer(reducer,{
         type : '',
         code : '',
@@ -77,13 +83,22 @@ export default function Storage() {
     
 
     const reload = () => {
-        setRows(getRows);
+        ipcRenderer.send("@Storage/_all");
+        ipcRenderer.on("@Storage/_all/reply",(event:IpcRendererEvent, codeResult) => {
+
+            setRows(codeResult.data);
+            ipcRenderer.removeAllListeners("@Storage/_all/reply");
+        })
     }
     
     return (
         <div style={{ height: 300, width: '100%' }}>
             <DataGrid
-                rows={rows}
+                rows={rows.map((storage : any) => {
+
+                    storage.id = storage._id;
+                    return storage;
+                })}
                 columns={columns}
                 // autoHeight={true}
                 // rowCount={10}
@@ -185,17 +200,23 @@ export default function Storage() {
                                                         return false;
                                                     }
 
-                                                    const insert = ipcRenderer.sendSync("@Storage/insert",values);
-                                                    if(insert.success){
-                                                        reload();
-                                                        setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
-                                                        return  true;
-                                                    }
+                                                    // const insert =
+                                                    ipcRenderer.send("@Storage/_insert",values);
+                                                    ipcRenderer.on("@Storage/_insert/reply",(event:IpcRendererEvent,insert)=>{
+                                                        if(insert.success){
+                                                            reload();
+                                                            setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                            return  true;
+                                                        }else{
+                                                            setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                            return false;
+                                                        }
 
-                                                    console.log('insert',insert);
+                                                        console.log('insert',insert);
+                                                    })
+
                                                 }
-                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
-                                                return false;
+
                                             }
 
                                             
@@ -238,16 +259,21 @@ export default function Storage() {
                                             let errorMsg:string = '';
                                             
                                             if(result){
-                                                const update = ipcRenderer.sendSync("@Storage/update",result.values,{
-                                                    _id : result.oldValues._id
-                                                });
-                                                if(update.success){
-                                                    reload();
-                                                    setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
-                                                    return  true;
-                                                }
-                                                setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
-                                                return false;
+                                                // const update =
+                                                    ipcRenderer.send("@Storage/_update",result.values,{
+                                                        _id : result.oldValues._id
+                                                    });
+                                                    ipcRenderer.on("@Storage/_update/reply",(event:IpcRendererEvent,update) => {
+                                                        if(update.success){
+                                                            reload();
+                                                            setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                                                            return  true;
+                                                        }
+                                                        setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                        return false;
+                                                    })
+
+
                                             }
 
                                             
@@ -257,15 +283,19 @@ export default function Storage() {
                                        onClick={(evt:any)=>{
                                            const id:any = selected._id;
                                            if(id){
-                                               const result = ipcRenderer.sendSync("@Storage/delete",{
+                                               // const result =
+                                               ipcRenderer.send("@Storage/_delete",{
                                                    _id : id
                                                });
-                                               if(result.success){
-                                                   reload();
-                                                   setALert((<CustomAlert serverity="success" title="삭제 되었습니다." />));
-                                               }else{
-                                                   setALert((<CustomAlert serverity="error" title="삭제 실패 했습니다." />));
-                                               }
+                                               ipcRenderer.on("@Storage/_delete/reply",(event:IpcRendererEvent,result) => {
+                                                   if(result.success){
+                                                       reload();
+                                                       setALert((<CustomAlert serverity="success" title="삭제 되었습니다." />));
+                                                   }else{
+                                                       setALert((<CustomAlert serverity="error" title="삭제 실패 했습니다." />));
+                                                   }
+                                               })
+
                                            }else{
                                                setALert((<CustomAlert serverity="error" title="선택된 항목이 없습니다." />));
                                            }

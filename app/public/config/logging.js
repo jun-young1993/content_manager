@@ -1,9 +1,13 @@
 const {app} = require('electron');
 const path = require('path');
 module.exports = {
-	// "directory" : path.resolve(app.getPath('downloads'),'logs'),
-	"directory" : 'C:\\Users\\jun\\Downloads\\logs',
+	"directory" : path.resolve(app.getPath('downloads'),'logs'),
+	// "directory" : 'C:\\Users\\jun\\Downloads\\logs',
+	"fix" : "full",
 	"channels" : {
+        "full" : {
+			"path" : "full.log"
+        },
 		"ts" : {
 			"path" : "module/transcoder.log"
 		},
@@ -27,6 +31,9 @@ module.exports = {
 		},
 		"main" : {
 			"path" : "main/autoUpdater.log"
+		},
+		"ingest" : {
+			"path" : "task/ingest.log"
 		}
 	}
 	

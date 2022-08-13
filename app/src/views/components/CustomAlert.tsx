@@ -78,6 +78,10 @@ export default function CustomAlert(props:any) {
         }
         console.log('custom alert',5)
         setOpen(false);
+
+        if(props.onClose){
+            props.onClose();
+        }
         
 
     };

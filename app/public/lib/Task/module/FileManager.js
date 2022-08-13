@@ -18,7 +18,7 @@ exports.__esModule = true;
 exports.FileManager = void 0;
 var Property_1 = require("./Property");
 var fs = require("fs");
-var TaskUpdater = require('../TaskUpdater').TaskUpdater;
+var TaskUpdater_1 = require("../TaskUpdater");
 var log = require('../../Logger');
 var FileManager = /** @class */ (function (_super) {
     __extends(FileManager, _super);
@@ -26,25 +26,33 @@ var FileManager = /** @class */ (function (_super) {
         var _this = _super.call(this, params) || this;
         log.channel('fs').info('[Start Fs]', params);
         _this.params = params;
+        var targetDir = _this.getTargetDir();
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+        }
         return _this;
     }
     FileManager.prototype.copy = function () {
-        var _this = this;
         var taskId = this.getTaskId();
         var targetFullPath = this.getTargetFullPath();
         var sourceFullPath = this.getSourceFullPath();
         log.channel('fs').info("[Start Fs Copy] ".concat(sourceFullPath, " => ").concat(targetFullPath));
+        this._copy(sourceFullPath, targetFullPath, taskId);
+    };
+    FileManager.prototype._copy = function (sourceFullPath, targetFullPath, taskId) {
         fs.createReadStream(sourceFullPath)
             .on('error', function (error) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
+            new TaskUpdater_1.TaskUpdater(taskId).error();
         })
             .pipe(fs.createWriteStream(targetFullPath))
             .on('error', function (error) {
             log.channel('fs').info('[Fs Write Stream Error]', error);
+            new TaskUpdater_1.TaskUpdater(taskId).error();
         })
             .on('finish', function () {
-            log.channel('fs').info("[Fs Complete] TaskId : ".concat(_this.params.task._id));
-            new TaskUpdater(taskId).complete();
+            log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
+            new TaskUpdater_1.TaskUpdater(taskId).complete();
         });
     };
     return FileManager;

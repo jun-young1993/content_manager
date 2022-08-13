@@ -28,6 +28,7 @@ const ipcRenderer = electron.ipcRenderer;
 const getRows =()=> {
 
     const fields = ipcRenderer.sendSync("@Field/all");
+    console.log('fields',fields);
     if(fields.success){
         return fields.data.map((field : any) => {
 

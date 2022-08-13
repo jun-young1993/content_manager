@@ -37,7 +37,7 @@ export class DownloadService extends BaseService{
 		.then((resolve) => {
 			log.channel("download").info(`[DownloadService][downloadByMediaId][DATA]`,resolve);
 			new TaskManager()
-			.onlineDownload();
+			// .onlineDownload();
 		})
 		.catch((reject)=>{
 			log.channel("download").info(`[DownloadService][downloadByMediaId][reject]:`,reject)

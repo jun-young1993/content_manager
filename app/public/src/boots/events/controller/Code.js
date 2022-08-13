@@ -19,6 +19,16 @@ var codeDb = new Code_1.Code();
 var Code = /** @class */ (function () {
     function Code() {
     }
+    Code._all = function (event) {
+        codeDb.db().find({}, function (err, data) {
+            if (data) {
+                event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Code.all = function (event, args) {
         codeDb.db().find({}, function (err, data) {
             if (data) {
@@ -49,32 +59,59 @@ var Code = /** @class */ (function () {
             }
         });
     };
-    Code.insert = function (event, args) {
-        codeDb.db().insert(Object.assign(args, {
+    Code._insert = function (event, args) {
+        codeDb.db().insert(Object.assign(args[0], {
             'use_yn': "Y",
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
             if (data) {
-                return event.returnValue = {
+                return event.autoReplay({
                     success: true,
                     data: data
-                };
+                });
+            }
+            else {
+                return event.autoReplay({
+                    success: false,
+                    data: data
+                });
             }
         });
     };
-    Code.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Code._update = function (event, args) {
         codeDb.db().update(args[1], { $set: args[0] }, function (err, data) {
-            return event.returnValue = data;
+            if (data) {
+                return event.autoReplay({
+                    suceess: true
+                });
+            }
+            else {
+                return event.autoReplay({
+                    suceess: false
+                });
+            }
+        });
+    };
+    Code._first = function (event, args) {
+        console.log('code first', args);
+        codeDb.db().findOne(Object.assign(args[0]), function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+            else {
+                return event.autoReplay({
+                    success: false
+                });
+            }
         });
     };
     Code.first = function (event, args) {
         console.log('code first', args);
-        codeDb.db().findOne(Object.assign(args, {
+        codeDb.db().findOne(Object.assign(args[0], {
             'use_yn': "Y"
         }), function (err, data) {
             if (data) {
@@ -90,23 +127,19 @@ var Code = /** @class */ (function () {
             }
         });
     };
-    Code["delete"] = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Code._delete = function (event, args) {
         if (args.length >= 1) {
             codeDb.db().remove(args[0], function (err, data) {
                 if (data) {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: true,
                         data: data
-                    };
+                    });
                 }
                 else {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: false
-                    };
+                    });
                 }
             });
         }

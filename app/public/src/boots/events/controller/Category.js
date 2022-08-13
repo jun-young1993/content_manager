@@ -32,7 +32,7 @@ var Category = /** @class */ (function () {
         });
     };
     Category.index = function (event, args) {
-        db.db().find({ is_deleted: 'N' }, function (err, data) {
+        db.db().find({}, function (err, data) {
             if (data) {
                 return event.returnValue = {
                     success: true,
@@ -42,7 +42,7 @@ var Category = /** @class */ (function () {
         });
     };
     Category._index = function (event, args) {
-        db.db().find(Object.assign(args), function (err, data) {
+        db.db().find(args[0], function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,
@@ -52,10 +52,8 @@ var Category = /** @class */ (function () {
         });
     };
     Category._insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
-            'use_yn': "Y",
-            'is_deleted': "N",
-            'deleted_at': null
+        db.db().insert(Object.assign(args[0], {
+            'use_yn': "Y"
         }), function (err, data) {
             if (data) {
                 event.autoReplay({
@@ -67,9 +65,7 @@ var Category = /** @class */ (function () {
     };
     Category.insert = function (event, args) {
         db.db().insert(Object.assign(args, {
-            'use_yn': "Y",
-            'is_deleted': "N",
-            'deleted_at': null
+            'use_yn': "Y"
         }), function (err, data) {
             if (err) {
                 return event.returnValue = {
@@ -100,8 +96,7 @@ var Category = /** @class */ (function () {
     };
     Category.first = function (event, args) {
         db.db().findOne(Object.assign(args, {
-            'use_yn': "Y",
-            'deleted_at': null
+            'use_yn': "Y"
         }), function (err, data) {
             if (data) {
                 return event.returnValue = {

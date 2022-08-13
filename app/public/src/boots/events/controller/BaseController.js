@@ -41,8 +41,16 @@ var BaseController = /** @class */ (function () {
             // console.log('start method',methodName);
             if (_this.isAsyncMethod(methodName)) {
                 //async method
-                electron_1.ipcMain.on(channel, function (event, args) {
+                electron_1.ipcMain.on(channel, function (event) {
+                    var args = [];
+                    for (var _i = 1; _i < arguments.length; _i++) {
+                        args[_i - 1] = arguments[_i];
+                    }
+                    console.log('[baseController]', args);
                     event.autoReplay = function (result) {
+                        return event.reply(channel + '/reply', result);
+                    };
+                    event.autoReply = function (result) {
                         return event.reply(channel + '/reply', result);
                     };
                     _this.controller[methodName](event, args);

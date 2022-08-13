@@ -30,6 +30,7 @@ import {
     import CustomAlert from "@views/components/CustomAlert";
     import WorkflowDetail from "@views/main/support/workflow/WorkflowDetail";
     import electron from "electron";
+
 const ipcRenderer = electron.ipcRenderer;
 
 const getRows = () =>{
@@ -43,7 +44,17 @@ const reducer = (prevState:any, newState:any) => ({
 	...newState
     })
 export default function WorkflowList() {
-	const [rows,setRows] = React.useState(getRows);
+
+
+	const [rows,setRows] = React.useState([]);
+
+	ipcRenderer.send("@WorkFlow/_all");
+	ipcRenderer.on("@WorkFlow/_all/reply",(event,result) => {
+		console.log('result data',result.data);
+		setRows(result.data);
+
+		ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
+	})
 	const baseAlert = ((<CustomAlert open={false} />));
     const [alert, setALert] = React.useState(baseAlert)
     const [expanded, setExpanded] = React.useState<string[]>([]);
@@ -71,58 +82,79 @@ export default function WorkflowList() {
     }
 
     const [moduleItems , setModuleItems] = React.useState(workflowByMenuItem);
-    const makeHierarchy = (workflowId : any) => {
-	console.log('getWorkflow',workflowId);
-	const ruleData = ipcRenderer.sendSync("@WorkFlowRule/getByWorkflowId",{workflow_id : workflowId});
-	const expandedArray:any = [];
-	if(ruleData){
-		if(ruleData.success){
-			if(ruleData.data){
-				console.log('ruleData',ruleData)
-				if(ruleData.data.length != 0){
-					ruleData.data.map((rule:any) => {
-						console.log('rule',rule)
-						expandedArray.push(rule._id);
-					})
-					console.log('beforExpanded',expandedArray)
-					setExpanded(expandedArray);
-					console.log('expanded',expandedArray)
-					const hierarchy = createTreeHierarchy(ruleData.data);
-					if(hierarchy){
-						return hierarchy[0];
+    const makeHierarchy = (workflowId : string) => {
+			console.log('getWorkflow',workflowId);
+
+		return new Promise((resolve, reject) => {
+
+
+		// const ruleData =
+			ipcRenderer.send("@WorkFlowRule/_getByWorkflowId",{workflow_id : workflowId});
+			ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(err,ruleData) => {
+				console.log('ruleData',ruleData);
+				const expandedArray:any = [];
+				if(ruleData){
+					if(ruleData.success){
+						if(ruleData.data){
+							console.log('ruleData',ruleData)
+							if(ruleData.data.length != 0){
+								ruleData.data.map((rule:any) => {
+									console.log('rule',rule)
+									expandedArray.push(rule._id);
+								})
+								console.log('beforExpanded',expandedArray)
+								setExpanded(expandedArray);
+								console.log('expanded',expandedArray)
+								const hierarchy = createTreeHierarchy(ruleData.data);
+								if(hierarchy){
+									resolve(hierarchy[0]);
+								}
+							}
+
+
+
+
+						}
+
 					}
+
+				}else{
+					resolve ([{
+						id : 'root',
+						name : 'start workflow'
+					}]);
 				}
-				
-		
-				
+			})
 
-			}
 
-		}
 
-	}
 
-	return [{
-		id : 'root',
-		name : 'start workflow'
-	}];
 
-	
-	
+		})
     }
 
     const onClickItem = (evt : any, id:any) => {
 	
-	let children:any = makeHierarchy(id);
-	
-	
-	setWorkflowId(id);
-	setTreeData(children);
-	setTree(renderTree(children))
+		// let children:any =
+			makeHierarchy(id)
+				.then((children) => {
+					setWorkflowId(id);
+					setTreeData(children);
+					setTree(renderTree(children))
+				});
+
+
+
 
     }
     const reload = () => {
-        setRows(getRows);
+		ipcRenderer.send("@WorkFlow/_all");
+		ipcRenderer.on("@WorkFlow/_all/reply",(event,result) => {
+			console.log('result data',result.data);
+			setRows(result.data);
+
+			ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
+		})
     }
     const [workflowDetailView,setWorkflowDetailView] = React.useState(<WorkflowDetail 
 	workflowId={workflowId}
@@ -172,32 +204,36 @@ export default function WorkflowList() {
 							if(result){
 								const values = result.values;
 								if(values){
-								const exists = ipcRenderer.sendSync("@WorkFlow/first",{code:values.name});
-								if(exists.success){
-									setALert((<CustomAlert serverity="info" 
-												title="중복된 워크플로우 명입니다. 다른 워크플로우 명 으로 요청해주세요" 
-										/>));
-									return false;
-								}
-								
-								const insert = ipcRenderer.sendSync("@WorkFlow/insert",values);
-								
-								if(insert.success){
-									reload();
-									result.setOpen(false)
-									setALert((<CustomAlert serverity="success" 
-												title="등록되었습니다." 
-										/>));
-										
-									return  true;
+									const exists = ipcRenderer.sendSync("@WorkFlow/first",{code:values.name});
+									if(exists.success){
+										setALert((<CustomAlert serverity="info"
+													title="중복된 워크플로우 명입니다. 다른 워크플로우 명 으로 요청해주세요"
+											/>));
+										return false;
+									}
+
+									// const insert = ipcRenderer.sendSync("@WorkFlow/insert",values);
+										ipcRenderer.send("@WorkFlow/_insert",values);
+										ipcRenderer.on("@WorkFlow/_insert/reply",(event, insert) => {
+											console.log('insert ager ',insert);
+											if(insert.success){
+												reload();
+												result.setOpen(false)
+												setALert((<CustomAlert serverity="success"
+																	   title="등록되었습니다."
+												/>));
+
+												return  true;
+											}
+											console.log('insert',insert);
+											setALert((<CustomAlert serverity="error"
+																   title="등록에 실패했습니다."
+											/>))
+											return false;
+										})
+
 								}
 
-								console.log('insert',insert);
-								}
-								setALert((<CustomAlert serverity="error" 
-											title="등록에 실패했습니다." 
-									/>))
-								return false;
 							}
 
 						}}
@@ -229,13 +265,13 @@ export default function WorkflowList() {
 					
 					)
 				})}
-				<ListItem disablePadding>
-				<ListItemButton component="a" href="#simple-list">
-				<ListItemText primary="Spam" />
-				</ListItemButton>
-				</ListItem>
+				{/*<ListItem disablePadding>*/}
+				{/*<ListItemButton component="a" href="#simple-list">*/}
+				{/*<ListItemText primary="Spam" />*/}
+				{/*</ListItemButton>*/}
+				{/*</ListItem>*/}
 				</List>
-				<Divider />
+				{/*<Divider />*/}
 				{alert}
 			</Box>
 		</Grid>
@@ -261,40 +297,55 @@ export default function WorkflowList() {
 					onSaveClick={(result:any)=>{
 						if(result){
 							const values = result.values;
-							console.log(values);
+							console.log('values',values);
 							if(values){
-								const moduleInfo = ipcRenderer.sendSync("@Module/first",{_id : values.module_id});
-								console.log(moduleInfo);
-								let addChildrenModule:any =  null;
-								let children:any = null;
 								
-								// const selecteIds = selectedId.split('/');
+								ipcRenderer.send("@Module/_first",{_id : values.module_id});
+
+								ipcRenderer.on("@Module/_first/reply",(err,moduleInfo) => {
+									console.log('moduleInfo',moduleInfo);
+									let addChildrenModule:any =  null;
+									let children:any = null;
+
+									// const selecteIds = selectedId.split('/');
 
 									children = treeData['children'] =[{
 										id : values.module_id,
 										name : moduleInfo.data.name
 									}];
-									console.log('props.treeData',treeData);
-									treeData['children'] = children;	
-									
-									const insert =ipcRenderer.sendSync("@WorkFlowRule/insert",{
-										workflow_id : workflowId,
-										module_id : values.module_id,
-										module_name : moduleInfo.data.name,
-										parent_id : selectedId
-									})
-										
-						
+									// console.log('props.treeData',treeData);
+									treeData['children'] = children;
+									if(values.module_id == moduleInfo.data._id) {
+										ipcRenderer.send("@WorkFlowRule/_insert",{
+											workflow_id : workflowId,
+											module_id : values.module_id,
+											module_name : moduleInfo.data.name,
+											parent_id : selectedId
+										})
+										ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
+											console.log('workflow callback insert',insert);
+											
+											if(insert.data){
+												makeHierarchy(insert.data.workflow_id)
+													.then((children) => {
+
+														setTree(renderTree(children));
+														result.setOpen(false);						
+													})
+											}
+											ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
+										})
+	
+									}
 								
-								if(insert.data){
-									
-										setTree(renderTree(makeHierarchy(workflowId)));
-										result.setOpen(false);
-									
-								}
-							
+
+									ipcRenderer.removeAllListeners("@WorkFlowRule/_first/reply");
+
+								})
+
+
 							}
-						
+
 							return false;
 						}
 

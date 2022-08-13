@@ -4,6 +4,7 @@ const {Task} = require('../../models/Task');
 const {WorkflowRule} = require('../../models/WorkflowRule')
 import {TaskManager} from "./TaskManager";
 const log = require('../Logger');
+import { TaskStatus } from "../../interfaces/Types/TaskStatus";
 
 export class TaskUpdater {
     private taskId:any = null;
@@ -59,34 +60,47 @@ export class TaskUpdater {
         })
 
     }
-
-    complete(){
+    nextTask(){
         const _this = this;
-        log.channel('task_update').info(`[TaskUpdater][complete] ${_this.taskId}`);
-        this.taskModel.update({_id : _this.taskId},{$set : {status : 'complete'}},(err:any,update : any) => {
+        _this.nextTaskRule().then((resolve) => {
+            _this.taskManager.initialize()
+            .then((taskParse:any) => {
+                // console.log('update next module start')
+                // taskParse.start();
+            })
+            .catch((reject:any) => {
+                
+            })
+        })
+    }
+    complete(){
+        this.updateTaskStatus('complete');
+    }
+
+    error(){
+        this.updateTaskStatus('error');
+    }
+
+
+    updateTaskStatus(status:TaskStatus){
+        const _this = this;
+        log.channel('task_update').info(`[TaskUpdater][${status}] ${_this.taskId}`);
+        this.taskModel.update({_id : _this.taskId},{$set : {status : status}},(err:any,update : any) => {
             
-            log.channel('task_update').info(`[TaskUpdater][complete] ${_this.taskId}`);
+            log.channel('task_update').info(`[TaskUpdater][${status}] ${_this.taskId}`);
             
                 if(update){
-                    log.channel('task_update').info(`[TaskUpdater][complete] Update Status  "Complete ${_this.taskId}"`);
+                    log.channel('task_update').info(`[TaskUpdater][${status}] Update Status  "${status} ${_this.taskId}"`);
                     this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
                         console.log('after update task info',task);
-                        _this.nextTaskRule().then((resolve) => {
-                            console.log('next Tassk rule',resolve);
-                            _this.taskManager.initialize()
-                            .then((taskParse:any) => {
-                                // console.log('update next module start')
-                                // taskParse.start();
-                            })
-                            .catch((reject:any) => {
-                                
-                            })
-
-                        })
+                   
+                      
+                            _this.nextTask();
+                   
      
                     })  
                }else{
-                    log.channel('task_update').info(`[TaskUpdater][complete] Update Status  "Complete ${_this.taskId}"`,err);
+                    log.channel('task_update').info(`[TaskUpdater][${status}] Update Status  "${status} ${_this.taskId}"`,err);
                }
             
      

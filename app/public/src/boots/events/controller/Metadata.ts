@@ -23,7 +23,7 @@ const metadataDb = new MetadataModel();
 class Metadata {
     static index(event, args){
         
-        metadataDb.db().find({is_deleted : 'N'},(err,data) => {
+        metadataDb.db().find({},(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -36,8 +36,6 @@ class Metadata {
     static insert(event,args){
 
         metadataDb.db().insert(Object.assign(args,{
-            'is_deleted' : "N",
-            'deleted_at' : null,
         }),(err,data) => {
 
 

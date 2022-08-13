@@ -16,15 +16,37 @@ var AutoUpdate = /** @class */ (function () {
         var _this = this;
         // event.reply('auto-update/available','available');
         if ((0, lodash_1.isFunction)(methods.available)) {
-            methods.available();
+            this.isCheck(autoUpdater, methods);
         }
+        if ((0, lodash_1.isFunction)(methods.update)) {
+            this.update(autoUpdater, methods);
+        }
+        if (isDev) {
+            Object.defineProperty(electron_1.app, 'isPackaged', {
+                get: function () {
+                    return true;
+                }
+            });
+        }
+        autoUpdater.checkForUpdates();
+    }
+    AutoUpdate.prototype.isCheck = function (autoUpdater, methods) {
+        autoUpdater.on('update-available', function (info) {
+            log.channel("main").info("[AutoUpdater][update-available]", info);
+            log.channel("main").info("[AutoUpdater][update-available] available");
+            methods.available();
+            // log.info('available.');
+            // createDefaultUpdateWindow()
+            // updateWin.webContents.send('message','업데이트가 가능합니다.','auto-update')
+        });
+    };
+    AutoUpdate.prototype.update = function (autoUpdater, methods) {
         autoUpdater.on('update-downloaded', function (info) {
             // log.info('update-downloaded')
             log.channel("main").info("[AutoUpdater][update-downloaded] quit and install", info);
-            if ((0, lodash_1.isFunction)(methods.update)) {
-                autoUpdater.quitAndInstall();
-                methods.update();
-            }
+            log.channel("main").info("[AutoUpdater][update-downloaded] quit and install start");
+            autoUpdater.quitAndInstall();
+            methods.update();
         });
         autoUpdater.on('checking-for-update', function () {
             log.channel("main").info("[AutoUpdater][checking-for-update] checking for update");
@@ -39,6 +61,10 @@ var AutoUpdate = /** @class */ (function () {
         });
         autoUpdater.on('update-available', function (info) {
             log.channel("main").info("[AutoUpdater][update-available]", info);
+            if ((0, lodash_1.isFunction)(methods.available)) {
+                log.channel("main").info("[AutoUpdater][update-available] available");
+                methods.available();
+            }
             // log.info('available.');
             // createDefaultUpdateWindow()
             // updateWin.webContents.send('message','업데이트가 가능합니다.','auto-update')
@@ -63,15 +89,7 @@ var AutoUpdate = /** @class */ (function () {
             // updateWin.webContents.send('message','','update_complete')
             // app.quit()
         });
-        if (isDev) {
-            Object.defineProperty(electron_1.app, 'isPackaged', {
-                get: function () {
-                    return true;
-                }
-            });
-        }
-        autoUpdater.checkForUpdatesAndNotify();
-    }
+    };
     return AutoUpdate;
 }());
 exports.AutoUpdate = AutoUpdate;

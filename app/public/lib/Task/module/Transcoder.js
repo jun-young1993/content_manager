@@ -54,6 +54,7 @@ var Transcoder = /** @class */ (function (_super) {
             log.channel('ts').error('[transcoder error]', err);
             log.channel('ts').error('[transcoder stdout]', stdout);
             log.channel('ts').error('[transcoder stderr]', stderr);
+            new TaskUpdater(taskId).error();
         })
             .on('end', function () {
             log.channel('ts').info('[transcoder Complete]');
@@ -77,7 +78,7 @@ var Transcoder = /** @class */ (function (_super) {
         this.initialize()
             .audioCodec('aac')
             .videoCodec('libx264')
-            .size('320x240')
+            .size('640x480')
             .save(fullPath);
         // .pipe(outStream, {end : true} );
     };

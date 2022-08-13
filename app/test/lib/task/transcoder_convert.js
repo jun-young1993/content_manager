@@ -49,10 +49,12 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath)
-const target = 'C:\\Users\\jun\\Desktop\\뱀파이어소녀_convert.mp4';
-const outStream = fs.createWriteStream(target)
 
-const source = 'D:\\100M_2.MXF';
+
+const originalName = '1.mxf';
+const source = `C:\\Users\\jun\\Desktop\\sample\\${originalName}`;
+const target = `C:\\Users\\jun\\Desktop\\sample\\convert\\${originalName}.mp4`;
+const outStream = fs.createWriteStream(target)
 ffmpeg(source)
       .on('filenames', function(filenames) {
 	console.log('Will generate ' + filenames.join(', '))

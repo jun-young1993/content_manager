@@ -3,6 +3,8 @@
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var WorkflowRule_1 = require("../../../../models/WorkflowRule");
+var WorkflowService_1 = require("../../../../service/WorkflowService");
+var workflowService = new WorkflowService_1.WorkflowService();
 var db = new WorkflowRule_1.WorkflowRule();
 var WorkFlowRule = /** @class */ (function () {
     function WorkFlowRule() {
@@ -104,17 +106,17 @@ var WorkFlowRule = /** @class */ (function () {
             }
         });
     };
-    WorkFlowRule.insert = function (event, args) {
+    WorkFlowRule._insert = function (event, args) {
         console.log('[WorkflowRule Insert]', args);
-        db.db().insert(Object.assign(args, {
+        db.db().insert(Object.assign(args[0], {
             'deleted_at': null
         }), function (err, data) {
             console.log('[WorkflowRule Insert after]', data);
             if (data) {
-                return event.returnValue = {
+                return event.autoReply({
                     success: true,
                     data: data
-                };
+                });
             }
         });
     };
@@ -130,22 +132,15 @@ var WorkFlowRule = /** @class */ (function () {
             };
         });
     };
-    WorkFlowRule.getByWorkflowId = function (event, args) {
-        new WorkflowRule_1.WorkflowRule().db().find(args, function (err, data) {
-            console.log('args', args);
-            console.log('data', data);
-            data.map(function (child) {
-                child.id = child._id;
-                child.name = child.module_name;
-                child.parentId = child.parent_id;
-                return child;
-            });
-            if (data) {
-                return event.returnValue = {
-                    success: true,
-                    data: data
-                };
-            }
+    WorkFlowRule._getByWorkflowId = function (event, args) {
+        console.log('args', args);
+        workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
+            .then(function (result) {
+            console.log('get By workflow Idresult', result);
+            event.autoReply(result);
+        })["catch"](function (err) {
+            console.log('get By workflow Idresult', err);
+            event.autoReply(err);
         });
     };
     return WorkFlowRule;

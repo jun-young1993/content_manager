@@ -1,9 +1,31 @@
-# electron
+# Content Manager
+
+## 다운로드
+
+
+## 스크린샷
+![main](https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png)
+
+![](https://user-images.githubusercontent.com/102360897/184477100-0a7908d6-6f51-4127-b6f1-9b28e3f08c40.png)
+![](https://user-images.githubusercontent.com/102360897/184477083-6c02d27d-aac4-4ea1-9009-450d67894a8c.png)
+![](https://user-images.githubusercontent.com/102360897/184477103-9c7e3d8a-5a1c-4b74-8578-723f78b9649a.png)
+
+
+![](https://user-images.githubusercontent.com/102360897/184477098-55b66e2a-119f-4c95-b5ef-ec25c0e709a7.png)
+
+![](https://user-images.githubusercontent.com/102360897/184477091-162cda17-07f2-48c4-bc56-d9e690647fb0.png)
+![](https://user-images.githubusercontent.com/102360897/184477108-fb649eb3-5d70-4ecb-b2a7-49843dce1bb8.png)
+![](https://user-images.githubusercontent.com/102360897/184477110-daebdcf1-b7d7-46a0-b0f9-c97e60e56804.png)
+![](https://user-images.githubusercontent.com/102360897/184477111-add5ebee-3edc-4011-a97d-d9121d94765f.png)
+
 ## 개발 환경
 - version
     - node : 14.17.3
     - npm : 6.14.13
-    - craco : 5.8 (리액트 버전에 따라 다름)
+    - craco : 5.8
+    - electron : 17.2.0
+    - typescript : 4.6.3
+    - 17.0.2 : 17.0.2
 
 ## 실행
 - npx create-react-app app --typescript or npx create-react-app app --template typescript
@@ -41,6 +63,7 @@
 - npm install electron-log
 - npm install react-player
 - npm install electron-updater
+- npm install react-redux
 
 ## 참고문서
 - electorn ffmpeg build pakage.json
@@ -49,23 +72,3 @@
 	- https://codesandbox.io/s/f2uzv?file=/src/Player.js
 
 
-#필수코드 
---TASK_MODULE_TYPE
----fs_copy
-
---MEDIA_TYPE
----out
----original
-
-- tsconfig.path.json
-      "@route/*" : [
-        "./public/lib/route/*"
-      ],
-      "@service/*" :[
-        "./public/service/*"
-      ]
-
-
--pakage.json
-  "@route" : "./public/lib/route",
-    "@service" : "./public/service"

@@ -20,65 +20,88 @@ const db = new StorageModel();
 // })
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Storage {
+    static _all(event, args){
+
+        db.db().find({},(err,data) => {
+            if(data){
+                return event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
+
     static all(event, args){
 
         db.db().find({},(err,data) => {
             if(data){
                 return event.returnValue = {
-                    success : true,
-                    data : data
+                    success: true,
+                    data: data
                 }
             }
 
         })
     }
-    static index(event, args){
+    static _index(event, args){
         
         db.db().find({is_deleted : 'N'},(err,data) => {
             if(data){
-                return event.returnValue = {
+                return event.autoReplay({
                     success : true,
                     data : data
-                }
+                })
             }
 
         })
     }
-    static insert(event,args){
+    static _insert(event,args){
 
-        db.db().insert(Object.assign(args,{
+        db.db().insert(Object.assign(args[0],{
             'use_yn' : "Y",
             'is_deleted' : "N",
             'deleted_at' : null,
         }),(err,data) => {
 
             if(err){
-                return event.returnValue = {
+                return event.autoReplay({
                     success : false,
                     data : null,
                     msg : err
-                }
+                })
             }
             if(data){
 
 
-                return event.returnValue = {
+                return event.autoReplay({
                     success : true,
                     data :data
-                }
+                })
             }
 
         });
     }
 
 
-    static update(event,...args){
-
+    static _update(event,args){
+        console.log(args);
         db.db().update(args[1],{$set : args[0]},(err,data) => {
-            return event.returnValue = {
-                success : true,
-                data : data
-            };
+            if(data){
+                return event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }else{
+                console.log(err)
+                return event.autoReplay({
+                    success : false,
+                    data : data,
+                    msg : err
+                })
+            }
+
         })
     }
 
@@ -102,19 +125,19 @@ class Storage {
         })
     }
 
-    static delete(event, ...args){
+    static _delete(event, args){
 
         if(args.length >= 1){
             db.db().remove(args[0],(err,data) => {
                 if(data){
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success : true,
                         data : data
-                    }
+                    })
                 }else{
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success : false
-                    }
+                    })
                 }
 
             });

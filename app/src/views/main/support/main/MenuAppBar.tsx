@@ -105,7 +105,7 @@ const MenuAppBar = (props:any) => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/*<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
           <Typography
             variant="h6"
             noWrap
@@ -121,7 +121,7 @@ const MenuAppBar = (props:any) => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            ContentManager
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -154,7 +154,13 @@ const MenuAppBar = (props:any) => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.key} value={page.key} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.key} value={page.key} onClick={() => {
+                    handleCloseNavMenu({
+                        target : {
+                            value : page.key
+                        }
+                    })
+                }}>
                   <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
               ))}
@@ -206,7 +212,7 @@ const MenuAppBar = (props:any) => {
                             if(event.key === 'Enter'){
                                 if(props.onSearch){
                                     props.onSearch(event.target.value);
-                                    event.target.value = '';
+                                    // event.target.value = '';
                                 }
 
                             }

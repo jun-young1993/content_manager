@@ -18,6 +18,8 @@ exports.__esModule = true;
 exports.WorkflowService = void 0;
 var BaseService = require('../service/BaseService').BaseService;
 var createTreeHierarchy = require('hierarchy-js').createTreeHierarchy;
+var lodash_1 = require("lodash");
+var ApiHelper_1 = require("../lib/helper/ApiHelper");
 var WorkflowService = /** @class */ (function (_super) {
     __extends(WorkflowService, _super);
     function WorkflowService() {
@@ -28,10 +30,26 @@ var WorkflowService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
-    WorkflowService.prototype.hierarchyRuleByWorkflowId = function (workflowId) {
+    WorkflowService.prototype.indexByWorkflow = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {
+            _this.getModel('Workflow').find({}, function (err, datas) {
+                resolve((0, ApiHelper_1.apiResolve)(datas));
+            });
+        });
+    };
+    WorkflowService.prototype.indexByWorkflowRule = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('WorkflowRule').find({}, function (err, datas) {
+                resolve((0, ApiHelper_1.apiResolve)(datas));
+            });
+        });
+    };
+    WorkflowService.prototype.hierarchyRuleByWorkflowId = function (workflowId) {
+        var _this_1 = this;
+        return new Promise(function (resolve, reject) {
+            _this_1.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {
                 data.map(function (child) {
                     child.id = child._id;
                     child.name = child.module_name;
@@ -46,9 +64,9 @@ var WorkflowService = /** @class */ (function (_super) {
         return this.findTypeByContentId('original', contentId);
     };
     WorkflowService.prototype.findTypeByContentId = function (type, contentId) {
-        var _this = this;
+        var _this_1 = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('Media').findOne({ content_id: contentId, type: type }, function (err, media) {
+            _this_1.getModel('Media').findOne({ content_id: contentId, type: type }, function (err, media) {
                 resolve({
                     success: true,
                     data: media
@@ -58,6 +76,41 @@ var WorkflowService = /** @class */ (function (_super) {
     };
     WorkflowService.prototype.findOutByContentId = function (contentId) {
         return this.findTypeByContentId('out', contentId);
+    };
+    WorkflowService.prototype.create = function (data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Workflow').insert(data, function (err, result) {
+                if ((0, lodash_1.isEmpty)(result)) {
+                    reject((0, ApiHelper_1.apiReject)("[WorklfowService][create] insert fail workflow"));
+                }
+                _this.getModel('WorkflowRule').insert({
+                    workflow_id: result._id,
+                    module_id: null,
+                    module_name: 'start workflow',
+                    parent_id: null
+                }, function (workflowRuleErr, workflowRuleResult) {
+                    resolve((0, ApiHelper_1.apiResolve)(workflowRuleResult));
+                });
+            });
+        });
+    };
+    WorkflowService.prototype.getWorkflowRuleByWorkflowId = function (workflowId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {
+                if ((0, lodash_1.isEmpty)(data)) {
+                }
+                data.map(function (child) {
+                    child.id = child._id;
+                    child.name = child.module_name;
+                    child.parentId = child.parent_id;
+                    return child;
+                });
+                console.log('getWorkflowRuleByWorkflowId', data);
+                resolve((0, ApiHelper_1.apiResolve)(data));
+            });
+        });
     };
     return WorkflowService;
 }(BaseService));

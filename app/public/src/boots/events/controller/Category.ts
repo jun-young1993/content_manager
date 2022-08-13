@@ -35,7 +35,7 @@ class Category {
 
     static index(event, args){
         
-        db.db().find({is_deleted : 'N'},(err,data) => {
+        db.db().find({},(err,data) => {
             if(data){
                 return event.returnValue = {
                     success : true,
@@ -47,7 +47,7 @@ class Category {
     }
 
     static _index(event, args){
-        db.db().find(Object.assign(args),(err,data) => {
+        db.db().find(args[0],(err,data) => {
 
             if(data){
                 event.autoReplay({
@@ -61,10 +61,8 @@ class Category {
 
     static _insert(event,args){
 
-        db.db().insert(Object.assign(args,{
-            'use_yn' : "Y",
-            'is_deleted' : "N",
-            'deleted_at' : null,
+        db.db().insert(Object.assign(args[0],{
+            'use_yn' : "Y"
         }),(err,data) => {
 
             if(data){
@@ -81,8 +79,6 @@ class Category {
 
         db.db().insert(Object.assign(args,{
             'use_yn' : "Y",
-            'is_deleted' : "N",
-            'deleted_at' : null,
         }),(err,data) => {
 
             if(err){
@@ -119,7 +115,6 @@ class Category {
 
         db.db().findOne(Object.assign(args,{
             'use_yn' : "Y",
-            'deleted_at' : null,
         }),(err,data) => {
             if(data){
                 return event.returnValue = {

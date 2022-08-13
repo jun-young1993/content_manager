@@ -68,7 +68,7 @@ export default function MediaInfo(props : any) {
     storage.data.map((storage:any) => {
         storageMap[storage.code] = storage.name
     })
-    const mediaCodes = ipcRenderer.sendSync("@CodeItem/indexByParentCode","MEDIA_TYPE");
+    const mediaCodes = ipcRenderer.sendSync("@CodeItem/indexByParentCode","media_type");
     mediaCodes.data.map((media:any) => {
         mediaCodeMap[media.code] = media.name;
     })

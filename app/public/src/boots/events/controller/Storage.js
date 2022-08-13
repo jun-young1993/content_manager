@@ -21,6 +21,16 @@ var db = new Storage_1.Storage();
 var Storage = /** @class */ (function () {
     function Storage() {
     }
+    Storage._all = function (event, args) {
+        db.db().find({}, function (err, data) {
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
     Storage.all = function (event, args) {
         db.db().find({}, function (err, data) {
             if (data) {
@@ -31,47 +41,54 @@ var Storage = /** @class */ (function () {
             }
         });
     };
-    Storage.index = function (event, args) {
+    Storage._index = function (event, args) {
         db.db().find({ is_deleted: 'N' }, function (err, data) {
             if (data) {
-                return event.returnValue = {
+                return event.autoReplay({
                     success: true,
                     data: data
-                };
+                });
             }
         });
     };
-    Storage.insert = function (event, args) {
-        db.db().insert(Object.assign(args, {
+    Storage._insert = function (event, args) {
+        db.db().insert(Object.assign(args[0], {
             'use_yn': "Y",
             'is_deleted': "N",
             'deleted_at': null
         }), function (err, data) {
             if (err) {
-                return event.returnValue = {
+                return event.autoReplay({
                     success: false,
                     data: null,
                     msg: err
-                };
+                });
             }
             if (data) {
-                return event.returnValue = {
+                return event.autoReplay({
                     success: true,
                     data: data
-                };
+                });
             }
         });
     };
-    Storage.update = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Storage._update = function (event, args) {
+        console.log(args);
         db.db().update(args[1], { $set: args[0] }, function (err, data) {
-            return event.returnValue = {
-                success: true,
-                data: data
-            };
+            if (data) {
+                return event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+            else {
+                console.log(err);
+                return event.autoReplay({
+                    success: false,
+                    data: data,
+                    msg: err
+                });
+            }
         });
     };
     Storage.first = function (event, args) {
@@ -92,23 +109,19 @@ var Storage = /** @class */ (function () {
             }
         });
     };
-    Storage["delete"] = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    Storage._delete = function (event, args) {
         if (args.length >= 1) {
             db.db().remove(args[0], function (err, data) {
                 if (data) {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: true,
                         data: data
-                    };
+                    });
                 }
                 else {
-                    return event.returnValue = {
+                    return event.autoReplay({
                         success: false
-                    };
+                    });
                 }
             });
         }
