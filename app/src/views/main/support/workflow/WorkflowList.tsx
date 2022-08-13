@@ -265,13 +265,13 @@ export default function WorkflowList() {
 					
 					)
 				})}
-				<ListItem disablePadding>
-				<ListItemButton component="a" href="#simple-list">
-				<ListItemText primary="Spam" />
-				</ListItemButton>
-				</ListItem>
+				{/*<ListItem disablePadding>*/}
+				{/*<ListItemButton component="a" href="#simple-list">*/}
+				{/*<ListItemText primary="Spam" />*/}
+				{/*</ListItemButton>*/}
+				{/*</ListItem>*/}
 				</List>
-				<Divider />
+				{/*<Divider />*/}
 				{alert}
 			</Box>
 		</Grid>

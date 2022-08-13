@@ -67,7 +67,7 @@ export interface TaskMonitorInterface {
 }
 export default function TaskMonitor(props:TaskMonitorInterface) {
 
-    const search:TaskMonitorSearchInterface = props.search ?? {};
+    const search:TaskMonitorSearchInterface = props.search;
 
 
     const [rows, setRows] = React.useState([]);
