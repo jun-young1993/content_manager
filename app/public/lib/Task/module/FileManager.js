@@ -20,6 +20,7 @@ var Property_1 = require("./Property");
 var fs = require("fs");
 var TaskUpdater_1 = require("../TaskUpdater");
 var log = require('../../Logger');
+var ElectronHelper_1 = require("../../helper/ElectronHelper");
 var FileManager = /** @class */ (function (_super) {
     __extends(FileManager, _super);
     function FileManager(params) {
@@ -37,6 +38,10 @@ var FileManager = /** @class */ (function (_super) {
         var targetFullPath = this.getTargetFullPath();
         var sourceFullPath = this.getSourceFullPath();
         log.channel('fs').info("[Start Fs Copy] ".concat(sourceFullPath, " => ").concat(targetFullPath));
+        (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+            variant: "info",
+            messages: "[Fs][start]".concat(taskId, " ")
+        });
         this._copy(sourceFullPath, targetFullPath, taskId);
     };
     FileManager.prototype._copy = function (sourceFullPath, targetFullPath, taskId) {
@@ -48,10 +53,18 @@ var FileManager = /** @class */ (function (_super) {
             .pipe(fs.createWriteStream(targetFullPath))
             .on('error', function (error) {
             log.channel('fs').info('[Fs Write Stream Error]', error);
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "error",
+                messages: "[Fs]][error]".concat(taskId, " ").concat(error)
+            });
             new TaskUpdater_1.TaskUpdater(taskId).error();
         })
             .on('finish', function () {
             log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "success",
+                messages: "[Fs][complete]".concat(taskId)
+            });
             new TaskUpdater_1.TaskUpdater(taskId).complete();
         });
     };

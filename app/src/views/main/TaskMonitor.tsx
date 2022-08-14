@@ -19,10 +19,11 @@ import InputLabel from "@mui/material/InputLabel";
 import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import electron from "electron";
+import electron, {IpcRendererEvent} from "electron";
 const ipcRenderer = electron.ipcRenderer;
 import {isEmpty} from 'lodash';
 import {useDispatch} from "react-redux";
+import {VariantType} from "notistack";
 
 
 // const rows: GridRowsProp = [

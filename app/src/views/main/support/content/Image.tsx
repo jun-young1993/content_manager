@@ -13,6 +13,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import {isEmpty} from 'lodash';
 import ContentMetadataStore from "@views/store/ContentMetadataStore";
 import {ipcRenderer , IpcRendererEvent} from "electron";
+import ContentDialog from "@views/main/support/content/ContentDialog";
+
 // import noimage from "../../../../assets/image/noimg.jpg"
 // import img from "/Users/junyoungkim/Desktop/a.png";
 type ImageProps = {
@@ -24,6 +26,7 @@ type ImageProps = {
  */
 export default function Image() {
     const [contentList , setContentList] = React.useState<[]>([]);
+    const [showMeta, setShowMeta] = React.useState((<></>))
     ipcRenderer.on("@Content/_index/reply",(event:IpcRendererEvent,result:any)=>{
         if(result.success){
             setContentList(result.data);
@@ -40,7 +43,13 @@ export default function Image() {
                             // src={`${item.img}?w=248&fit=crop&auto=format`}
                             // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
                             src={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format"}
-                            srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format&dpr=2 2x"}
+                             // srcSet={"http://localhost:11101/thumbnail/"+item._id+"?w=248&fit=crop&auto=format&dpr=2 2x"}
+                            // onClick={{()=>{
+                            //
+                            // }}}
+                            onClick={()=>{
+
+                            }}
                             onError={( currentTarget : any) => {
                                 
                                 // currentTarget.onerror = null; // prevents looping
@@ -54,6 +63,7 @@ export default function Image() {
                             alt={item.title}
                             loading="lazy"
                         />
+                        {showMeta}
                         {/* <ImageListItemBar
                             title={<Button>{item.title}</Button>}
                             subtitle={<Button><span>{item.sub_title}</span></Button>}
@@ -77,6 +87,7 @@ export default function Image() {
                     </ImageListItem>
                 ))}
             </ImageList>
+
         // </Provider>
     );
 }

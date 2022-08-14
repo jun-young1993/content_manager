@@ -28,10 +28,15 @@ var ffmpeg = require('fluent-ffmpeg');
 var TaskUpdater = require('../TaskUpdater').TaskUpdater;
 var Property = require('./Property').Property;
 var log = require('../../Logger');
+var ElectronHelper_1 = require("../../helper/ElectronHelper");
 var Transcoder = /** @class */ (function (_super) {
     __extends(Transcoder, _super);
     function Transcoder(params) {
         var _this = this;
+        (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+            variant: "info",
+            messages: "[Tc][start] "
+        });
         log.channel('ts').info('[Start Transcoding]', params);
         log.channel('ts').info('[ffmpegPath]', ffmpegPath);
         log.channel('ts').info('[ffprobePath]', ffprobePath);
@@ -51,6 +56,10 @@ var Transcoder = /** @class */ (function (_super) {
             console.log('Processing: ' + progress.percent + '% done');
         })
             .on('error', function (err, stdout, stderr) {
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "error",
+                messages: "[Tc][error] ".concat(err)
+            });
             log.channel('ts').error('[transcoder error]', err);
             log.channel('ts').error('[transcoder stdout]', stdout);
             log.channel('ts').error('[transcoder stderr]', stderr);
@@ -58,6 +67,10 @@ var Transcoder = /** @class */ (function (_super) {
         })
             .on('end', function () {
             log.channel('ts').info('[transcoder Complete]');
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "success",
+                messages: "[Tc][complete]"
+            });
             new TaskUpdater(taskId).complete();
         });
     };
