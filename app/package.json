@@ -1,6 +1,7 @@
 {
   "name": "ContentManager",
   "version": "1.1.6",
+
   "main": "public/main.js",
   "homepage": "./",
   "publish": {
@@ -77,12 +78,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "build": "npm run react-build && electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
     "lint": "eslint './src**/*.{ts,tsx}'",
     "electron-start": "electron .",
     "start-mac": "tsc ./public/main.ts && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && npm run electron-start\"",
-    "build-win": "npm run react-build && electron-builder -c.extraMetadata.main=build/main.js -c.snap.publish=github"
+    "build": "npm run react-build && electron-builder -c.extraMetadata.main=build/main.js -c.snap.publish=github"
   },
   "repository": {
     "type": "git",
@@ -143,7 +143,17 @@
       "target": [
         "default"
       ],
-      "icon": "./electron-root/favicon.ico"
+      "icon": "./electron-root/favicon.ico",
+      "files": [
+        "!node_modules/ffmpeg-static-electron/bin/win/${arch}/ffmpeg",
+        "!node_modules/ffmpeg-static-electron/bin/win/ia32${/*}",
+        "!node_modules/ffmpeg-static-electron/bin/linux${/*}",
+        "node_modules/ffmpeg-static-electron/bin/mac${/*}",
+        "!node_modules/ffprobe-static-electron/bin/win/${arch}/ffprobe",
+        "!node_modules/ffprobe-static-electron/bin/win/ia32${/*}",
+        "!node_modules/ffprobe-static-electron/bin/linux${/*}",
+        "node_modules/ffprobe-static-electron/bin/mac${/*}"
+      ]
     },
     "dmg": {
       "title": "${productName}-Setup-${version}-${arch}"

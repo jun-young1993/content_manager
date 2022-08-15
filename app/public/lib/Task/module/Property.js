@@ -11,6 +11,9 @@ var Property = /** @class */ (function () {
     Property.prototype.getTaskId = function () {
         return this.task._id;
     };
+    Property.prototype.getContentId = function () {
+        return this.task.content_id;
+    };
     Property.prototype.getSourceMedia = function () {
         return this.sourceMedia;
     };

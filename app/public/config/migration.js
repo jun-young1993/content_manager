@@ -47,6 +47,12 @@ module.exports = {
             "name": "사용자 로컬 스토리지",
             "path": "",
             "_id": "out"
+        },{
+            "type": "local",
+            "code": "no",
+            "name": "없음",
+            "path": "",
+            "_id": "no"
         }]
 
     },{
@@ -91,6 +97,11 @@ module.exports = {
             name : "외부입수",
             _id : "media_type_out"
         },{
+            parent_code : "media_type",
+            code : "no",
+            name : "없음",
+            _id : "media_type_no"
+        },{
             parent_code : "task_module_type",
             code : "fs_copy",
             name : "파일시스템(복사)",
@@ -105,6 +116,11 @@ module.exports = {
             code : "transcoder_proxy",
             name : "트랜스코딩(저해상도)",
             _id : "task_module_type_transcoder_proxy"
+        },{
+            parent_code : "task_module_type",
+            code : "mediainfo_video",
+            name : "미디어정보 추출(비디오)",
+            _id : "task_module_type_mediainfo_video"
         }]
     },{
         model : 'Module',
@@ -135,6 +151,14 @@ module.exports = {
             source_storage : "online",
             target_storage : "proxy",
             _id:"transcoder_proxy_online_to_proxy"
+        },{
+            task_type : "mediainfo_video",
+            name : "미디어정보 추출(원본)",
+            source_media : "original",
+            target_media : "no",
+            source_storage : "online",
+            target_storage : "no",
+            _id:"mediainfo_video_online"
         }]
     },{
         model : "Workflow",
@@ -174,15 +198,21 @@ module.exports = {
             module_name : "저해상도 생성(온라인->프록시)",
             parent_id : "user_out_transcoder_thumbnail_online_to_proxy",
             _id : "user_out_transcoder_proxy_online_to_proxy",
+        },{
+            workflow_id : "user_out_ingest",
+            module_id : "mediainfo_video_online",
+            module_name : "미디어정보추출(원본)",
+            parent_id : "user_out_transcoder_proxy_online_to_proxy",
+            _id : "user_out_mediainfo_video_online",
         }]
 
     },{
         model : "Category",
-       items : [{
+        items : [{
             name : "sample_1",
             parent_id : "folder",
             _id : "sample_1"
-       },{
+        },{
             name : "sample_2",
             parent_id : "folder",
             _id : "sample_2"

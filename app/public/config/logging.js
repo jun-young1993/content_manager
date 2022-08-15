@@ -2,6 +2,7 @@ const {app} = require('electron');
 const path = require('path');
 module.exports = {
 	"directory" : path.resolve(app.getPath('downloads'),'logs'),
+	// "directory" : "/Users/junyoungkim/Downloads/logs",
 	// "directory" : 'C:\\Users\\jun\\Downloads\\logs',
 	"fix" : "full",
 	"channels" : {

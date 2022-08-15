@@ -141,6 +141,7 @@ export default function ContentDialog(props:any) {
                                 <Tab label="메타데이터" {...a11yProps(0)} />
                                 <Tab label="미디어 정보" {...a11yProps(1)} />
                                 <Tab label="작업모니터링" {...a11yProps(2)} />
+                                <Tab label="미디어 메타" {...a11yProps(3)} />
                             </Tabs>
                             </Box>
                             
