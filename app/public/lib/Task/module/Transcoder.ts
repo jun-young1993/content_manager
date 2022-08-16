@@ -10,44 +10,56 @@ const ffmpeg = require('fluent-ffmpeg');
 const {TaskUpdater} = require('../TaskUpdater');
 const {Property} = require('./Property');
 const log = require('../../Logger')
+import {sendIpc} from "../../helper/ElectronHelper"
 export class Transcoder extends Property{
-	
+
 	private params:any;
 	private taskUpdater:any;
 	constructor(params:any){
+		sendIpc("#Utils/TaskSnackBar",{
+			variant : "info",
+			messages : `[Tc][start] `
+		});
 		log.channel('ts').info('[Start Transcoding]',params);
 		log.channel('ts').info('[ffmpegPath]',ffmpegPath);
 		log.channel('ts').info('[ffprobePath]',ffprobePath);
 		super(params);
 		this.params = params;
-		
-		
+
+
 	}
 	initialize(){
-		
+
 		ffmpeg.setFfmpegPath(ffmpegPath);
 		ffmpeg.setFfprobePath(ffprobePath);
-		
+
 		const taskId = this.getTaskId();
 		return ffmpeg(this.getSourceFullPath())
-		.on('filenames', function(filenames) {
-			log.channel('ts').info('[transcoder filenames]',filenames);
-		})
-		.on('progress',function(progress){
-			console.log('Processing: ' + progress.percent + '% done');
-		})
-		.on('error',function(err, stdout, stderr){
-			log.channel('ts').error('[transcoder error]',err);
-			log.channel('ts').error('[transcoder stdout]',stdout);
-			log.channel('ts').error('[transcoder stderr]',stderr);
-			new TaskUpdater(taskId).error();
-		})
-		.on('end', function() {
-			log.channel('ts').info('[transcoder Complete]');
-			
-			
-			new TaskUpdater(taskId).complete();
-		});	
+			.on('filenames', function(filenames) {
+				log.channel('ts').info('[transcoder filenames]',filenames);
+			})
+			.on('progress',function(progress){
+				console.log('Processing: ' + progress.percent + '% done');
+			})
+			.on('error',function(err, stdout, stderr){
+				sendIpc("#Utils/TaskSnackBar",{
+					variant : "error",
+					messages : `[Tc][error] ${err}`
+				});
+				log.channel('ts').error('[transcoder error]',err);
+				log.channel('ts').error('[transcoder stdout]',stdout);
+				log.channel('ts').error('[transcoder stderr]',stderr);
+				new TaskUpdater(taskId).error();
+			})
+			.on('end', function() {
+				log.channel('ts').info('[transcoder Complete]');
+
+				sendIpc("#Utils/TaskSnackBar",{
+					variant : "success",
+					messages : `[Tc][complete]`
+				});
+				new TaskUpdater(taskId).complete();
+			});
 	}
 
 	thumbnail(){
@@ -62,18 +74,18 @@ export class Transcoder extends Property{
 	}
 
 	proxy(){
-		
+
 		const fullPath = this.getTargetFullPath();
 		log.channel('ts').info('[Create Proxy [Full Path]]',fullPath);
 		// const outStream = fs.createWriteStream(fullPath);
 		this.initialize()
-		.audioCodec('aac')
-		.videoCodec('libx264')
-		.size('640x480')
-		.save(fullPath)
+			.audioCodec('aac')
+			.videoCodec('libx264')
+			.size('640x480')
+			.save(fullPath)
 		// .pipe(outStream, {end : true} );
 	}
-	
+
 
 
 }

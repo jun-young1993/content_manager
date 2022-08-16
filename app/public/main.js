@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var electron_1 = require("electron");
+var electron = require('electron');
 // import * as remoteMain from '@electron/remote/main';
 var isDev = require("electron-is-dev");
 var path = require("path");

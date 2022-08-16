@@ -1,10 +1,11 @@
 import { app, BrowserWindow, session, Event} from 'electron';
+const electron = require('electron');
 import {ipcMain,ipcRenderer} from "electron";
 // import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
-
+import {sendIpc, onIpc} from "./lib/helper/ElectronHelper";
 // import 'module-alias/register';
 
 let mainWindow: BrowserWindow;
@@ -60,10 +61,16 @@ const createWindow = () => {
   mainWindow.focus();
 
 
+
+
+
+
+
+
   
 };
 app.whenReady().then(async () => {
-  
+
   // await session.defaultSession.loadExtension("C:\\Users\\jun\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi\\1.44.2_0")
   // await session.defaultSession.removeExtension('ghbmnnjooekpmoecnnnilnnbdlolhkhi');
 })
@@ -73,6 +80,11 @@ app.whenReady().then(async () => {
 app.on('ready', ()=>{
   
   createWindow();
+
+
+
+
+
   const boots = new AutoLoader(path.join(__dirname,'./src/events/ready/**/*.js'));
   boots.loader();
 });

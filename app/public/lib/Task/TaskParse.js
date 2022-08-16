@@ -43,6 +43,7 @@ var Task = require("../../models/Task").Task;
 var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
 var Transcoder = require("./module/Transcoder").Transcoder;
+var MediaInfo = require("./module/MediaInfo").MediaInfo;
 var log = require('../Logger');
 var lodash_1 = require("lodash");
 // const {isEmpty} = require('lodash');
@@ -295,7 +296,8 @@ var TaskParse = /** @class */ (function () {
     TaskParse.prototype.getModule = function (type) {
         var modules = {
             fs: FileManager,
-            transcoder: Transcoder
+            transcoder: Transcoder,
+            mediainfo: MediaInfo
         };
         return modules[type];
     };
@@ -374,6 +376,7 @@ var TaskParse = /** @class */ (function () {
                                                             sourceMedia: _this.sourceMedia,
                                                             targetMedia: _this.targetMedia
                                                         });
+                                                        log.channel('task_parse').info('module', _this.module);
                                                         log.channel('task_parse').info("[setting][Start Task Workflow] ".concat(moduleTypeCode.toLowerCase(), " => ").concat(moduleTypeMethod.toLowerCase()));
                                                         _this.module[moduleTypeMethod.toLowerCase()]();
                                                         resolve(_this);
@@ -458,91 +461,6 @@ var TaskParse = /** @class */ (function () {
                             log.channel('task_parse').error(error);
                         });
                     })];
-            });
-        });
-    };
-    TaskParse.prototype.getTaskParse_ = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var task, _a, targetStorage, sourceStorage, sourceStoragePath, targetStoragePath, sourceMedia, _b, taskType, _c, moduleTypeCode, moduleTypeMethod, ext, _d, newTask, module_1;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
-                    case 0:
-                        log.channel('task_parse').info('[Start Task Parse]', this);
-                        task = this.task;
-                        // base parsing
-                        _a = this;
-                        return [4 /*yield*/, this.getModuleInfo()];
-                    case 1:
-                        // base parsing
-                        _a.moduleInfo = _e.sent();
-                        log.channel('task_parse').info('[Module Info]', this.moduleInfo);
-                        if (!this.moduleInfo) return [3 /*break*/, 10];
-                        return [4 /*yield*/, this.getStorage(this.moduleInfo.target_storage)];
-                    case 2:
-                        targetStorage = _e.sent();
-                        return [4 /*yield*/, this.getStorage(this.moduleInfo.source_storage)];
-                    case 3:
-                        sourceStorage = _e.sent();
-                        sourceStoragePath = sourceStorage.path;
-                        targetStoragePath = targetStorage.path;
-                        if (!(this.moduleInfo.source_media.toLowerCase() == 'out')) return [3 /*break*/, 4];
-                        sourceStoragePath = '';
-                        this.moduleInfo.source_storage = null;
-                        return [3 /*break*/, 6];
-                    case 4: return [4 /*yield*/, this.getMedia({ content_id: this.task.content_id, type: this.moduleInfo.source_media })];
-                    case 5:
-                        sourceMedia = _e.sent();
-                        log.channel('task_parse').info('[Get Source Media]', sourceMedia);
-                        if (sourceMedia) {
-                            this.task.source = sourceMedia.path;
-                        }
-                        _e.label = 6;
-                    case 6:
-                        _b = this;
-                        return [4 /*yield*/, this.setMedia({
-                                content_id: this.task.content_id,
-                                type: this.moduleInfo.source_media,
-                                storage: this.moduleInfo.source_storage,
-                                path: this.task.source,
-                                full_path: path.resolve(sourceStoragePath, this.task.source)
-                            })];
-                    case 7:
-                        _b.sourceMedia = _e.sent();
-                        taskType = this.moduleInfo.task_type;
-                        _c = taskType.split('_'), moduleTypeCode = _c[0], moduleTypeMethod = _c[1];
-                        console.log('[moduleTypeCode]', moduleTypeCode);
-                        console.log('[moduleTypeMethod]', moduleTypeMethod);
-                        ext = path.extname(this.task.source);
-                        if (moduleTypeMethod.toLowerCase() == 'thumbnail') {
-                            ext = '.png';
-                        }
-                        else if (moduleTypeMethod.toLowerCase() == 'proxy') {
-                            ext = '.mp4';
-                        }
-                        _d = this;
-                        return [4 /*yield*/, this.setMedia({
-                                content_id: this.task.content_id,
-                                type: this.moduleInfo.target_media,
-                                storage: this.moduleInfo.target_storage,
-                                path: this.task._id + path.extname(this.task.source),
-                                full_path: path.resolve(targetStoragePath, this.task._id + ext)
-                            })];
-                    case 8:
-                        _d.targetMedia = _e.sent();
-                        return [4 /*yield*/, this.updateTask()];
-                    case 9:
-                        newTask = _e.sent();
-                        module_1 = this.getModule(moduleTypeCode.toLowerCase());
-                        console.log('[this.module]', this.module);
-                        this.module = new module_1({
-                            task: newTask,
-                            sourceMedia: this.sourceMedia,
-                            targetMedia: this.targetMedia
-                        });
-                        this.module[moduleTypeMethod.toLowerCase()]();
-                        return [2 /*return*/, Promise.resolve(this)];
-                    case 10: return [2 /*return*/, Promise.reject(null)];
-                }
             });
         });
     };

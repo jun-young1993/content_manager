@@ -13,11 +13,13 @@ import MainTabBar from '@src/views/main/MainTabBar';
 import reportWebVitals from './reportWebVitals';
 // import './views/css/main.css';
 import {ipcRenderer, IpcRendererEvent} from "electron";
+import UtilsContainer from "@views/main/UtilsContainer";
 
 ipcRenderer.send('auto-update-check','auto-update-check')
 ReactDOM.render(
             <>
                 <MainContainer />
+                <UtilsContainer />
             </>,
     document.getElementById('root')
 );

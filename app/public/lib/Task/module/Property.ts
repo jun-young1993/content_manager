@@ -15,6 +15,11 @@ export class Property {
 	getTaskId(){
 		return this.task._id;
 	}
+
+	getContentId(){
+		return this.task.content_id;
+	}
+
 	getSourceMedia(){
 		return this.sourceMedia;
 	}
