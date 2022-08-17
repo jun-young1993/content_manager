@@ -36,6 +36,19 @@ var MediaInfoService = /** @class */ (function (_super) {
             });
         });
     };
+    /**
+     * 미디어 인포 정보 조회
+     *
+     * @param contentId
+     */
+    MediaInfoService.prototype.index = function (contentId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('MediaInfo').find({ content_id: contentId }, function (err, data) {
+                return resolve((0, ApiHelper_1.apiResolve)(data));
+            });
+        });
+    };
     return MediaInfoService;
 }(BaseService_1.BaseService));
 exports.MediaInfoService = MediaInfoService;

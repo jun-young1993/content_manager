@@ -50,10 +50,7 @@ import {VariantType} from "notistack";
 
 
 
-const reducer = (prevState:any, newState:any) => ({
-    ...prevState,
-    ...newState
-})
+
 export interface TaskMonitorSearchInterface {
     content_id ? :string
 }

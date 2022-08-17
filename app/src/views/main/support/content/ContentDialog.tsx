@@ -22,6 +22,7 @@ import Code from "@views/main/Code";
 import ContentMetadata from "@views/main/support/ingest/ContentMetadata";
 import MediaInfo from "@views/main/support/ingest/MediaInfo";
 import Viewer from "@views/main/support/content/viewer/Viewer";
+import MediaMeta from "@views/main/support/content/MediaMeta";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ContentMetadataStore from "@views/store/ContentMetadataStore";
@@ -158,6 +159,12 @@ export default function ContentDialog(props:any) {
                                         }}
                                     />
                                 </TabPanel>
+                                <TabPanel value={value} index={3} >
+                                    <MediaMeta
+                                        content_id={metadata._id}
+                                    ></MediaMeta>
+                                </TabPanel>
+                                
                             
                         </Grid>
                     </Grid>

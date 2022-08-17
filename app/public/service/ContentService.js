@@ -35,7 +35,7 @@ var ContentService = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             _this.getModel('Content').insert(metadata, function (contentError, content) {
                 if ((0, lodash_1.isEmpty)(content)) {
-                    reject((0, ApiHelper_1.apiReject)("[ContentService][createContent] fail content insert"));
+                    reject((0, ApiHelper_1.apiReject)("[ContentService][createContent] fail content insert", contentError));
                 }
                 resolve((0, ApiHelper_1.apiResolve)(content));
             });

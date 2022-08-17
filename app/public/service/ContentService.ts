@@ -19,7 +19,7 @@ export class ContentService extends BaseService{
         return new Promise((resolve,reject) => {
             _this.getModel('Content').insert(metadata,(contentError, content:null | {_id : string}) => {
                 if(isEmpty(content)){
-                    reject(apiReject("[ContentService][createContent] fail content insert"));
+                    reject(apiReject("[ContentService][createContent] fail content insert",contentError));
                 }
 
                 resolve(apiResolve(content));

@@ -23,6 +23,20 @@ export class MediaInfoService extends BaseService {
         })
     }
 
+    /**
+     * 미디어 인포 정보 조회
+     * 
+     * @param contentId 
+     */
+    index(contentId:string){
+        const _this = this;
+        return new Promise((resolve, reject) => {
+            
+            _this.getModel('MediaInfo').find({content_id : contentId},(err,data) => {
+                return resolve(apiResolve(data));
+            })
+        })
+    }
 
 
 
