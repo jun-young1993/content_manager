@@ -9,18 +9,7 @@ import { borderBottom } from '@mui/system';
 export interface MediaMetaProps {
     content_id? :string
 }
-function BaseField(props:{object:any,key:string}){
-    return (
-        <TextField
-                id={props.key}
-                label={props.key}
-                defaultValue={props.object[props.key]}
-                InputLabelProps={{
-                shrink: true,
-                }}
-            />
-    )
-}
+
 
 
 function Stream(props:{stream:any}){

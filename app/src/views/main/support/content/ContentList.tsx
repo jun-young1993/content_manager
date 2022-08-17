@@ -1,21 +1,33 @@
 import * as React from 'react';
 import Image from "@views/main/support/content/Image";
+import ContentPagination from "@views/main/support/content/ContentPagination";
+import {Box} from '@mui/material';
 import {ipcRenderer , IpcRendererEvent} from "electron";
 import {isEmpty} from 'lodash';
+import {useDispatch, useSelector, Provider} from "react-redux";
 
-type ContentListType = {
-    searchText : string | null,
-    category : string | null
-}
-export default function ContentList(props:ContentListType) {
-    let where:any = {};
-    if(!isEmpty(props.searchText)){
-        where['searchText'] = props.searchText;
+
+export default function ContentList() {
+    const { searchText } = useSelector((state:any) => {return state.searchText})
+    const { category } = useSelector((state:any) => {return state.category})
+    const { page } = useSelector((state:any) => {return state.page})
+    console.log('page',page);
+    let where:{
+        searchText? : string | null
+        category? : string | null
+        page : number
+    } = {
+        page : page
+    };
+    if(!isEmpty(searchText)){
+        where['searchText'] = searchText;
     }
 
-    if(!isEmpty(props.category)){
-        where['category'] = props.category;
+    if(!isEmpty(category)){
+        where['category'] = category;
     }
+
+    
     
 
     // const [contentList , setContentList] = React.useState<[]>([]);
@@ -24,6 +36,9 @@ export default function ContentList(props:ContentListType) {
 
     
     return(
-        <Image />
+        <Box sx={{height:'auto'}}>
+            <Image />
+            <ContentPagination />
+        </Box>
     )
 }

@@ -12,7 +12,9 @@ import {
     TabPanel
 } from '@mui/lab';
 import Storage from "@views/main/Storage";
+import { Provider, useSelector, useDispatch  } from 'react-redux'
 
+import ContentStore from "@views/store/ContentStore";
 import Code from "@views/main/Code";
 import Metadata from "@views/main/Metadata";
 import Ingest from "@views/main/Ingest";
@@ -27,7 +29,7 @@ import {ipcRenderer, IpcRendererEvent} from "electron";
 
 export default function MainContainer(props:any) {
     const [value, setValue] = React.useState(<Content />);
-
+    
     ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
         console.log('show ingest request',result)
         setValue(<Content />);
@@ -59,7 +61,7 @@ export default function MainContainer(props:any) {
                 onClick={(value:any)=>{
                     console.log('value menu click',value);
                     const container:any = {
-                        Content : <Content />,
+                        Content :<Content />,
                         Ingest : <Ingest />,
                         Config : <Config />
                     };

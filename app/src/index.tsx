@@ -14,14 +14,16 @@ import reportWebVitals from './reportWebVitals';
 // import './views/css/main.css';
 import {ipcRenderer, IpcRendererEvent} from "electron";
 import UtilsContainer from "@views/main/UtilsContainer";
+import {Box} from "@mui/material";
 
 ipcRenderer.send('auto-update-check','auto-update-check')
 ReactDOM.render(
-            <>
+            <Box sx={{height:'auto'}}>
                 <MainContainer />
                 <UtilsContainer />
-            </>,
+            </Box>,
     document.getElementById('root')
+    
 );
 
 // ReactDOM.render(

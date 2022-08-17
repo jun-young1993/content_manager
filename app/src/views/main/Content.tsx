@@ -6,7 +6,8 @@ import Grid from '@mui/material/Grid';
 import Category from '@views/main/support/content/Category';
 import ContentList from '@views/main/support/content/ContentList';
 import Typography from "@mui/material/Typography";
-
+import ContentStore from "@views/store/ContentStore";
+import {useDispatch, useSelector, Provider} from "react-redux";
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -14,28 +15,38 @@ import Typography from "@mui/material/Typography";
 //     textAlign: 'center',
 //     color: theme.palette.text.secondary,
 // }));
-
-export default function Content(props:any) {
-    const [selectedNode, setSelectedNode] = React.useState<string|null>(null);
+function ContentProvider(props:any) {
+    const dispatch = useDispatch();
+    dispatch({type:'searchText.put',value:props.searchText})
+    
     return (
-        // <Box sx={{ flexGrow: 1, height:"100%" }} style={{height: '100%'}}>
+        
             <Grid container spacing={2} style={{height: '100vh'}} >
                 <Grid item xs={2}  style={{height: '100vh'}}>
                     <Box sx={{borderRight:1, height:'100vh'}}>
                         <Category onClickCategory={(nodeId:string)=>{
                             if(nodeId === 'folder'){
-                                setSelectedNode(null);
+                                dispatch({type: 'category.put', value: null})
+                                
                             }else{
-                                setSelectedNode(nodeId);
+                                dispatch({type: 'category.put', value: nodeId})
+                                
                             }
                         }}/>
                     </Box>
                     
                 </Grid>
                 <Grid item xs={10} style={{height: '100vh'}}>
-                    <ContentList searchText={props.searchText} category={selectedNode}/>
+                    <ContentList />
                 </Grid>
             </Grid>
-        // </Box>
+    )
+}
+export default function Content(props:any) {
+    
+    return (
+        <Provider store={ContentStore}>
+            <ContentProvider searchText={props.searchText}/>
+        </Provider>
     );
 }
