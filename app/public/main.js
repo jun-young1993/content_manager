@@ -60,10 +60,10 @@ boots.loader();
 electron_1.app.disableHardwareAcceleration();
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
-        width: 1260,
-        height: 500,
+        width: 1248,
+        height: 750,
         center: true,
-        kiosk: !isDev,
+        // kiosk: !isDev,
         resizable: true,
         fullscreen: false,
         fullscreenable: true,
