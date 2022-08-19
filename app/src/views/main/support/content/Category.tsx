@@ -103,6 +103,10 @@ const laodByNode:any = (nodeId:string,callback:any) => {
     ipcRenderer.send("@Category/_index",{parent_id : nodeId})
     ipcRenderer.on("@Category/_index/reply",(event:any,result) => {
         console.log('result node by id')
+        result.data.map((node:any) => {
+            node.nodeId = node._id;
+        })
+        console.log(result)
         callback(result);
 
     });

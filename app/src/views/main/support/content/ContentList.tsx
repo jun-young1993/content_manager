@@ -8,6 +8,7 @@ import {useDispatch, useSelector, Provider} from "react-redux";
 
 
 export default function ContentList() {
+    const dispatch = useDispatch();
     const { searchText } = useSelector((state:any) => {return state.searchText})
     const { category } = useSelector((state:any) => {return state.category})
     const { page } = useSelector((state:any) => {return state.page})
@@ -35,6 +36,7 @@ export default function ContentList() {
 
 
     
+    console.log('render page',page)
     return(
         <Box sx={{height:'auto'}}>
             <Image />
