@@ -55,7 +55,7 @@ import {ipcRenderer, IpcRendererEvent} from "electron";
 
 import TablePagination from '@mui/material/TablePagination';
 
-export default function TablePaginationDemo() {
+export default function ContentPagination() {
 	const dispatch = useDispatch();
 	const { page } = useSelector((state:any) => {return state.page})
 	const { size }   = useSelector((state:any) => {return state.page})
