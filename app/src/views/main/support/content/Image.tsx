@@ -48,7 +48,14 @@ export default function Image() {
                             //
                             // }}}
                             onClick={()=>{
-
+                                //render 많이 일어남
+                                // setShowMeta(<ContentDialog
+                                //     open={true}
+                                //     metadata={item}
+                                //     onClose={()=>{
+                                //         setShowMeta(<></>);
+                                //     }}
+                                // />)
                             }}
                             onError={( currentTarget : any) => {
                                 

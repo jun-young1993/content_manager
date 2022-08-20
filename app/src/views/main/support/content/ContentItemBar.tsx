@@ -23,7 +23,7 @@ export default function ContentItemBar(props : any) {
     const [showMeta, setShowMeta] = React.useState((<></>))
     return (
         <div>
-            <Provider store={ContentMetadataStore}>
+
                     <ImageListItemBar
                         title={content.title}
                         position="below"
@@ -46,7 +46,7 @@ export default function ContentItemBar(props : any) {
                         }
                     />
             {showMeta}
-            </Provider>
+
         </div>
     );
 }

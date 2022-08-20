@@ -113,7 +113,9 @@ class CodeItem {
     }
 
     static _update(event,args){
-        codeItemDb.db().update(args[0],(err,data) => {
+        console.log('code item update args',args);
+        codeItemDb.db().update(args[1],{$ser : args[0]},(err,data) => {
+
             if(data){
                 return event.autoReplay({
                     success : true

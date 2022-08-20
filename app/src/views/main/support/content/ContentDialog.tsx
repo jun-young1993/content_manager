@@ -69,8 +69,7 @@ function TabPanel(props: TabPanelProps) {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
-
-export default function ContentDialog(props:any) {
+function ContentDialogProvider(props:any){
     console.log(props);
     const dispatch = useDispatch()
     const [open, setOpen] = React.useState(props.open);
@@ -105,71 +104,78 @@ export default function ContentDialog(props:any) {
             {/*    Open full-screen dialog*/}
             {/*</Button>*/}
             {/* <Provider store={ContentMetadataStore}> */}
-                <Dialog
-                    fullScreen
-                    open={open}
-                    onClose={handleClose}
-                    TransitionComponent={Transition}
-                >
-                    <AppBar sx={{ position: 'relative' }}>
-                        <Toolbar>
-                            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                콘텐츠 상세정보
-                            </Typography>
-                            <IconButton 
-                                edge="start"
-                                color="inherit"
-                                aria-label="close"
-                                onClick={handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        </Toolbar>
-                    </AppBar>
-                    <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
-                        <Grid item xs={6}  style={{height: '50vh'}}>
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={handleClose}
+                TransitionComponent={Transition}
+            >
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                            콘텐츠 상세정보
+                        </Typography>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="close"
+                            onClick={handleClose}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <Grid container spacing={1} style={{height: '80'}} sx={{gridRow : '2'}}>
+                    <Grid item xs={6}  style={{height: '50vh'}}>
 
-                                <Viewer metadata={metadata}/>
+                        <Viewer metadata={metadata}/>
 
 
-                        </Grid>
-                        <Grid item xs={6} style={{height: '50vh'}}>
-                            {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>
+                    </Grid>
+                    <Grid item xs={6} style={{height: '50vh'}}>
+                        {/* <Box sx={{border:1, height:'50vh', width:'98%'}}>
                                 <ContentMetadata metadata={metadata}/>
                             </Box> */}
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                 <Tab label="메타데이터" {...a11yProps(0)} />
                                 <Tab label="미디어 정보" {...a11yProps(1)} />
                                 <Tab label="작업모니터링" {...a11yProps(2)} />
                                 <Tab label="미디어 메타" {...a11yProps(3)} />
                             </Tabs>
-                            </Box>
-                            
-                                <TabPanel value={value} index={0}>
-                                    <ContentMetadata />
-                                </TabPanel>
-                                <TabPanel value={value} index={1}>
-                                    <MediaInfo metadata={metadata}/>
-                                </TabPanel>
-                                <TabPanel value={value} index={2} >
-                                    <TaskMonitor
-                                        search={{
-                                            content_id : metadata._id
-                                        }}
-                                    />
-                                </TabPanel>
-                                <TabPanel value={value} index={3} >
-                                    <MediaMeta
-                                        content_id={metadata._id}
-                                    ></MediaMeta>
-                                </TabPanel>
-                                
-                            
-                        </Grid>
+                        </Box>
+
+                        <TabPanel value={value} index={0}>
+                            <ContentMetadata />
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <MediaInfo metadata={metadata}/>
+                        </TabPanel>
+                        <TabPanel value={value} index={2} >
+                            <TaskMonitor
+                                search={{
+                                    content_id : metadata._id
+                                }}
+                            />
+                        </TabPanel>
+                        <TabPanel value={value} index={3} >
+                            <MediaMeta
+                                content_id={metadata._id}
+                            ></MediaMeta>
+                        </TabPanel>
+
+
                     </Grid>
-                </Dialog>
+                </Grid>
+            </Dialog>
             {/* </Provider> */}
         </div>
     );
+}
+export default function ContentDialog(props:any) {
+    return (
+        <Provider store={ContentMetadataStore}>
+            <ContentDialogProvider metadata={props.metadata} open={props.open} onClose={props.onClose}/>
+        </Provider>
+    )
 }

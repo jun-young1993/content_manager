@@ -95,6 +95,7 @@ class Code {
     }
 
     static _update(event:any,args:any){
+
         codeDb.db().update(args[1],{$set : args[0]},(err:any,data:any) => {
             if(data){
                 return event.autoReplay({

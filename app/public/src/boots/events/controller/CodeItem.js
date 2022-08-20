@@ -103,7 +103,9 @@ var CodeItem = /** @class */ (function () {
         });
     };
     CodeItem._update = function (event, args) {
-        codeItemDb.db().update(args[0], function (err, data) {
+        console.log('code item update args', args);
+        codeItemDb.db().update(args[1], { $ser: args[0] }, function (err, data) {
+            console.log(err);
             if (data) {
                 return event.autoReplay({
                     success: true

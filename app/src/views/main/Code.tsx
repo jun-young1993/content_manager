@@ -526,11 +526,19 @@ export default function Code() {
                                                     ipcRenderer.on(`@CodeItem/_update/reply`,(event:IpcRendererEvent,result:any) => {
                                                         if(result.success){
                                                             const parentCode:any = selected.code;
+                                                            ipcRenderer.send("#ShowALert",{
+                                                                title : "코드아이템이 수정되었습니다.",
+                                                                severity : "info"
+                                                            })
                                                             loadChildren(parentCode);
-                                                            setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+
                                                             return  true;
                                                         }else{
-                                                            setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                                                            ipcRenderer.send("#ShowALert",{
+                                                                title : "코드아이템 수정에 실패했습니다.",
+                                                                severity : "warning"
+                                                            })
+
                                                             return false;
                                                         }
                                                     })
