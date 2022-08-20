@@ -69,6 +69,10 @@ module.exports = {
             "code" : "task_module_type",
             "name" : "작업모듈 타입",
             "_id" : "task_module_type"
+        },{
+            "code" : "content_type",
+            "name" : "콘텐츠 유형",
+            "_id" : "content_type"
         }]
     },{
         model : 'CodeItem',
@@ -77,6 +81,11 @@ module.exports = {
             "use_yn":"Y"
         },
         items : [{
+            parent_code : "content_type",
+            code : "video",
+            name : "비디오",
+            _id : "content_type_video"
+        },{
             parent_code : "media_type",
             code : "original",
             name : "원본",
