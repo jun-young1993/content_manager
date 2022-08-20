@@ -6,52 +6,7 @@ import {useDispatch, useSelector, Provider} from "react-redux";
 import {ipcRenderer, IpcRendererEvent} from "electron";
 
 
-// function ContentPageProvider(){
-// 	const dispatch = useDispatch();
-// 	const { page } = useSelector((state:any) => {return state.page})
-//
-// 	const [count , setCount] = React.useState<number>(1);
-// 	ipcRenderer.on("@Content/_count/reply",(event:IpcRendererEvent,result:any)=>{
-// 		if(result.success){
-// 			const searchCount = result.data;
-// 			const pageCount:number = searchCount/10;
-// 			let viewCount = 1;
-// 			if(pageCount == 0){
-// 				setCount(viewCount);
-// 				return;
-// 			}
-// 			if(Number.isInteger(pageCount)){
-// 				viewCount = pageCount;
-// 			}else{
-// 				viewCount = parseInt(String(pageCount))+1;
-// 			}
-// 			setCount(viewCount);
-// 		}
-// 		ipcRenderer.removeAllListeners("@Content/_count/reply")
-// 	})
-//
-// 	const onChangeHandle = (event: React.ChangeEvent<unknown>, value: number)=> {
-//
-// 		dispatch({type:'page.put',value : value});
-// 		// sp(value);
-// 	    }
-// 	return (
-// 		<Pagination count={count} page={page} onChange={onChangeHandle} />
-// 	)
-// }
-// export default function ContentPagination() {
-//
-// 	// const { page } = useSelector((state:any) => {return state.page})
-//
-//
-//   return (
-// 	<Stack spacing={2}>
-//
-// 		<ContentPageProvider />
-//
-// 	</Stack>
-//   );
-// }
+
 
 import TablePagination from '@mui/material/TablePagination';
 
