@@ -26,6 +26,10 @@ export default function CustomAlert(props:any) {
     if(props.serverity){
         propsSeverity = props.serverity;
     }
+    if(props.severity){
+        propsSeverity = props.severity;
+    }
+
     const [severity, setSeverity] = React.useState(propsSeverity);
 
     let propsTitle = '';

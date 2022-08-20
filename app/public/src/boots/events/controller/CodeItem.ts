@@ -68,27 +68,27 @@ class CodeItem {
     }
 
     static _findByParentCode(event, codes){
-
+        console.log('codes',codes);
         codeItemDb.db().findOne({use_yn : 'Y',
                                 parent_code : codes[0],
                                 code : codes[1]
                             },(err,data) => {
             if(data){
-                return event.returnValue = {
+                return event.autoReply({
                     success : true,
                     data : data
-                }
+                })
             }
-            return event.returnValue = {
+            return event.autoReply({
                 success : false,
                 data : null
-            }
+            })
         })
     }
 
     static _insert(event,args){
 
-        codeItemDb.db().insert(Object.assign(args,{
+        codeItemDb.db().insert(Object.assign(args[0],{
             'use_yn' : "Y",
             'is_deleted' : "N",
             'deleted_at' : null,

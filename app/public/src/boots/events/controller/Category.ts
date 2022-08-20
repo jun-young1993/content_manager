@@ -2,6 +2,7 @@
 
 import {BaseController} from "./BaseController";
 import {Category as CategoryModel} from "../../../../models/Category";
+import {sendIpc} from "../../../../lib/helper/ElectronHelper"
 // import {User} from "@model/User";
 const db = new CategoryModel();
 
@@ -66,6 +67,7 @@ class Category {
         }),(err,data) => {
 
             if(data){
+
                 event.autoReplay({
                     success : true,
                     data : data

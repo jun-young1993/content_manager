@@ -1,10 +1,13 @@
 import TaskSnackBar from "@views/main/support/utils/TaskSnackBar";
-import {ipcRenderer, IpcRendererEvent} from "electron";
-import {VariantType} from "notistack";
+
+import ShowAlert from "@views/main/support/utils/ShowAlert";
 
 export default function UtilsContainer() {
 
     return (
-        <TaskSnackBar />
+        <>
+            <TaskSnackBar />
+            <ShowAlert />
+        </>
     )
 }

@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import {ipcRenderer, IpcRendererEvent} from "electron";
 
-function MyApp() {
+function SnackBar() {
     const { enqueueSnackbar } = useSnackbar();
     console.log('my snack bar');
 
@@ -38,7 +38,7 @@ export default function TaskSnackBar() {
 
     return (
         <SnackbarProvider maxSnack={3}>
-            <MyApp />
+            <SnackBar />
         </SnackbarProvider>
     );
 }

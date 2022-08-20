@@ -20,7 +20,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const ipcRenderer = electron.ipcRenderer;
-import { cloneDeep } from 'lodash'
+import {cloneDeep, isEmpty} from 'lodash'
 
 import {useDispatch, useSelector} from "react-redux";
 import Grid from "@mui/material/Grid";
@@ -440,38 +440,54 @@ export default function Code() {
 
                                                     if(values){
                                                         const parentCode:any = selected.code;
-                                                            let exists = ipcRenderer.sendSync("@CodeItem/findByParentCode",parentCode,values.code);
-                                                            console.log('child exists',exists);
+                                                            ipcRenderer.send("@CodeItem/_findByParentCode",parentCode,values.code);
+                                                            ipcRenderer.on("@CodeItem/_findByParentCode/reply",(event,findParentCode) => {
+                                                                    if(isEmpty(findParentCode.data)){
+                                                                        ipcRenderer.send("@CodeItem/_insert",{...values,...{
+                                                                                parent_code : selected.code
+                                                                            }});
+                                                                        ipcRenderer.on(`@CodeItem/_insert/reply`,(event:IpcRendererEvent,result)=>{
+                                                                            console.log(' reply result',result);
+                                                                            if(result.success){
+
+                                                                                ipcRenderer.send("#ShowALert",{
+                                                                                    title : "코드아이템이 추가되었습니다.",
+                                                                                    severity : "info"
+                                                                                })
+                                                                                loadChildren(parentCode);
+                                                                                console.log('insert',result);
+
+                                                                                return  true;
+                                                                            }
+                                                                        })
+
+                                                                    }else{
+                                                                        ipcRenderer.send("#ShowALert",{
+                                                                            title : "중복된 코드입니다. 다른코드로 요청해주세요.",
+                                                                            severity : "warning"
+                                                                        })
+                                                                    }
+                                                            })
 
 
 
-                                                        if(exists.success){
-                                                            setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
-                                                            return false;
-                                                        }
+
+                                                //
+                                                //         if(exists.success){
+                                                //             setALert((<CustomAlert serverity="info" title="중복된 코드입니다. \r\n 다른 코드로 요청해주세요." />));
+                                                //             return false;
+                                                //         }
+                                                //
 
 
-                                                        ipcRenderer.send("@CodeItem/_insert",{...values,...{
-                                                            parent_code : selected.code
-                                                        }});
-                                                        ipcRenderer.on(`@CodeItem/_insert/reply`,(event:IpcRendererEvent,result)=>{
-                                                            console.log(' reply result',result);
-                                                            if(result.success){
 
-                                                                setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
-                                                                loadChildren(parentCode);
-                                                                console.log('insert',result);
-
-                                                                return  true;
-                                                            }
+                                                //
+                                                //
+                                                        ipcRenderer.send("#ShowALert",{
+                                                            title : "코드 등록에 실패했습니다.",
+                                                            severity : "warning"
                                                         })
-
-
-
-
                                                     }
-                                                    setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
-                                                    return false;
                                                 }
 
 

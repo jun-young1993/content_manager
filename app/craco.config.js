@@ -6,7 +6,8 @@ module.exports = {
         },
         alias: {
             '@src': path.resolve(__dirname, 'src'),
-            '@views': path.resolve(__dirname, 'src/views')
+            '@views': path.resolve(__dirname, 'src/views'),
+            '@interface':path.resolve(__dirname,'public/interface')
         },
     }
 };

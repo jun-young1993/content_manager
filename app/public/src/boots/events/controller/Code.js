@@ -111,7 +111,7 @@ var Code = /** @class */ (function () {
     };
     Code.first = function (event, args) {
         console.log('code first', args);
-        codeDb.db().findOne(Object.assign(args[0], {
+        codeDb.db().findOne(Object.assign(args, {
             'use_yn': "Y"
         }), function (err, data) {
             if (data) {

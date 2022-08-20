@@ -129,7 +129,7 @@ class Code {
     }
     static first(event:any,args:any){
         console.log('code first',args);
-        codeDb.db().findOne(Object.assign(args[0],{
+        codeDb.db().findOne(Object.assign(args,{
             'use_yn' : "Y"
         }),(err:any,data:any) => {
             if(data){
