@@ -35,21 +35,35 @@ var ContentService = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             _this.getModel('Content').insert(metadata, function (contentError, content) {
                 if ((0, lodash_1.isEmpty)(content)) {
-                    reject((0, ApiHelper_1.apiReject)("[ContentService][createContent] fail content insert", contentError));
+                    reject((0, ApiHelper_1.apiReject)("[ContentService][createContent] fail content insert"));
                 }
                 resolve((0, ApiHelper_1.apiResolve)(content));
             });
         });
     };
-    ContentService.prototype.getContent = function (search) {
+    ContentService.prototype.getContent = function (search, page) {
         if (search === void 0) { search = {}; }
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('Content').find(search).sort({ createdAt: -1 }).exec(function (err, data) {
+            var size = page.size;
+            var currentPage = page.page * size;
+            console.log('currentPge', currentPage);
+            // _this.getModel('Content').count(search,(error,count:number) => {
+            _this.getModel('Content').find(search).skip(currentPage).limit(size).sort({ createdAt: -1 }).exec(function (err, data) {
                 if (err) {
                     return reject((0, ApiHelper_1.apiReject)("[ContentService][getContent] find fail by content"));
                 }
                 return resolve((0, ApiHelper_1.apiResolve)(data));
+            });
+            // })
+        });
+    };
+    ContentService.prototype.getCount = function (search) {
+        if (search === void 0) { search = {}; }
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Content').count(search, function (error, count) {
+                return resolve((0, ApiHelper_1.apiResolve)(count));
             });
         });
     };

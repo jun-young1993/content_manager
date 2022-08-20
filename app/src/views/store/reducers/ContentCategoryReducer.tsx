@@ -16,7 +16,10 @@ export default function ContentCategoryReducer(state = initialState,action:Actio
         case 'category.put':
             // state.metadata = Object.assign(state.metadata,action.value)
             state.category = action.value;
-            return state;
+            const newState = {
+                category : action.value
+            }
+            return newState;
         default :
             return state;
     }

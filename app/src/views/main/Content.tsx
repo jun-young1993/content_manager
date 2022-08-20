@@ -27,11 +27,12 @@ function ContentProvider(props:any) {
                         <Category onClickCategory={(nodeId:string)=>{
                             if(nodeId === 'folder'){
                                 dispatch({type: 'category.put', value: null})
-                                
+
                             }else{
                                 dispatch({type: 'category.put', value: nodeId})
                                 
                             }
+                            dispatch({type: 'PAGE.INIT'});
                         }}/>
                     </Box>
                     

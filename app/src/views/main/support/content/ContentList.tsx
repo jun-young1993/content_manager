@@ -12,12 +12,15 @@ export default function ContentList() {
     const { searchText } = useSelector((state:any) => {return state.searchText})
     const { category } = useSelector((state:any) => {return state.category})
     const { page } = useSelector((state:any) => {return state.page})
-    console.log('page',page);
+    const { size }   = useSelector((state:any) => {return state.page})
+    console.log('contentList searchText, category, page',searchText,category,page);
     let where:{
         searchText? : string | null
         category? : string | null
         page : number
+        size : number
     } = {
+        size : size,
         page : page
     };
     if(!isEmpty(searchText)){
@@ -28,11 +31,14 @@ export default function ContentList() {
         where['category'] = category;
     }
 
+
+
     
     
 
     // const [contentList , setContentList] = React.useState<[]>([]);
     ipcRenderer.send("@Content/_index",where);
+    ipcRenderer.send("@Content/_count",where);
 
 
     

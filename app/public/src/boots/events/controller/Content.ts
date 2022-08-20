@@ -55,12 +55,73 @@ class Content {
                         defaultSearch['category'] = category;
                     }
 
-                    console.log('defaultSearch',defaultSearch);
-                    contentService.getContent(defaultSearch)
+                    const contentPage:{
+                        size : number,
+                        page : number
+                    } = {
+                        'size' : args[0].size,
+                        'page' : args[0].page
+                    }
+
+                    console.log('defaultSearch',defaultSearch,contentPage);
+                    contentService.getContent(defaultSearch,contentPage)
                         .then((data) => {
                             event.autoReplay(data);
                         })
                 })
+
+
+
+        // db.db()
+        // .find(Object.assign(args[0]),(err,data) => {
+        //     if(data){
+        //         event.autoReplay({
+        //             success : true,
+        //             data : data
+        //         })
+        //     }
+        //
+        // })
+    }
+    static _count(event, args){
+        let searchText = null;
+        if(!isEmpty(args[0].searchText)){
+            searchText = args[0].searchText;
+        }
+
+        let category = null;
+        if(!isEmpty(args[0].category)){
+            category = args[0].category;
+        }
+        let defaultSearch:{} = {};
+        fieldService.getSearchFields()
+            .then((searchFields) => {
+                console.log('searchFields',searchFields);
+
+                let fieldSearch : [{string:{$regex : RegExp}}] = [];
+                if(!isEmpty(searchText)){
+                    searchFields.data.forEach((field: {code : string}) => {
+                        console.log({[field.code] : {$regex : new RegExp(searchText)}})
+                        fieldSearch.push({[field.code] : {$regex : new RegExp(searchText)}});
+                    })
+
+                    if(!isEmpty(fieldSearch)){
+                        defaultSearch['$or'] = fieldSearch;
+                    }
+                }
+
+                if(!isEmpty(category)){
+                    defaultSearch['category'] = category;
+                }
+
+
+
+                console.log('defaultSearch',defaultSearch);
+                contentService.getCount(defaultSearch)
+                    .then((data) => {
+                        event.autoReplay(data);
+                    })
+            })
 
 
 

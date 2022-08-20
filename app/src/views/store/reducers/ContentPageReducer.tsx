@@ -1,26 +1,35 @@
 
 export interface ActionInterface {
     type : string
-    value : number
+    value : {
+        page : number,
+        size : number
+    }
 }
 
 export interface initialStateInterface {
-    page :  number
+    page :  number,
+    size : number
 }
 const initialState:initialStateInterface = {
-    page : 1
+    page : 0,
+    size : 10
 }
 
 export default function ContentPageReducer(state = initialState,action:ActionInterface){
     switch(action.type){
         case 'page.put':
-            console.log('page state',state)
+
             // state.metadata = Object.assign(state.metadata,action.value)
-            Object.assign(state,{
-                page : action.value
-            })
-            console.log('page after state',state)
-            return state;
+            const newState:initialStateInterface = {
+                page : action.value.page,
+                size : action.value.size
+            }
+
+            return newState;
+        case 'PAGE.INIT' :
+
+            return initialState;
         default :
             return state;
     }

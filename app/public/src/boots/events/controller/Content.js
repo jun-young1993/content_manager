@@ -52,8 +52,56 @@ var Content = /** @class */ (function () {
             if (!(0, lodash_1.isEmpty)(category)) {
                 defaultSearch['category'] = category;
             }
+            var contentPage = {
+                'size': args[0].size,
+                'page': args[0].page
+            };
+            console.log('defaultSearch', defaultSearch, contentPage);
+            contentService.getContent(defaultSearch, contentPage)
+                .then(function (data) {
+                event.autoReplay(data);
+            });
+        });
+        // db.db()
+        // .find(Object.assign(args[0]),(err,data) => {
+        //     if(data){
+        //         event.autoReplay({
+        //             success : true,
+        //             data : data
+        //         })
+        //     }
+        //
+        // })
+    };
+    Content._count = function (event, args) {
+        var searchText = null;
+        if (!(0, lodash_1.isEmpty)(args[0].searchText)) {
+            searchText = args[0].searchText;
+        }
+        var category = null;
+        if (!(0, lodash_1.isEmpty)(args[0].category)) {
+            category = args[0].category;
+        }
+        var defaultSearch = {};
+        fieldService.getSearchFields()
+            .then(function (searchFields) {
+            console.log('searchFields', searchFields);
+            var fieldSearch = [];
+            if (!(0, lodash_1.isEmpty)(searchText)) {
+                searchFields.data.forEach(function (field) {
+                    var _a, _b;
+                    console.log((_a = {}, _a[field.code] = { $regex: new RegExp(searchText) }, _a));
+                    fieldSearch.push((_b = {}, _b[field.code] = { $regex: new RegExp(searchText) }, _b));
+                });
+                if (!(0, lodash_1.isEmpty)(fieldSearch)) {
+                    defaultSearch['$or'] = fieldSearch;
+                }
+            }
+            if (!(0, lodash_1.isEmpty)(category)) {
+                defaultSearch['category'] = category;
+            }
             console.log('defaultSearch', defaultSearch);
-            contentService.getContent(defaultSearch)
+            contentService.getCount(defaultSearch)
                 .then(function (data) {
                 event.autoReplay(data);
             });
