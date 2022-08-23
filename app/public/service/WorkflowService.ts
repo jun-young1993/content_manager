@@ -9,7 +9,8 @@ export class WorkflowService extends BaseService{
 		super({
 			models : [
 				'Workflow',
-				'WorkflowRule'
+				'WorkflowRule',
+				'Module'
 			]
 		});
 	}
@@ -95,22 +96,118 @@ export class WorkflowService extends BaseService{
 	getWorkflowRuleByWorkflowId(workflowId:string){
 		const _this = this;
 		return new Promise((resolve, reject) => {
-			_this.getModel('WorkflowRule').find({workflow_id : workflowId},(err,data) => {
+			
+	
+			
+		_this.getModel('WorkflowRule').find({workflow_id : workflowId},(err,data) => {
 				if(isEmpty(data)){
 
 				}
-				data.map((child) => {
+				
+				
+				data.map((child:any) => {
 					child.id = child._id;
 					child.name = child.module_name
 					child.parentId = child.parent_id;
+					// const ruleModule = moduleList[child.module_id]
+					// if(!isEmpty(ruleModule)){
+					// 	child.
+					// }
+				
+					
+					
 					return child;
 				});
-				console.log('getWorkflowRuleByWorkflowId',data);
-				resolve(apiResolve(data));
+		
+				
+				const orderRule = this.workflowRuleOrder(data)
+				this.mergeModuleInfo(orderRule)
+				.then((workflowRuleDetail) => {
+					resolve(apiResolve(workflowRuleDetail));
+				})
+
+				
 
 			})
 		})
+	
 
 
+	}
+
+
+	workflowRuleOrder(data){
+		const ruleOrderObj = {};
+		data.map((child) => {
+			let key = child.parent_id;
+			if(child.parent_id === null){
+				key = 'start';
+			}
+			ruleOrderObj[key] = child;
+			
+		});
+		
+		let orderParentWorkflowId = ruleOrderObj['start']._id; 
+		const ruleOrder = [ruleOrderObj['start']];
+		for(let i = 1; i<data.length; i++){
+			const childWorkflow = ruleOrderObj[orderParentWorkflowId];
+			console.log(childWorkflow);
+			if(!isEmpty(childWorkflow)){
+				ruleOrder.push(childWorkflow);
+				orderParentWorkflowId = childWorkflow._id;
+			}
+		}
+
+		return ruleOrder;
+	}
+	mergeModuleInfo(data){
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			let moduleIds:string[] = [];
+			data.map((child:any) => {
+			
+				const moduleId:string = child.module_id;
+				moduleIds.push(moduleId);
+				
+				
+				return child;
+			});
+			
+			this.getModel('Module')
+			.find({_id : { $in : moduleIds}},(error,modules) => {
+				let keyByModule = {};
+				modules.map((module) => {
+					keyByModule[module._id] = module;
+				})
+				let worklfowRuleDetail:any = [];
+				data.map((child:{module_id : string 
+						source_media?:string
+						target_media?:string
+						source_storage?:string
+						target_storage?:string
+						module_name ?: string
+						task_type?:string
+					}) => {
+			
+					const moduleId:string = child.module_id;
+					const moduleInfo:any = keyByModule[moduleId];
+					
+					if(!isEmpty(moduleInfo)){
+						child.source_media = moduleInfo.source_media;
+						child.target_media = moduleInfo.target_media;
+						child.source_storage = moduleInfo.source_storage;
+						child.target_storage = moduleInfo.target_storage;
+						child.module_name = moduleInfo.name;
+						child.task_type = moduleInfo.task_type;
+					}
+					worklfowRuleDetail.push(child);
+					
+					
+					
+				});
+				resolve(worklfowRuleDetail);
+			})
+		})
+	
 	}
 }

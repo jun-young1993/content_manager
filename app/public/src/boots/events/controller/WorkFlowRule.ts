@@ -3,8 +3,10 @@
 import {BaseController} from "./BaseController";
 import {WorkflowRule as Model} from "../../../../models/WorkflowRule";
 import {WorkflowService} from "../../../../service/WorkflowService";
+import CodeMapper from "../../../../lib/Mapper/CodeMapper";
 const workflowService = new WorkflowService();
 const db = new Model();
+const codeMapper = new CodeMapper();
 class WorkFlowRule{
 
 
@@ -142,16 +144,28 @@ class WorkFlowRule{
 
 	static _getByWorkflowId(event,args:[{workflow_id : string}]){
 
-		console.log('args',args);
-		workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
+		codeMapper.getModuleCodeMap()
+		.then((moduleCodes) => {
+			console.log('moduleCodes',moduleCodes);
+			workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
 			.then((result) => {
-				console.log('get By workflow Idresult',result)
+				console.log('get By workflow Idresult',result.data[1].module_info);
+				result.data.map((rule) => {
+					rule.source_media_nm = moduleCodes['media'][rule.source_media]
+					rule.target_media_nm = moduleCodes['media'][rule.target_media]
+					rule.source_storage_nm = moduleCodes['storage'][rule.source_storage]
+					rule.target_storage_nm = moduleCodes['storage'][rule.target_storage]
+					rule.task_type_nm = moduleCodes['task'][rule.task_type];
+					return rule;
+				})
 				event.autoReply(result);
 			})
 			.catch((err) => {
 				console.log('get By workflow Idresult',err)
 				event.autoReply(err);
 			})
+		})
+		
 
 	}
 }

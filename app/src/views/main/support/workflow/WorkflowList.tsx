@@ -15,6 +15,7 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
+import WorkflowDetail from '@views/main/support/workflow//WorkflowDetail';
 const { createTreeHierarchy } = require('hierarchy-js');
 import {
 	Button,
@@ -28,7 +29,7 @@ import {
 	Box
     } from '@mui/material';
     import CustomAlert from "@views/components/CustomAlert";
-    import WorkflowDetail from "@views/main/support/workflow/WorkflowDetail";
+
     import electron from "electron";
 
 const ipcRenderer = electron.ipcRenderer;
@@ -143,6 +144,8 @@ export default function WorkflowList() {
 					setTree(renderTree(children))
 				});
 
+			
+
 
 
 
@@ -156,11 +159,7 @@ export default function WorkflowList() {
 			ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
 		})
     }
-    const [workflowDetailView,setWorkflowDetailView] = React.useState(<WorkflowDetail 
-	workflowId={workflowId}
-	treeData={treeData}
-	moduleItems={moduleItems}
-	/>);
+   
 	const renderTree = (nodes: any) => (
 		
 		(
@@ -178,7 +177,7 @@ export default function WorkflowList() {
 	const [tree , setTree] = React.useState(renderTree(treeData));	
   return (
 	<Grid container spacing={2} style={{height: '100vh'}} >
-		<Grid item xs={6}  style={{height: '100vh'}}>
+		<Grid item xs={5}  style={{height: '100vh'}}>
 			<Box sx={{ width: '100%', borderRight:1, height:'100vh', bgcolor: 'background.paper' }}>
 				<Stack spacing={2} direction="row">
 						<FormDialog
@@ -248,7 +247,8 @@ export default function WorkflowList() {
 						<>
 						<ListItem disablePadding>
 							<ListItemButton onClick={(evt:any)=> {
-								onClickItem(evt,row._id);
+								// onClickItem(evt,row._id);
+								setWorkflowId(row._id);
 							}}>
 								<ListItemText primary={row.name}/>
 							</ListItemButton>
@@ -275,7 +275,7 @@ export default function WorkflowList() {
 				{alert}
 			</Box>
 		</Grid>
-		<Grid item xs={6} style={{height: '100vh'}}>
+		<Grid item xs={7} style={{height: '100vh'}}>
 				<Stack spacing={2} direction="row">
 					<FormDialog
 					buttonTitle="등록"
@@ -353,7 +353,10 @@ export default function WorkflowList() {
 				/>
 							
 			</Stack>
-			<TreeView
+			<WorkflowDetail 
+				workflowId={workflowId}
+			/>
+			{/* <TreeView
 				aria-label="rich object"
 				defaultCollapseIcon={<ExpandMoreIcon />}
 				defaultExpanded={expanded}
@@ -365,7 +368,7 @@ export default function WorkflowList() {
 				sx={{ height: '100vh', flexGrow: 1,  overflowY: 'auto' }}
 			>
 				{tree}
-			</TreeView>
+			</TreeView> */}
 		</Grid>
 	</Grid>
   );

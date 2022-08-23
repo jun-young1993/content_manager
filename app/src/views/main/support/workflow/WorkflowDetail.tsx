@@ -1,215 +1,220 @@
 import * as React from 'react';
-import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import TreeItem from '@mui/lab/TreeItem';
-import FormDialog from "@views/components/FormDialog";
-import Grid from '@mui/material/Grid';
-import Menu from '@mui/material/Menu';
-import {
-	Button,
-	Stack,
-	FormControlLabel,
-	FormControl,
-	Select,
-	MenuItem,
-	SelectChangeEvent,
-	TextField, 
-	Box
-    } from '@mui/material';
-    import CustomAlert from "@views/components/CustomAlert";
-    
-    import electron from "electron";
-import Workflow from '../../Workflow';
-const ipcRenderer = electron.ipcRenderer;
-interface RenderTree {
-  id: string;
-  name: string;
-  children?: readonly RenderTree[];
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+import HotelIcon from '@mui/icons-material/Hotel';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import Typography from '@mui/material/Typography';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { isEmpty } from 'lodash';
+
+import COPYICON from '@mui/icons-material/ContentCopy';
+import TRANSCODERICON from '@mui/icons-material/Transform';
+import MEDIAINFOICON from '@mui/icons-material/Info';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+export interface WorkflowDetailProps {
+	workflowId : string | null
 }
 
-
-
-// const data: RenderTree = {
-//   id: 'root',
-//   name: 'Parent',
-//   children: [
-//     {
-//       id: '1',
-//       name: 'Child - 1',
-//     },
-//     {
-//       id: '3',
-//       name: 'Child - 3',
-//       children: [
-//         {
-//           id: '4',
-//           name: 'Child - 4',
-//         },
-//       ],
-//     },
-//   ],
-// };
-const reducer = (prevState:any, newState:any) => (Object.assign(prevState,newState));
-
-export default function WorkflowDetail(props:any) {
+const getWorkflowRule = (workflowId:string|null) => {
+	if(!isEmpty(workflowId)){
+		console.log('workflow rule',workflowId);
+		ipcRenderer.send("@WorkflowRule/_getByWorkflowId",{workflow_id : workflowId});
+		ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(event,ruleData) => {
+			console.log('ruleData workflowDetail',ruleData)
+		});
+	}
 	
-	console.log('before workflow detail',props);
+}
+
+export default function WorkflowDetail(props:WorkflowDetailProps) {
+	console.log('props workflow Detail',props);
+	const workflowId = props.workflowId;
+	console.log('props workflow Detail workflow Id',workflowId);
+	const [workflowRules , setWorkflowRules] = React.useState([]);
+	// getWorkflowRule(props.workflowId)
+	if(!isEmpty(workflowId)){
+		ipcRenderer.send("@WorkFlowRule/_getByWorkflowId",{workflow_id : workflowId});
+		ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(event,ruleData) => {
+			console.log('ruleData workflowDetail',ruleData)
+			const newRule:any = {};
 		
-	
-	console.log('props',props.treeData);
-	
-	const [treeData , setTreeData] = React.useState({...props.treeData});
-	
-	const [moduleItems , setModuleItems] = React.useState(props.moduleItems);
-	const [selectedId , setSelectedId] = React.useState(null);
 
+			
+			setWorkflowRules(ruleData.data);
+			ipcRenderer.removeAllListeners("@WorkFlowRule/_getByWorkflowId/reply");
+		});
+	}
 	
-	console.log('treeData',treeData);
+	// const renderTree = function(data:any,){
+	// 	if(!isEmpty(data.props)){
+	// 		if(!isEmpty(data.props.children)){
+	// 			renderTree()
+	// 		}
+	// 	}
+	// }
+	const mappingIcon = (moduleId : string) => {
 
-	const [contextMenu, setContextMenu] = React.useState<{
-		mouseX: number;
-		mouseY: number;
-	      } | null>(null);
-	const handleContextMenu = (event: React.MouseEvent) => {
-		event.preventDefault();
-		setContextMenu(
-			contextMenu === null
-			? {
-			mouseX: event.clientX + 2,
-			mouseY: event.clientY - 6,
+	}
+	const iconMapper = (taskType:string) => {
+	
+		const [type, job] = taskType.split('_');
+		let icon = <DisabledByDefaultIcon />
+		if(type == 'fs'){
+			if(job == 'copy'){
+				icon = <COPYICON />
 			}
-			: // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-			// Other native context menus might behave different.
-			// With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-			null,
-		);
-	};
-	
-	const handleClose = () => {
-		setContextMenu(null);
-	};
-	const renderTree = (nodes: RenderTree) => (
-		
-		(<div onContextMenu={handleContextMenu} style={{ cursor: 'context-menu' }}>
-			<TreeItem key={nodes.id} 
-				nodeId={nodes.id} 
-				label={nodes.name} 
-				>
-				{Array.isArray(nodes.children)
-				? nodes.children.map((node) => renderTree(node))
-				: null}
-			</TreeItem>
-			{/* <Menu
-				open={contextMenu !== null}
-				onClose={handleClose}
-				anchorReference="anchorPosition"
-				anchorPosition={
-				contextMenu !== null
-				? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-				: undefined
-				}
-			>
-				<MenuItem onClick={()=>{
+		}
+		if(type == "transcoder"){
+			if(job == "thumbnail"){
+				
+			}
+			icon = <TRANSCODERICON />
+		}
+			
 
-				}}>추가</MenuItem>
-				<MenuItem onClick={handleClose}>Print</MenuItem>
-				<MenuItem onClick={handleClose}>Highlight</MenuItem>
-				<MenuItem onClick={handleClose}>Email</MenuItem>
-			</Menu> */}
-		</div>)
-		
-	);
+		if(type == "mediainfo"){
+			if(job == "video"){
 
-
-	// React.useEffect(()=>{
-	// 	console.log('before render tree',treeData);
-	// 	setTree(renderTree(treeData));
-	// },[treeData])
-	const [tree , setTree] = React.useState(renderTree(props.treeData));	
+			}
+			icon = <MEDIAINFOICON />
+		}
+			
+		return icon;
+	}
   return (
-	<>
-		<Stack spacing={2} direction="row">
-						<FormDialog
-						buttonTitle="등록"
-						values={{
-							name : '',
-							description : ''
-						}}
-						variant="standard"
-						fields={[
-							{
-								select : true,
-								name : "module_id",
-								label : '모듈',
-								fullWidth : true,
-								variant : "standard",
-								children : moduleItems
-							}
-						]}
-						onSaveClick={(result:any)=>{
-							if(result){
-								const values = result.values;
-								console.log(values);
-								if(values){
-									const moduleInfo = ipcRenderer.sendSync("@Module/first",{_id : values.module_id});
-									console.log(moduleInfo);
-									let addChildrenModule:any =  null;
-									let children:any = null;
-									
-									if(selectedId == 'root'){
-										children = treeData['children'] =[{
-											id : values.module_id,
-											name : moduleInfo.data.name
-										}];
-										console.log('props.treeData',props.treeData);
-										props.treeData['children'] = children;	
-										
-									}
-									
-									console.log(props.treeData);
-									const insert =ipcRenderer.sendSync("@WorkFlowRule/insert",{
-										workflow_id : props.workflowId,
-										module_id : values.module_id,
-										module_name : moduleInfo.data.name,
-										parent_id : selectedId
-
-									})
-									// setTree(props.treeData);
-									return;
-									const update =ipcRenderer.sendSync("@WorkFlow/update",{'children' :children},{_id : props.workflowId})
-									if(update.data){
-										const workflowData = ipcRenderer.sendSync("@WorkFlow/first",{_id : props.workflowId})
-										console.log('workflowData',workflowData);
-										if(workflowData){
-											setTreeData(workflowData.data.children);
-										}
-									}
-									console.log('update',update)
-									console.log(addChildrenModule)
-									console.log(props.workflowId);
-									console.log(values);
-								}
-							
-								return false;
-							}
-
-						}}
-			/>
-						
-				</Stack>
-		<TreeView
-		aria-label="rich object"
-		defaultCollapseIcon={<ExpandMoreIcon />}
-		defaultExpanded={['root']}
-		defaultExpandIcon={<ChevronRightIcon />}
-		onNodeSelect={(evt:any,nodeId:any)=>{
-			setSelectedId(nodeId);
-		}}
-		sx={{ height: '100vh', flexGrow: 1,  overflowY: 'auto' }}
-		>
-		{tree}
-		</TreeView>
-	</>
+    <Timeline position="left">
+	{workflowRules.map((workflowRule:{module_name : string, 
+					  task_type_nm : string,
+					  source_storage_nm : string,
+					  target_storage_nm : string,
+					  source_media_nm : string,
+					  target_media_nm : string,
+					  parent_id : null | string,
+					  task_type : string
+					}) => {
+		if(workflowRule.parent_id == null){
+			return (
+				<></>
+			)
+		}
+		return (
+			<TimelineItem>
+			<TimelineOppositeContent
+			  sx={{ m: 'auto 0' }}
+			  align="right"
+			  variant="subtitle2"
+			  color="text.secondary"
+			>
+			  <Typography  variant="caption" component="span">
+			  {workflowRule.module_name}
+			  </Typography>
+			  <br/>
+			  <Typography >
+			  {workflowRule.task_type_nm}
+			  </Typography>
+			</TimelineOppositeContent>
+			<TimelineSeparator>
+			  <TimelineConnector />
+			  <TimelineDot>
+			  	{iconMapper(workflowRule.task_type)}
+			    {/* <FastfoodIcon /> */}
+			  </TimelineDot>
+			  <TimelineConnector />
+			</TimelineSeparator>
+			<TimelineContent sx={{ py: '8px', px: 2 }}>
+			  <Typography variant="caption" component="span">
+			    {workflowRule.source_storage_nm+'('+workflowRule.source_media_nm+')'}
+			  </Typography>
+			  <br/>
+			  <Typography variant="caption">
+			  	{workflowRule.target_storage_nm+'('+workflowRule.target_media_nm+')'}
+			  </Typography>
+			</TimelineContent>
+		      </TimelineItem>
+		)
+	})}
+      {/* <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          align="right"
+          variant="body2"
+          color="text.secondary"
+        >
+          9:30 am
+        </TimelineOppositeContent>
+        <TimelineSeparator>
+          <TimelineConnector />
+          <TimelineDot>
+            <FastfoodIcon />
+          </TimelineDot>
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Eat
+          </Typography>
+          <Typography>Because you need strength</Typography>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          variant="body2"
+          color="text.secondary"
+        >
+          10:00 am
+        </TimelineOppositeContent>
+        <TimelineSeparator>
+          <TimelineConnector />
+          <TimelineDot color="primary">
+            <LaptopMacIcon />
+          </TimelineDot>
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Code
+          </Typography>
+          <Typography>Because it&apos;s awesome!</Typography>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineConnector />
+          <TimelineDot color="primary" variant="outlined">
+            <HotelIcon />
+          </TimelineDot>
+          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Sleep
+          </Typography>
+          <Typography>Because you need rest</Typography>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
+          <TimelineDot color="secondary">
+            <RepeatIcon />
+          </TimelineDot>
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Repeat
+          </Typography>
+          <Typography>Because this is the life you love!</Typography>
+        </TimelineContent>
+      </TimelineItem> */}
+    </Timeline>
   );
 }

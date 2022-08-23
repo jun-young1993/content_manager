@@ -4,8 +4,10 @@ exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var WorkflowRule_1 = require("../../../../models/WorkflowRule");
 var WorkflowService_1 = require("../../../../service/WorkflowService");
+var CodeMapper_1 = require("../../../../lib/Mapper/CodeMapper");
 var workflowService = new WorkflowService_1.WorkflowService();
 var db = new WorkflowRule_1.WorkflowRule();
+var codeMapper = new CodeMapper_1["default"]();
 var WorkFlowRule = /** @class */ (function () {
     function WorkFlowRule() {
     }
@@ -133,14 +135,25 @@ var WorkFlowRule = /** @class */ (function () {
         });
     };
     WorkFlowRule._getByWorkflowId = function (event, args) {
-        console.log('args', args);
-        workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
-            .then(function (result) {
-            console.log('get By workflow Idresult', result);
-            event.autoReply(result);
-        })["catch"](function (err) {
-            console.log('get By workflow Idresult', err);
-            event.autoReply(err);
+        codeMapper.getModuleCodeMap()
+            .then(function (moduleCodes) {
+            console.log('moduleCodes', moduleCodes);
+            workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
+                .then(function (result) {
+                console.log('get By workflow Idresult', result.data[1].module_info);
+                result.data.map(function (rule) {
+                    rule.source_media_nm = moduleCodes['media'][rule.source_media];
+                    rule.target_media_nm = moduleCodes['media'][rule.target_media];
+                    rule.source_storage_nm = moduleCodes['storage'][rule.source_storage];
+                    rule.target_storage_nm = moduleCodes['storage'][rule.target_storage];
+                    rule.task_type_nm = moduleCodes['task'][rule.task_type];
+                    return rule;
+                });
+                event.autoReply(result);
+            })["catch"](function (err) {
+                console.log('get By workflow Idresult', err);
+                event.autoReply(err);
+            });
         });
     };
     return WorkFlowRule;

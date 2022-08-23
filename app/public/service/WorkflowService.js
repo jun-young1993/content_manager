@@ -26,7 +26,8 @@ var WorkflowService = /** @class */ (function (_super) {
         return _super.call(this, {
             models: [
                 'Workflow',
-                'WorkflowRule'
+                'WorkflowRule',
+                'Module'
             ]
         }) || this;
     }
@@ -96,6 +97,7 @@ var WorkflowService = /** @class */ (function (_super) {
         });
     };
     WorkflowService.prototype.getWorkflowRuleByWorkflowId = function (workflowId) {
+        var _this_1 = this;
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {
@@ -105,10 +107,72 @@ var WorkflowService = /** @class */ (function (_super) {
                     child.id = child._id;
                     child.name = child.module_name;
                     child.parentId = child.parent_id;
+                    // const ruleModule = moduleList[child.module_id]
+                    // if(!isEmpty(ruleModule)){
+                    // 	child.
+                    // }
                     return child;
                 });
-                console.log('getWorkflowRuleByWorkflowId', data);
-                resolve((0, ApiHelper_1.apiResolve)(data));
+                var orderRule = _this_1.workflowRuleOrder(data);
+                _this_1.mergeModuleInfo(orderRule)
+                    .then(function (workflowRuleDetail) {
+                    resolve((0, ApiHelper_1.apiResolve)(workflowRuleDetail));
+                });
+            });
+        });
+    };
+    WorkflowService.prototype.workflowRuleOrder = function (data) {
+        var ruleOrderObj = {};
+        data.map(function (child) {
+            var key = child.parent_id;
+            if (child.parent_id === null) {
+                key = 'start';
+            }
+            ruleOrderObj[key] = child;
+        });
+        var orderParentWorkflowId = ruleOrderObj['start']._id;
+        var ruleOrder = [ruleOrderObj['start']];
+        for (var i = 1; i < data.length; i++) {
+            var childWorkflow = ruleOrderObj[orderParentWorkflowId];
+            console.log(childWorkflow);
+            if (!(0, lodash_1.isEmpty)(childWorkflow)) {
+                ruleOrder.push(childWorkflow);
+                orderParentWorkflowId = childWorkflow._id;
+            }
+        }
+        return ruleOrder;
+    };
+    WorkflowService.prototype.mergeModuleInfo = function (data) {
+        var _this_1 = this;
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var moduleIds = [];
+            data.map(function (child) {
+                var moduleId = child.module_id;
+                moduleIds.push(moduleId);
+                return child;
+            });
+            _this_1.getModel('Module')
+                .find({ _id: { $in: moduleIds } }, function (error, modules) {
+                var keyByModule = {};
+                modules.map(function (module) {
+                    keyByModule[module._id] = module;
+                });
+                var worklfowRuleDetail = [];
+                data.map(function (child) {
+                    var moduleId = child.module_id;
+                    var moduleInfo = keyByModule[moduleId];
+                    if (!(0, lodash_1.isEmpty)(moduleInfo)) {
+                        child.source_media = moduleInfo.source_media;
+                        child.target_media = moduleInfo.target_media;
+                        child.source_storage = moduleInfo.source_storage;
+                        child.target_storage = moduleInfo.target_storage;
+                        child.module_name = moduleInfo.name;
+                        child.task_type = moduleInfo.task_type;
+                    }
+                    worklfowRuleDetail.push(child);
+                });
+                resolve(worklfowRuleDetail);
             });
         });
     };
