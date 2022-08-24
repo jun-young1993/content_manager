@@ -450,7 +450,7 @@ export default function Code() {
                                                                             console.log(' reply result',result);
                                                                             if(result.success){
 
-                                                                                ipcRenderer.send("#ShowALert",{
+                                                                                ipcRenderer.send("#ShowMessageAlert",{
                                                                                     title : "코드아이템이 추가되었습니다.",
                                                                                     severity : "info"
                                                                                 })
@@ -462,7 +462,7 @@ export default function Code() {
                                                                         })
 
                                                                     }else{
-                                                                        ipcRenderer.send("#ShowALert",{
+                                                                        ipcRenderer.send("#ShowMessageAlert",{
                                                                             title : "중복된 코드입니다. 다른코드로 요청해주세요.",
                                                                             severity : "warning"
                                                                         })
@@ -483,7 +483,7 @@ export default function Code() {
 
                                                 //
                                                 //
-                                                        ipcRenderer.send("#ShowALert",{
+                                                        ipcRenderer.send("#ShowMessageAlert",{
                                                             title : "코드 등록에 실패했습니다.",
                                                             severity : "warning"
                                                         })
@@ -526,7 +526,7 @@ export default function Code() {
                                                     ipcRenderer.on(`@CodeItem/_update/reply`,(event:IpcRendererEvent,result:any) => {
                                                         if(result.success){
                                                             const parentCode:any = selected.code;
-                                                            ipcRenderer.send("#ShowALert",{
+                                                            ipcRenderer.send("#ShowMessageAlert",{
                                                                 title : "코드아이템이 수정되었습니다.",
                                                                 severity : "info"
                                                             })
@@ -534,7 +534,7 @@ export default function Code() {
 
                                                             return  true;
                                                         }else{
-                                                            ipcRenderer.send("#ShowALert",{
+                                                            ipcRenderer.send("#ShowMessageAlert",{
                                                                 title : "코드아이템 수정에 실패했습니다.",
                                                                 severity : "warning"
                                                             })

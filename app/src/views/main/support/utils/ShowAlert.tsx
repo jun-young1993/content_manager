@@ -12,8 +12,8 @@ function ListenerAlert(props:{channel:string}){
 
 
     const [alert, setAlert] = React.useState(<></>);
-    ipcRenderer.on(`#ShowAlert/reply`,(event:IpcRendererEvent,args:ListenerAlert) => {
-
+    ipcRenderer.on(`#ShowMessageAlert/reply`,(event:IpcRendererEvent,args:ListenerAlert) => {
+        console.log('show alert tsx',args);
         const alertComponent = (
             <CustomAlert
                 severity={args.severity}

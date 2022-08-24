@@ -31,33 +31,7 @@ export class ModuleService extends BaseService{
     }
 
 
-    /**
-     * 김준영 실수
-     * @returns 
-     */
-    getModuleCodes(){
-
-        return new Promise((resolve,reject) => {
-            codeItemService.findByParentCodeUsingArray("media_type")
-            .then((mediaTypeCodes) => {
-                console.log('emdiaTypeCodes',mediaTypeCodes);
-                codeItemService.findByParentCodeUsingArray("task_module_type")
-                    .then((taskTypeCodes) => {
-                        storageService.getUsingArray()
-                            .then((storageCodes) => {
-    
-                                return resolve({
-                                    'media_type' : mediaTypeCodes,
-                                    'task_module_type' : taskTypeCodes,
-                                    'storage' : storageCodes
-                                })
-    
-                            })
-    
-    
-                        })
-                })
-        })
+  
       
-    }
+    
 }

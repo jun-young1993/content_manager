@@ -157,7 +157,7 @@ const Category = ({onClickCategory} : CategoryProps) => {
                             ipcRenderer.send("@Category/_insert",values)
                             result.setOpen(false)
                             ipcRenderer.on("@Category/_insert/reply",(event:any,result:any) => {
-                                ipcRenderer.send("#ShowALert",{
+                                ipcRenderer.send("#ShowMessageAlert",{
                                     severity : "info",
                                     title : "카테고리가 추가되었습니다."
                                 })
