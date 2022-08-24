@@ -66,6 +66,11 @@
 - npm install react-player
 - npm install electron-updater
 - npm install react-redux
+- npm install @material-ui/core
+- npm i react-smooth-dnd
+- npm i @material-ui/icons
+- npm i array-move
+
 
 ## 참고문서
 - electorn ffmpeg build pakage.json
