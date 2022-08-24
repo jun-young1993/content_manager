@@ -4,3 +4,9 @@ import {IpcMainEvent} from "electron";
 onIpc("#ShowMessageAlert",(event:IpcMainEvent,args) => {
     event.reply("#ShowMessageAlert/reply",args);
 })
+
+
+onIpc("#ShowMessageAlertClose",(event:IpcMainEvent,args) => {
+    console.log('ShowMessageAlertClose');
+    event.reply("#ShowMessageAlertClose/reply",args);
+})

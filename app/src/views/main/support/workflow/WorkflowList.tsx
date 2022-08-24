@@ -1,22 +1,18 @@
 import * as React from 'react';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
 import Typography from '@mui/material/Typography';
-import { GridToolbarContainer} from '@mui/x-data-grid';
 import FormDialog from "@views/components/FormDialog";
 import Grid from '@mui/material/Grid';
-import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
-import WorkflowDetail from '@views/main/support/workflow//WorkflowDetail';
+import WorkflowDetail from '@views/main/support/workflow/WorkflowDetail';
+import WorkflowDetailEditDialog from '@views/main/support/workflow/WorkflowDetailEditDialog';
 const { createTreeHierarchy } = require('hierarchy-js');
+import {useDispatch, useSelector} from "react-redux";
 import {
 	Button,
 	Stack,
@@ -24,13 +20,12 @@ import {
 	FormControl,
 	Select,
 	MenuItem,
-	SelectChangeEvent,
-	TextField, 
 	Box
     } from '@mui/material';
     import CustomAlert from "@views/components/CustomAlert";
 
     import electron from "electron";
+import { isEmpty } from 'lodash';
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -45,13 +40,14 @@ const reducer = (prevState:any, newState:any) => ({
 	...newState
     })
 export default function WorkflowList() {
-
-
+	const dispatch = useDispatch();
+	
+	
 	const [rows,setRows] = React.useState([]);
 
 	ipcRenderer.send("@WorkFlow/_all");
 	ipcRenderer.on("@WorkFlow/_all/reply",(event,result) => {
-		console.log('result data',result.data);
+
 		setRows(result.data);
 
 		ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
@@ -178,6 +174,9 @@ export default function WorkflowList() {
   return (
 	<Grid container spacing={2} style={{height: '100vh'}} >
 		<Grid item xs={5}  style={{height: '100vh'}}>
+			<Typography  variant="h6" gutterBottom={true}>
+			  {"워크플로우 목록"}
+			  </Typography>
 			<Box sx={{ width: '100%', borderRight:1, height:'100vh', bgcolor: 'background.paper' }}>
 				<Stack spacing={2} direction="row">
 						<FormDialog
@@ -248,7 +247,21 @@ export default function WorkflowList() {
 						<ListItem disablePadding>
 							<ListItemButton onClick={(evt:any)=> {
 								// onClickItem(evt,row._id);
-								setWorkflowId(row._id);
+								// setWorkflowId(row._id);
+								const selectedWorkflowId = row._id;
+								if(!isEmpty(selectedWorkflowId)){
+									ipcRenderer.send("@WorkFlowRule/_getByWorkflowId",{workflow_id : selectedWorkflowId});
+									ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(event,ruleData) => {
+										console.log('ruleData workflowDetail',ruleData)
+										
+									
+										dispatch({type:"RULES.PUT" , value : ruleData.data});
+												
+										
+										ipcRenderer.removeAllListeners("@WorkFlowRule/_getByWorkflowId/reply");
+									});
+								}
+								
 							}}>
 								<ListItemText primary={row.name}/>
 							</ListItemButton>
@@ -276,99 +289,88 @@ export default function WorkflowList() {
 			</Box>
 		</Grid>
 		<Grid item xs={7} style={{height: '100vh'}}>
+			<Typography  variant="h6" gutterBottom={true}>
+			  {"워크플로우 흐름"}
+			  </Typography>
+			  
 				<Stack spacing={2} direction="row">
 					<FormDialog
-					buttonTitle="등록"
-					values={{
-						name : '',
-						description : ''
-					}}
-					variant="standard"
-					fields={[
-						{
-							select : true,
-							name : "module_id",
-							label : '모듈',
-							fullWidth : true,
-							variant : "standard",
-							children : moduleItems
-						}
-					]}
-					onSaveClick={(result:any)=>{
-						if(result){
-							const values = result.values;
-							console.log('values',values);
-							if(values){
-								
-								ipcRenderer.send("@Module/_first",{_id : values.module_id});
+						buttonTitle="등록"
+						values={{
+							name : '',
+							description : ''
+						}}
+						variant="standard"
+						fields={[
+							{
+								select : true,
+								name : "module_id",
+								label : '모듈',
+								fullWidth : true,
+								variant : "standard",
+								children : moduleItems
+							}
+						]}
+						onSaveClick={(result:any)=>{
+							if(result){
+								const values = result.values;
+								console.log('values',values);
+								if(values){
+									
+									ipcRenderer.send("@Module/_first",{_id : values.module_id});
 
-								ipcRenderer.on("@Module/_first/reply",(err,moduleInfo) => {
-									console.log('moduleInfo',moduleInfo);
-									let addChildrenModule:any =  null;
-									let children:any = null;
+									ipcRenderer.on("@Module/_first/reply",(err,moduleInfo) => {
+										console.log('moduleInfo',moduleInfo);
+										let addChildrenModule:any =  null;
+										let children:any = null;
 
-									// const selecteIds = selectedId.split('/');
+										// const selecteIds = selectedId.split('/');
 
-									children = treeData['children'] =[{
-										id : values.module_id,
-										name : moduleInfo.data.name
-									}];
-									// console.log('props.treeData',treeData);
-									treeData['children'] = children;
-									if(values.module_id == moduleInfo.data._id) {
-										ipcRenderer.send("@WorkFlowRule/_insert",{
-											workflow_id : workflowId,
-											module_id : values.module_id,
-											module_name : moduleInfo.data.name,
-											parent_id : selectedId
-										})
-										ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
-											console.log('workflow callback insert',insert);
-											
-											if(insert.data){
-												makeHierarchy(insert.data.workflow_id)
-													.then((children) => {
+										children = treeData['children'] =[{
+											id : values.module_id,
+											name : moduleInfo.data.name
+										}];
+										// console.log('props.treeData',treeData);
+										treeData['children'] = children;
+										if(values.module_id == moduleInfo.data._id) {
+											ipcRenderer.send("@WorkFlowRule/_insert",{
+												workflow_id : workflowId,
+												module_id : values.module_id,
+												module_name : moduleInfo.data.name,
+												parent_id : selectedId
+											})
+											ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
+												console.log('workflow callback insert',insert);
+												
+												if(insert.data){
+													makeHierarchy(insert.data.workflow_id)
+														.then((children) => {
 
-														setTree(renderTree(children));
-														result.setOpen(false);						
-													})
-											}
-											ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
-										})
-	
-									}
-								
+															setTree(renderTree(children));
+															result.setOpen(false);						
+														})
+												}
+												ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
+											})
+		
+										}
+									
 
-									ipcRenderer.removeAllListeners("@WorkFlowRule/_first/reply");
+										ipcRenderer.removeAllListeners("@WorkFlowRule/_first/reply");
 
-								})
+									})
 
 
+								}
+
+								return false;
 							}
 
-							return false;
-						}
-
-					}}
-				/>
-							
-			</Stack>
-			<WorkflowDetail 
-				workflowId={workflowId}
-			/>
-			{/* <TreeView
-				aria-label="rich object"
-				defaultCollapseIcon={<ExpandMoreIcon />}
-				defaultExpanded={expanded}
-				expanded={expanded}
-				defaultExpandIcon={<ChevronRightIcon />}
-				onNodeSelect={(evt:any,nodeId:any)=>{
-					setSelectedId(nodeId);
-				}}
-				sx={{ height: '100vh', flexGrow: 1,  overflowY: 'auto' }}
-			>
-				{tree}
-			</TreeView> */}
+						}}
+					/>
+					<WorkflowDetailEditDialog />
+				</Stack>
+			<WorkflowDetail />
 		</Grid>
 	</Grid>
   );

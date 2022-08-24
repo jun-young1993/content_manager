@@ -176,6 +176,43 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
+    WorkflowService.prototype.workflowRuleOrderChange = function (data) {
+        var _this = this;
+        console.log('workflowRuleOrderChange', data);
+        return new Promise(function (resolve, reject) {
+            _this.getModel("WorkflowRule").update({ _id: data.rule_id }, { $set: { parent_id: data.parent_id } }, function (error, result) {
+                if (result) {
+                    resolve((0, ApiHelper_1.apiResolve)(result));
+                }
+                else {
+                    reject((0, ApiHelper_1.apiReject)(result));
+                }
+            });
+        });
+    };
+    WorkflowService.prototype.workflowRulesOrderChange = function (datas) {
+        var _this = this;
+        var sortedRuleChangePromise = [];
+        console.log('workflowRuleOrderChange', datas);
+        return new Promise(function (resolve, reject) {
+            datas.map(function (sortRule, index) {
+                if (index >= 1) {
+                    var parentId = datas[index - 1]._id;
+                    var updateRule = {
+                        parent_id: parentId,
+                        rule_id: sortRule._id
+                    };
+                    sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
+                }
+            });
+            Promise.all(sortedRuleChangePromise)
+                .then(function (changed) {
+                resolve(changed);
+            })["catch"](function (error) {
+                reject(error);
+            });
+        });
+    };
     return WorkflowService;
 }(BaseService));
 exports.WorkflowService = WorkflowService;

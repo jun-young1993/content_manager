@@ -5,7 +5,8 @@ import CustomAlert from "@views/components/CustomAlert";
 import {ipcRenderer, IpcRendererEvent} from "electron";
 export interface ListenerAlert {
     title : string
-    severity :"default" | "error" | "success" | "warning" | "info"
+    severity :"default" | "error" | "success" | "warning" | "info",
+    onClose ?: Function
 }
 
 function ListenerAlert(props:{channel:string}){
@@ -19,7 +20,9 @@ function ListenerAlert(props:{channel:string}){
                 severity={args.severity}
                 title={args.title}
                 onClose={()=>{
+                    ipcRenderer.send("#ShowMessageAlertClose");
                     setAlert(<></>)
+                    
                 }
                 }
             />);

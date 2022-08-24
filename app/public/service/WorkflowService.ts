@@ -2,7 +2,7 @@
 
 const {BaseService} = require('../service/BaseService');
 const { createTreeHierarchy } = require('hierarchy-js');
-import {isEmpty} from "lodash";
+import {isEmpty, reject} from "lodash";
 import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
 export class WorkflowService extends BaseService{
 	constructor(){
@@ -209,5 +209,49 @@ export class WorkflowService extends BaseService{
 			})
 		})
 	
+	}
+
+	workflowRuleOrderChange(data:{ parent_id : string  , rule_id : string}){
+		const _this = this;
+		console.log('workflowRuleOrderChange',data);
+		return new Promise((resolve,reject) => {
+			_this.getModel("WorkflowRule").update({_id : data.rule_id},{$set : {parent_id : data.parent_id}},(error , result:number) => {
+				if(result){
+					resolve(apiResolve(result))
+				}else{
+					reject(apiReject(result))
+				}
+			})
+		})
+		
+	
+	}
+	workflowRulesOrderChange(datas:[{_id : string , parent_id : string}]){
+		const _this = this;
+		let sortedRuleChangePromise : any = [];
+		console.log('workflowRuleOrderChange',datas);
+		return  new Promise((resolve , reject) => {
+			datas.map((sortRule:{_id : string},index:number) => {
+				if(index >= 1){
+					const parentId : string = datas[index-1]._id;
+					const updateRule : {parent_id : string, rule_id : string} = {
+						parent_id : parentId,
+						rule_id : sortRule._id
+					};
+					sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
+				
+				}
+			})
+
+			Promise.all(sortedRuleChangePromise)
+			.then((changed) => {
+				resolve(changed);
+			})
+			.catch((error) => {
+				reject(error);
+			})
+		})
+		
+
 	}
 }

@@ -6,51 +6,27 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import HotelIcon from '@mui/icons-material/Hotel';
-import RepeatIcon from '@mui/icons-material/Repeat';
+
 import Typography from '@mui/material/Typography';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { ipcRenderer } from 'electron';
 import { isEmpty } from 'lodash';
 
 import COPYICON from '@mui/icons-material/ContentCopy';
 import TRANSCODERICON from '@mui/icons-material/Transform';
 import MEDIAINFOICON from '@mui/icons-material/Info';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
-export interface WorkflowDetailProps {
-	workflowId : string | null
-}
+import { useSelector} from "react-redux";
 
-const getWorkflowRule = (workflowId:string|null) => {
-	if(!isEmpty(workflowId)){
-		console.log('workflow rule',workflowId);
-		ipcRenderer.send("@WorkflowRule/_getByWorkflowId",{workflow_id : workflowId});
-		ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(event,ruleData) => {
-			console.log('ruleData workflowDetail',ruleData)
-		});
-	}
+
+
+export default function WorkflowDetail() {
 	
-}
+	const { rules } = useSelector((state:any) => {return state.rules})
+	console.log('rules',rules);
 
-export default function WorkflowDetail(props:WorkflowDetailProps) {
-	console.log('props workflow Detail',props);
-	const workflowId = props.workflowId;
-	console.log('props workflow Detail workflow Id',workflowId);
-	const [workflowRules , setWorkflowRules] = React.useState([]);
+
 	// getWorkflowRule(props.workflowId)
-	if(!isEmpty(workflowId)){
-		ipcRenderer.send("@WorkFlowRule/_getByWorkflowId",{workflow_id : workflowId});
-		ipcRenderer.on("@WorkFlowRule/_getByWorkflowId/reply",(event,ruleData) => {
-			console.log('ruleData workflowDetail',ruleData)
-			const newRule:any = {};
-		
 
-			
-			setWorkflowRules(ruleData.data);
-			ipcRenderer.removeAllListeners("@WorkFlowRule/_getByWorkflowId/reply");
-		});
-	}
 	
 	// const renderTree = function(data:any,){
 	// 	if(!isEmpty(data.props)){
@@ -90,7 +66,7 @@ export default function WorkflowDetail(props:WorkflowDetailProps) {
 	}
   return (
     <Timeline position="left">
-	{workflowRules.map((workflowRule:{module_name : string, 
+	{rules.map((workflowRule:{module_name : string, 
 					  task_type_nm : string,
 					  source_storage_nm : string,
 					  target_storage_nm : string,

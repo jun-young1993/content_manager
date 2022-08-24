@@ -134,13 +134,18 @@ var WorkFlowRule = /** @class */ (function () {
             };
         });
     };
+    WorkFlowRule._update = function (event, args) {
+        console.log('args', args);
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
+            return event.autoReply(data);
+        });
+    };
     WorkFlowRule._getByWorkflowId = function (event, args) {
         codeMapper.getModuleCodeMap()
             .then(function (moduleCodes) {
             console.log('moduleCodes', moduleCodes);
             workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
                 .then(function (result) {
-                console.log('get By workflow Idresult', result.data[1].module_info);
                 result.data.map(function (rule) {
                     rule.source_media_nm = moduleCodes['media'][rule.source_media];
                     rule.target_media_nm = moduleCodes['media'][rule.target_media];
@@ -154,6 +159,14 @@ var WorkFlowRule = /** @class */ (function () {
                 console.log('get By workflow Idresult', err);
                 event.autoReply(err);
             });
+        });
+    };
+    WorkFlowRule._changeOrder = function (event, args) {
+        workflowService.workflowRulesOrderChange(args[0])
+            .then(function (resolve) {
+            event.autoReply(resolve);
+        })["catch"](function (reject) {
+            event.autoReply(reject);
         });
     };
     return WorkFlowRule;

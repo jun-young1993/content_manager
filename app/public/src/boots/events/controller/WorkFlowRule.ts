@@ -140,6 +140,12 @@ class WorkFlowRule{
 		    };
 		})
 	    }
+	static _update(event,args){
+		console.log('args',args);
+		db.db().update(args[1],{$set : args[0]},(err,data) => {
+			return event.autoReply(data);
+		})
+	}
 
 
 	static _getByWorkflowId(event,args:[{workflow_id : string}]){
@@ -149,7 +155,7 @@ class WorkFlowRule{
 			console.log('moduleCodes',moduleCodes);
 			workflowService.getWorkflowRuleByWorkflowId(args[0].workflow_id)
 			.then((result) => {
-				console.log('get By workflow Idresult',result.data[1].module_info);
+				
 				result.data.map((rule) => {
 					rule.source_media_nm = moduleCodes['media'][rule.source_media]
 					rule.target_media_nm = moduleCodes['media'][rule.target_media]
@@ -167,6 +173,17 @@ class WorkFlowRule{
 		})
 		
 
+	}
+
+
+	static _changeOrder(event,args){
+		workflowService.workflowRulesOrderChange(args[0])
+		.then((resolve) => {
+			event.autoReply(resolve);
+		})
+		.catch((reject) => {
+			event.autoReply(reject);
+		})
 	}
 }
 	 
