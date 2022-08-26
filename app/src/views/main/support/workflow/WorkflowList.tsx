@@ -5,11 +5,16 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
+import {IconButton} from "@mui/material";
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete'
 import FormDialog from "@views/components/FormDialog";
 import Grid from '@mui/material/Grid';
 import TreeItem from '@mui/lab/TreeItem';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import WorkflowDetail from '@views/main/support/workflow/WorkflowDetail';
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import WorkflowDetailEditDialog from '@views/main/support/workflow/WorkflowDetailEditDialog';
 const { createTreeHierarchy } = require('hierarchy-js');
 import {useDispatch, useSelector} from "react-redux";
@@ -26,6 +31,7 @@ import {
 
     import electron from "electron";
 import { isEmpty } from 'lodash';
+import { sender } from '@views/helper/helper';
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -51,6 +57,11 @@ export default function WorkflowList() {
 		setRows(result.data);
 
 		ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
+	})
+	sender("@Module/_index")
+	.then((result:any) => {
+		console.log(result);
+		dispatch({type : "MODULES.PUT" , value : result.data});
 	})
 	const baseAlert = ((<CustomAlert open={false} />));
     const [alert, setALert] = React.useState(baseAlert)
@@ -171,6 +182,10 @@ export default function WorkflowList() {
 		
 	);
 	const [tree , setTree] = React.useState(renderTree(treeData));	
+
+
+
+
   return (
 	<Grid container spacing={2} style={{height: '100vh'}} >
 		<Grid item xs={5}  style={{height: '100vh'}}>
@@ -242,10 +257,13 @@ export default function WorkflowList() {
 				<List>
 				
 				{rows.map((row:any) => {
+					
+					
 					return (
 						<>
-						<ListItem disablePadding>
-							<ListItemButton onClick={(evt:any)=> {
+						<ListItem disablePadding >
+							<ListItemButton style={{marginRight:"20px"}} onClick={(evt:any)=> {
+								
 								// onClickItem(evt,row._id);
 								// setWorkflowId(row._id);
 								const selectedWorkflowId = row._id;
@@ -256,15 +274,29 @@ export default function WorkflowList() {
 										
 									
 										dispatch({type:"RULES.PUT" , value : ruleData.data});
-												
+								
 										
 										ipcRenderer.removeAllListeners("@WorkFlowRule/_getByWorkflowId/reply");
 									});
 								}
 								
 							}}>
-								<ListItemText primary={row.name}/>
+								<ListItemText style={{}} primary={row.name}/>
 							</ListItemButton>
+							<ListItemSecondaryAction>
+								<Tooltip title="워크플로우 삭제">
+									<ListItemIcon>
+										<IconButton aria-label="delete" 
+										onClick={()=>{
+											
+											
+											
+										}}>
+											<DeleteIcon />
+										</IconButton>
+									</ListItemIcon>
+								</Tooltip>
+							</ListItemSecondaryAction>
 						</ListItem>
 							<ListItemText
 							secondary={
@@ -294,80 +326,6 @@ export default function WorkflowList() {
 			  </Typography>
 			  
 				<Stack spacing={2} direction="row">
-					<FormDialog
-						buttonTitle="등록"
-						values={{
-							name : '',
-							description : ''
-						}}
-						variant="standard"
-						fields={[
-							{
-								select : true,
-								name : "module_id",
-								label : '모듈',
-								fullWidth : true,
-								variant : "standard",
-								children : moduleItems
-							}
-						]}
-						onSaveClick={(result:any)=>{
-							if(result){
-								const values = result.values;
-								console.log('values',values);
-								if(values){
-									
-									ipcRenderer.send("@Module/_first",{_id : values.module_id});
-
-									ipcRenderer.on("@Module/_first/reply",(err,moduleInfo) => {
-										console.log('moduleInfo',moduleInfo);
-										let addChildrenModule:any =  null;
-										let children:any = null;
-
-										// const selecteIds = selectedId.split('/');
-
-										children = treeData['children'] =[{
-											id : values.module_id,
-											name : moduleInfo.data.name
-										}];
-										// console.log('props.treeData',treeData);
-										treeData['children'] = children;
-										if(values.module_id == moduleInfo.data._id) {
-											ipcRenderer.send("@WorkFlowRule/_insert",{
-												workflow_id : workflowId,
-												module_id : values.module_id,
-												module_name : moduleInfo.data.name,
-												parent_id : selectedId
-											})
-											ipcRenderer.on("@WorkFlowRule/_insert/reply",(err,insert) => {
-												console.log('workflow callback insert',insert);
-												
-												if(insert.data){
-													makeHierarchy(insert.data.workflow_id)
-														.then((children) => {
-
-															setTree(renderTree(children));
-															result.setOpen(false);						
-														})
-												}
-												ipcRenderer.removeAllListeners("@WorkFlowRule/_insert/reply");
-											})
-		
-										}
-									
-
-										ipcRenderer.removeAllListeners("@WorkFlowRule/_first/reply");
-
-									})
-
-
-								}
-
-								return false;
-							}
-
-						}}
-					/>
 					<WorkflowDetailEditDialog />
 				</Stack>
 			<WorkflowDetail />

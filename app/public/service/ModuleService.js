@@ -18,6 +18,10 @@ exports.__esModule = true;
 exports.ModuleService = void 0;
 var BaseService = require('../service/BaseService').BaseService;
 var ApiHelper_1 = require("../lib/helper/ApiHelper");
+var CodeItemService_1 = require("./CodeItemService");
+var StorageService_1 = require("./StorageService");
+var codeItemService = new CodeItemService_1.CodeItemService();
+var storageService = new StorageService_1.StorageService();
 var ModuleService = /** @class */ (function (_super) {
     __extends(ModuleService, _super);
     function ModuleService() {

@@ -15,6 +15,8 @@ import COPYICON from '@mui/icons-material/ContentCopy';
 import TRANSCODERICON from '@mui/icons-material/Transform';
 import MEDIAINFOICON from '@mui/icons-material/Info';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+
+import WorkflowRuleIcons from '@views/main/support/workflow/WorkflowRuleIcons';
 import { useSelector} from "react-redux";
 
 
@@ -99,7 +101,7 @@ export default function WorkflowDetail() {
 			<TimelineSeparator>
 			  <TimelineConnector />
 			  <TimelineDot>
-			  	{iconMapper(workflowRule.task_type)}
+				<WorkflowRuleIcons task_type={workflowRule.task_type} />
 			    {/* <FastfoodIcon /> */}
 			  </TimelineDot>
 			  <TimelineConnector />

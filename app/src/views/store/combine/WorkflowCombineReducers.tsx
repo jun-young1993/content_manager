@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux'
 
 import WorkflowRuleReducer from '@views/store/reducers/WorkflowRuleReducer';
+import WorkflowRuleEditReducer from '@views/store/reducers/WorkflowRuleEditReducer';
+import ModuleReducer from '@views/store/reducers/ModuleReducer';
+
 
 
 
@@ -8,7 +11,8 @@ import WorkflowRuleReducer from '@views/store/reducers/WorkflowRuleReducer';
 
 const WorkflowCombineReducers = combineReducers({
     rules : WorkflowRuleReducer,
-    sort : WorkflowRuleReducer
+    sort : WorkflowRuleReducer,
+    modules : ModuleReducer
     // view : ConfigViewReducer
 })
 

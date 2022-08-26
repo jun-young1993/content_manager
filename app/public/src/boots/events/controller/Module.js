@@ -5,6 +5,8 @@ var BaseController_1 = require("./BaseController");
 var Module_1 = require("../../../../models/Module");
 var CodeItemService_1 = require("../../../../service/CodeItemService");
 var StorageService_1 = require("../../../../service/StorageService");
+var CodeMapper_1 = require("../../../../lib/Mapper/CodeMapper");
+var codeMapper = new CodeMapper_1["default"]();
 var codeItemService = new CodeItemService_1.CodeItemService();
 var storageService = new StorageService_1.StorageService();
 // import {User} from "@model/User";
@@ -74,13 +76,35 @@ var Module = /** @class */ (function () {
         });
     };
     Module._index = function (event, args) {
-        db.db().find({ is_deleted: 'N' }, function (err, data) {
+        if (args === void 0) { args = [{}]; }
+        db.db().find(args[0], function (err, data) {
             if (data) {
                 return event.autoReplay({
                     success: true,
                     data: data
                 });
             }
+        });
+    };
+    Module._find = function (event, args) {
+        if (args === void 0) { args = [{}]; }
+        codeMapper.getModuleCodeMap()
+            .then(function (moduleCodes) {
+            db.db().findOne(args[0], function (err, data) {
+                if (data) {
+                    data.source_media_nm = moduleCodes['media'][data.source_media];
+                    data.target_media_nm = moduleCodes['media'][data.target_media];
+                    data.source_storage_nm = moduleCodes['storage'][data.source_storage];
+                    data.target_storage_nm = moduleCodes['storage'][data.target_storage];
+                    data.task_type_nm = moduleCodes['task'][data.task_type];
+                    return event.autoReplay({
+                        success: true,
+                        data: data
+                    });
+                }
+            });
+        })["catch"](function (moduleCodesError) {
+            event.autoReply(moduleCodesError);
         });
     };
     Module.insert = function (event, args) {

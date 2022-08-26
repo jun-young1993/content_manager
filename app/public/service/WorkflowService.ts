@@ -23,10 +23,10 @@ export class WorkflowService extends BaseService{
 			})
 		})
 	}
-	indexByWorkflowRule(){
+	indexByWorkflowRule(args = {}){
 		const _this = this;
 		return new Promise((resolve, reject) => {
-			_this.getModel('WorkflowRule').find({},(err,datas) => {
+			_this.getModel('WorkflowRule').find(args,(err,datas) => {
 				resolve(apiResolve(datas));
 			})
 		})
@@ -93,11 +93,12 @@ export class WorkflowService extends BaseService{
 
 	}
 
+
 	getWorkflowRuleByWorkflowId(workflowId:string){
 		const _this = this;
 		return new Promise((resolve, reject) => {
 			
-	
+			console.log('[getWorkflowRuleByWorkflowId]',workflowId);
 			
 		_this.getModel('WorkflowRule').find({workflow_id : workflowId},(err,data) => {
 				if(isEmpty(data)){
@@ -135,9 +136,31 @@ export class WorkflowService extends BaseService{
 
 	}
 
+	/**
+	 * 
+	 * w
+	 * 
+	 * @param workflowId
+	 * @returns 
+	 */
+	getWorkflowRuleIdsByWorkflowId(workflowId:string){
+		const _this = this;
+		return new Promise((resolve ,reject) => {
+			_this.getWorkflowRuleByWorkflowId(workflowId)
+			.then((result:any) => {
+				let ids : string[] = [];
+				result.data.map((rule:{_id : string}) => {
+					ids.push(rule._id);
+				})
+				resolve(apiResolve(ids));
+			})
+		})
+	}
+
 
 	workflowRuleOrder(data){
 		const ruleOrderObj = {};
+		console.log('workflowRuleORder data',data)
 		data.map((child) => {
 			let key = child.parent_id;
 			if(child.parent_id === null){
@@ -146,7 +169,9 @@ export class WorkflowService extends BaseService{
 			ruleOrderObj[key] = child;
 			
 		});
-		
+		if(isEmpty(ruleOrderObj)){
+			return data;
+		}
 		let orderParentWorkflowId = ruleOrderObj['start']._id; 
 		const ruleOrder = [ruleOrderObj['start']];
 		for(let i = 1; i<data.length; i++){
@@ -226,30 +251,100 @@ export class WorkflowService extends BaseService{
 		
 	
 	}
-	workflowRulesOrderChange(datas:[{_id : string , parent_id : string}]){
+
+	insert(data){
+		const _this = this;
+		return new Promise((resolve ,reject) => {
+			_this.getModel("WorkflowRule").insert(data,(error,data) => {
+				resolve(apiResolve(data));
+			})
+		})
+	}
+
+	workflowRuleRemove(ruleId:string){
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			console.log('REMOVE PROMISE',ruleId);
+			_this.getModel("WorkflowRule").findOne({_id : ruleId},(err, rule) => {
+				console.log('remove ',rule);
+				if(isEmpty(rule.parent_id)){
+					console.log('rule.parent_id else',rule.parent_id)
+					resolve(apiResolve("start workflow"));
+				}else{
+					console.log('rule.parent_id',rule.parent_id)
+					_this.getModel("WorkflowRule").remove({_id : ruleId},(error,remove) => {
+						console.log('removed',rule._id);
+						resolve(apiResolve(remove));
+					})
+					
+				}
+				
+			})
+			
+		})
+		
+	}
+
+	workflowRulesOrderChange(datas:[{_id : string, workflow_id ?: string, parent_id ?: string, module_id : string, module_name : string}]){
 		const _this = this;
 		let sortedRuleChangePromise : any = [];
 		console.log('workflowRuleOrderChange',datas);
 		return  new Promise((resolve , reject) => {
-			datas.map((sortRule:{_id : string},index:number) => {
-				if(index >= 1){
-					const parentId : string = datas[index-1]._id;
-					const updateRule : {parent_id : string, rule_id : string} = {
-						parent_id : parentId,
-						rule_id : sortRule._id
-					};
-					sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
-				
-				}
-			})
+			
+			const startWorkflowModule:any = datas[0];
+			_this.getWorkflowRuleIdsByWorkflowId(startWorkflowModule.workflow_id)
+			.then((ruleIds:any) => {
+				const workflowRuleIds = ruleIds.data;
+				datas.map((sortRule:{_id : string, workflow_id ?: string, parent_id ?: string, module_id : string, module_name : string},index:number) => {
+					if(index >= 1){
+						
+						const parentRule:{_id : string} = datas[index-1];
+						const parentId : string = parentRule._id;
+						const updateRule : {parent_id : string, rule_id : string, workflow_id ?: string} = {
+							parent_id : parentId,
+							rule_id : sortRule._id
+						};
 
-			Promise.all(sortedRuleChangePromise)
-			.then((changed) => {
-				resolve(changed);
+						const noDeleteRule = workflowRuleIds.indexOf(sortRule._id);
+						if(noDeleteRule > -1){
+							console.log('cancel ',sortRule._id)
+							workflowRuleIds.splice(noDeleteRule,1);
+						}
+
+
+						if(isEmpty(sortRule.workflow_id)){
+							
+							const insertData = {
+								workflow_id  : startWorkflowModule.workflow_id,
+								_id : sortRule._id,
+								module_id : sortRule.module_id,
+								module_name : sortRule.module_name,
+								parent_id : parentId,
+	
+							}
+							
+							sortedRuleChangePromise.push(_this.insert(insertData));
+						}else{
+							sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
+						}
+						
+					
+					}
+				})
+				console.log('workflowRuleIds',workflowRuleIds)
+				workflowRuleIds.map((deleteRuleId) => {
+
+					sortedRuleChangePromise.push(_this.workflowRuleRemove(deleteRuleId))
+				})
+				Promise.all(sortedRuleChangePromise)
+				.then((changed) => {
+					resolve(changed);
+				})
+				.catch((error) => {
+					reject(error);
+				})
 			})
-			.catch((error) => {
-				reject(error);
-			})
+			
 		})
 		
 

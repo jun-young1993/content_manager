@@ -39,10 +39,11 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
-    WorkflowService.prototype.indexByWorkflowRule = function () {
+    WorkflowService.prototype.indexByWorkflowRule = function (args) {
+        if (args === void 0) { args = {}; }
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('WorkflowRule').find({}, function (err, datas) {
+            _this.getModel('WorkflowRule').find(args, function (err, datas) {
                 resolve((0, ApiHelper_1.apiResolve)(datas));
             });
         });
@@ -100,6 +101,7 @@ var WorkflowService = /** @class */ (function (_super) {
         var _this_1 = this;
         var _this = this;
         return new Promise(function (resolve, reject) {
+            console.log('[getWorkflowRuleByWorkflowId]', workflowId);
             _this.getModel('WorkflowRule').find({ workflow_id: workflowId }, function (err, data) {
                 if ((0, lodash_1.isEmpty)(data)) {
                 }
@@ -121,8 +123,29 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
+    /**
+     *
+     * w
+     *
+     * @param workflowId
+     * @returns
+     */
+    WorkflowService.prototype.getWorkflowRuleIdsByWorkflowId = function (workflowId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getWorkflowRuleByWorkflowId(workflowId)
+                .then(function (result) {
+                var ids = [];
+                result.data.map(function (rule) {
+                    ids.push(rule._id);
+                });
+                resolve((0, ApiHelper_1.apiResolve)(ids));
+            });
+        });
+    };
     WorkflowService.prototype.workflowRuleOrder = function (data) {
         var ruleOrderObj = {};
+        console.log('workflowRuleORder data', data);
         data.map(function (child) {
             var key = child.parent_id;
             if (child.parent_id === null) {
@@ -130,6 +153,9 @@ var WorkflowService = /** @class */ (function (_super) {
             }
             ruleOrderObj[key] = child;
         });
+        if ((0, lodash_1.isEmpty)(ruleOrderObj)) {
+            return data;
+        }
         var orderParentWorkflowId = ruleOrderObj['start']._id;
         var ruleOrder = [ruleOrderObj['start']];
         for (var i = 1; i < data.length; i++) {
@@ -190,26 +216,81 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
+    WorkflowService.prototype.insert = function (data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel("WorkflowRule").insert(data, function (error, data) {
+                resolve((0, ApiHelper_1.apiResolve)(data));
+            });
+        });
+    };
+    WorkflowService.prototype.workflowRuleRemove = function (ruleId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            console.log('REMOVE PROMISE', ruleId);
+            _this.getModel("WorkflowRule").findOne({ _id: ruleId }, function (err, rule) {
+                console.log('remove ', rule);
+                if ((0, lodash_1.isEmpty)(rule.parent_id)) {
+                    console.log('rule.parent_id else', rule.parent_id);
+                    resolve((0, ApiHelper_1.apiResolve)("start workflow"));
+                }
+                else {
+                    console.log('rule.parent_id', rule.parent_id);
+                    _this.getModel("WorkflowRule").remove({ _id: ruleId }, function (error, remove) {
+                        console.log('removed', rule._id);
+                        resolve((0, ApiHelper_1.apiResolve)(remove));
+                    });
+                }
+            });
+        });
+    };
     WorkflowService.prototype.workflowRulesOrderChange = function (datas) {
         var _this = this;
         var sortedRuleChangePromise = [];
         console.log('workflowRuleOrderChange', datas);
         return new Promise(function (resolve, reject) {
-            datas.map(function (sortRule, index) {
-                if (index >= 1) {
-                    var parentId = datas[index - 1]._id;
-                    var updateRule = {
-                        parent_id: parentId,
-                        rule_id: sortRule._id
-                    };
-                    sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
-                }
-            });
-            Promise.all(sortedRuleChangePromise)
-                .then(function (changed) {
-                resolve(changed);
-            })["catch"](function (error) {
-                reject(error);
+            var startWorkflowModule = datas[0];
+            _this.getWorkflowRuleIdsByWorkflowId(startWorkflowModule.workflow_id)
+                .then(function (ruleIds) {
+                var workflowRuleIds = ruleIds.data;
+                datas.map(function (sortRule, index) {
+                    if (index >= 1) {
+                        var parentRule = datas[index - 1];
+                        var parentId = parentRule._id;
+                        var updateRule = {
+                            parent_id: parentId,
+                            rule_id: sortRule._id
+                        };
+                        var noDeleteRule = workflowRuleIds.indexOf(sortRule._id);
+                        if (noDeleteRule > -1) {
+                            console.log('cancel ', sortRule._id);
+                            workflowRuleIds.splice(noDeleteRule, 1);
+                        }
+                        if ((0, lodash_1.isEmpty)(sortRule.workflow_id)) {
+                            var insertData = {
+                                workflow_id: startWorkflowModule.workflow_id,
+                                _id: sortRule._id,
+                                module_id: sortRule.module_id,
+                                module_name: sortRule.module_name,
+                                parent_id: parentId
+                            };
+                            sortedRuleChangePromise.push(_this.insert(insertData));
+                        }
+                        else {
+                            sortedRuleChangePromise.push(_this.workflowRuleOrderChange(updateRule));
+                        }
+                    }
+                });
+                console.log('workflowRuleIds', workflowRuleIds);
+                workflowRuleIds.map(function (deleteRuleId) {
+                    sortedRuleChangePromise.push(_this.workflowRuleRemove(deleteRuleId));
+                });
+                Promise.all(sortedRuleChangePromise)
+                    .then(function (changed) {
+                    resolve(changed);
+                })["catch"](function (error) {
+                    reject(error);
+                });
             });
         });
     };

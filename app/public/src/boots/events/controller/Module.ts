@@ -5,6 +5,8 @@ import {Module as Modle} from "../../../../models/Module";
 
 import {CodeItemService} from "../../../../service/CodeItemService";
 import {StorageService} from "../../../../service/StorageService";
+import CodeMapper from "../../../../lib/Mapper/CodeMapper";
+const codeMapper = new CodeMapper();
 const codeItemService =  new CodeItemService();
 const storageService = new StorageService();
 // import {User} from "@model/User";
@@ -85,9 +87,9 @@ class Module {
 
         })
     }
-    static _index(event, args){
-
-        db.db().find({is_deleted : 'N'},(err,data) => {
+    static _index(event, args=[{}]){
+        
+        db.db().find(args[0],(err,data) => {
             if(data){
                 return event.autoReplay({
                     success : true,
@@ -96,6 +98,29 @@ class Module {
             }
 
         })
+    }
+
+    static _find(event, args=[{}]){
+        codeMapper.getModuleCodeMap()
+		.then((moduleCodes) => {
+            db.db().findOne(args[0],(err,data) => {
+                if(data){
+                    data.source_media_nm = moduleCodes['media'][data.source_media]
+					data.target_media_nm = moduleCodes['media'][data.target_media]
+					data.source_storage_nm = moduleCodes['storage'][data.source_storage]
+					data.target_storage_nm = moduleCodes['storage'][data.target_storage]
+					data.task_type_nm = moduleCodes['task'][data.task_type];
+                    return event.autoReplay({
+                        success : true,
+                        data : data
+                    })
+                }
+    
+            })
+        })
+        .catch((moduleCodesError) => {
+            event.autoReply(moduleCodesError);
+        });
     }
     static insert(event,args){
         

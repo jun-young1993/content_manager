@@ -23,6 +23,7 @@ export default function WorkflowDetailEditDialog(){
 	const { sort } = useSelector((state:any) => {return state.sort})
 
 	const handleClickOpen = () => {
+		
 	  setOpen(true);
 	};
       
@@ -30,6 +31,13 @@ export default function WorkflowDetailEditDialog(){
 		if(reason == 'backdropClick'){
 			return false;
 		}
+		const newSort:any = [];
+		sort.map((rule:{workflow_id ?: string}) => {
+			if(!isEmpty(rule.workflow_id)){
+				newSort.push(rule);
+			}
+		})
+		dispatch({type : "RULES.PUT", value : newSort})
 	  	setOpen(false);
 	};
 
@@ -37,46 +45,17 @@ export default function WorkflowDetailEditDialog(){
 		sender("@WorkFlowRule/_changeOrder",sort)
 		.then((result) => {
 			// @close = "handleClose('event')";
-			dispatch({type : "RULES.PUT" , value : sort});
-			showAlert({
-				title : '워크플로우 흐름 변경이 적용되었습니다.',
-				severity : "info",
-			},()=>{
-				setOpen(false);
+			// dispatch({type : "RULES.PUT" , value : sort});
+			sender("@WorkFlowRule/_getByWorkflowId",{workflow_id : sort[0].workflow_id})
+			.then((result:any) => {
+				dispatch({type:"RULES.PUT" , value : result.data});
+				showAlert({
+					title : '워크플로우 흐름 변경이 적용되었습니다.',
+					severity : "info",
+				},()=>{
+					setOpen(false);
+				})
 			})
-			
-			// handleClose('event');
-		
-		})
-		return;
-		ipcRenderer.send("@WorkFlowRule/_changeOrder",sort)
-		ipcRenderer.on("@WorkFlowRule/_changeOrder/reply",(event:any,result) => {
-			console.log('changeOrder',result);
-			dispatch({type : "RULES.PUT" , value : sort});
-			ipcRenderer.removeAllListeners("@WorkFlowRule/_changeOrder/reply");
-		})
-		return;
-		let sortedRule : any | [updateRuleInterface] | [] = [];
-		
-		sort.map((sortRule:{_id :string},index:number) => {
-			if(index >= 1){
-				const parentId : string = sort[index-1]._id;
-				const updateRule :updateRuleInterface = {
-					parent_id : parentId,
-					rule_id : sortRule._id
-				};
-				sortedRule.push(updateRule)
-				console.log(sortedRule);
-				// const changeParentId = sort[index-1].parent_id;
-				// const currentId = sortRule._id;
-				// ipcRenderer.send("@WorkFlowRule/_update",{parent_id : changeParentId},{_id : currentId})
-				// ipcRenderer.on("@WorkFlowRule/_update/reply",(event:any,result) => {
-				// 	console.log('_update result',result)
-					
-				// })
-			}
-			// parent_id
-			// _id
 		})
 	}
 
