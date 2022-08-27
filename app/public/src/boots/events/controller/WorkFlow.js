@@ -118,6 +118,12 @@ var WorkFlow = /** @class */ (function () {
             };
         });
     };
+    WorkFlow._delete = function (event, workflowIds) {
+        workflowService.removeWorkflow(workflowIds[0])
+            .then(function (resolve) {
+            event.autoReply(resolve);
+        });
+    };
     return WorkFlow;
 }());
 new BaseController_1.BaseController(WorkFlow);

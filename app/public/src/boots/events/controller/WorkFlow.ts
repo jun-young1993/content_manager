@@ -126,5 +126,13 @@ class WorkFlow{
 		    };
 		})
 	    }
+
+		static _delete(event,workflowIds:[string]){
+			workflowService.removeWorkflow(workflowIds[0])
+				.then((resolve) =>{
+					event.autoReply(resolve);
+				});
+
+		}
 }
 new BaseController(WorkFlow);

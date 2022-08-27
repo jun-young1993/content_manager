@@ -244,6 +244,20 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
+    WorkflowService.prototype.removeWorkflow = function (workflowId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel("Workflow").remove({ _id: workflowId }, function (error, workflowRemoved) {
+                if (workflowRemoved) {
+                    _this.getModel("WorkflowRule").remove({ workflow_id: workflowId }, function (error, workflowRuleRemoved) {
+                        if (workflowRuleRemoved) {
+                            resolve((0, ApiHelper_1.apiResolve)());
+                        }
+                    });
+                }
+            });
+        });
+    };
     WorkflowService.prototype.workflowRulesOrderChange = function (datas) {
         var _this = this;
         var sortedRuleChangePromise = [];

@@ -8,6 +8,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Modal,Alert, Box, AlertColor, Stack, AlertTitle} from "@mui/material";
 import {useEffect} from "react";
+import IconButton from "@mui/material/IconButton";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function CustomAlert(props:any) {
     let propsOpen = true;
@@ -53,7 +56,14 @@ export default function CustomAlert(props:any) {
         disableBackDrop : false
     });
 
+    const actions = [
+        {
+            title : "취소",
+            onClick : () => {
 
+            }
+        }
+    ];
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -84,11 +94,38 @@ export default function CustomAlert(props:any) {
         setOpen(false);
 
         if(props.onClose){
-            props.onClose();
+            props.onClose(reason);
         }
         
 
     };
+
+
+    let confirm = (<></>);
+    if(props.confirm === true){
+        confirm = (
+            <>
+                <br/>
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={2}
+                >
+                    <IconButton aria-label="fingerprint" color="success" onClick={()=>{
+                        handleClose(null,'check');
+                    }}>
+                        <CheckIcon />
+                    </IconButton>
+                    <IconButton aria-label="fingerprint" color="secondary" onClick={()=>{
+                        handleClose(null,'cancel');
+                    }}>
+                        <CloseIcon />
+                    </IconButton>
+                </Stack>
+            </>
+        );
+    }
+
 
     // @ts-ignore
     return (
@@ -100,7 +137,10 @@ export default function CustomAlert(props:any) {
                     <Stack sx={{ width: '100%' }} spacing={2}>
                         <Alert severity={severity}
                         >
-                            <AlertTitle>{title}</AlertTitle>
+                            <AlertTitle>
+                                {title}
+                                {confirm}
+                            </AlertTitle>
                         </Alert>
                     </Stack>
 

@@ -285,6 +285,21 @@ export class WorkflowService extends BaseService{
 		
 	}
 
+	removeWorkflow(workflowId:string){
+		const _this = this;
+		return new Promise((resolve , reject) => {
+			_this.getModel("Workflow").remove({_id : workflowId},(error, workflowRemoved) =>{
+				if(workflowRemoved){
+					_this.getModel("WorkflowRule").remove({workflow_id :workflowId},(error,workflowRuleRemoved)=>{
+						if(workflowRuleRemoved){
+							resolve(apiResolve());
+						}
+					});
+				}
+			});
+		});
+	}
+
 	workflowRulesOrderChange(datas:[{_id : string, workflow_id ?: string, parent_id ?: string, module_id : string, module_name : string}]){
 		const _this = this;
 		let sortedRuleChangePromise : any = [];

@@ -26,7 +26,15 @@ function ListenerAlert(props:{channel:string}){
                 }
                 }
             />);
-        setAlert(alertComponent);
+
+                setAlert(alertComponent);
+
+
+            ipcRenderer.removeAllListeners("ShowMessageAlert/reply");
+
+
+
+
     })
     return (
         <>

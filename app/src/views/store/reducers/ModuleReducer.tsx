@@ -17,6 +17,8 @@ export default function ModuleReducer(state = initialState,action:ActionInterfac
                 modules :  action.value,
             }
             return newState;
+            // state.modules = action.value
+            // return state;
       
         default :
             return state;

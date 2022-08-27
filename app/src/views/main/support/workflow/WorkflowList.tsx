@@ -31,7 +31,7 @@ import {
 
     import electron from "electron";
 import { isEmpty } from 'lodash';
-import { sender } from '@views/helper/helper';
+import {sender, showAlert, showConfirm} from '@views/helper/helper';
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -58,9 +58,14 @@ export default function WorkflowList() {
 
 		ipcRenderer.removeAllListeners("@WorkFlow/_all/reply");
 	})
+	// sender("@WorkFlow/_all")
+	// 	.then((result:any) => {
+	// 		console.log(result);
+	// 		setRows(result.data);
+	//
+	// 	})
 	sender("@Module/_index")
 	.then((result:any) => {
-		console.log(result);
 		dispatch({type : "MODULES.PUT" , value : result.data});
 	})
 	const baseAlert = ((<CustomAlert open={false} />));
@@ -288,8 +293,31 @@ export default function WorkflowList() {
 									<ListItemIcon>
 										<IconButton aria-label="delete" 
 										onClick={()=>{
-											
-											
+											console.log('delete row id',row._id);
+											const workflowId:string = row._id;
+											const workflowName : string = row.name;
+											showConfirm({
+												title : `워크플로우[${workflowName}]를 삭제하시겠습니까? `,
+												severity : "info"
+											},(checked:boolean) => {
+												console.log('reason',checked);
+												if(checked){
+													sender("@WorkFlow/_delete",workflowId)
+														.then((result:any) => {
+															sender("@WorkFlow/_all")
+																.then((result:any) => {
+																	showAlert({
+																		title : "삭제완료되었습니다.",
+																		severity : "info"
+																	},()=>{
+																		setRows(result.data);
+																	})
+																})
+														})
+
+												}
+
+											})
 											
 										}}>
 											<DeleteIcon />
