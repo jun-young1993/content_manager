@@ -1,9 +1,9 @@
 # Content Manager
 
 <br>
-<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-Setup-1.1.8-x64.exe"><strong>App Download for Windows x64 v1.1.7 »</strong></a>
+<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-Setup-1.1.8-x64.exe"><strong>App Download for Windows x64 »</strong></a>
 <br>
-<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac v1.1.7 »</strong></a>
+<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac »</strong></a>
 
 ## 스크린샷
 ![main](https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png)
