@@ -8,8 +8,8 @@ var sender = function (channel, arg1, arg2) {
             var replyChannel_1 = "".concat(channel, "/reply");
             electron_1.ipcRenderer.send(channel, arg1, arg2);
             electron_1.ipcRenderer.on(replyChannel_1, function (event, result) {
-                resolve(result);
                 electron_1.ipcRenderer.removeAllListeners(replyChannel_1);
+                resolve(result);
             });
         }
         catch (e) {

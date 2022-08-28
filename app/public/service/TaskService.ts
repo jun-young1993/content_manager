@@ -14,8 +14,15 @@ export class TaskService extends BaseService{
 
     index(search:{}){
         const _this = this;
+        console.log('search',search)
+        console.log('search',_this.formatIndexParams(search));
+        console.log('sample : ',{createdAt : {$gt : new Date("2022-08-01T10:45:17.000Z")}})
         return new Promise((resolve, reject) => {
-            _this.getModel('Task').find(search).sort({createdAt : -1}).exec((err, data) => {
+            _this.getModel('Task')
+                .find(_this.formatIndexParams(search))
+                .sort({createdAt : -1})
+                .exec((err, data) => {
+                    console.log('data.length',data.length);
                 resolve(apiResolve(data));
             })
         })

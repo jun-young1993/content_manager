@@ -1,4 +1,5 @@
 import {BaseModel} from "../models/BaseModel";
+import {isEmpty} from "lodash";
 type modelClassName = string;
 type models = typeof BaseModel;
 interface Models{
@@ -27,5 +28,36 @@ export class BaseService implements Property{
 
 			// @ts-ignore
 		return this.model[modelName];
+	}
+
+	formatIndexParams(params = {}){
+		const newParams = {};
+
+		if(params['start_date'] && params['end_date']){
+			const startDate = new Date(
+				new Date(params['start_date']).getFullYear(),
+				new Date(params['start_date']).getMonth(),
+				new Date(params['start_date']).getDate(),
+			);
+			console.log('조건')
+			const endDate = new Date(
+				new Date(params['end_date']).getFullYear(),
+				new Date(params['end_date']).getMonth(),
+				new Date(params['end_date']).getDate(),
+				23,59,59
+			);
+			newParams['createdAt'] = {$gt : startDate,$lt : endDate};
+
+		}
+
+		for (const property in params) {
+			if(property == 'start_date' || property == 'end_date'){
+				continue
+			}
+
+
+		}
+
+		return newParams;
 	}
 }

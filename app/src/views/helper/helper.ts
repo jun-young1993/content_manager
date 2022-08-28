@@ -6,10 +6,10 @@ const sender = (channel:string,arg1 ?:any,arg2 ?:any) => {
 			const replyChannel:string = `${channel}/reply`;
 			ipcRenderer.send(channel,arg1,arg2);
 			ipcRenderer.on(replyChannel,(event:IpcRendererEvent,result) => {
-
+				ipcRenderer.removeAllListeners(replyChannel)
 
 				resolve(result);
-				ipcRenderer.removeAllListeners(replyChannel)
+
 			})
 
 		}catch(e){

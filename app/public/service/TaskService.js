@@ -29,8 +29,15 @@ var TaskService = /** @class */ (function (_super) {
     }
     TaskService.prototype.index = function (search) {
         var _this = this;
+        console.log('search', search);
+        console.log('search', _this.formatIndexParams(search));
+        console.log('sample : ', { createdAt: { $gt: new Date("2022-08-01T10:45:17.000Z") } });
         return new Promise(function (resolve, reject) {
-            _this.getModel('Task').find(search).sort({ createdAt: -1 }).exec(function (err, data) {
+            _this.getModel('Task')
+                .find(_this.formatIndexParams(search))
+                .sort({ createdAt: -1 })
+                .exec(function (err, data) {
+                console.log('data.length', data.length);
                 resolve((0, ApiHelper_1.apiResolve)(data));
             });
         });
