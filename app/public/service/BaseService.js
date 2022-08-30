@@ -16,6 +16,18 @@ var BaseService = /** @class */ (function () {
         // @ts-ignore
         return this.model[modelName];
     };
+    BaseService.prototype.pagenation = function (model, page) {
+        var size = page.size;
+        var currentPage = page.page * size;
+        return new Promise(function (resolve, reject) {
+            model.db.count(model.query, function (error, count) {
+                resolve({
+                    model: model.skip(currentPage).limit(size),
+                    count: count
+                });
+            });
+        });
+    };
     BaseService.prototype.formatIndexParams = function (params) {
         if (params === void 0) { params = {}; }
         var newParams = {};

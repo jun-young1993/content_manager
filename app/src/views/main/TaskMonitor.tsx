@@ -1,107 +1,111 @@
-import * as React from 'react';
-import { GridToolbarContainer, DataGrid, GridRowsProp, GridColDef,GridRowParams,GridCallbackDetails } from '@mui/x-data-grid';
-import MetadataFormDialog from "@views/main/support/metadata/MetadataFormDialog";
-import FormDialog from "@views/components/FormDialog";
-import {
-    Button,
-    Stack,
-    FormControlLabel,
-    FormControl,
-    Select,
-    MenuItem,
-    SelectChangeEvent,
-    TextField,
-    Box,
-    Tooltip ,
-    IconButton
-} from '@mui/material';
-import InputLabel from "@mui/material/InputLabel";
-import AlertDialog from "@views/components/AlertDialog";
-import CustomAlert from "@views/components/CustomAlert";
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import electron, {IpcRendererEvent} from "electron";
-const ipcRenderer = electron.ipcRenderer;
-import {isEmpty} from 'lodash';
-import {useDispatch} from "react-redux";
-import {VariantType} from "notistack";
+import * as React from "react";
+import BaseGrid from "@views/components/grid/BaseGrid";
+import {sender} from "@views/helper/helper";
+const reducer = (prevState:any, newState:any) => ({
+	...prevState,
+	...newState
+})
+const pageReducer = (prevState:any, newState:any) => ({
+	...prevState,
+	...newState
+})
+const taskReducer = (prevState:any, newState:any) => ({
+	...prevState,
+	...newState
+})
+export default function TaskMonitor(){
+	const [values, setValues] = React.useReducer(reducer,{
+		createdAt : {$gte : new Date(), $lte : new Date()},
+		status : {$in : ['complete']}
+	});    
+	const [pagenation, setPagenation] = React.useReducer(pageReducer,{
+		page : 0,
+		size : 10
+	})
 
+	const [tasks, setTasks] = React.useReducer(taskReducer,{
+		rows : [],
+		count : 0
+	})
+	// const [rows, setRows] = React.useState([]);
+	const onDateChangeHandle = (newValue:Date, type : "start" | "end") => {
+		console.log('new Value',newValue);
+		console.log('type',type);
+		const endDate = values.createdAt.$lte;
+		const startDate = values.createdAt.$gte;
+		if(type === "start"){
+			console.log('start change',{createdAt : {$gte : newValue, $lte : endDate}})
+			setValues({createdAt : {$gte : newValue, $lte : endDate}});
+		}else if(type == "end"){
+			console.log('end date',{createdAt : {$gte : startDate , $lte : newValue}})
+			setValues({createdAt : {$gte : startDate , $lte : newValue}});
+		}
+		
+	}
+	const load = () => {
+		console.log('laod');
+		sender("@Task/_index",values,pagenation)
+		    .then((result:any) => {
+			console.log("@Task/_index");
+			setTasks({rows : result.data, count : result.count});
+		    })
+    
+	}
+    
+	React.useEffect(() => {
+	    console.log('new data');
+	    load();
+	},[])
 
-// const rows: GridRowsProp = [
-//     { id: 1, col1: 'Hello', col2: 'World' },
-//     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-//     { id: 3, col1: 'MUI', col2: 'is Amazing' },
-// ];
+	React.useEffect(() => {
+		load();
+	},[values])
 
-
-// content_id: "J0LmOqi3OxgAg4Ba"
-// createdAt: Sat Aug 13 2022 12:31:47 GMT+0900 (한국 표준시) {}
-// id: "Ap3FtJJwzTrggTQK"
-// module_id: "transcoder_proxy_online_to_proxy"
-// priority: 0
-// rule_id: "user_out_transcoder_proxy_online_to_proxy"
-// source: "Gf0cVpni7t9JUZAJ.avi"
-// source_media_id: "QeiK03hNGx0xwXnR"
-// status: "complete"
-// target: "Ap3FtJJwzTrggTQK.mp4"
-// target_media_id: "sR9NHPSo4CjMwaLh"
-// updatedAt: Sat Aug 13 2022 12:31:49 GMT+0900 (한국 표준시) {}
-// workflow_id: "user_out_ingest"
-// _id: "Ap3FtJJwzTrggTQK"
-
-
-
-
-export interface TaskMonitorSearchInterface {
-    content_id ? :string
-}
-export interface TaskMonitorInterface {
-    search? : TaskMonitorSearchInterface
-}
-export default function TaskMonitor(props:TaskMonitorInterface) {
-
-    let search:TaskMonitorSearchInterface = {}
-    let fullInfo:boolean = true;
-    if (props.search) {
-        fullInfo = false;
-        search = props.search;
-    }
-    const columns: GridColDef[] = [
-        { field: 'status', headerName: '상태', width: 150 },
-        { field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
-        { field: 'module_nm', headerName: '모듈명', width: 250 },
-        { field: 'source', headerName: '소스파일', width: 200 },
-        { field: 'target', headerName: '타겟파일', width: 200 },
-    ];
-
-
-    const [rows, setRows] = React.useState([]);
-    ipcRenderer.send("@Task/_index",search);
-    ipcRenderer.on("@Task/_index/reply",(err,rows) => {
-        console.log('rows',rows);
-        setRows(rows.data);
-        ipcRenderer.removeAllListeners("@Task/_index/reply");
-    })
-
-
-    if(fullInfo){
-        columns.push({field : 'content_id' , headerName : '콘텐츠 아이디', width:200})
-    }
-
-
-    return (
-        <div style={{ height: '75vh', width: '100%' }}>
-            <DataGrid
-                style={{height:'75vh'}}
-                rows={rows.map((task:{_id : string, id? : string}) => {
-                    task.id = task._id;
-                    return task;
-                })}
-                columns={columns}
-                hideFooter={!fullInfo}
-                editMode="row"
-
-            />
-
-        </div>
-    );
+	React.useEffect(() => {
+		load();
+	},[pagenation])
+	
+	return (
+		<BaseGrid
+			title={"작업 모니터링"}
+			
+			// rows={tasks.rows.map((row:{_id : string, id ?: string}) => {
+			// 	row.id = row._id;
+			// 	return row;
+			//     })}
+			searchToolbar={[
+				{ field : "date_range" , onChange : onDateChangeHandle , values : [values.createdAt.$gte, values.createdAt.$lte]},
+				{ 
+					field : "select_multi" , onChange : (values : string[])=>{
+						setValues({status : {$in : values}});
+					} , 
+					lists : {"queue" : "대기", "processing" : "작업중", "complete" : "완료", "error" : "실패"},
+					defaultLists : values.status.$in
+				}
+			]}
+			dataGridProps={{
+				columns:[
+					{ field: 'status', headerName: '상태', width: 150 },
+					{ field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
+					{ field: 'module_nm', headerName: '모듈명', width: 250 },
+					{ field: 'source', headerName: '소스파일', width: 200 },
+					{ field: 'target', headerName: '타겟파일', width: 200 },
+				],
+				rows : tasks.rows.map((row:{_id : string, id ?: string}) => {
+					row.id = row._id;
+					return row;
+				    }),
+				rowCount : tasks.count,
+				rowsPerPageOptions: [5,10,15,20,25,30],
+				page : pagenation.page,
+				pageSize : pagenation.size,
+				onPageChange:(page:number)=>{
+					setPagenation({page : page})
+				},
+				onPageSizeChange:(pageSize:number)=>{
+					setPagenation({size : pageSize})
+				}
+			}}
+		/>
+	)
 }

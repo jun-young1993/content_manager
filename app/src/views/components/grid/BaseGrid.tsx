@@ -6,11 +6,9 @@ import {
     GridRowsProp,
     GridColDef,
     GridRowParams,
-    GridCallbackDetails
+    GridCallbackDetails,
+    DataGridProps
 } from '@mui/x-data-grid';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import {
     Container,
     Typography,
@@ -22,6 +20,8 @@ import {isEmpty} from "lodash";
 import {sender} from "@views/helper/helper";
 import {ipcRenderer, IpcRendererEvent} from "electron";
 import {useEffect} from "react";
+import DateRange from "@views/components/fields/DateRange";
+import FieldMapper from "@views/components/fields/FieldMapper";
 
 export interface ApiInterface {
     get : string
@@ -34,10 +34,10 @@ export interface SearchToolbar {
     type : string
 }
 export interface BaseGridInterface {
-    columns : GridColDef[]
-    api : ApiInterface
+    // columns : GridColDef[]
     title ?: string
     searchToolbar ?: any
+    dataGridProps ?: any
 }
 
 /**
@@ -60,28 +60,24 @@ const reducer = (prevState:any, newState:any) => ({
 })
 
 export default function BaseGrid(props:BaseGridInterface){
-    const columns = props.columns;
+    // const columns = props.columns;
     const searchToolbar = props.searchToolbar;
-    const [rows, setRows] = React.useState([]);
+    // const rows = props.rows;
+    // console.log('basegrid rows',props.rows)
+    // const [rows, setRows] = React.useState(props.rows);
 
     let searchValues = {};
+ 
+
+    // const types :any = [];
+    // if(!isEmpty(searchToolbar)){
+    //     searchToolbar.map((search:any) => {
+    //         types[search.type] = search;
+    //     })
+    // }
+    // console.log('types',types)
 
 
-
-    const types :any = [];
-    if(!isEmpty(searchToolbar)){
-        searchToolbar.map((search:any) => {
-            types[search.type] = search;
-        })
-    }
-    console.log('types',types)
-    let dateSearchCheck : boolean = false;
-    let dateSearchValues:any = {};
-    if((!isEmpty(types['start_date'])) && (!isEmpty(types['end_date']))){
-        dateSearchCheck = true;
-        dateSearchValues['start_date'] = new Date();
-        dateSearchValues['end_date'] = new Date();
-    }
 
     // const [value, setValue] = React.useState<Date | null>(
     //     new Date('2014-08-18T21:11:54'),
@@ -91,55 +87,21 @@ export default function BaseGrid(props:BaseGridInterface){
     //     setValue(newValue);
     // };
 
-    const [values, setValues] = React.useReducer(reducer,{
-        ...dateSearchValues
-    });
+    // const [values, setValues] = React.useReducer(reducer,{
+    //     start_date : new Date(),
+    //     end_date : new Date()
+    // });
 
 
 
-    const dateSearch = () => {
+    // const dateSearch = () => {
 
-        if(dateSearchCheck === false){
-            return (<></>)
-        }
-        return (
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-
-                <Stack direction={"row"} spacing={2}>
-                    <DesktopDatePicker
-                        inputFormat="yyyy-MM-dd"
-                        value={values.start_date}
-                        onChange={(value) => {
-                            setValues({start_date : value})
-                        }}
-                        renderInput={(params) => {
-                            return <TextField
-                                size={"small"}
-                                style={{width:'120px'}}
-                                variant="standard"
-                                {...params}
-                            />
-                        }}
-                    />
-                    <DesktopDatePicker
-                        inputFormat="yyyy-MM-dd"
-                        value={values.end_date}
-                        onChange={(value)=> {
-                            setValues({end_date : value})
-                        }}
-                        renderInput={(params) => {
-                            return <TextField
-                                size={"small"}
-                                style={{width:'120px'}}
-                                variant="standard"
-                                {...params}
-                            />
-                        }}
-                    />
-                </Stack>
-            </LocalizationProvider>
-        );
-    }
+    
+    //     return (
+    //         <DateRange 
+    //         ></DateRange>
+    //     );
+    // }
     // ipcRenderer.send(props.api.get);
     // ipcRenderer.on(`${props.api.get}/reply`,(event:IpcRendererEvent,result) => {
     //     ipcRenderer.removeAllListeners(`${props.api.get}/reply`)
@@ -147,26 +109,22 @@ export default function BaseGrid(props:BaseGridInterface){
     //     console.log('renderer')
     //
     // })
-    useEffect(() => {
-        console.log('new data');
-        sender(props.api.get,values)
-            .then((result:any) => {
-                console.log('ren')
-                setRows(result.data);
-            })
-    },[])
-
-    const load = () => {
-            console.log('laod');
-            sender(props.api.get,values)
-                .then((result:any) => {
-                    console.log('ren')
-                    setRows(result.data);
-                })
-
-    }
 
 
+    // const load = () => {
+    //         console.log('laod');
+    //         sender(props.api.get,values)
+    //             .then((result:any) => {
+    //                 console.log('ren')
+    //                 setRows(result.data);
+    //             })
+
+    // }
+
+    // useEffect(() => {
+    //     console.log('new data');
+    //     load();
+    // },[])
 
 
     return (
@@ -176,22 +134,27 @@ export default function BaseGrid(props:BaseGridInterface){
             </Typography>
             <DataGrid
                 sx={{height:'70vh'}}
-                rows={rows.map((row:{_id : string, id ?: string}) => {
-                    row.id = row._id;
-                    return row;
-                })}
-                columns={columns}
+                // rows={rows}
+                // columns={columns}
+                {...props.dataGridProps}
                 components={{
                     Toolbar : () => {
                         return (
                             <GridToolbarContainer>
                                 <Stack direction={"row"}>
-                                    {dateSearch()}
+                                    <FieldMapper 
+                                        default={{
+                                            size : "small",
+                                            variant:"standard"
+                                        }}
+                                        fields={props.searchToolbar}
+                                    />
+                                    {/* {dateSearch()} */}
                                     {/*{makeSearchToolbar()}*/}
-                                    <Button onClick={()=> {
+                                    {/* <Button onClick={()=> {
                                         console.log('values',values);
                                         load();
-                                    }}>검색</Button>
+                                    }}>검색</Button> */}
                                 </Stack>
                             </GridToolbarContainer>
                         )

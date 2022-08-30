@@ -16,26 +16,8 @@ import {ipcRenderer, IpcRendererEvent} from "electron";
 import TaskMonitor from "@views/main/TaskMonitor";
 import BaseGrid from "@views/components/grid/BaseGrid";
 export default function Config() {
-	// const [view, setView] = React.useState(<Metadata />)
-	const [view, setView] = React.useState(
-		<BaseGrid
-			title={"작업 모니터링"}
-			columns={[
-				{ field: 'status', headerName: '상태', width: 150 },
-				{ field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
-				{ field: 'module_nm', headerName: '모듈명', width: 250 },
-				{ field: 'source', headerName: '소스파일', width: 200 },
-				{ field: 'target', headerName: '타겟파일', width: 200 },
-			]}
-			api={{
-				get : "@Task/_index"
-			}}
-			searchToolbar={[
-				{type : "start_date"},
-				{type : "end_date"}
-			]}
-		/>
-	)
+	const [view, setView] = React.useState(<Metadata />)
+
 
 
 	return (

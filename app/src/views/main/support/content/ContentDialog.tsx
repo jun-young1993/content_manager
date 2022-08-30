@@ -27,7 +27,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ContentMetadataStore from "@views/store/ContentMetadataStore";
 import { useSelector, useDispatch } from "react-redux";
-import TaskMonitor from "@views/main/TaskMonitor";
+import TaskMonitor from "@views/main/TaskMonitor_";
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const Transition = React.forwardRef(function Transition(

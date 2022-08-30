@@ -27,18 +27,24 @@ var TaskService = /** @class */ (function (_super) {
             ]
         }) || this;
     }
-    TaskService.prototype.index = function (search) {
+    TaskService.prototype.index = function (search, page) {
         var _this = this;
         console.log('search', search);
-        console.log('search', _this.formatIndexParams(search));
-        console.log('sample : ', { createdAt: { $gt: new Date("2022-08-01T10:45:17.000Z") } });
+        console.log('page', page);
+        // console.log('search',_this.formatIndexParams(search));
+        // console.log('sample : ',{createdAt : {$gt : new Date("2022-08-01T10:45:17.000Z")}})
         return new Promise(function (resolve, reject) {
-            _this.getModel('Task')
-                .find(_this.formatIndexParams(search))
-                .sort({ createdAt: -1 })
-                .exec(function (err, data) {
-                console.log('data.length', data.length);
-                resolve((0, ApiHelper_1.apiResolve)(data));
+            var tasks = _this.getModel('Task').find(search);
+            console.log('tasks', tasks);
+            _this.pagenation(tasks, page)
+                .then(function (result) {
+                result.model
+                    .sort({ createdAt: -1 })
+                    .exec(function (err, data) {
+                    console.log('data', data);
+                    console.log('data.length', data.length);
+                    resolve((0, ApiHelper_1.apiCountResolve)(data, result.count));
+                });
             });
         });
     };
