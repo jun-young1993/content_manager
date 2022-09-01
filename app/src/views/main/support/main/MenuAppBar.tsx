@@ -15,6 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import Fade from '@mui/material/Fade';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -65,13 +66,60 @@ const pages = [
     label : "인제스트"
   },
   {
+    key : 'TaskMonitor',
+    label : "모니터링"
+  },
+  {
     key : 'Config',
     label : "설정"
   }
   
 ];
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+export function FadeMenu(props:any) {
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const onClick = () => {
+    if(props.onClick){
+      props.onClick()
+    }
+  }
+
+  return (
+    <div>
+      <Button
+        id="fade-button"
+        aria-controls={open ? 'fade-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+      >
+        Dashboard
+      </Button>
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Fade}
+      >
+        <MenuItem onClick={onClick}>Profile</MenuItem>
+        <MenuItem onClick={onClick}>My account</MenuItem>
+        <MenuItem onClick={onClick}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
+}
 
 const MenuAppBar = (props:any) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -153,7 +201,22 @@ const MenuAppBar = (props:any) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {pages.map((page) => {
+            
+                  return (
+                      <MenuItem key={page.key} value={page.key} onClick={() => {
+                        handleCloseNavMenu({
+                            target : {
+                                value : page.key
+                            }
+                        })
+                    }}>
+                      <Typography textAlign="center">{page.label}</Typography>
+                    </MenuItem>
+                  )
+              })}
+              {/* {pages.map((page) => (
+                
                 <MenuItem key={page.key} value={page.key} onClick={() => {
                     handleCloseNavMenu({
                         target : {
@@ -163,7 +226,7 @@ const MenuAppBar = (props:any) => {
                 }}>
                   <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
             </Menu>
     
           </Box>
@@ -187,17 +250,19 @@ const MenuAppBar = (props:any) => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page.key}
-                value={page.key}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.label}
-              </Button>
-              
-            ))}
+            {pages.map((page) => {
+       
+              return (
+                  <Button
+                    key={page.key}
+                    value={page.key}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page.label}
+                  </Button>
+                )
+              })}
           </Box>
             <Search>
                 <SearchIconWrapper>

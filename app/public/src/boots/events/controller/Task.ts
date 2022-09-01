@@ -8,6 +8,7 @@ import convert = require("lodash/fp/convert");
 import {ModuleService} from "../../../../service/ModuleService";
 import {convertArrayToKeyValue} from "../../../../lib/helper/ApiHelper";
 import {WorkflowService} from "../../../../service/WorkflowService";
+import { isEmpty } from "lodash";
 // import {User} from "@model/User";
 const db = new Model();
 const taskService = new TaskService();
@@ -54,6 +55,21 @@ class Task {
 
             })
 
+    }
+
+    static _getStatus(event, args){
+        taskService.find(args[0])
+        .then((task) => {
+            let progress = 0;
+            if(!isEmpty(task)){
+                if(!isEmpty(task.progress)){
+                    progress = task.progress;
+                }
+                
+            }
+
+            event.autoReply(progress);
+        })
     }
 
     static index(event, args){

@@ -7,7 +7,8 @@ const ffmpegPath = require('ffmpeg-static-electron').path;
 const ffprobePath = require('ffprobe-static-electron').path;
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
-const {TaskUpdater} = require('../TaskUpdater');
+// const {TaskUpdater} = require('../TaskUpdater');
+import {TaskUpdater} from "../TaskUpdater";
 const {Property} = require('./Property');
 const log = require('../../Logger')
 import {sendIpc} from "../../helper/ElectronHelper"
@@ -25,7 +26,7 @@ export class Transcoder extends Property{
 		log.channel('ts').info('[ffprobePath]',ffprobePath);
 		super(params);
 		this.params = params;
-
+		this.taskUpdater = new TaskUpdater(this.getTaskId());
 
 	}
 	initialize(){
@@ -34,12 +35,14 @@ export class Transcoder extends Property{
 		ffmpeg.setFfprobePath(ffprobePath);
 
 		const taskId = this.getTaskId();
+		const _this = this;
 		return ffmpeg(this.getSourceFullPath())
 			.on('filenames', function(filenames) {
 				log.channel('ts').info('[transcoder filenames]',filenames);
 			})
 			.on('progress',function(progress){
 				console.log('Processing: ' + progress.percent + '% done');
+				_this.taskUpdater.progress(progress.percent);
 			})
 			.on('error',function(err, stdout, stderr){
 				sendIpc("#Utils/TaskSnackBar",{
@@ -49,7 +52,7 @@ export class Transcoder extends Property{
 				log.channel('ts').error('[transcoder error]',err);
 				log.channel('ts').error('[transcoder stdout]',stdout);
 				log.channel('ts').error('[transcoder stderr]',stderr);
-				new TaskUpdater(taskId).error();
+				_this.taskUpdater.error();
 			})
 			.on('end', function() {
 				log.channel('ts').info('[transcoder Complete]');
@@ -58,7 +61,7 @@ export class Transcoder extends Property{
 					variant : "success",
 					messages : `[Tc][complete]`
 				});
-				new TaskUpdater(taskId).complete();
+				_this.taskUpdater.complete();
 			});
 	}
 

@@ -7,6 +7,7 @@ var TaskService_1 = require("../../../../service/TaskService");
 var ModuleService_1 = require("../../../../service/ModuleService");
 var ApiHelper_1 = require("../../../../lib/helper/ApiHelper");
 var WorkflowService_1 = require("../../../../service/WorkflowService");
+var lodash_1 = require("lodash");
 // import {User} from "@model/User";
 var db = new Task_1.Task();
 var taskService = new TaskService_1.TaskService();
@@ -50,6 +51,18 @@ var Task = /** @class */ (function () {
                     event.autoReply(tasks);
                 });
             });
+        });
+    };
+    Task._getStatus = function (event, args) {
+        taskService.find(args[0])
+            .then(function (task) {
+            var progress = 0;
+            if (!(0, lodash_1.isEmpty)(task)) {
+                if (!(0, lodash_1.isEmpty)(task.progress)) {
+                    progress = task.progress;
+                }
+            }
+            event.autoReply(progress);
         });
     };
     Task.index = function (event, args) {

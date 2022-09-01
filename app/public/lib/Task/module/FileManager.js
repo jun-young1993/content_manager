@@ -24,14 +24,28 @@ var ElectronHelper_1 = require("../../helper/ElectronHelper");
 var FileManager = /** @class */ (function (_super) {
     __extends(FileManager, _super);
     function FileManager(params) {
-        var _this = _super.call(this, params) || this;
+        var _this_1 = _super.call(this, params) || this;
+        _this_1.sourceState = { size: 0 };
         log.channel('fs').info('[Start Fs]', params);
-        _this.params = params;
-        var targetDir = _this.getTargetDir();
+        _this_1.params = params;
+        var targetDir = _this_1.getTargetDir();
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
         }
-        return _this;
+        var _this = _this_1;
+        _this_1.taskUpdater = new TaskUpdater_1.TaskUpdater(_this.getTaskId());
+        var sourceFullPath = _this_1.getSourceFullPath();
+        if (!fs.statSync(sourceFullPath)) {
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "error",
+                messages: "[Fs]][error] not found source file"
+            });
+            _this.taskUpdater.error();
+        }
+        else {
+            _this_1.sourceState = fs.statSync(sourceFullPath);
+        }
+        return _this_1;
     }
     FileManager.prototype.copy = function () {
         var taskId = this.getTaskId();
@@ -45,10 +59,18 @@ var FileManager = /** @class */ (function (_super) {
         this._copy(sourceFullPath, targetFullPath, taskId);
     };
     FileManager.prototype._copy = function (sourceFullPath, targetFullPath, taskId) {
+        var readed = 0;
+        var sourceSize = this.sourceState.size;
+        var _this = this;
         fs.createReadStream(sourceFullPath)
             .on('error', function (error) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
-            new TaskUpdater_1.TaskUpdater(taskId).error();
+            _this.taskUpdater.error();
+        })
+            .on('date', function (data) {
+            readed += data.length;
+            log.channel('fs').info('[Fs progress', (readed / sourceSize * 100).toFixed(2));
+            _this.taskUpdater.progress((readed / sourceSize * 100).toFixed(2));
         })
             .pipe(fs.createWriteStream(targetFullPath))
             .on('error', function (error) {
@@ -57,7 +79,7 @@ var FileManager = /** @class */ (function (_super) {
                 variant: "error",
                 messages: "[Fs]][error]".concat(taskId, " ").concat(error)
             });
-            new TaskUpdater_1.TaskUpdater(taskId).error();
+            _this.taskUpdater.error();
         })
             .on('finish', function () {
             log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
@@ -65,7 +87,7 @@ var FileManager = /** @class */ (function (_super) {
                 variant: "success",
                 messages: "[Fs][complete]".concat(taskId)
             });
-            new TaskUpdater_1.TaskUpdater(taskId).complete();
+            _this.taskUpdater.complete();
         });
     };
     return FileManager;

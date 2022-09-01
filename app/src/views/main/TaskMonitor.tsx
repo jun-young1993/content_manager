@@ -1,6 +1,7 @@
 import * as React from "react";
 import BaseGrid from "@views/components/grid/BaseGrid";
 import {sender} from "@views/helper/helper";
+import TaskCircularProgress from "@views/main/support/taskMonitor/TaskCircularProgress";
 const reducer = (prevState:any, newState:any) => ({
 	...prevState,
 	...newState
@@ -14,9 +15,11 @@ const taskReducer = (prevState:any, newState:any) => ({
 	...newState
 })
 export default function TaskMonitor(){
+	
 	const [values, setValues] = React.useReducer(reducer,{
-		createdAt : {$gte : new Date(), $lte : new Date()},
-		status : {$in : ['complete']}
+		createdAt : {$gt : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+			 $lt : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),23,59,59)},
+		status : {$in : ['processing']}
 	});    
 	const [pagenation, setPagenation] = React.useReducer(pageReducer,{
 		page : 0,
@@ -28,17 +31,17 @@ export default function TaskMonitor(){
 		count : 0
 	})
 	// const [rows, setRows] = React.useState([]);
-	const onDateChangeHandle = (newValue:Date, type : "start" | "end") => {
+	const onDateChangeHandle = (newValue:any, type : "start" | "end") => {
 		console.log('new Value',newValue);
 		console.log('type',type);
-		const endDate = values.createdAt.$lte;
-		const startDate = values.createdAt.$gte;
+		const endDate = values.createdAt.$lt;
+		const startDate = values.createdAt.$gt;
 		if(type === "start"){
 			console.log('start change',{createdAt : {$gte : newValue, $lte : endDate}})
-			setValues({createdAt : {$gte : newValue, $lte : endDate}});
+			setValues({createdAt : {$gt : newValue, $lt : endDate}});
 		}else if(type == "end"){
 			console.log('end date',{createdAt : {$gte : startDate , $lte : newValue}})
-			setValues({createdAt : {$gte : startDate , $lte : newValue}});
+			setValues({createdAt : {$gt : startDate , $lt : newValue}});
 		}
 		
 	}
@@ -85,13 +88,18 @@ export default function TaskMonitor(){
 			]}
 			dataGridProps={{
 				columns:[
+					{ field: 'progress', headerName: '진행률', width: 100, renderCell : (row:{id : string, row : {status : string, progress ?: number}}) => {
+						// console.log('render cell',row);
+						return (<TaskCircularProgress taskId={row.id} status={row.row.status} progress={row.row.progress}/>);
+					} },
 					{ field: 'status', headerName: '상태', width: 150 },
 					{ field: 'workflow_nm', headerName: '워크플로우명', width: 250 },
 					{ field: 'module_nm', headerName: '모듈명', width: 250 },
 					{ field: 'source', headerName: '소스파일', width: 200 },
 					{ field: 'target', headerName: '타겟파일', width: 200 },
 				],
-				rows : tasks.rows.map((row:{_id : string, id ?: string}) => {
+				rows : tasks.rows.map((row:{_id : string, id ?: string, progress ?: any}) => {
+					// row.progress = (<CircularStatic />)
 					row.id = row._id;
 					return row;
 				    }),

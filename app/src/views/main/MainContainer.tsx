@@ -63,7 +63,8 @@ export default function MainContainer(props:any) {
                     const container:any = {
                         Content :<Content />,
                         Ingest : <Ingest />,
-                        Config : <Config />
+                        Config : <Config />,
+                        TaskMonitor : <TaskMonitor />
                     };
                     setValue(container[value]);
                 }}

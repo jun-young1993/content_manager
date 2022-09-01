@@ -48,6 +48,14 @@ var TaskService = /** @class */ (function (_super) {
             });
         });
     };
+    TaskService.prototype.find = function (taskId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Task').find({ _id: taskId }, function (error, task) {
+                resolve(task);
+            });
+        });
+    };
     return TaskService;
 }(BaseService));
 exports.TaskService = TaskService;

@@ -11,6 +11,7 @@ export class TaskUpdater {
     private taskModel : any = null;
     private workflowRuleModel : any = null
     private taskManager : any = null;
+    private progressNumber : number = 0;
     constructor(taskId:any){
         this.taskId = taskId;
         this.taskModel = new Task().db();
@@ -74,15 +75,49 @@ export class TaskUpdater {
         })
     }
     complete(){
-        this.updateTaskStatus('complete');
+        const _this = this;
+        _this.updateTaskStatus('complete',()=>{
+            _this.taskModel.update({_id : _this.taskId},{$set : {progress : 100}},(err:any,update : any) => {
+            });    
+        });
     }
 
     error(){
         this.updateTaskStatus('error');
     }
 
+    progress(progress){
+        
+//         Processing: undefined% done
+            // [1] progress undefined
+            // [1] Processing: undefined% done
+            // [1] progress undefined
+            // [1] Processing: undefined% done
+            // [1] progress undefined
+            // [1] Processing: 2.066415313225058% done
+            // [1] progress 2.066415313225058
+            // [1] Processing: 2.6283352668213458% done
+            // [1] progress 2.6283352668213458
+            // [1] Processing: 3.199318445475638% done
+        const _this = this;
+        if(progress){
 
-    updateTaskStatus(status:TaskStatus){
+
+            const currentProgress = parseInt(progress);
+            if(currentProgress != this.progressNumber){
+                this.taskModel.update({_id : _this.taskId},{$set : {progress : progress}},(err:any,update : any) => {
+                    console.log('update progress');
+                    this.progressNumber = currentProgress;
+                });
+            }
+            
+
+        }
+        
+    }
+
+
+    updateTaskStatus(status:TaskStatus,callback ?: Function){
         const _this = this;
         log.channel('task_update').info(`[TaskUpdater][${status}] ${_this.taskId}`);
         this.taskModel.update({_id : _this.taskId},{$set : {status : status}},(err:any,update : any) => {
@@ -94,8 +129,12 @@ export class TaskUpdater {
                     this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
                         console.log('after update task info',task);
                    
-                      
+                        
                             _this.nextTask();
+
+                            if(callback){
+                                callback();
+                            }
                    
      
                     })  

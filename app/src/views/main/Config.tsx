@@ -45,9 +45,9 @@ export default function Config() {
 										if (menuId == 'workflow') {
 											setView(<Workflow/>);
 										}
-										if (menuId == 'task_monitor'){
-											setView(<TaskMonitor/>);
-										}
+										// if (menuId == 'task_monitor'){
+										// 	setView(<TaskMonitor/>);
+										// }
 									}}/>
 							</Box>
 						</Grid>

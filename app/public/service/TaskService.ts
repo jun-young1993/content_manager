@@ -36,4 +36,13 @@ export class TaskService extends BaseService{
         })
 
     }
+
+    find(taskId:string){
+        const _this = this;
+        return new Promise((resolve, reject) => {
+            _this.getModel('Task').find({_id : taskId},(error , task) => {
+                resolve(task);
+            })
+        })
+    }
 }

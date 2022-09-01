@@ -128,7 +128,7 @@ export default function BaseGrid(props:BaseGridInterface){
 
 
     return (
-        <Container fixed sx={{height:'80vh'}}>
+        <Container fixed sx={{height:'80vh', width:"100%"}}>
             <Typography variant="h4" sx={{marginBottom:3}}>
                 {makeTitle(props.title)}
             </Typography>

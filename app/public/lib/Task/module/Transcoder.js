@@ -25,14 +25,15 @@ var ffmpegPath = require('ffmpeg-static-electron').path;
 var ffprobePath = require('ffprobe-static-electron').path;
 var fs = require('fs');
 var ffmpeg = require('fluent-ffmpeg');
-var TaskUpdater = require('../TaskUpdater').TaskUpdater;
+// const {TaskUpdater} = require('../TaskUpdater');
+var TaskUpdater_1 = require("../TaskUpdater");
 var Property = require('./Property').Property;
 var log = require('../../Logger');
 var ElectronHelper_1 = require("../../helper/ElectronHelper");
 var Transcoder = /** @class */ (function (_super) {
     __extends(Transcoder, _super);
     function Transcoder(params) {
-        var _this = this;
+        var _this_1 = this;
         (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
             variant: "info",
             messages: "[Tc][start] "
@@ -40,20 +41,23 @@ var Transcoder = /** @class */ (function (_super) {
         log.channel('ts').info('[Start Transcoding]', params);
         log.channel('ts').info('[ffmpegPath]', ffmpegPath);
         log.channel('ts').info('[ffprobePath]', ffprobePath);
-        _this = _super.call(this, params) || this;
-        _this.params = params;
-        return _this;
+        _this_1 = _super.call(this, params) || this;
+        _this_1.params = params;
+        _this_1.taskUpdater = new TaskUpdater_1.TaskUpdater(_this_1.getTaskId());
+        return _this_1;
     }
     Transcoder.prototype.initialize = function () {
         ffmpeg.setFfmpegPath(ffmpegPath);
         ffmpeg.setFfprobePath(ffprobePath);
         var taskId = this.getTaskId();
+        var _this = this;
         return ffmpeg(this.getSourceFullPath())
             .on('filenames', function (filenames) {
             log.channel('ts').info('[transcoder filenames]', filenames);
         })
             .on('progress', function (progress) {
             console.log('Processing: ' + progress.percent + '% done');
+            _this.taskUpdater.progress(progress.percent);
         })
             .on('error', function (err, stdout, stderr) {
             (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
@@ -63,7 +67,7 @@ var Transcoder = /** @class */ (function (_super) {
             log.channel('ts').error('[transcoder error]', err);
             log.channel('ts').error('[transcoder stdout]', stdout);
             log.channel('ts').error('[transcoder stderr]', stderr);
-            new TaskUpdater(taskId).error();
+            _this.taskUpdater.error();
         })
             .on('end', function () {
             log.channel('ts').info('[transcoder Complete]');
@@ -71,7 +75,7 @@ var Transcoder = /** @class */ (function (_super) {
                 variant: "success",
                 messages: "[Tc][complete]"
             });
-            new TaskUpdater(taskId).complete();
+            _this.taskUpdater.complete();
         });
     };
     Transcoder.prototype.thumbnail = function () {

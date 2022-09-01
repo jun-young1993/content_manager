@@ -11,6 +11,7 @@ var TaskUpdater = /** @class */ (function () {
         this.taskModel = null;
         this.workflowRuleModel = null;
         this.taskManager = null;
+        this.progressNumber = 0;
         this.taskId = taskId;
         this.taskModel = new Task().db();
         this.workflowRuleModel = new WorkflowRule().db();
@@ -65,12 +66,40 @@ var TaskUpdater = /** @class */ (function () {
         });
     };
     TaskUpdater.prototype.complete = function () {
-        this.updateTaskStatus('complete');
+        var _this = this;
+        _this.updateTaskStatus('complete', function () {
+            _this.taskModel.update({ _id: _this.taskId }, { $set: { progress: 100 } }, function (err, update) {
+            });
+        });
     };
     TaskUpdater.prototype.error = function () {
         this.updateTaskStatus('error');
     };
-    TaskUpdater.prototype.updateTaskStatus = function (status) {
+    TaskUpdater.prototype.progress = function (progress) {
+        var _this_1 = this;
+        //         Processing: undefined% done
+        // [1] progress undefined
+        // [1] Processing: undefined% done
+        // [1] progress undefined
+        // [1] Processing: undefined% done
+        // [1] progress undefined
+        // [1] Processing: 2.066415313225058% done
+        // [1] progress 2.066415313225058
+        // [1] Processing: 2.6283352668213458% done
+        // [1] progress 2.6283352668213458
+        // [1] Processing: 3.199318445475638% done
+        var _this = this;
+        if (progress) {
+            var currentProgress_1 = parseInt(progress);
+            if (currentProgress_1 != this.progressNumber) {
+                this.taskModel.update({ _id: _this.taskId }, { $set: { status: progress } }, function (err, update) {
+                    console.log('update progress');
+                    _this_1.progressNumber = currentProgress_1;
+                });
+            }
+        }
+    };
+    TaskUpdater.prototype.updateTaskStatus = function (status, callback) {
         var _this_1 = this;
         var _this = this;
         log.channel('task_update').info("[TaskUpdater][".concat(status, "] ").concat(_this.taskId));
@@ -81,6 +110,9 @@ var TaskUpdater = /** @class */ (function () {
                 _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
                     console.log('after update task info', task);
                     _this.nextTask();
+                    if (callback) {
+                        callback();
+                    }
                 });
             }
             else {

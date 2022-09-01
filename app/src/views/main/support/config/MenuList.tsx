@@ -91,7 +91,7 @@ export default function MenuList(props:any) {
           {listItem("워크플로우","workflow",<StarBorder />,true)}
 	        {listItem("작업 모듈","module",<StarBorder />,true)}
           {listItem("스토리지","storage",<StarBorder />,true)}
-            {listItem("작업이력","task_monitor",<StarBorder />,true)}
+            {/* {listItem("작업이력","task_monitor",<StarBorder />,true)} */}
         </List>
       	</Collapse>
 	      <ListItemButton onClick={handleSystemClick}>

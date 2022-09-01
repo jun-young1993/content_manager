@@ -11,6 +11,7 @@ export class FileManager extends Property{
 
 	private params:any;
 	private taskUpdater:any;
+	private sourceState : {size :  number} = {size : 0};
 	constructor(params:any){
 		super(params);
 		log.channel('fs').info('[Start Fs]',params);
@@ -20,8 +21,20 @@ export class FileManager extends Property{
 		if(!fs.existsSync(targetDir)){
 			fs.mkdirSync(targetDir, { recursive: true });
 		}
-
-
+		
+		const _this = this;
+		this.taskUpdater = new TaskUpdater(_this.getTaskId());
+		const sourceFullPath = this.getSourceFullPath()
+		
+		if(!fs.statSync(sourceFullPath)){
+			sendIpc("#Utils/TaskSnackBar",{
+				variant : "error",
+				messages : `[Fs]][error] not found source file`
+			});
+			_this.taskUpdater.error();
+		}else{
+			this.sourceState = fs.statSync(sourceFullPath)
+		}
 	}
 
 	copy(){
@@ -38,10 +51,19 @@ export class FileManager extends Property{
 
 
 	_copy(sourceFullPath:string,targetFullPath:string,taskId:string){
+		let readed = 0;
+		
+		const sourceSize = this.sourceState.size;
+		const _this = this;
 		fs.createReadStream(sourceFullPath)
 			.on('error',(error:Error)=>{
 				log.channel('fs').info('[Fs Read Stream Error]',error)
-				new TaskUpdater(taskId).error();
+				_this.taskUpdater.error();
+			})
+			.on('data',(data) => {
+				readed += data.length;
+				
+				_this.taskUpdater.progress((readed/sourceSize * 100).toFixed(2))
 			})
 			.pipe(fs.createWriteStream(targetFullPath))
 			.on('error',(error:Error)=>{
@@ -50,7 +72,7 @@ export class FileManager extends Property{
 					variant : "error",
 					messages : `[Fs]][error]${taskId} ${error}`
 				});
-				new TaskUpdater(taskId).error();
+				_this.taskUpdater.error();
 			})
 			.on('finish',()=>{
 
@@ -59,7 +81,7 @@ export class FileManager extends Property{
 					variant : "success",
 					messages : `[Fs][complete]${taskId}`
 				});
-				new TaskUpdater(taskId).complete();
+				_this.taskUpdater.complete();
 
 
 			});
