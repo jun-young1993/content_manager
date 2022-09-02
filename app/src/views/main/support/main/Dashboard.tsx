@@ -156,19 +156,25 @@ export default function Dashboard(props:DashboardInterface) {
 			
 			return (
 				<>
-					<Tooltip title={leftMenu.name}>
-						<>
-						<ListItemButton onClick={()=>{
-							leftMenu.onClick();
-						}}>
-							<ListItemIcon>
+					
+						
+					<ListItemButton onClick={()=>{
+						leftMenu.onClick();
+					}}>
+						
+						<ListItemIcon>
+							<Tooltip title={leftMenu.name}>
+							<>
 								{leftMenu.icon}
-							</ListItemIcon>
-							<ListItemText primary={leftMenu.name} />
-						</ListItemButton>
-						{leftMenu.drive ? drive : <></>}
-						</>
-					</Tooltip>
+							</>
+							</Tooltip>
+						</ListItemIcon>
+						
+						<ListItemText primary={leftMenu.name} />
+					</ListItemButton>
+					{leftMenu.drive ? drive : <></>}
+						
+					
 				</>
 			)
 		})}
