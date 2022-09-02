@@ -12,6 +12,7 @@ import {isEmpty} from 'lodash';
 // const {isEmpty} = require('lodash');
 import * as path from "path";
 import { apiReject, apiResolve } from '../helper/ApiHelper';
+import { TaskUpdater } from './TaskUpdater';
 export class TaskParse {
 	private sourceMediaId : any = null;
 	private targetMediaId : any = null;
@@ -214,6 +215,7 @@ export class TaskParse {
 
 			new Task().db().update({_id : _this.task._id},{
 				$set : Object.assign(_this.task,{
+					status : 'processing',
 					source_media_id : _this.sourceMedia._id,
 					target_media_id : _this.targetMedia._id,
 					source : _this.sourceMedia.path,
@@ -347,6 +349,8 @@ export class TaskParse {
 																				});
 																				log.channel('task_parse').info('module',_this.module);
 																				log.channel('task_parse').info(`[setting][Start Task Workflow] ${moduleTypeCode.toLowerCase()} => ${moduleTypeMethod.toLowerCase()}`);
+
+																				
 																				_this.module[moduleTypeMethod.toLowerCase()]();
 
 																				resolve(_this);
@@ -443,6 +447,7 @@ export class TaskParse {
 			}
 			taskSetting
 				.then((complete:any) => {
+					
 					resolve(complete);
 				})
 				.catch((error:string) => {

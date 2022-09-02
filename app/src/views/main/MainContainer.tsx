@@ -22,14 +22,41 @@ import Content from "@views/main/Content";
 import Config from "@views/main/Config";
 import TaskMonitor from '@views/main/TaskMonitor';
 import MenuAppBar from '@views/main/support/main/MenuAppBar';
+import Dashboard from "@views/main/support/main/Dashboard";
+
 import ContentDialog from "@views/main/support/content/ContentDialog";
 import UpdateSnackbar from './support/snackbar/UpdateSnackbar';
 import {ipcRenderer, IpcRendererEvent} from "electron";
-
-
-export default function MainContainer(props:any) {
+// import Dashboard from './support/dashboard/Dashboard';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Link from '@mui/material/Link';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import {
+    Search as SearchIcon,
+    Settings as SettingsIcon,
+    List as ListIcon
+} from '@mui/icons-material';
+export default function MainContainer() {
+    const mdTheme = createTheme();
     const [value, setValue] = React.useState(<Content />);
-    
+    const [open, setOpen] = React.useState(true);
+    const toggleDrawer = () => {
+		setOpen(!open);
+	      };
     ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
         console.log('show ingest request',result)
         setValue(<Content />);
@@ -47,33 +74,55 @@ export default function MainContainer(props:any) {
     // };
    
     return (
-
-
         
-        <Box sx={{ width: '100%', typography: 'body1' , height:'auto'}}>
-            <UpdateSnackbar />
-            <Box sx={{ width: '100%',height:'auto'}}>
-            <MenuAppBar
-                onSearch={(searchText:any)=>{
-                    console.log(searchText);
-                    setValue(<Content searchText={searchText}/>);
-                }}
-                onClick={(value:any)=>{
-                    console.log('value menu click',value);
-                    const container:any = {
-                        Content :<Content />,
-                        Ingest : <Ingest />,
-                        Config : <Config />,
-                        TaskMonitor : <TaskMonitor />
-                    };
-                    setValue(container[value]);
-                }}
-            />
-            </Box>
-            <Box sx={{ width: '100%',height:'auto'}}>
-            {value}
-            </Box>
-        </Box>
+        <Dashboard 
+            leftMenu={[{
+                name : "검색",
+                onClick : () => {
+
+                },
+                icon : <SearchIcon />
+            },{
+                name : "설정",
+                onClick : () => {
+
+                },
+                icon : <SettingsIcon />,
+                drive:true
+            },{
+                name : "콘텐츠",
+                onClick : () => {
+
+                },
+                icon : <ListIcon />,
+                drive:true
+            }]}
+        />
+
+        // <Box sx={{ width: '100%', height:'90vh'}}>
+            
+        //     <Box sx={{ width: '100%',height:'auto'}}>
+        //     <MenuAppBar
+        //         onSearch={(searchText:any)=>{
+        //             console.log(searchText);
+        //             setValue(<Content searchText={searchText}/>);
+        //         }}
+        //         onClick={(value:any)=>{
+        //             console.log('value menu click',value);
+        //             const container:any = {
+        //                 Content :<Content />,
+        //                 Ingest : <Ingest />,
+        //                 Config : <Config />,
+        //                 TaskMonitor : <TaskMonitor />
+        //             };
+        //             setValue(container[value]);
+        //         }}
+        //     />
+        //     </Box>
+        //     <Box sx={{ width: '100%',height:'auto'}}>
+        //     {value}
+        //     </Box>
+        // </Box>
 
     );
 }

@@ -92,7 +92,7 @@ var TaskUpdater = /** @class */ (function () {
         if (progress) {
             var currentProgress_1 = parseInt(progress);
             if (currentProgress_1 != this.progressNumber) {
-                this.taskModel.update({ _id: _this.taskId }, { $set: { status: progress } }, function (err, update) {
+                this.taskModel.update({ _id: _this.taskId }, { $set: { progress: progress } }, function (err, update) {
                     console.log('update progress');
                     _this_1.progressNumber = currentProgress_1;
                 });

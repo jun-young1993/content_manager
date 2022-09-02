@@ -18,7 +18,7 @@ import {Box} from "@mui/material";
 
 ipcRenderer.send('auto-update-check','auto-update-check')
 ReactDOM.render(
-            <Box sx={{height:'auto'}}>
+            <Box sx={{height:'90vh'}}>
                 <MainContainer />
                 <UtilsContainer />
             </Box>,

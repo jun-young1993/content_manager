@@ -258,6 +258,7 @@ var TaskParse = /** @class */ (function () {
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 new Task().db().update({ _id: _this.task._id }, {
                                     $set: Object.assign(_this.task, {
+                                        status: 'processing',
                                         source_media_id: _this.sourceMedia._id,
                                         target_media_id: _this.targetMedia._id,
                                         source: _this.sourceMedia.path,
