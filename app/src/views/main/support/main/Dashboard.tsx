@@ -11,7 +11,8 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
-import Tooltip from '@mui/material/Tooltip';
+// import Tooltip from '@mui/material/Tooltip';
+import {LightTooltip} from "@src/components/tooltip/Tooltip";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
@@ -161,15 +162,18 @@ export default function Dashboard(props:DashboardInterface) {
 					<ListItemButton onClick={()=>{
 						leftMenu.onClick();
 					}}>
-						
-						<ListItemIcon>
-							<Tooltip title={leftMenu.name}>
-							<>
-								{leftMenu.icon}
-							</>
-							</Tooltip>
-						</ListItemIcon>
-						
+                      {open
+                      ? (
+                                <ListItemIcon>
+                                  {leftMenu.icon}
+                                </ListItemIcon>
+                          ) : (
+                              <LightTooltip title={leftMenu.name}>
+                                <ListItemIcon>
+                                  {leftMenu.icon}
+                                </ListItemIcon>
+                              </LightTooltip>
+                          )}
 						<ListItemText primary={leftMenu.name} />
 					</ListItemButton>
 					{leftMenu.drive ? drive : <></>}
