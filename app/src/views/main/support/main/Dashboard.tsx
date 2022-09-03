@@ -19,7 +19,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {DashboardInterface, leftMenuInterface} from "@views/main/support/main/MainInterface";
+import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -93,7 +93,8 @@ const title = "ContentManager";
 
 
 export default function Dashboard(props:DashboardInterface) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState<boolean>(true);
+  const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(<></>)
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -159,8 +160,12 @@ export default function Dashboard(props:DashboardInterface) {
 				<>
 					
 						
-					<ListItemButton onClick={()=>{
-						leftMenu.onClick();
+					<ListItemButton onClick={(event : React.MouseEvent<HTMLElement>)=>{
+
+                        const DrawerEvent :DrawerClickEvent = {
+                          setMainContainer : setMainContainer
+                        };
+						leftMenu.onClick(DrawerEvent);
 					}}>
                       {open
                       ? (
@@ -183,9 +188,6 @@ export default function Dashboard(props:DashboardInterface) {
 			)
 		})}
 		</React.Fragment>
-            {/* {mainListItems} */}
-            
-            {/* {secondaryListItems} */}
           </List>
         </Drawer>
         <Box
@@ -202,6 +204,7 @@ export default function Dashboard(props:DashboardInterface) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {mainContainer}
             {/* <Grid container spacing={3}> */}
               {/* Chart */}
               {/* <Grid item xs={12} md={8} lg={9}>

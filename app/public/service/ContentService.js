@@ -45,18 +45,27 @@ var ContentService = /** @class */ (function (_super) {
         if (search === void 0) { search = {}; }
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var size = page.size;
-            var currentPage = page.page * size;
-            console.log('currentPge', currentPage);
+            // const size:number = page.size;
+            // let currentPage:number = page.page * size;
+            // console.log('currentPge',currentPage);
             // _this.getModel('Content').count(search,(error,count:number) => {
-            _this.getModel('Content').find(search).skip(currentPage).limit(size).sort({ createdAt: -1 }).exec(function (err, data) {
-                if (err) {
-                    return reject((0, ApiHelper_1.apiReject)("[ContentService][getContent] find fail by content"));
-                }
-                return resolve((0, ApiHelper_1.apiResolve)(data));
+            var contents = _this.getModel('Content').find(search);
+            _this.pagenation(contents, page)
+                .then(function (result) {
+                result.model
+                    .sort({ createdAt: -1 })
+                    .exec(function (err, data) {
+                    resolve((0, ApiHelper_1.apiCountResolve)(data, result.count));
+                });
             });
-            // })
+            // .skip(currentPage).limit(size).sort({createdAt: -1}).exec((err,data) => {
+            // if(err){
+            //     return reject(apiReject("[ContentService][getContent] find fail by content"))
+            // }
+            // return resolve(apiResolve(data));
         });
+        // })
+        // })
     };
     ContentService.prototype.getCount = function (search) {
         if (search === void 0) { search = {}; }

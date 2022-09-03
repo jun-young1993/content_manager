@@ -46,7 +46,7 @@ export default function ContentList() {
     return(
         <Box sx={{height:'auto'}}>
             <Image />
-            <ContentPagination />
+            {/*<ContentPagination count={0}/>*/}
         </Box>
     )
 }

@@ -31,19 +31,28 @@ export class ContentService extends BaseService{
         const _this = this;
         return  new Promise((resolve,reject) => {
 
-                const size:number = page.size;
-                let currentPage:number = page.page * size;
-                console.log('currentPge',currentPage);
+                // const size:number = page.size;
+                // let currentPage:number = page.page * size;
+                // console.log('currentPge',currentPage);
             // _this.getModel('Content').count(search,(error,count:number) => {
-                _this.getModel('Content').find(search).skip(currentPage).limit(size).sort({createdAt: -1}).exec((err,data) => {
-                    if(err){
-                        return reject(apiReject("[ContentService][getContent] find fail by content"))
-                    }
-                    return resolve(apiResolve(data));
+                const contents = _this.getModel('Content').find(search);
+                _this.pagenation(contents,page)
+                    .then((result) => {
+                        result.model
+                            .sort({createdAt : -1})
+                            .exec((err,data) => {
+                                resolve(apiCountResolve(data,result.count));
+                            })
+                    })
+                    // .skip(currentPage).limit(size).sort({createdAt: -1}).exec((err,data) => {
+                    // if(err){
+                    //     return reject(apiReject("[ContentService][getContent] find fail by content"))
+                    // }
+                    // return resolve(apiResolve(data));
                 })
             // })
 
-        })
+        // })
    }
 
    getCount(search:{} = {}){

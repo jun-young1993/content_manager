@@ -67,9 +67,8 @@ var FileManager = /** @class */ (function (_super) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
             _this.taskUpdater.error();
         })
-            .on('date', function (data) {
+            .on('data', function (data) {
             readed += data.length;
-            log.channel('fs').info('[Fs progress', (readed / sourceSize * 100).toFixed(2));
             _this.taskUpdater.progress((readed / sourceSize * 100).toFixed(2));
         })
             .pipe(fs.createWriteStream(targetFullPath))

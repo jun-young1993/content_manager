@@ -45,6 +45,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
 import {
     Search as SearchIcon,
     Settings as SettingsIcon,
@@ -78,21 +79,21 @@ export default function MainContainer() {
         <Dashboard 
             leftMenu={[{
                 name : "검색",
-                onClick : () => {
-
+                onClick : (event : DrawerClickEvent) => {
+                    event.setMainContainer((<>검색</>));
                 },
                 icon : <SearchIcon />
             },{
                 name : "설정",
-                onClick : () => {
-
+                onClick : (event : DrawerClickEvent) => {
+                    event.setMainContainer((<>설정</>));
                 },
                 icon : <SettingsIcon />,
                 drive:true
             },{
                 name : "콘텐츠",
-                onClick : () => {
-
+                onClick : (event : DrawerClickEvent) => {
+                    event.setMainContainer((<Content />));
                 },
                 icon : <ListIcon />,
                 drive:true

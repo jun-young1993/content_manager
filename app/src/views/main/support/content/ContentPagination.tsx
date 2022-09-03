@@ -10,45 +10,42 @@ import {ipcRenderer, IpcRendererEvent} from "electron";
 
 import TablePagination from '@mui/material/TablePagination';
 
-export default function ContentPagination() {
-	const dispatch = useDispatch();
-	const { page } = useSelector((state:any) => {return state.page})
-	const { size }   = useSelector((state:any) => {return state.page})
+export default function ContentPagination(props:{count : number, page : number, size : number, onChangeHandle : Function}) {
 
 
-	// const { perPage } = useSelector((state:any) => {return state.perPage})
-	// console.log('perPage',perPage);
 
-	const [totalCount , setTotalCount] = React.useState<number>(0);
+
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
 		newPage: number,
 	) => {
-		dispatch({type:'page.put',value : {page : newPage, size : size}});
+		props.onChangeHandle({page : newPage, size : props.size});
+
 	};
 
 	const handleChangeRowsPerPage = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		// setRowsPerPage(parseInt(event.target.value, 10));
-		dispatch({type:'page.put',value : {page : 0,size : parseInt(event.target.value)}});
+		props.onChangeHandle({page : 0,size : parseInt(event.target.value)});
+		// dispatch({type:'page.put',value : {page : 0,size : parseInt(event.target.value)}});
 	};
-	ipcRenderer.on("@Content/_count/reply",(event:IpcRendererEvent,result:any)=>{
-		if(result.success){
-			const searchCount = result.data;
-
-			setTotalCount(searchCount);
-
-		}
-		ipcRenderer.removeAllListeners("@Content/_count/reply")
-	})
+	// ipcRenderer.on("@Content/_count/reply",(event:IpcRendererEvent,result:any)=>{
+	// 	if(result.success){
+	// 		const searchCount = result.data;
+	//
+	// 		setTotalCount(searchCount);
+	//
+	// 	}
+	// 	ipcRenderer.removeAllListeners("@Content/_count/reply")
+	// })
 	return (
 		<TablePagination
 			component="div"
-			count={totalCount}
-			page={page}
+			count={props.count}
+			page={props.page}
 			onPageChange={handleChangePage}
-			rowsPerPage={size}
+			rowsPerPage={props.size}
 			onRowsPerPageChange={handleChangeRowsPerPage}
 		/>
 	);
