@@ -161,7 +161,7 @@ export default function Metadata() {
     }
     
     return (
-        <div style={{ height: '100vh', width: '100%' }}>
+        <div style={{ height: '70vh', width: '100%' }}>
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -321,6 +321,7 @@ export default function Metadata() {
                                         }}
                                     />
                                     <Button
+                                        variant="outlined"
                                        onClick={(evt:any)=>{
                                            const id:any = selected._id;
                                            if(id){

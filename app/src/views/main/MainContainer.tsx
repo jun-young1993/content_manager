@@ -1,57 +1,28 @@
 import * as React from 'react';
-
-
-import {
-    Box,
-    Tab,
-    Tabs
-} from '@mui/material';
-import {
-    TabContext,
-    TabList,
-    TabPanel
-} from '@mui/lab';
-import Storage from "@views/main/Storage";
-import { Provider, useSelector, useDispatch  } from 'react-redux'
-
-import ContentStore from "@views/store/ContentStore";
-import Code from "@views/main/Code";
-import Metadata from "@views/main/Metadata";
-import Ingest from "@views/main/Ingest";
 import Content from "@views/main/Content";
-import Config from "@views/main/Config";
 import TaskMonitor from '@views/main/TaskMonitor';
-import MenuAppBar from '@views/main/support/main/MenuAppBar';
 import Dashboard from "@views/main/support/main/Dashboard";
-
-import ContentDialog from "@views/main/support/content/ContentDialog";
-import UpdateSnackbar from './support/snackbar/UpdateSnackbar';
+import Metadata from "@views/main/Metadata";
+import Code from "@views/main/Code";
+import Storage from "@views/main/Storage";
+import Module from "@views/main/Module";
+import Workflow from "@views/main/Workflow";
 import {ipcRenderer, IpcRendererEvent} from "electron";
-// import Dashboard from './support/dashboard/Dashboard';
+
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
 import {
     Search as SearchIcon,
     Settings as SettingsIcon,
     List as ListIcon,
     TableView as TableViewIcon,
-    Task as TaskIcon
+    Task as TaskIcon,
+    Person as PersonIcon,
+    PermDataSetting as PermDataSettingIcon,
+    Folder as FolderIcon,
+    SettingsSuggest as SettingsSuggestIcon,
+    ViewModule as ViewModuleIcon,
+    AccountTree as AccountTreeIcon
 } from '@mui/icons-material';
 export default function MainContainer() {
     const mdTheme = createTheme();
@@ -102,19 +73,55 @@ export default function MainContainer() {
             },{
                 name : "모니터링",
                 collapse : true,
-                onClick : (event : DrawerClickEvent) => {
-                    console.log(event);
-                    // event.setMainContainer((<Content />));
-                },
+                onClick : (event : DrawerClickEvent) => {},
                 icon : <TableViewIcon />,
                 drive:true,
                 items : [{
                     name : "작업관리",
                     onClick : (event : DrawerClickEvent) => {
-
+                        event.setMainContainer((<TaskMonitor />));
                     },
                     icon :<TaskIcon />
 
+                }]
+            },{
+                name : "사용자 지정 관리",
+                collapse : true,
+                onClick : (event : DrawerClickEvent) => {},
+                icon : <PersonIcon />,
+                drive:true,
+                items : [{
+                    name : "메타데이터 관리",
+                    onClick : (event : DrawerClickEvent) => {
+                        event.setMainContainer((<Metadata />));
+                    },
+                    icon :<PermDataSettingIcon />
+
+                },{
+                    name : "스토리지 관리",
+                    onClick : (event : DrawerClickEvent) => {
+                        event.setMainContainer((<Storage />));
+                    },
+                    icon :<FolderIcon />
+
+                },{
+                    name : "코드 관리",
+                    onClick : (event : DrawerClickEvent) => {
+                        event.setMainContainer((<Code />));
+                    },
+                    icon :<SettingsSuggestIcon />
+                },{
+                    name : "모듈 관리",
+                    onClick : (event : DrawerClickEvent) => {
+                        event.setMainContainer((<Module />));
+                    },
+                    icon :<ViewModuleIcon />
+                },{
+                    name : "워크플로우 관리",
+                    onClick : (event : DrawerClickEvent) => {
+                        event.setMainContainer((<Workflow />));
+                    },
+                    icon :<AccountTreeIcon />
                 }]
             }]}
         />

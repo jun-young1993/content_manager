@@ -223,9 +223,17 @@ export default function Dashboard(props:DashboardInterface) {
                                               };
                                               collapseItem.onClick(DrawerEvent);
                                       }}>
-                                      <ListItemIcon>
-                                        {collapseItem.icon}
-                                      </ListItemIcon>
+                                        {open ? <ListItemIcon>
+                                          {collapseItem.icon}
+                                        </ListItemIcon>
+                                        :
+                                            <LightTooltip title={collapseItem.name}>
+                                            <ListItemIcon>
+                                              {collapseItem.icon}
+                                            </ListItemIcon>
+                                            </LightTooltip>
+                                        }
+
                                       <ListItemText primary={collapseItem.name} />
                                       </ListItemButton>
                                     )
