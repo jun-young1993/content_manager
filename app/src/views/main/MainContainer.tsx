@@ -22,8 +22,10 @@ import {
     Folder as FolderIcon,
     SettingsSuggest as SettingsSuggestIcon,
     ViewModule as ViewModuleIcon,
-    AccountTree as AccountTreeIcon
+    AccountTree as AccountTreeIcon,
+    Monitor as MonitorIcon
 } from '@mui/icons-material';
+import DrawerContent from "@views/main/support/content/DrawerContent";
 export default function MainContainer() {
     const mdTheme = createTheme();
     const [value, setValue] = React.useState(<Content />);
@@ -48,7 +50,7 @@ export default function MainContainer() {
     // };
    
     return (
-        
+
         <Dashboard 
             leftMenu={[{
                 name : "검색",
@@ -74,7 +76,7 @@ export default function MainContainer() {
                 name : "모니터링",
                 collapse : true,
                 onClick : (event : DrawerClickEvent) => {},
-                icon : <TableViewIcon />,
+                icon : <MonitorIcon />,
                 drive:true,
                 items : [{
                     name : "작업관리",
@@ -122,13 +124,20 @@ export default function MainContainer() {
                         event.setMainContainer((<Workflow />));
                     },
                     icon :<AccountTreeIcon />
+                },{
+                    name : "test",
+                    onClick : (event :any) => {
+                        event.setMainContainer(   <DrawerContent />);
+
+                    },
+                    icon :<AccountTreeIcon />
                 }]
             }]}
         />
 
         // <Box sx={{ width: '100%', height:'90vh'}}>
             
-        //     <Box sx={{ width: '100%',height:'auto'}}>
+        //     < sx={{ width: '100%',height:'auto'}}>
         //     <MenuAppBar
         //         onSearch={(searchText:any)=>{
         //             console.log(searchText);
@@ -150,6 +159,7 @@ export default function MainContainer() {
         //     {value}
         //     </Box>
         // </Box>
+
 
     );
 }

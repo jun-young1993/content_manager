@@ -18,7 +18,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ViewerInterface, contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
 import {Circle as CircleIcon} from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
-
+import IconButton from "@mui/material/IconButton";
+import {
+    Pageview as PageviewIcon,
+    PageviewOutlined as PageviewOutlinedIcon
+} from '@mui/icons-material';
+import DrawerContent from "@views/main/support/content/DrawerContent";
 
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -32,7 +37,7 @@ export default function CardView(props:ViewerInterface) {
             <CssBaseline />
 
             <main  >
-                <Container sx={{ py: 3 , flexGrow: 1, overflow: 'auto', height: "55vh"}}  maxWidth="lg" >
+                <Container sx={{ py: 3 , flexGrow: 1, overflow: 'auto', height: "65vh"}}  maxWidth="lg" >
                     {/* End hero unit */}
                     <Grid container spacing={3} alignItems="stretch" >
                         {props.contents.map((content:contentsViewerInterface) => (
@@ -67,8 +72,8 @@ export default function CardView(props:ViewerInterface) {
                                         image={"http://localhost:11101/thumbnail/"+content._id+"?w=248&fit=crop&auto=format"}
                                         alt="random"
                                     />
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography gutterBottom variant="h6" component="h6">
+                                    <CardContent sx={{ flexGrow: 1 , padding:"3px", height : "3vh"}}>
+                                        <Typography gutterBottom noWrap variant="h6" component="h6">
                                             {content.title}
                                         </Typography>
                                         {/*<Typography>*/}
@@ -76,9 +81,17 @@ export default function CardView(props:ViewerInterface) {
                                             {/*content.*/}
                                         {/*</Typography>*/}
                                     </CardContent>
-                                    <CardActions>
-                                        <Button size="small">View</Button>
-                                        <Button size="small">Edit</Button>
+                                    <CardActions sx={{height:"3vh", justifyContent:"flex-end"}} >
+                                        <LightTooltip title={"상세보기"} placement={"top-end"}>
+                                            <IconButton onClick={()=>{
+
+                                            }}>
+                                                <PageviewOutlinedIcon />
+                                            </IconButton>
+                                        </LightTooltip>
+
+                                        {/*<Button size="small">View</Button>*/}
+                                        {/*<Button size="small">Edit</Button>*/}
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -86,6 +99,7 @@ export default function CardView(props:ViewerInterface) {
                     </Grid>
                 </Container>
             </main>
+
             {/* Footer */}
 
             {/* End footer */}
