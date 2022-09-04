@@ -49,7 +49,8 @@ import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/ma
 import {
     Search as SearchIcon,
     Settings as SettingsIcon,
-    List as ListIcon
+    List as ListIcon,
+    TableView as TableViewIcon
 } from '@mui/icons-material';
 export default function MainContainer() {
     const mdTheme = createTheme();
@@ -95,7 +96,7 @@ export default function MainContainer() {
                 onClick : (event : DrawerClickEvent) => {
                     event.setMainContainer((<Content />));
                 },
-                icon : <ListIcon />,
+                icon : <TableViewIcon />,
                 drive:true
             }]}
         />

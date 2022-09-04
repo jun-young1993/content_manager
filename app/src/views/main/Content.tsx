@@ -24,6 +24,7 @@ import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 //     textAlign: 'center',
 //     color: theme.palette.text.secondary,
 // }));
+import {Circle as CircleIcon} from '@mui/icons-material';
 function ContentProvider(props:any) {
     const dispatch = useDispatch();
     dispatch({type:'searchText.put',value:props.searchText})
@@ -54,12 +55,30 @@ function ContentProvider(props:any) {
 }
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
+
+
 function ContentContainer(){
     // const dispatch = useDispatch();
     // const { searchText } = useSelector((state:any) => {return state.searchText})
     // const { category } = useSelector((state:any) => {return state.category})
 
     // const [contents , setContents] = React.useState<contentsViewerInterface[] | []>([]);
+    const TagMenu = (tag:{_id : string, name : string, color: string}) => {
+        console.log(tag._id)
+        return (
+            <>
+                <MenuItem value={tag._id}>
+                    {/*<Typography sx={{pr:1}}>*/}
+                    {/*    <CircleIcon*/}
+                    {/*        sx={{width:"15px", height:"15px", marginTop:"8px", color:tag.color}}*/}
+                    {/*    />*/}
+                    {/*</Typography>*/}
+                    {tag.name}
+                </MenuItem>
+            </>
+
+        )
+    }
     const [state , setState] = React.useReducer(reducer,{
         contents : [],
         tags : [],
@@ -103,21 +122,44 @@ function ContentContainer(){
         <Stack direction="row"  justifyContent="space-between" spacing={2}>
             <Stack direction="row"  justifyContent="flex-end" spacing={2}>
                 <FormControl fullWidth variant="standard" >
-                    <InputLabel>{"태그"}</InputLabel>
+                    <InputLabel id="tag-select-standard-label">{"태그"}</InputLabel>
                     <Select
-                        sx={{width : "80px"}}
+                        labelId="tag-select-standard-label"
+                        // id="demo-simple-select-standard"
+                        sx={{width : "100px"}}
                         value={search.category}
                         onChange={(event : SelectChangeEvent)=>{
-
+                            console.log(event);
+                            // console.log(event.target.value)
+                            setSearch({category : event.target.value});
                         }}
                     >
-                        {state.tags.map((tag : {name : string, _id : string}) => {
-                            return (<MenuItem value={tag._id}>{tag.name}</MenuItem>)
-                        })}
-
+                        {/*<MenuItem value="">*/}
+                        {/*    <em>None</em>*/}
+                        {/*</MenuItem>*/}
                         {/*<MenuItem value={10}>Ten</MenuItem>*/}
-                        {/*<MenuItem value={20}>Twenty</MenuItem>*/}
-                        {/*<MenuItem value={30}>Thirty</MenuItem>*/}
+                        {/*<TagMenu _id={"sadfs"} name={"전체"} color={"#000000"}/>*/}
+                        <MenuItem value={""}>
+                            <em>None</em>
+                        </MenuItem>
+                        {state.tags.map((tag : {name : string, _id : string, color ?: string}) => {
+                            return (
+                            <MenuItem value={tag._id}>
+                                <Typography>
+                                    <CircleIcon
+                                        sx={{
+                                            width:"20px",
+                                            height:"20px",
+                                            pr : 1,
+                                            // marginTop:"8px",
+                                            color:tag.color || "#000000"
+                                        }}
+                                    />
+                                    {tag.name}
+                                </Typography>
+                            </MenuItem>
+                            )
+                        })}
                     </Select>
                 </FormControl>
                 <Button>2</Button>
