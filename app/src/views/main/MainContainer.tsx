@@ -50,7 +50,8 @@ import {
     Search as SearchIcon,
     Settings as SettingsIcon,
     List as ListIcon,
-    TableView as TableViewIcon
+    TableView as TableViewIcon,
+    Task as TaskIcon
 } from '@mui/icons-material';
 export default function MainContainer() {
     const mdTheme = createTheme();
@@ -98,6 +99,23 @@ export default function MainContainer() {
                 },
                 icon : <TableViewIcon />,
                 drive:true
+            },{
+                name : "모니터링",
+                collapse : true,
+                onClick : (event : DrawerClickEvent) => {
+                    console.log(event);
+                    // event.setMainContainer((<Content />));
+                },
+                icon : <TableViewIcon />,
+                drive:true,
+                items : [{
+                    name : "작업관리",
+                    onClick : (event : DrawerClickEvent) => {
+
+                    },
+                    icon :<TaskIcon />
+
+                }]
             }]}
         />
 

@@ -24,6 +24,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
+import { Collapse } from '@mui/material';
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import {ExpandMore} from "@mui/icons-material";
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -91,10 +94,24 @@ const mdTheme = createTheme();
 const title = "ContentManager";
 
 
-
+/**
+ *
+ * @param props
+ * @constructor
+ */
 export default function Dashboard(props:DashboardInterface) {
   const [open, setOpen] = React.useState<boolean>(true);
   const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(<></>)
+
+  props.leftMenu.map((leftMenu:leftMenuInterface) => {
+    if(leftMenu.collapse === true){
+      const [collapse, setCollapse] = React.useState(false);
+      leftMenu["currentCollapse"] = collapse;
+      leftMenu["setCollapse"] = setCollapse;
+    }
+
+  })
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -155,35 +172,88 @@ export default function Dashboard(props:DashboardInterface) {
 		<React.Fragment>
 	  	{props.leftMenu.map((leftMenu:leftMenuInterface) => {
 			const drive = <Divider sx={{ my: 1 }} />
-			
+            const isCollapse:boolean = leftMenu.collapse || false;
+            const collapseItems : leftMenuInterface[] | [] = leftMenu.items || [];
+
+
 			return (
 				<>
-					
-						
 					<ListItemButton onClick={(event : React.MouseEvent<HTMLElement>)=>{
 
                         const DrawerEvent :DrawerClickEvent = {
-                          setMainContainer : setMainContainer
+                          setMainContainer : setMainContainer,
+                          self : leftMenu
                         };
 						leftMenu.onClick(DrawerEvent);
+                        if(leftMenu.setCollapse){
+                          const setCollapse = leftMenu.setCollapse;
+                          setCollapse(!leftMenu.currentCollapse);
+                        }
+                        // leftMenu.setCollapse(!leftMenu.currentCollapse);
 					}}>
                       {open
                       ? (
                                 <ListItemIcon>
-                                  {leftMenu.icon}
+                                      {leftMenu.icon}
                                 </ListItemIcon>
                           ) : (
+
                               <LightTooltip title={leftMenu.name}>
                                 <ListItemIcon>
                                   {leftMenu.icon}
+                                  {isCollapse ? leftMenu.currentCollapse ? <ExpandLess /> : <ExpandMore /> : <></>}
                                 </ListItemIcon>
                               </LightTooltip>
                           )}
 						<ListItemText primary={leftMenu.name} />
+                      {isCollapse ? leftMenu.currentCollapse ? <ExpandLess /> : <ExpandMore /> : <></>}
 					</ListItemButton>
+                    {isCollapse ?
+                        (
+                            <Collapse in={leftMenu.currentCollapse} timeout="auto" unmountOnExit>
+                              <List component="div" disablePadding>
+                                {collapseItems.map((collapseItem : leftMenuInterface) => {
+                                    return (
+                                      <ListItemButton
+                                          sx={{ pl: 4 }}
+                                          onClick={(event)=>{
+                                              const DrawerEvent :DrawerClickEvent = {
+                                                setMainContainer : setMainContainer,
+                                                self : collapseItem
+                                              };
+                                              collapseItem.onClick(DrawerEvent);
+                                      }}>
+                                      <ListItemIcon>
+                                        {collapseItem.icon}
+                                      </ListItemIcon>
+                                      <ListItemText primary={collapseItem.name} />
+                                      </ListItemButton>
+                                    )
+                                })}
+                                {/*{collapseItems.map(collapseItem:any) => {*/}
+                                {/*  return (*/}
+                                {/*    //   <></>*/}
+                                {/*    // <ListItemButton onClick={(event)=>{*/}
+                                {/*    //*/}
+                                {/*    // }}>*/}
+                                {/*    // <ListItemIcon>*/}
+                                {/*    //*/}
+                                {/*    // </ListItemIcon>*/}
+                                {/*    // <ListItemText primary={leftMenuItem.name} />*/}
+                                {/*    // </ListItemButton>*/}
+                                {/*  )*/}
+
+                                {/*}}*/}
+
+                              </List>
+                            </Collapse>
+                        )
+                        :
+                        (
+                            <></>
+                        )
+                    }
 					{leftMenu.drive ? drive : <></>}
-						
-					
 				</>
 			)
 		})}
