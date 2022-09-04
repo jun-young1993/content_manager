@@ -16,6 +16,8 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ViewerInterface, contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
+import {Circle as CircleIcon} from "@mui/icons-material";
+import {LightTooltip} from "@views/components/tooltip/Tooltip";
 
 
 
@@ -24,6 +26,7 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const theme = createTheme();
 
 export default function CardView(props:ViewerInterface) {
+    console.log(props.contents);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -38,6 +41,19 @@ export default function CardView(props:ViewerInterface) {
                                   // sm={6}
                                   // md={4}
                             >
+                                <Stack direction="row" spacing={2}>
+                                    <LightTooltip title={content.category_name || "지정된 테그가 없습니다."} >
+                                    <CircleIcon
+                                        sx={{
+                                            width:"20px",
+                                            height:"20px",
+                                            pr : 1,
+                                            // marginTop:"8px",
+                                            color:content.category_color || "#000000"
+                                        }}
+                                    />
+                                    </LightTooltip>
+                                </Stack>
                                 <Card
                                     style={{height:"100%"}}
                                     sx={{display: 'flex', flexDirection: 'column' }}

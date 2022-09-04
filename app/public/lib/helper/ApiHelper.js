@@ -24,7 +24,12 @@ module.exports = {
 	convertArrayToKeyValue : (datas,options) => {
 		let convert = [];
 		datas.map((data) => {
-			convert[data[options.key]] = data[options.value];
+			if(options.value == "self"){
+				convert[data[options.key]] = data;
+			}else{
+				convert[data[options.key]] = data[options.value];
+			}
+
 		})
 		return convert;
 	}

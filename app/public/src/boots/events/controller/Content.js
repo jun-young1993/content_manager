@@ -5,10 +5,13 @@ var BaseController_1 = require("./BaseController");
 var Content_1 = require("../../../../models/Content");
 var ContentService_1 = require("../../../../service/ContentService");
 var FieldService_1 = require("../../../../service/FieldService");
+var CategoryService_1 = require("../../../../service/CategoryService");
 var lodash_1 = require("lodash");
+var ApiHelper_1 = require("../../../../lib/helper/ApiHelper");
 var db = new Content_1.Content();
 var contentService = new ContentService_1.ContentService();
 var fieldService = new FieldService_1.FieldService();
+var categoryService = new CategoryService_1.CategoryService();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
 //     event.reply('asynchronous-reply', 'pong')
@@ -57,9 +60,25 @@ var Content = /** @class */ (function () {
                 'page': args[0].page
             };
             console.log('defaultSearch', defaultSearch, contentPage);
-            contentService.getContent(defaultSearch, contentPage)
-                .then(function (data) {
-                event.autoReplay(data);
+            categoryService.index()
+                .then(function (categories) {
+                var categoryCodes = (0, ApiHelper_1.convertArrayToKeyValue)(categories.data, {
+                    key: '_id',
+                    value: 'self'
+                });
+                console.log('categoryCodes', categoryCodes);
+                contentService.getContent(defaultSearch, contentPage)
+                    .then(function (data) {
+                    data.data.map(function (content) {
+                        content.category_color = "";
+                        content.category_name = "";
+                        if (!(0, lodash_1.isEmpty)(categoryCodes[content.category])) {
+                            content.category_color = categoryCodes[content.category].color;
+                            content.category_name = categoryCodes[content.category].name;
+                        }
+                    });
+                    event.autoReplay(data);
+                });
             });
         });
         // db.db()

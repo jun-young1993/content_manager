@@ -4,11 +4,13 @@ import {BaseController} from "./BaseController";
 import {Content as Model} from "../../../../models/Content";
 import {ContentService} from "../../../../service/ContentService";
 import {FieldService} from "../../../../service/FieldService";
+import {CategoryService} from "../../../../service/CategoryService";
 import {isEmpty} from "lodash";
-
+import {convertArrayToKeyValue} from "../../../../lib/helper/ApiHelper";
 const db = new Model();
 const contentService = new ContentService();
 const fieldService = new FieldService();
+const categoryService = new CategoryService();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
 //     event.reply('asynchronous-reply', 'pong')
@@ -64,10 +66,28 @@ class Content {
                     }
 
                     console.log('defaultSearch',defaultSearch,contentPage);
-                    contentService.getContent(defaultSearch,contentPage)
-                        .then((data) => {
-                            event.autoReplay(data);
+                    categoryService.index()
+                        .then((categories:{_id : string , name : string}) => {
+                            const categoryCodes = convertArrayToKeyValue(categories.data,{
+                                key : '_id',
+                                value : 'self'
+                            });
+                            console.log('categoryCodes',categoryCodes);
+                            contentService.getContent(defaultSearch,contentPage)
+                                .then((data) => {
+                                    data.data.map((content) => {
+                                        content.category_color = "";
+                                        content.category_name = "";
+                                        if(!isEmpty(categoryCodes[content.category]){
+                                            content.category_color = categoryCodes[content.category].color;
+                                            content.category_name = categoryCodes[content.category].name;
+                                        }
+
+                                    })
+                                    event.autoReplay(data);
+                                })
                         })
+
                 })
 
 
