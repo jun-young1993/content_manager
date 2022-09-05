@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.showConfirm = exports.showAlert = exports.sender = void 0;
+exports.showDrawer = exports.showConfirm = exports.showAlert = exports.sender = void 0;
 var electron_1 = require("electron");
 var sender = function (channel, arg1, arg2) {
     return new Promise(function (resolve, reject) {
@@ -42,3 +42,7 @@ var showConfirm = function (options, onClick) {
     });
 };
 exports.showConfirm = showConfirm;
+var showDrawer = function (options) {
+    electron_1.ipcRenderer.send('#ShowDrawer', options);
+};
+exports.showDrawer = showDrawer;

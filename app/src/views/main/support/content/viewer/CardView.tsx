@@ -19,11 +19,13 @@ import {ViewerInterface, contentsViewerInterface} from "@views/main/support/cont
 import {Circle as CircleIcon} from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
+import {showDrawer} from "@views/helper/helper";
 import {
     Pageview as PageviewIcon,
     PageviewOutlined as PageviewOutlinedIcon
 } from '@mui/icons-material';
-import DrawerContent from "@views/main/support/content/DrawerContent";
+
+import { ipcRenderer } from 'electron';
 
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -31,7 +33,7 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const theme = createTheme();
 
 export default function CardView(props:ViewerInterface) {
-    console.log(props.contents);
+    // const [openContentDetail , setOpenContentDetail] = React.useState(false);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -84,11 +86,18 @@ export default function CardView(props:ViewerInterface) {
                                     <CardActions sx={{height:"3vh", justifyContent:"flex-end"}} >
                                         <LightTooltip title={"상세보기"} placement={"top-end"}>
                                             <IconButton onClick={()=>{
-
+                                                // setOpenContentDetail(true);
+                                                showDrawer({
+                                                    open : true,
+                                                    metadata : content
+                                                });
                                             }}>
                                                 <PageviewOutlinedIcon />
                                             </IconButton>
                                         </LightTooltip>
+                                        {/* <DrawerContent 
+                                            open={openContentDetail}
+                                        /> */}
 
                                         {/*<Button size="small">View</Button>*/}
                                         {/*<Button size="small">Edit</Button>*/}
@@ -98,6 +107,7 @@ export default function CardView(props:ViewerInterface) {
                         ))}
                     </Grid>
                 </Container>
+                
             </main>
 
             {/* Footer */}

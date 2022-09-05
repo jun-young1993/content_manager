@@ -47,8 +47,14 @@ const showConfirm = (options:ShowALertInterface,onClick ?: Function) => {
 		}
 	})
 }
+
+const showDrawer = (options:any) => {
+	ipcRenderer.send('#ShowDrawer',options);
+
+}
 export {
 	sender,
 	showAlert,
-	showConfirm
+	showConfirm,
+	showDrawer
 };

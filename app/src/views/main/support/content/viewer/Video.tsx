@@ -38,13 +38,13 @@ import { findDOMNode } from 'react-dom'
   }
   player:any
   proxyPath : any
-  constructor(props:any){
+  constructor(props:{content_id : string}){
     super(props);
     const test = `https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4`;
     // const test = 'http://localhost:11101/play/proxy/PxCFnA8ZAwbybOMg';
     this.state.url = test;
-    const metadata = props.metadata;
-    const contentId = metadata._id;
+    const contentId = props.content_id;
+    // const contentId = metadata._id;
     const proxyPath = `http://localhost:11101/play/proxy/${contentId}`;
     this.proxyPath = proxyPath;
     console.log('props',props)

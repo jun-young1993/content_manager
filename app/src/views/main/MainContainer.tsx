@@ -8,7 +8,7 @@ import Storage from "@views/main/Storage";
 import Module from "@views/main/Module";
 import Workflow from "@views/main/Workflow";
 import {ipcRenderer, IpcRendererEvent} from "electron";
-
+import ShowDrawer from "@views/main/support/utils/ShowDrawer";
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
 import {
@@ -25,7 +25,7 @@ import {
     AccountTree as AccountTreeIcon,
     Monitor as MonitorIcon
 } from '@mui/icons-material';
-import DrawerContent from "@views/main/support/content/DrawerContent";
+
 export default function MainContainer() {
     const mdTheme = createTheme();
     const [value, setValue] = React.useState(<Content />);
@@ -50,7 +50,7 @@ export default function MainContainer() {
     // };
    
     return (
-
+        <>
         <Dashboard 
             leftMenu={[{
                 name : "검색",
@@ -127,14 +127,16 @@ export default function MainContainer() {
                 },{
                     name : "test",
                     onClick : (event :any) => {
-                        event.setMainContainer(   <DrawerContent />);
+                        // event.setMainContainer(   <DrawerContent />);
 
                     },
                     icon :<AccountTreeIcon />
                 }]
             }]}
         />
-
+        
+        </>
+        
         // <Box sx={{ width: '100%', height:'90vh'}}>
             
         //     < sx={{ width: '100%',height:'auto'}}>

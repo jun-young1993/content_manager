@@ -78,38 +78,57 @@ const settingField = (metaFields:[]) => {
 	});
     return fields;
 }
-
+const reducer = (prevState:any, newState:any) => ({
+    ...prevState,
+    ...newState
+})
 export default function ContentMetadata(props:any){
-
-    const dispatch = useDispatch()
-    const { metadata} = useSelector((state:any) => {return state.metadata})
-    console.log('[contentMetadata]metadata',metadata)
-	const { fields} = useSelector((state:any) => {return state.fields})
-    ipcRenderer.send("@Field/_index");
-	ipcRenderer.on('@Field/_index/reply',(event,result)=>{
-		console.log('@Field/_index/reply',result)  
-        console.log('settingField(result.data)',settingField(result.data))
-		if(result.success){
-            
-			dispatch({type : 'field.push', value : settingField(result.data)});
-
-            ipcRenderer.removeAllListeners("@Field/_index/reply");
-		}
-			
-			
-	})
+    console.log('props.metadata',props.metadata);
+    const [state, setState] = React.useReducer(reducer,{
+        metadata : props.metadata,
+        fields : []
+    })
+    // const dispatch = useDispatch()
+    // const { metadata} = useSelector((state:any) => {return state.metadata})
+    // console.log('[contentMetadata]metadata',metadata)
+	// const { fields} = useSelector((state:any) => {return state.fields})
+    // const [metadata, setMetadata] = React.useState()
+    React.useEffect(()=>{
+        ipcRenderer.send("@Field/_index");
+        ipcRenderer.on('@Field/_index/reply',(event,result)=>{
+            console.log('@Field/_index/reply',result)  
+            console.log('settingField(result.data)',settingField(result.data))
+            if(result.success){
+                // setState({
+                //     fields : settingField(result.data)
+                // });
+                const fields:any = {fields : settingField(result.data)};
+                setState(fields);
+                // dispatch({type : 'field.push', value : settingField(result.data)});
+    
+                ipcRenderer.removeAllListeners("@Field/_index/reply");
+            }
+                
+                
+        })
+    },[])
+   
     const updateFiledValue = (event: { target: { name: string; value: string; }; }) => {
         const {name , value} = event.target;
-        dispatch({type : 'metadata.patch', value : {[name] : value} })
+        state.metadata[name] = value;
+        // setState(state);
+        // dispatch({type : 'metadata.patch', value : {[name] : value} })
     }
 
     return(
         <>
-            {fields.map((field:any)=>{
+            {state.fields.map((field:any)=>{
 
                 let element = <TextField  onChange={updateFiledValue}/>;
-                if(metadata && metadata[field.name]){
-                    field.defaultValue = metadata[field.name];
+                console.log('state.metadata[field.name]',state.metadata)
+                if(state.metadata && state.metadata[field.name]){
+                    field.defaultValue = state.metadata[field.name];
+                    console.log('setting ',field);
                 }
                 // field.defaultValue
                 return(<div>{React.cloneElement(element,field)}</div>)
