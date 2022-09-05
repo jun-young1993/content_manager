@@ -49,12 +49,13 @@ function ListenerDrawer(){
 
     const toggleDrawer = (event : any) => {
         console.log('renderer toggle drawer',event);
+        ipcRenderer.send("#ShowDrawerClose");
         setState({open : !state.open});
     }
     
     ipcRenderer.on(`#ShowDrawer/reply`,(event:IpcRendererEvent,args:ListenerAlert) => {
         console.log('showDrawer args',args);
-        
+
         setState(args);
         ipcRenderer.removeAllListeners("ShowDrawer/reply");
 

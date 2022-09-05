@@ -6,7 +6,7 @@ onIpc("#ShowDrawer",(event:IpcMainEvent,args) => {
 })
 
 
-onIpc("#ShowDrawerClose",(event:IpcMainEvent,args) => {
+onIpc("#ShowDrawerClose",(event:IpcMainEvent) => {
     console.log('ShowDrawerClose');
-    event.reply("#ShowDrawerClose/reply",args);
+    event.reply("#ShowDrawerClose/reply");
 })

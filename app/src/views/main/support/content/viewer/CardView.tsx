@@ -34,6 +34,8 @@ const theme = createTheme();
 
 export default function CardView(props:ViewerInterface) {
     // const [openContentDetail , setOpenContentDetail] = React.useState(false);
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -90,17 +92,15 @@ export default function CardView(props:ViewerInterface) {
                                                 showDrawer({
                                                     open : true,
                                                     metadata : content
+                                                },(checked:boolean)=>{
+
+                                                        console.log('수정완료 close event',content._id);
+
                                                 });
                                             }}>
                                                 <PageviewOutlinedIcon />
                                             </IconButton>
                                         </LightTooltip>
-                                        {/* <DrawerContent 
-                                            open={openContentDetail}
-                                        /> */}
-
-                                        {/*<Button size="small">View</Button>*/}
-                                        {/*<Button size="small">Edit</Button>*/}
                                     </CardActions>
                                 </Card>
                             </Grid>

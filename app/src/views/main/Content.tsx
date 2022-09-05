@@ -175,7 +175,9 @@ function ContentContainer(){
             </Stack>
         </Stack>
         <Container maxWidth="lg" sx={{  height:"75vh", flexGrow: 1, overflow: 'auto'}}>
-            <CardView contents={state.contents}/>
+            <CardView
+                contents={state.contents}
+            />
             <ContentPagination
                 count={state.count}
                 page={search.page}

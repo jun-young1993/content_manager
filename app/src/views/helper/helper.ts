@@ -48,9 +48,15 @@ const showConfirm = (options:ShowALertInterface,onClick ?: Function) => {
 	})
 }
 
-const showDrawer = (options:any) => {
+const showDrawer = (options:any,onClick ?: Function) => {
 	ipcRenderer.send('#ShowDrawer',options);
-
+	if(onClick){
+		ipcRenderer.on("#ShowDrawerClose/reply",(event:IpcRendererEvent) => {
+			console.log('heper drawre close');
+			onClick()
+			ipcRenderer.removeAllListeners("ShowDrawerClose/reply");
+		})
+	}
 }
 export {
 	sender,

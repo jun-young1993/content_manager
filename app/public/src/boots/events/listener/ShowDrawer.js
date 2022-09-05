@@ -6,5 +6,5 @@ onIpc("#ShowDrawer", function (event, args) {
 });
 onIpc("#ShowDrawerClose", function (event, args) {
     console.log('ShowDrawerClose');
-    event.reply("#ShowDrawerClose/reply", args);
+    event.reply("#ShowDrawerClose/reply");
 });
