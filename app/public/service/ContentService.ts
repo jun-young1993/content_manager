@@ -63,4 +63,13 @@ export class ContentService extends BaseService{
             });
        })
    }
+
+   update(contentId:string, metadata : any){
+       const _this = this;
+       return  new Promise((resolve,reject) => {
+           _this.getModel('Content').update({_id : contentId},{$set : metadata},(error,update) => {
+               return resolve(apiResolve(update));
+           });
+       })
+   }
 }

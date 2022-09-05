@@ -78,7 +78,7 @@ class Content {
                                     data.data.map((content) => {
                                         content.category_color = "";
                                         content.category_name = "";
-                                        if(!isEmpty(categoryCodes[content.category]){
+                                        if(!isEmpty(categoryCodes[content.category])){
                                             content.category_color = categoryCodes[content.category].color;
                                             content.category_name = categoryCodes[content.category].name;
                                         }
@@ -195,6 +195,13 @@ class Content {
                 data : data
             };
         })
+    }
+
+    static _update(event,args){
+        contentService.update(args[0],args[1])
+            .then((result) => {
+                return event.autoReply(result);
+            })
     }
 }
 

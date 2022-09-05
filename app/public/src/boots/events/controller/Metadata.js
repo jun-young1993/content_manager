@@ -50,6 +50,11 @@ var Metadata = /** @class */ (function () {
             };
         });
     };
+    Metadata._update = function (event, args) {
+        metadataDb.db().update(args[1], { $set: args[0] }, function (error, data) {
+            return event.autoReply(data);
+        });
+    };
     return Metadata;
 }());
 new BaseController_1.BaseController(Metadata);

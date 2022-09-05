@@ -76,6 +76,14 @@ var ContentService = /** @class */ (function (_super) {
             });
         });
     };
+    ContentService.prototype.update = function (contentId, metadata) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Content').update({ _id: contentId }, { $set: metadata }, function (error, update) {
+                return resolve((0, ApiHelper_1.apiResolve)(update));
+            });
+        });
+    };
     return ContentService;
 }(BaseService));
 exports.ContentService = ContentService;

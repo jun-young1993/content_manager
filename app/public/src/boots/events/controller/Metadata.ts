@@ -59,6 +59,12 @@ class Metadata {
             };
         })
     }
+
+    static _update(event, args){
+        metadataDb.db().update(args[1],{$set : args[0]},(error,data) => {
+            return event.autoReply(data);
+        })
+    }
 }
 
 

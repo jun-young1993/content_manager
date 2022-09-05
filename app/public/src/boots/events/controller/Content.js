@@ -168,6 +168,12 @@ var Content = /** @class */ (function () {
             };
         });
     };
+    Content._update = function (event, args) {
+        contentService.update(args[0], args[1])
+            .then(function (result) {
+            return event.autoReply(result);
+        });
+    };
     return Content;
 }());
 new BaseController_1.BaseController(Content);

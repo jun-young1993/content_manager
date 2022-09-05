@@ -23,6 +23,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import ContentDetail from "@views/main/support/content/ContentDetail";
 import PreviewIcon from '@mui/icons-material/Preview';
 import SourceIcon from '@mui/icons-material/Source';
+import {LightTooltip} from "@views/components/tooltip/Tooltip";
 export interface ListenerAlert {
     open ?: boolean
     width ?: number
@@ -42,28 +43,9 @@ function ListenerDrawer(){
         view : "player",
         metadata : {},
     });
-    const [view , setView] = React.useState("player");
-    React.useEffect(()=>{
-        console.log('초기 랜더링',state);
-    },[])
-    React.useEffect(()=>{
-        console.log('state change',state)
-    },[state])
-    console.log('listenerDrawer',state);
-    // const toggleDrawer =
-    //     () =>
-    //         (event: React.KeyboardEvent | React.MouseEvent) => {
-    //             console.log(event);
-    //             if (
-    //                 event.type === 'keydown' &&
-    //                 ((event as React.KeyboardEvent).key === 'Tab' ||
-    //                     (event as React.KeyboardEvent).key === 'Shift')
-    //             ) {
-    //                 return;
-    //             }
 
-    //             setOpen(!open);
-    //         };
+
+
 
     const toggleDrawer = (event : any) => {
         console.log('renderer toggle drawer',event);
@@ -81,8 +63,6 @@ function ListenerDrawer(){
         <Box
           sx={{width : state.width }}
           role="presentation"
-        //   onClick={toggleDrawer}
-        //   onKeyDown={toggleDrawer}
         >
             <Toolbar
                 sx={{
@@ -103,21 +83,39 @@ function ListenerDrawer(){
                 }}
             >
                 <>
-                <IconButton onClick={toggleDrawer}>
-                    <KeyboardDoubleArrowRightIcon />
-                </IconButton>
+                    <Stack
+                        direction={"row"}
+                        justifyContent={'flex-start'}
+                        spacing={2}
+                    >
+                        <IconButton onClick={toggleDrawer}>
+                            <LightTooltip title={"패널 닫기"} placement={"top-end"}>
+                            <KeyboardDoubleArrowRightIcon />
+                            </LightTooltip>
+                        </IconButton>
+                        <Typography
+                            component="p" variant="h6"
+                        >
+                            {state.view == 'player'
+                                ? "프리뷰"
+                                : state.view == 'metadata'
+                                    ? "메타데이터"
+                                    : ""}
+                        </Typography>
+                    </Stack>
                 <Stack
                     direction={"row"}
                     justifyContent={'flex-end'}
                     spacing={2}
                 >
+
                     <Button 
                         onClick={(event:React.MouseEvent)=>{
                             setState({view : "player"});
                         }}
                         startIcon={<PreviewIcon />}
                     >
-                        Preview
+                        프리뷰
                     </Button>
                     <Button 
                         onClick={()=>{
@@ -126,32 +124,16 @@ function ListenerDrawer(){
                         }}
                         startIcon={<SourceIcon />}
                     >
-                        Metadata
+                        메타데이터
                     </Button>
-                    {/* <IconButton onClick={()=>{
-                        setState({
-                            view : 'player'
-                        })
-                    }}>
-                        <PreviewIcon />
-                    </IconButton> */}
-                    {/* <IconButton onClick={()=>{
-                        setState({
-                            view : 'metadata'
-                        })
-                    }}>
-                        <SourceIcon />
-                    </IconButton> */}
                 </Stack>
                 </>
             </Toolbar>
             <Divider />
-            {/* <Box sx={{height:"80vh"}}> */}
                     <ContentDetail 
                         view={state.view}
                         metadata={state.metadata}
                     />
-            {/* </Box> */}
         </Box>
       );
     return (

@@ -1,8 +1,11 @@
 import * as React from 'react';
 import FieldSet from "@views/main/support/ingest/fields/FieldSet";
 import TextField from "@mui/material/TextField";
-import {MenuItem} from "@mui/material";
+import {Button, MenuItem} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
+import Stack from "@mui/material/Stack";
+import EditIcon from '@mui/icons-material/Edit';
+import {sender, showConfirm, showAlert} from "@views/helper/helper";
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -88,24 +91,16 @@ export default function ContentMetadata(props:any){
         metadata : props.metadata,
         fields : []
     })
-    // const dispatch = useDispatch()
-    // const { metadata} = useSelector((state:any) => {return state.metadata})
-    // console.log('[contentMetadata]metadata',metadata)
-	// const { fields} = useSelector((state:any) => {return state.fields})
-    // const [metadata, setMetadata] = React.useState()
+
     React.useEffect(()=>{
         ipcRenderer.send("@Field/_index");
         ipcRenderer.on('@Field/_index/reply',(event,result)=>{
             console.log('@Field/_index/reply',result)  
             console.log('settingField(result.data)',settingField(result.data))
             if(result.success){
-                // setState({
-                //     fields : settingField(result.data)
-                // });
+
                 const fields:any = {fields : settingField(result.data)};
                 setState(fields);
-                // dispatch({type : 'field.push', value : settingField(result.data)});
-    
                 ipcRenderer.removeAllListeners("@Field/_index/reply");
             }
                 
@@ -116,24 +111,63 @@ export default function ContentMetadata(props:any){
     const updateFiledValue = (event: { target: { name: string; value: string; }; }) => {
         const {name , value} = event.target;
         state.metadata[name] = value;
-        // setState(state);
+        setState({
+            metadata : state.metadata
+        });
         // dispatch({type : 'metadata.patch', value : {[name] : value} })
     }
 
     return(
         <>
+
+
             {state.fields.map((field:any)=>{
 
-                let element = <TextField  onChange={updateFiledValue}/>;
-                console.log('state.metadata[field.name]',state.metadata)
-                if(state.metadata && state.metadata[field.name]){
-                    field.defaultValue = state.metadata[field.name];
-                    console.log('setting ',field);
-                }
-                // field.defaultValue
-                return(<div>{React.cloneElement(element,field)}</div>)
+                    let element = <TextField  onChange={updateFiledValue}/>;
+                    console.log('state.metadata[field.name]',state.metadata)
+                    if(state.metadata && state.metadata[field.name]){
+                        field.defaultValue = state.metadata[field.name];
+                        console.log('setting ',field);
+                    }
 
-            })}
+                    return(<div>{React.cloneElement(element,field)}</div>)
+
+                })}
+
+            <Stack
+                sx={{padding : 1}}
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="flex-end"
+                spacing={2}
+            >
+                <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    onClick={()=>{
+                        showConfirm({
+                            title : `메타데이터를 수정하시겠습니까?`,
+                            severity : "info"
+                        },(checked:boolean) => {
+                            if(checked){
+                                console.log('changed',state.metadata)
+                                sender("@Content/_update",state.metadata._id,state.metadata)
+                                    .then((result : any) => {
+                                        console.log('result',result);
+                                        showAlert({
+                                            title : "수정되었습니다.",
+                                            severity : "success"
+                                        });
+                                    })
+                            }
+                        })
+
+                    }}
+                >
+                    수정
+                </Button>
+
+            </Stack>
         </>
     );
 }
