@@ -52,25 +52,33 @@ export class TaskManager implements Property{
 	}
 
 	findQueued(){
-
+		const parallerTask :number = 1;
 		const taskDb = new Task().db();
 		return new Promise((resolve, reject) => {
-			taskDb.findOne({status : 'queue'},(error:any,task:any) => {
-				
-				if(task){
-					console.log('[in findQueued]',task);
-					taskDb.findOne({_id : task._id},(error : any, taskInfo:any)=> {
-						console.log('findQueued',taskInfo);
-						resolve(taskInfo);
-					})
-					
+			taskDb.count({status : 'processing'},(error:any,count:number) => {
+				if(count >= parallerTask){
+					resolve(null);
 				}else{
-					reject(error);
+					taskDb.findOne({status : 'queue'},(error:any,task:any) => {
+				
+						if(task){
+							console.log('[in findQueued]',task);
+							taskDb.findOne({_id : task._id},(error : any, taskInfo:any)=> {
+								console.log('findQueued',taskInfo);
+								resolve(taskInfo);
+							})
+							
+						}else{
+							reject(error);
+						}
+		
+						
+						
+					})
 				}
-
 				
-				
-			})
+			});
+		
 			// .sort({priority : -1})
 			// .exec((error:any,tasks:any) => {
 			// 	if(tasks){

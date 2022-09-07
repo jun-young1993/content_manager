@@ -40,18 +40,26 @@ var TaskManager = /** @class */ (function () {
         return this.get(options);
     };
     TaskManager.prototype.findQueued = function () {
+        var parallerTask = 1;
         var taskDb = new Task().db();
         return new Promise(function (resolve, reject) {
-            taskDb.findOne({ status: 'queue' }, function (error, task) {
-                if (task) {
-                    console.log('[in findQueued]', task);
-                    taskDb.findOne({ _id: task._id }, function (error, taskInfo) {
-                        console.log('findQueued', taskInfo);
-                        resolve(taskInfo);
-                    });
+            taskDb.count({ status: 'processing' }, function (error, count) {
+                if (count >= parallerTask) {
+                    resolve(null);
                 }
                 else {
-                    reject(error);
+                    taskDb.findOne({ status: 'queue' }, function (error, task) {
+                        if (task) {
+                            console.log('[in findQueued]', task);
+                            taskDb.findOne({ _id: task._id }, function (error, taskInfo) {
+                                console.log('findQueued', taskInfo);
+                                resolve(taskInfo);
+                            });
+                        }
+                        else {
+                            reject(error);
+                        }
+                    });
                 }
             });
             // .sort({priority : -1})

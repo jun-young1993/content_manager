@@ -23,6 +23,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import ContentDetail from "@views/main/support/content/ContentDetail";
 import PreviewIcon from '@mui/icons-material/Preview';
 import SourceIcon from '@mui/icons-material/Source';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 export interface ListenerAlert {
     open ?: boolean
@@ -97,11 +98,7 @@ function ListenerDrawer(){
                         <Typography
                             component="p" variant="h6"
                         >
-                            {state.view == 'player'
-                                ? "프리뷰"
-                                : state.view == 'metadata'
-                                    ? "메타데이터"
-                                    : ""}
+                         
                         </Typography>
                     </Stack>
                 <Stack
@@ -110,23 +107,39 @@ function ListenerDrawer(){
                     spacing={2}
                 >
 
-                    <Button 
-                        onClick={(event:React.MouseEvent)=>{
-                            setState({view : "player"});
-                        }}
-                        startIcon={<PreviewIcon />}
-                    >
-                        프리뷰
-                    </Button>
-                    <Button 
-                        onClick={()=>{
-                            setState({view : "metadata"});
-                            console.log('change state',state)
-                        }}
-                        startIcon={<SourceIcon />}
-                    >
-                        메타데이터
-                    </Button>
+                    <LightTooltip title={"프리뷰"} placement={"top-end"}>
+                        <IconButton
+                            onClick={(event:React.MouseEvent)=>{
+                                setState({view : "player"});
+                            }}
+                        >
+                            <PreviewIcon 
+                                color={(state.view == 'player') ? 'primary' : "inherit"}
+                            />
+                        </IconButton>
+                    </LightTooltip>
+                    <LightTooltip title={"메타데이터"} placement={"top-end"}>
+                        <IconButton
+                            onClick={(event:React.MouseEvent)=>{
+                                setState({view : "metadata"});
+                            }}
+                        >
+                            <SourceIcon 
+                                color={(state.view == 'metadata') ? 'primary' : "inherit"}
+                            />
+                        </IconButton>
+                    </LightTooltip>
+                    <LightTooltip title={"미디어 리스트"} placement={"top-end"}>
+                        <IconButton
+                            onClick={(event:React.MouseEvent)=>{
+                                setState({view : "media_list"});
+                            }}
+                        >
+                            <PermMediaIcon 
+                                color={(state.view == 'media_list') ? 'primary' : "inherit"}
+                            />
+                        </IconButton>
+                    </LightTooltip>
                 </Stack>
                 </>
             </Toolbar>

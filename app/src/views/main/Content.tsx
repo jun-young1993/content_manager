@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import {sender} from "@views/helper/helper";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import {contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
 import CardView from "@views/main/support/content/viewer/CardView";
 import ContentPagination from "@views/main/support/content/ContentPagination";
@@ -172,6 +173,16 @@ function ContentContainer(){
                     //     console.log(event);
                     // }}
                 ></SearchField>
+                <IconButton
+                    onClick={()=>{
+                        sender("#ingest")
+                        .then((result:any)=>{
+
+                        })
+                    }}
+                >
+
+                </IconButton>
                 <Button
                     onClick={()=>{
                         sender("#ingest")
