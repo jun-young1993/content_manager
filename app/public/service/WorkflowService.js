@@ -143,6 +143,18 @@ var WorkflowService = /** @class */ (function (_super) {
             });
         });
     };
+    WorkflowService.prototype.firstWorkflowRuleByWorkflowId = function (workflowId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            console.log('[getWorkflowRuleByWorkflowId]', workflowId);
+            _this.getModel('WorkflowRule').findOne({ workflow_id: workflowId, parent_id: null }, function (err, startWorkflowRule) {
+                var startWorkflowId = startWorkflowRule._id;
+                _this.getModel('WorkflowRule').findOne({ parent_id: startWorkflowId }, function (error, firstWorkflowRule) {
+                    resolve((0, ApiHelper_1.apiResolve)(firstWorkflowRule));
+                });
+            });
+        });
+    };
     WorkflowService.prototype.workflowRuleOrder = function (data) {
         var ruleOrderObj = {};
         console.log('workflowRuleORder data', data);

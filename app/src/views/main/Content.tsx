@@ -122,8 +122,8 @@ function ContentContainer(){
     // dispatch({type:'searchText.put',value:props.searchText})
     return (
         <>
-        <Stack direction="row"  justifyContent="space-between" spacing={2}>
-            <Stack direction="row"  justifyContent="flex-end" spacing={2}>
+        <Stack direction="row"  justifyContent="space-between" spacing={12}>
+            <Stack direction="row"  justifyContent="flex-start" spacing={2}>
                 <FormControl fullWidth variant="standard" >
                     <InputLabel id="tag-select-standard-label">Tag</InputLabel>
                     <Select
@@ -172,6 +172,16 @@ function ContentContainer(){
                     //     console.log(event);
                     // }}
                 ></SearchField>
+                <Button
+                    onClick={()=>{
+                        sender("#ingest")
+                        .then((result:any)=>{
+
+                        })
+                    }}
+                >
+                    Qick 인제스트
+                </Button>
             </Stack>
         </Stack>
         <Container maxWidth="lg" sx={{  height:"75vh", flexGrow: 1, overflow: 'auto'}}>

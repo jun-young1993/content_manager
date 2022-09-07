@@ -56,6 +56,14 @@ var TaskService = /** @class */ (function (_super) {
             });
         });
     };
+    TaskService.prototype.create = function (data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Task').insert(data, function (error, task) {
+                resolve(task);
+            });
+        });
+    };
     return TaskService;
 }(BaseService));
 exports.TaskService = TaskService;

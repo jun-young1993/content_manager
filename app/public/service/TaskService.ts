@@ -45,4 +45,14 @@ export class TaskService extends BaseService{
             })
         })
     }
+
+
+    create(data){
+        const _this = this;
+        return new Promise((resolve, reject) => {
+            _this.getModel('Task').insert(data,(error , task) => {
+                resolve(task);
+            })
+        })
+    }
 }

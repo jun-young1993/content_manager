@@ -157,6 +157,28 @@ export class WorkflowService extends BaseService{
 		})
 	}
 
+	firstWorkflowRuleByWorkflowId(workflowId:string){
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			
+			console.log('[getWorkflowRuleByWorkflowId]',workflowId);
+			
+		_this.getModel('WorkflowRule').findOne({workflow_id : workflowId, parent_id : null},(err,startWorkflowRule) => {
+				
+				const startWorkflowId = startWorkflowRule._id;
+				_this.getModel('WorkflowRule').findOne({parent_id : startWorkflowId},(error, firstWorkflowRule:any) => {
+					resolve(apiResolve(firstWorkflowRule));
+				})
+				
+					
+				
+
+				
+
+			})
+		})
+	}
+
 
 	workflowRuleOrder(data){
 		const ruleOrderObj = {};
