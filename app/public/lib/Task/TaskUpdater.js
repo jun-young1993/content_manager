@@ -108,7 +108,7 @@ var TaskUpdater = /** @class */ (function () {
             if (update) {
                 log.channel('task_update').info("[TaskUpdater][".concat(status, "] Update Status  \"").concat(status, " ").concat(_this.taskId, "\""));
                 _this_1.taskModel.findOne({ _id: _this_1.taskId }, function (error, task) {
-                    console.log('after update task info', task);
+                    log.channel('task_update').info("[TaskUpdater][beforeNextTask][".concat(_this.taskId, "]"));
                     _this.nextTask();
                     if (callback) {
                         callback();
@@ -116,7 +116,7 @@ var TaskUpdater = /** @class */ (function () {
                 });
             }
             else {
-                log.channel('task_update').info("[TaskUpdater][".concat(status, "] Update Status  \"").concat(status, " ").concat(_this.taskId, "\""), err);
+                log.channel('task_update').info("[TaskUpdater][fail][".concat(status, "] Update Status  \"").concat(status, " ").concat(_this.taskId, "\""), err);
             }
         });
     };

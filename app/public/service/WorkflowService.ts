@@ -4,6 +4,9 @@ const {BaseService} = require('../service/BaseService');
 const { createTreeHierarchy } = require('hierarchy-js');
 import {isEmpty, reject} from "lodash";
 import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
+import TaskInterface from "../interfaces/TaskInterface";
+import { TaskService } from "./TaskService";
+
 export class WorkflowService extends BaseService{
 	constructor(){
 		super({
@@ -386,4 +389,8 @@ export class WorkflowService extends BaseService{
 		
 
 	}
+
+
+
+	
 }

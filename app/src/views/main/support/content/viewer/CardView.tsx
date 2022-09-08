@@ -20,9 +20,11 @@ import {Circle as CircleIcon} from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import {showDrawer} from "@views/helper/helper";
+
 import {
     Pageview as PageviewIcon,
-    PageviewOutlined as PageviewOutlinedIcon
+    PageviewOutlined as PageviewOutlinedIcon,
+    AccountTree as AccountTreeIcon
 } from '@mui/icons-material';
 
 import { ipcRenderer } from 'electron';
@@ -74,8 +76,21 @@ export default function CardView(props:ViewerInterface) {
                                             // pt: '0%',
                                         }}
                                         image={"http://localhost:11101/thumbnail/"+content._id+"?w=248&fit=crop&auto=format"}
-                                        alt="random"
-                                    />
+                                        alt="썸네일 생성작업을 요청해주세요."
+                                        onError={(event:any)=>{
+                                            event.target.style['display'] = 'none';
+                                            // event.target.style['background-image'] = 'red';
+                                            // console.log(event);
+                                            // event.target.src = "https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png";
+                                            // console.log(event);
+                                            // // event.stopPropagation();
+                                            // event.target.onError = () => {
+                                            //     console.log('target on error');
+                                            // }
+                                            // return false;
+                                        }}
+                                    >
+                                    </CardMedia>
                                     <CardContent sx={{ flexGrow: 1 , padding:"3px", height : "3vh"}}>
                                         <Typography gutterBottom noWrap variant="h6" component="h6">
                                             {content.title}
@@ -99,6 +114,11 @@ export default function CardView(props:ViewerInterface) {
                                                 });
                                             }}>
                                                 <PageviewOutlinedIcon />
+                                            </IconButton>
+                                        </LightTooltip>
+                                        <LightTooltip title={"워크플로우 호출"} placement={"top-end"}>
+                                            <IconButton>
+                                            <AccountTreeIcon />
                                             </IconButton>
                                         </LightTooltip>
                                     </CardActions>

@@ -1,6 +1,10 @@
 import * as fs from "fs";
+// import * as fs from "fs";
+// const fs = require("fs");
 import * as stream from "stream";
+// const stream = require('stream');
 import * as path from "path";
+// const path = require("path");
 
 const router = require('express').Router();
 const log = require('../Logger');
@@ -54,11 +58,11 @@ router.get('/:contentId', (req:any, res:any) => {
   
 });
 
-router.get('/noimage/:extention', (req:any, res:any) => {
+router.get('/noimage/:filename/:extention', (req:any, res:any) => {
 
-	const {extention} = req.params;
+	const {extention,filename} = req.params;
 	
-	const thumbnailPath = `../logo192.${extention}`;
+	const thumbnailPath = path.resolve(__dirname,`../logo192.${extention}`);
 	const read = fs.createReadStream(thumbnailPath);
 	const pass = new stream.PassThrough();
 	stream.pipeline(

@@ -124,13 +124,6 @@ export default function MainContainer() {
                         event.setMainContainer((<Workflow />));
                     },
                     icon :<AccountTreeIcon />
-                },{
-                    name : "test",
-                    onClick : (event :any) => {
-                        // event.setMainContainer(   <DrawerContent />);
-
-                    },
-                    icon :<AccountTreeIcon />
                 }]
             }]}
         />

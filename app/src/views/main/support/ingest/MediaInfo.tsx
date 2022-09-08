@@ -95,6 +95,10 @@ export default function MediaInfo(props : any) {
         
     }
     
+
+    const handleWorkflow = (event:React.MouseEventHandler) => {
+
+    }
     
     return (
         <div style={{ height: '70vh', width: '100%' }}>
@@ -114,11 +118,13 @@ export default function MediaInfo(props : any) {
                         return (
                             <GridToolbarContainer>
                                 <Stack  direction="row">
-                                    <Tooltip title="미디어 다운로드">
-                                        <IconButton onClick={handleDownloadButton}>
+                                    {/* <Tooltip title="워크플로우 호출">
+                                        <IconButton onClick={()=>{
+                                            
+                                        }}>
                                             <FileDownloadIcon />
                                         </IconButton>
-                                    </Tooltip>
+                                    </Tooltip> */}
                                 </Stack>
                                 {alert}
                             </GridToolbarContainer>

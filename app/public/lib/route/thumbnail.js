@@ -1,8 +1,12 @@
 "use strict";
 exports.__esModule = true;
 var fs = require("fs");
+// import * as fs from "fs";
+// const fs = require("fs");
 var stream = require("stream");
+// const stream = require('stream');
 var path = require("path");
+// const path = require("path");
 var router = require('express').Router();
 var log = require('../Logger');
 var MediaService = require('../../service/MediaService').MediaService;
@@ -45,9 +49,9 @@ router.get('/:contentId', function (req, res) {
         return res.sendStatus(400);
     });
 });
-router.get('/noimage/:extention', function (req, res) {
-    var extention = req.params.extention;
-    var thumbnailPath = "../logo192.".concat(extention);
+router.get('/noimage/:filename/:extention', function (req, res) {
+    var _a = req.params, extention = _a.extention, filename = _a.filename;
+    var thumbnailPath = path.resolve(__dirname, "../logo192.".concat(extention));
     var read = fs.createReadStream(thumbnailPath);
     var pass = new stream.PassThrough();
     stream.pipeline(read, pass, function (err) {

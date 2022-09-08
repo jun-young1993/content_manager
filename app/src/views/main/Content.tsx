@@ -19,7 +19,8 @@ import ContentPagination from "@views/main/support/content/ContentPagination";
 import InputLabel from "@mui/material/InputLabel";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import SearchField from "@views/components/fields/SearchField";
-
+import AddIcon from '@mui/icons-material/Add';
+import { HtmlTooltip } from '@views/components/tooltip/Tooltip';
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -183,16 +184,27 @@ function ContentContainer(){
                 >
 
                 </IconButton>
-                <Button
-                    onClick={()=>{
-                        sender("#ingest")
-                        .then((result:any)=>{
-
-                        })
-                    }}
+                <HtmlTooltip
+                    title={
+                        <React.Fragment>
+                            <Typography color="inherit">인제스트</Typography>
+                            <em>콘텐츠 관리를 위해 지정된 온라인 스토리지로 미디어를 이동시킵니다.</em>
+                        </React.Fragment>
+                    }
                 >
-                    Qick 인제스트
-                </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={()=>{
+                            sender("#ingest")
+                            .then((result:any)=>{
+
+                            })
+                        }}
+                        startIcon={<AddIcon />}
+                    >
+                        인제스트
+                    </Button>
+                </HtmlTooltip>
             </Stack>
         </Stack>
         <Container maxWidth="lg" sx={{  height:"75vh", flexGrow: 1, overflow: 'auto'}}>

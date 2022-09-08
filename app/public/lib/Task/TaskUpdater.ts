@@ -127,8 +127,8 @@ export class TaskUpdater {
                 if(update){
                     log.channel('task_update').info(`[TaskUpdater][${status}] Update Status  "${status} ${_this.taskId}"`);
                     this.taskModel.findOne({_id : this.taskId},(error:any , task : any)=> {
-                        console.log('after update task info',task);
-                   
+                        
+                        log.channel('task_update').info(`[TaskUpdater][beforeNextTask][${_this.taskId}]`);
                         
                             _this.nextTask();
 
@@ -139,7 +139,7 @@ export class TaskUpdater {
      
                     })  
                }else{
-                    log.channel('task_update').info(`[TaskUpdater][${status}] Update Status  "${status} ${_this.taskId}"`,err);
+                    log.channel('task_update').info(`[TaskUpdater][fail][${status}] Update Status  "${status} ${_this.taskId}"`,err);
                }
             
      

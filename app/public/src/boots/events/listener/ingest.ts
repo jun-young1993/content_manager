@@ -10,53 +10,26 @@ const workflowService  = new WorkflowService();
 const taskService = new TaskService();
 import * as path from "path";
 import { sendIpc } from "../../../../lib/helper/ElectronHelper";
-
+import TaskInterface from "../../../../interfaces/TaskInterface";
+import { reject } from "lodash";
 const ingest = (file:string) => {
 	return new Promise((resolve, reject) => {
 		
-		const workflowId : string = "YMxc6i1EeoDhTKgY";
+		const workflowId : string = "user_out_ingest";
 		contentService.createContent({
 			workflow_id : workflowId,
 			title : path.basename(file)
 		})
 		.then((content:any) => {
-			workflowService.firstWorkflowRuleByWorkflowId(workflowId)
-			.then((firstWorkflowRule : any) => {
-				const contentId = content.data._id;	
-				const insertTask : {
-					content_id : string,
-					workflow_id : string,
-					module_id : string,
-					rule_id : string,
-					source : string,
-					target : null,
-					status : 'queue',
-					priority : number
-				} = {
-					content_id : contentId,
-					workflow_id : workflowId,
-					module_id : firstWorkflowRule.data.module_id,
-					rule_id : firstWorkflowRule.data._id,
-					source : file,
-					target : null,
-					status : 'queue',
-					priority : 0
-				}
-				taskService.create(insertTask)
-				.then((task) => {
-					new TaskManager()
-					.initialize()
-					.then((taskParse:any) => {
-						log.channel('ingest').info(`[Ingest] success Task : ${taskParse.data}`);
-						sendIpc("#ShowMessageAlert/reply",{
-							severity : "success",
-							title : "작업이 성공적으로 요청되었습니다."
-						})
-						resolve(taskParse);
-					})
-				})
-
+			new TaskManager()
+			.startWorkflow({
+				content_id : content._id,
+				workflow_id : workflowId,
+				source : file
 			})
+			.then((task:any) => {
+				resolve(task);
+			});
 		});
 	})
 	
@@ -64,12 +37,31 @@ const ingest = (file:string) => {
 
 
 const recuriveIngest = (files:string[], number:number=0) => {
+	log.channel('ingest').info(`[Ingest][Request] : ${number}`);
+	log.channel('ingest').info(files);
 	
 	ingest(files[number])
 	.then((result) => {
-		
+		log.channel('ingest').info(`[Ingest][Request] : ${number}  ${files.length - 1}`);
+		log.channel('ingest').info(files);
 		if(number < (files.length - 1)){
 			recuriveIngest(files,number+1);
+		}else{
+			new TaskManager()
+			.initialize()
+			.then((taskParse:any) => {
+				log.channel('ingest').info(`[Ingest] success Task : ${taskParse.data}`);
+			
+				// resolve(taskParse);
+			})
+			.catch((exception) => {
+				log.channel('ingest').info(`[Ingest][Exception] : ${exception}`);
+				sendIpc("#ShowMessageAlert/reply",{
+					severity : "success",
+					title : "작업이 성공적으로 요청되었습니다."
+				})
+			})
+		
 		}
 	})
 }

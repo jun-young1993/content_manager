@@ -14,11 +14,20 @@ const taskReducer = (prevState:any, newState:any) => ({
 	...prevState,
 	...newState
 })
+import {TaskStatus} from "../../../public/interfaces/Types/TaskStatus"
+import dayjs from "dayjs";
+export interface valuesInterface {
+	createdAt : {
+		$gte : Date,
+		$lte : Date
+	}
+	status : TaskStatus[]
+}
 export default function TaskMonitor(){
 	
 	const [values, setValues] = React.useReducer(reducer,{
-		createdAt : {$gt : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
-			 $lt : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),23,59,59)},
+		createdAt : {$gte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+			 $lte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),23,59,59)},
 		status : {$in : ['processing']}
 	});    
 	const [pagenation, setPagenation] = React.useReducer(pageReducer,{
@@ -34,37 +43,39 @@ export default function TaskMonitor(){
 	const onDateChangeHandle = (newValue:any, type : "start" | "end") => {
 		console.log('new Value',newValue);
 		console.log('type',type);
-		const endDate = values.createdAt.$lt;
-		const startDate = values.createdAt.$gt;
+		const endDate = values.createdAt.$lte;
+		const startDate = values.createdAt.$gte;
 		if(type === "start"){
 			console.log('start change',{createdAt : {$gte : newValue, $lte : endDate}})
-			setValues({createdAt : {$gt : newValue, $lt : endDate}});
+			setValues({createdAt : {$gte : newValue, $lte : endDate}});
 		}else if(type == "end"){
 			console.log('end date',{createdAt : {$gte : startDate , $lte : newValue}})
-			setValues({createdAt : {$gt : startDate , $lt : newValue}});
+			setValues({createdAt : {$gte : startDate , $lte : newValue}});
 		}
 		
 	}
 	const load = () => {
-		console.log('laod');
+		console.log('laod',values);
 		sender("@Task/_index",values,pagenation)
 		    .then((result:any) => {
-			console.log("@Task/_index");
+			console.log("@Task/_index",result.data);
 			setTasks({rows : result.data, count : result.count});
 		    })
     
 	}
     
 	React.useEffect(() => {
-	    console.log('new data');
+	    console.log('one render');
 	    load();
 	},[])
 
 	React.useEffect(() => {
+		console.log('value render');
 		load();
 	},[values])
 
 	React.useEffect(() => {
+		console.log('pagenation render');
 		load();
 	},[pagenation])
 	
@@ -97,6 +108,9 @@ export default function TaskMonitor(){
 					{ field: 'module_nm', headerName: '모듈명', width: 250 },
 					{ field: 'source', headerName: '소스파일', width: 200 },
 					{ field: 'target', headerName: '타겟파일', width: 200 },
+					{ field: "createdAt", headerName: "작업생성일", width : 180, renderCell : (row : {createdAt : Date}) => {
+						return dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss');
+					}}	
 				],
 				rows : tasks.rows.map((row:{_id : string, id ?: string, progress ?: any}) => {
 					// row.progress = (<CircularStatic />)

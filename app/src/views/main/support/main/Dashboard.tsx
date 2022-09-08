@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 // import Tooltip from '@mui/material/Tooltip';
-import {LightTooltip} from "@src/views/components/tooltip/Tooltip";
+import {HtmlTooltip, LightTooltip} from "@src/views/components/tooltip/Tooltip";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
@@ -37,6 +37,7 @@ function Copyright(props: any) {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
+
   );
 }
 

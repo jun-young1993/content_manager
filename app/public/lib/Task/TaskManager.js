@@ -5,6 +5,10 @@ var Task = require('../../models/Task').Task;
 var TaskParse = require('./TaskParse').TaskParse;
 var FileManager = require('./module/FileManager').FileManager;
 var Media_1 = require("../../models/Media");
+var WorkflowService_1 = require("../../service/WorkflowService");
+var TaskService_1 = require("../../service/TaskService");
+var workflowService = new WorkflowService_1.WorkflowService();
+var taskService = new TaskService_1.TaskService();
 var TaskManager = /** @class */ (function () {
     function TaskManager() {
         this.TaskDb = new Task().db();
@@ -87,6 +91,33 @@ var TaskManager = /** @class */ (function () {
                 }
             })["catch"](function (err) {
                 reject(err);
+            });
+        });
+    };
+    TaskManager.prototype.startWorkflow = function (options) {
+        return new Promise(function (resolve, reject) {
+            workflowService.firstWorkflowRuleByWorkflowId(options.workflow_id)
+                .then(function (firstWorkflowRule) {
+                var _a;
+                var insertTask = {
+                    content_id: options.content_id,
+                    workflow_id: options.workflow_id,
+                    module_id: firstWorkflowRule.data.module_id,
+                    rule_id: firstWorkflowRule.data._id,
+                    source: (_a = options.source) !== null && _a !== void 0 ? _a : null,
+                    target: null,
+                    status: 'queue',
+                    priority: 0,
+                    progress: 0
+                };
+                taskService.create(insertTask)
+                    .then(function (task) {
+                    resolve(task);
+                })["catch"](function (taskCatch) {
+                    reject(taskCatch);
+                });
+            })["catch"](function (firstWorkflowRuleCatch) {
+                reject(firstWorkflowRuleCatch);
             });
         });
     };

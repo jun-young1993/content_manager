@@ -13,48 +13,48 @@ var path = require("path");
 var ElectronHelper_1 = require("../../../../lib/helper/ElectronHelper");
 var ingest = function (file) {
     return new Promise(function (resolve, reject) {
-        var workflowId = "YMxc6i1EeoDhTKgY";
+        var workflowId = "user_out_ingest";
         contentService.createContent({
             workflow_id: workflowId,
             title: path.basename(file)
         })
             .then(function (content) {
-            workflowService.firstWorkflowRuleByWorkflowId(workflowId)
-                .then(function (firstWorkflowRule) {
-                var contentId = content.data._id;
-                var insertTask = {
-                    content_id: contentId,
-                    workflow_id: workflowId,
-                    module_id: firstWorkflowRule.data.module_id,
-                    rule_id: firstWorkflowRule.data._id,
-                    source: file,
-                    target: null,
-                    status: 'queue',
-                    priority: 0
-                };
-                taskService.create(insertTask)
-                    .then(function (task) {
-                    new TaskManager_1.TaskManager()
-                        .initialize()
-                        .then(function (taskParse) {
-                        log.channel('ingest').info("[Ingest] success Task : ".concat(taskParse.data));
-                        (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
-                            severity: "success",
-                            title: "작업이 성공적으로 요청되었습니다."
-                        });
-                        resolve(taskParse);
-                    });
-                });
+            new TaskManager_1.TaskManager()
+                .startWorkflow({
+                content_id: content._id,
+                workflow_id: workflowId,
+                source: file
+            })
+                .then(function (task) {
+                resolve(task);
             });
         });
     });
 };
 var recuriveIngest = function (files, number) {
     if (number === void 0) { number = 0; }
+    log.channel('ingest').info("[Ingest][Request] : ".concat(number));
+    log.channel('ingest').info(files);
     ingest(files[number])
         .then(function (result) {
-        if (number <= (files.length - 1)) {
+        log.channel('ingest').info("[Ingest][Request] : ".concat(number, "  ").concat(files.length - 1));
+        log.channel('ingest').info(files);
+        if (number < (files.length - 1)) {
             recuriveIngest(files, number + 1);
+        }
+        else {
+            new TaskManager_1.TaskManager()
+                .initialize()
+                .then(function (taskParse) {
+                log.channel('ingest').info("[Ingest] success Task : ".concat(taskParse.data));
+                // resolve(taskParse);
+            })["catch"](function (exception) {
+                log.channel('ingest').info("[Ingest][Exception] : ".concat(exception));
+                (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
+                    severity: "success",
+                    title: "작업이 성공적으로 요청되었습니다."
+                });
+            });
         }
     });
 };

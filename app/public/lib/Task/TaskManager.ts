@@ -7,6 +7,11 @@ const {FileManager} = require('./module/FileManager');
 import MediaInterface from "../../interfaces/MediaInterface";
 import { Media } from "../../models/Media";
 import {apiReject,apiResolve} from "../helper/ApiHelper";
+import {WorkflowService} from "../../service/WorkflowService";
+import {TaskService} from "../../service/TaskService";
+const workflowService = new WorkflowService();
+const taskService = new TaskService();
+import TaskInterface from "../../interfaces/TaskInterface";
 interface Property{
 	TaskDb : typeof Task,
 	MediaDb : typeof Media
@@ -120,7 +125,41 @@ export class TaskManager implements Property{
 		
 	}
 
-	
+	startWorkflow(options : {
+		content_id:string
+		workflow_id:string
+		source ?: string
+	}){
+
+		return new Promise((resolve, reject) => {
+			workflowService.firstWorkflowRuleByWorkflowId(options.workflow_id)
+			.then((firstWorkflowRule:any) => {
+				
+					const insertTask : TaskInterface = {
+						content_id :options.content_id,
+						workflow_id : options.workflow_id,
+						module_id : firstWorkflowRule.data.module_id,
+						rule_id : firstWorkflowRule.data._id,
+						source : options.source ?? null,
+						target : null,
+						status : 'queue',
+						priority : 0,
+						progress : 0
+					}
+					taskService.create(insertTask)
+					.then((task) => {
+						resolve(task);
+					})
+					.catch((taskCatch) => {
+						reject(taskCatch);
+					})
+			})
+			.catch((firstWorkflowRuleCatch) => {
+				reject(firstWorkflowRuleCatch);
+			})
+		})
+		
+	}
 
 	
 
