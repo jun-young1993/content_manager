@@ -4,7 +4,7 @@ var _a = require('../../../../lib/helper/ElectronHelper'), onIpc = _a.onIpc, get
 onIpc("#ShowDrawer", function (event, args) {
     event.reply("#ShowDrawer/reply", args);
 });
-onIpc("#ShowDrawerClose", function (event, args) {
+onIpc("#ShowDrawerClose", function (event) {
     console.log('ShowDrawerClose');
     event.reply("#ShowDrawerClose/reply");
 });

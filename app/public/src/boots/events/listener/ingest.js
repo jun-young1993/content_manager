@@ -19,9 +19,11 @@ var ingest = function (file) {
             title: path.basename(file)
         })
             .then(function (content) {
+            log.channel('ingest').info("[Ingest][Request][Create Content]");
+            log.channel('ingest').info(content);
             new TaskManager_1.TaskManager()
                 .startWorkflow({
-                content_id: content._id,
+                content_id: content.data._id,
                 workflow_id: workflowId,
                 source: file
             })

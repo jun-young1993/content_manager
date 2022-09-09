@@ -258,7 +258,7 @@ var TaskParse = /** @class */ (function () {
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 new Task().db().update({ _id: _this.task._id }, {
                                     $set: Object.assign(_this.task, {
-                                        status: 'processing',
+                                        status: 'queue',
                                         source_media_id: _this.sourceMedia._id,
                                         target_media_id: _this.targetMedia._id,
                                         source: _this.sourceMedia.path,
@@ -315,7 +315,7 @@ var TaskParse = /** @class */ (function () {
                     log.channel('task_parse').info('[setting][targetStorage]', targetStorage);
                     _this.targetStorage = targetStorage;
                     if (targetStorage) {
-                        if (!targetStorage.path) {
+                        if (!targetStorage.path && (targetStorage.code != 'no')) {
                             reject('[sertting][targetStorage] not found targetStorage.path');
                         }
                         _this.getStorage(_this.moduleInfo.source_storage)

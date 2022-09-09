@@ -13,7 +13,7 @@ var MediaService = require('../../service/MediaService').MediaService;
 var mediaSv = new MediaService();
 router.get('/:filename/:extention', function (req, res) {
     var _a = req.params, extention = _a.extention, filename = _a.filename;
-    var thumbnailPath = path.resolve(__dirname, "../logo192.".concat(extention));
+    var thumbnailPath = path.resolve(__dirname, "../../logo192.".concat(extention));
     var read = fs.createReadStream(thumbnailPath);
     var pass = new stream.PassThrough();
     stream.pipeline(read, pass, function (err) {

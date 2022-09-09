@@ -274,7 +274,7 @@ export class TaskParse {
 							log.channel('task_parse').info('[setting][targetStorage]',targetStorage);
 							_this.targetStorage = targetStorage;
 							if(targetStorage){
-								if(!targetStorage.path){
+								if(!targetStorage.path && (targetStorage.code != 'no')){
 									reject('[sertting][targetStorage] not found targetStorage.path');
 								}
 
