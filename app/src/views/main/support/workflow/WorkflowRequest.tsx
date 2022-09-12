@@ -7,6 +7,8 @@ import {GridRowParams, DataGridProps} from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import Button from "@mui/material/Button";
+import {sender, showAlert, showConfirm} from "@views/helper/helper";
+import {isEmpty} from "lodash";
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -27,7 +29,7 @@ interface WorkflowRequestInterface {
 }
 export default function WorkflowRequest(props:any) {
     console.log('workflowReqest',props);
-
+    const [selected, setSelected] = React.useState<any>(null);
 
     const contentId : string = props.contentId;
     return (
@@ -40,6 +42,7 @@ export default function WorkflowRequest(props:any) {
 
                 <WorkflowRequestList
                     onRowClick={(row:GridRowParams)=>{
+                        setSelected(row.row);
                         console.log('click row',row);
                     }}
 
@@ -52,6 +55,28 @@ export default function WorkflowRequest(props:any) {
                     <Button variant="outlined"
                             startIcon={<AccountTreeIcon />}
                             onClick={()=>{
+                                if(isEmpty(selected)){
+                                    showAlert({
+                                        title : '선택된 워크플로우가 없습니다.',
+                                        severity : "warning"
+                                    })
+                                    return false;
+                                }
+                                const workflowName:string = selected.name;
+                                const workflowId : string = selected._id;
+                                console.log(workflowName);
+                                showConfirm({
+                                    title : `[${workflowName}] 워크플로우를 호출하시겠습니까?`,
+                                    severity : "info"
+                                },(checked:boolean) => {
+                                    if(checked){
+                                       sender("#start-workflow",{
+                                            workflow_id : workflowId,
+                                           content_id : contentId
+                                       });
+                                    }
+                                })
+                                console.log('selected',selected);
                                     console.log('contentId 워크플로우 실행',contentId);
                             }}
                     >
