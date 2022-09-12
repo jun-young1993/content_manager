@@ -22,9 +22,14 @@ import { useSelector} from "react-redux";
 
 
 export default function WorkflowDetail() {
-	
-	const { rules } = useSelector((state:any) => {return state.rules})
-	console.log('rules',rules);
+
+
+		const { rules } = useSelector((state:any) => {return state.rules})
+
+
+
+
+
 
 
 	// getWorkflowRule(props.workflowId)
@@ -68,7 +73,7 @@ export default function WorkflowDetail() {
 	}
   return (
     <Timeline position="left">
-	{rules.map((workflowRule:{module_name : string, 
+	{rules.map((workflowRule:{module_name : string,
 					  task_type_nm : string,
 					  source_storage_nm : string,
 					  target_storage_nm : string,
@@ -77,47 +82,48 @@ export default function WorkflowDetail() {
 					  parent_id : null | string,
 					  task_type : string
 					}) => {
-		if(workflowRule.parent_id == null){
+			if(workflowRule.parent_id == null){
+				return (
+					<></>
+				)
+			}
 			return (
-				<></>
+				<TimelineItem>
+				<TimelineOppositeContent
+				  sx={{ m: 'auto 0' }}
+				  align="right"
+				  variant="subtitle2"
+				  color="text.secondary"
+				>
+				  <Typography  variant="caption" component="span">
+				  {workflowRule.module_name}
+				  </Typography>
+				  <br/>
+				  <Typography >
+				  {workflowRule.task_type_nm}
+				  </Typography>
+				</TimelineOppositeContent>
+				<TimelineSeparator>
+				  <TimelineConnector />
+				  <TimelineDot>
+					<WorkflowRuleIcons task_type={workflowRule.task_type} />
+					{/* <FastfoodIcon /> */}
+				  </TimelineDot>
+				  <TimelineConnector />
+				</TimelineSeparator>
+				<TimelineContent sx={{ py: '8px', px: 2 }}>
+				  <Typography variant="caption" component="span">
+					{workflowRule.source_storage_nm+'('+workflowRule.source_media_nm+')'}
+				  </Typography>
+				  <br/>
+				  <Typography variant="caption">
+					{workflowRule.target_storage_nm+'('+workflowRule.target_media_nm+')'}
+				  </Typography>
+				</TimelineContent>
+				  </TimelineItem>
 			)
-		}
-		return (
-			<TimelineItem>
-			<TimelineOppositeContent
-			  sx={{ m: 'auto 0' }}
-			  align="right"
-			  variant="subtitle2"
-			  color="text.secondary"
-			>
-			  <Typography  variant="caption" component="span">
-			  {workflowRule.module_name}
-			  </Typography>
-			  <br/>
-			  <Typography >
-			  {workflowRule.task_type_nm}
-			  </Typography>
-			</TimelineOppositeContent>
-			<TimelineSeparator>
-			  <TimelineConnector />
-			  <TimelineDot>
-				<WorkflowRuleIcons task_type={workflowRule.task_type} />
-			    {/* <FastfoodIcon /> */}
-			  </TimelineDot>
-			  <TimelineConnector />
-			</TimelineSeparator>
-			<TimelineContent sx={{ py: '8px', px: 2 }}>
-			  <Typography variant="caption" component="span">
-			    {workflowRule.source_storage_nm+'('+workflowRule.source_media_nm+')'}
-			  </Typography>
-			  <br/>
-			  <Typography variant="caption">
-			  	{workflowRule.target_storage_nm+'('+workflowRule.target_media_nm+')'}
-			  </Typography>
-			</TimelineContent>
-		      </TimelineItem>
-		)
-	})}
+		})
+	}
       {/* <TimelineItem>
         <TimelineOppositeContent
           sx={{ m: 'auto 0' }}

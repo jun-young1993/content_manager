@@ -28,17 +28,47 @@ import {
 } from '@mui/icons-material';
 
 import { ipcRenderer } from 'electron';
+import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
-
+const workflowRequestReducer = (prevState:any, newState:any) => ({
+    ...prevState,
+    ...newState
+})
+const WorkflowButton = (props : {contentId : string}) => {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    return (
+        <>
+        <LightTooltip title={"워크플로우 호출"} placement={"top-end"}>
+            <IconButton onClick={handleOpen}>
+                <AccountTreeIcon />
+            </IconButton>
+        </LightTooltip>
+        <WorkflowRequest
+            contentId={props.contentId}
+            open={open}
+            onClose={handleClose}
+        />
+        </>
+    )
+}
 export default function CardView(props:ViewerInterface) {
     // const [openContentDetail , setOpenContentDetail] = React.useState(false);
 
+    const [selectedContent, setSelectedContent] = React.useState([]);
+
+
+    const handleWorkflowRequest = () => {
+
+    }
 
     return (
+        <>
         <ThemeProvider theme={theme}>
             <CssBaseline />
 
@@ -116,11 +146,7 @@ export default function CardView(props:ViewerInterface) {
                                                 <PageviewOutlinedIcon />
                                             </IconButton>
                                         </LightTooltip>
-                                        <LightTooltip title={"워크플로우 호출"} placement={"top-end"}>
-                                            <IconButton>
-                                            <AccountTreeIcon />
-                                            </IconButton>
-                                        </LightTooltip>
+                                        <WorkflowButton contentId={content._id}/>
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -133,6 +159,8 @@ export default function CardView(props:ViewerInterface) {
             {/* Footer */}
 
             {/* End footer */}
+
         </ThemeProvider>
+        </>
     );
 }

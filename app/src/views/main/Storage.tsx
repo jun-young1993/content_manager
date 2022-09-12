@@ -73,11 +73,7 @@ export default function Storage() {
     });
 
 
-    const [state, setState] = React.useReducer(reducer, {
-        grid : {
-            selected : undefined
-        }
-    });
+
     const baseAlert = ((<CustomAlert open={false} />));
     const [alert, setALert] = React.useState(baseAlert)
     
@@ -139,31 +135,31 @@ export default function Storage() {
                                                     >
                                                         local
                                                     </MenuItem>),
-                                                        (<MenuItem
-                                                        key="ftp" value="ftp"
-                                                    >
-                                                        ftp
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="sftp" value="sftp"
-                                                    >
-                                                        sftp
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="nas" value="nas"
-                                                    >
-                                                        nas
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="san" value="san"
-                                                    >
-                                                        san
-                                                    </MenuItem>),
-                                                        (<MenuItem
-                                                        key="aws" value="aws"
-                                                    >
-                                                        aws
-                                                    </MenuItem>)
+                                                    //     (<MenuItem
+                                                    //     key="ftp" value="ftp"
+                                                    // >
+                                                    //     ftp
+                                                    // </MenuItem>),
+                                                    //     (<MenuItem
+                                                    //     key="sftp" value="sftp"
+                                                    // >
+                                                    //     sftp
+                                                    // </MenuItem>),
+                                                    //     (<MenuItem
+                                                    //     key="nas" value="nas"
+                                                    // >
+                                                    //     nas
+                                                    // </MenuItem>),
+                                                    //     (<MenuItem
+                                                    //     key="san" value="san"
+                                                    // >
+                                                    //     san
+                                                    // </MenuItem>),
+                                                    //     (<MenuItem
+                                                    //     key="aws" value="aws"
+                                                    // >
+                                                    //     aws
+                                                    // </MenuItem>)
                                                 ])
                                             },
                                             {

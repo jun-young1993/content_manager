@@ -37,19 +37,22 @@ const fieldMap = () => {
  */
 export default function FieldMapper(props:FieldMapperPropsInterfaece){
 	const defaultProps = props.default || {};
-	
+
 	return (
 		<>
 			<Stack spacing={1} direction="row" >
-				{props.fields.map((field:Fields) => {
-					const fieldElement = map[field.field];
-					Object.assign(field,defaultProps);
-					return (
-						fieldElement(field)
-					)
-					// return (mappingType(field));
-				
-				})}
+				{props.fields
+					? props.fields.map((field:Fields) => {
+						const fieldElement = map[field.field];
+						Object.assign(field,defaultProps);
+						return (
+							fieldElement(field)
+						)
+						// return (mappingType(field));
+
+					})
+					: <></>
+				}
 			</Stack>
 		</>
 	);

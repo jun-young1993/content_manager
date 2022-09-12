@@ -7,7 +7,7 @@ import {
     GridColDef,
     GridRowParams,
     GridCallbackDetails,
-    DataGridProps
+    DataGridProps,
 } from '@mui/x-data-grid';
 import {
     Container,
@@ -129,9 +129,13 @@ export default function BaseGrid(props:BaseGridInterface){
 
     return (
         <Container fixed sx={{height:'65vh', width:"100%"}}>
-            <Typography variant="h4" sx={{marginBottom:3}}>
-                {makeTitle(props.title)}
-            </Typography>
+            {props.title
+                ? <Typography variant="h4" sx={{marginBottom:3}}>
+                    {makeTitle(props.title)}
+                </Typography>
+                : <></>
+            }
+
             <DataGrid
                 sx={{height:'70vh'}}
                 // rows={rows}

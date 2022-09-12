@@ -261,7 +261,8 @@ export default function WorkflowList() {
 			
 				<List>
 				
-				{rows.map((row:any) => {
+				{
+					rows.map((row:any) => {
 					
 					
 					return (
@@ -337,7 +338,9 @@ export default function WorkflowList() {
 						</>
 					
 					)
-				})}
+				})
+
+				}
 				{/*<ListItem disablePadding>*/}
 				{/*<ListItemButton component="a" href="#simple-list">*/}
 				{/*<ListItemText primary="Spam" />*/}
