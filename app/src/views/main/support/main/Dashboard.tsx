@@ -11,6 +11,13 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
 // import Tooltip from '@mui/material/Tooltip';
 import {HtmlTooltip, LightTooltip} from "@src/views/components/tooltip/Tooltip";
 import Grid from '@mui/material/Grid';
@@ -27,16 +34,29 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { Collapse } from '@mui/material';
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import {ExpandMore} from "@mui/icons-material";
-function Copyright(props: any) {
+import Stack from "@mui/material/Stack";
+
+const speedDialActionItem = [
+  { icon: <FileCopyIcon />, name: 'Copy' },
+  { icon: <SaveIcon />, name: 'Save' },
+  { icon: <PrintIcon />, name: 'Print' },
+  { icon: <ShareIcon />, name: 'Share' },
+];
+function Footer(props: any) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+      <SpeedDial
+          ariaLabel="SpeedDial basic example"
+          sx={{ position: 'absolute', bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+      >
+        {speedDialActionItem.map((action) => (
+            <SpeedDialAction
+                key={action.name}
+                icon={action.icon}
+                tooltipTitle={action.name}
+            />
+        ))}
+      </SpeedDial>
 
   );
 }
@@ -281,11 +301,20 @@ export default function Dashboard(props:DashboardInterface) {
             overflow: 'auto',
           }}
         >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 1, mb: 1 }}>
-            {mainContainer}
-            <Copyright sx={{ pt: 1 }} />
-          </Container>
+          <Stack
+              direction="column"
+              justifyContent="space-between"
+              spacing={2}
+          >
+            <Toolbar />
+            <Container maxWidth="lg" sx={{ mt: 1, mb: 1 }}>
+
+                {mainContainer}
+
+
+            </Container>
+            <Footer sx={{ pt: 1 }} />
+          </Stack>
         </Box>
       </Box>
     </ThemeProvider>
