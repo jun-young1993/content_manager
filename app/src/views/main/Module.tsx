@@ -164,8 +164,9 @@ export default function Module() {
     }
     
     return (
-        <div style={{ height: 300, width: '100%' }}>
+        <div >
             <DataGrid
+                sx={{ height: "70vh", width: '100%' }}
                 rows={rows.map((module:{_id : string, id? : string})=>{
                     module.id = module._id;
                     return module;

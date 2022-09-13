@@ -192,12 +192,12 @@ export default function WorkflowList() {
 
 
   return (
-	<Grid container spacing={2} style={{height: '100vh'}} >
-		<Grid item xs={5}  style={{height: '100vh'}}>
+	<Grid container spacing={2} sx={{height: '70vh'}} >
+		<Grid item xs={5}  sx={{height: '70vh'}}>
 			<Typography  variant="h6" gutterBottom={true}>
 			  {"워크플로우 목록"}
 			  </Typography>
-			<Box sx={{ width: '100%', borderRight:1, height:'100vh', bgcolor: 'background.paper' }}>
+			<Box sx={{ width: '100%', borderRight:1, height : "70vh" }}>
 				<Stack spacing={2} direction="row">
 						<FormDialog
 						buttonTitle="등록"
@@ -351,7 +351,7 @@ export default function WorkflowList() {
 				{alert}
 			</Box>
 		</Grid>
-		<Grid item xs={7} style={{height: '100vh'}}>
+		<Grid item xs={7} sx={{height: '70vh'}}>
 			<Typography  variant="h6" gutterBottom={true}>
 			  {"워크플로우 흐름"}
 			  </Typography>

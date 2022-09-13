@@ -390,7 +390,7 @@ export default function Code() {
                 </Box>
             </Grid>
             <Grid item xs={6}  >
-                <Box sx={{border:1}}>
+                <Box sx={{border:1, height:'70vh'}}>
                     <DataGrid
                         sx={{height:"70vh"}}
                         rows={childrenRows.map((code : any) => {
