@@ -81,7 +81,7 @@ export default function TaskMonitor(){
 	
 	return (
 		<BaseGrid
-			title={"작업 모니터링"}
+			// title={"작업 모니터링"}
 			
 			// rows={tasks.rows.map((row:{_id : string, id ?: string}) => {
 			// 	row.id = row._id;

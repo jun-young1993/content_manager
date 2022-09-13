@@ -313,7 +313,7 @@ export default function Dashboard(props:DashboardInterface) {
 
 
             </Container>
-            <Footer sx={{ pt: 1 }} />
+            {/* <Footer sx={{ pt: 1 }} /> */}
           </Stack>
         </Box>
       </Box>

@@ -123,6 +123,11 @@ module.exports = {
             _id : "task_module_type_fs_copy"
         },{
             parent_code : "task_module_type",
+            code : "fs_delete",
+            name : "파일시스템(삭제)",
+            _id : "task_module_type_fs_delete"
+        },{
+            parent_code : "task_module_type",
             code : "transcoder_thumbnail",
             name : "트랜스코딩(썸네일)",
             _id : "task_module_type_transcoder_thumbnail"

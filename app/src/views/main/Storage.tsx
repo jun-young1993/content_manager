@@ -88,7 +88,7 @@ export default function Storage() {
     }
     
     return (
-        <div style={{ height: 300, width: '100%' }}>
+        <div style={{ height: '70vh', width: '100%' }}>
             <DataGrid
                 rows={rows.map((storage : any) => {
 

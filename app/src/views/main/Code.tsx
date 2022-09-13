@@ -207,11 +207,11 @@ export default function Code() {
   
     // const [buttons , setButtons] = React.useState(baseCode);
     return (
-        <Grid container spacing={2} style={{height: 'auto'}} >
-            <Grid item xs={6}  style={{height: 'auto'}}>
-                <Box sx={{border:1, height:'auto'}}>
+        <Grid container spacing={2} >
+            <Grid item xs={6}  >
+                <Box sx={{border:1, }}>
                     <DataGrid
-                        sx={{height:"100vh"}}
+                        sx={{height:"70vh"}}
                         rows={rows.map((code : any) => {
 
                             code.id = code._id;
@@ -389,10 +389,10 @@ export default function Code() {
                     />
                 </Box>
             </Grid>
-            <Grid item xs={6}  style={{height: 'auto'}}>
-                <Box sx={{border:1, height:'auto'}}>
+            <Grid item xs={6}  >
+                <Box sx={{border:1}}>
                     <DataGrid
-                        sx={{height:"100vh"}}
+                        sx={{height:"70vh"}}
                         rows={childrenRows.map((code : any) => {
                             console.log('children rows',childrenRows);
                             code.id = code._id;
