@@ -38,7 +38,7 @@ export class MediaInfo extends Property{
 		const contentId:string = this.getContentId();
 		const taskId = this.getTaskId();
 		log.channel('ts').info('[MediaInfo][source path]',source);
-		ffmpeg.ffprobe(source,(error,metadata) => {
+		ffmpeg.ffprobe(source,(error:any,metadata:any) => {
 			mediaInfoService.create(metadata,contentId);
 			sendIpc("#Utils/TaskSnackBar",{
 				variant : "success",

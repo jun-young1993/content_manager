@@ -86,7 +86,7 @@ export class TaskUpdater {
         this.updateTaskStatus('error');
     }
 
-    progress(progress){
+    progress(progress:any){
         
 //         Processing: undefined% done
             // [1] progress undefined

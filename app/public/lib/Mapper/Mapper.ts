@@ -5,11 +5,11 @@ interface MapperProperty{
 }
 
 export default class Mapper{
-	private map = [];
+	private map:{[key:mapClassName] : any} = {};
 	constructor(property:MapperProperty){
 		property.maps.forEach((map:mapClassName) => {
-			const mapClass = require(`./Map/${map}`)[map];
-			console.log(mapClass);
+			const mapClass:any = require(`./Map/${map}`)[map];
+
 			this.map[map] = new mapClass();
 		})
 	}

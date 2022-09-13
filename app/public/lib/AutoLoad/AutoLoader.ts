@@ -7,6 +7,7 @@ export class AutoLoader {
     readonly path : string;
 
     constructor(path : string) {
+        
         this.path = path;
     }
 

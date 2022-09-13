@@ -60,7 +60,7 @@ export class FileManager extends Property{
 				log.channel('fs').info('[Fs Read Stream Error]',error)
 				_this.taskUpdater.error();
 			})
-			.on('data',(data) => {
+			.on('data',(data:any) => {
 				readed += data.length;
 				
 				_this.taskUpdater.progress((readed/sourceSize * 100).toFixed(2))

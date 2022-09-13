@@ -17,7 +17,7 @@ export class CategoryService extends BaseService {
         const _this = this;
         return new Promise((resolve, reject) => {
             mediaInfo['content_id'] = contentId;
-            _this.getModel('MediaInfo').insert(mediaInfo,(err,data) => {
+            _this.getModel('MediaInfo').insert(mediaInfo,(err:any,data:any) => {
                 return resolve(apiResolve(data));
             })
         })
@@ -32,7 +32,7 @@ export class CategoryService extends BaseService {
         const _this = this;
         return new Promise((resolve, reject) => {
             
-            _this.getModel('Category').find({},(err,data) => {
+            _this.getModel('Category').find({},(err:any,data:any) => {
                 return resolve(apiResolve(data));
             })
         })

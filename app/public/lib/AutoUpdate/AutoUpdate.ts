@@ -8,12 +8,12 @@ import {isEmpty, isFunction} from "lodash";
 
 // function createDefaultUpdateWindow(){
 	
-export interface AutoUpdateProperty {
+interface AutoUpdateProperty {
 	available? : Function | undefined | any
 	update? :  Function | undefined | any
 }
-	
-	
+
+
 export class AutoUpdate {
 	
 	constructor(methods:AutoUpdateProperty){
@@ -53,8 +53,8 @@ export class AutoUpdate {
 	
 	}
 
-	isCheck(autoUpdater, methods){
-		autoUpdater.on('update-available', (info) => {
+	isCheck(autoUpdater:any, methods:AutoUpdateProperty){
+		autoUpdater.on('update-available', (info:any) => {
 			log.channel("main").info("[AutoUpdater][update-available]",info)
 			
 				log.channel("main").info("[AutoUpdater][update-available] available");
@@ -67,9 +67,9 @@ export class AutoUpdate {
 		});
 	}
 
-	update(autoUpdater,methods){
+	update(autoUpdater:any,methods:AutoUpdateProperty){
 		
-		autoUpdater.on('update-downloaded', (info) => {
+		autoUpdater.on('update-downloaded', (info:any) => {
 			// log.info('update-downloaded')
 			log.channel("main").info("[AutoUpdater][update-downloaded] quit and install",info)
 			
@@ -85,13 +85,13 @@ export class AutoUpdate {
 		// createDefaultUpdateWindow()
 		// updateWin.webContents.send('message','업데이트 확인 중...','auto-update')
 		})
-		autoUpdater.on('update-not-available', (info) => {
+		autoUpdater.on('update-not-available', (info:any) => {
 			log.channel("main").info("[AutoUpdater][update-not-available] update not available / currently the latest version",info)
 		// log.info('not available.');
 		
 		// updateWin.webContents.send('message','현재 최신버전입니다.','auto-update')
 		});
-		autoUpdater.on('update-available', (info) => {
+		autoUpdater.on('update-available', (info:any) => {
 			log.channel("main").info("[AutoUpdater][update-available]",info)
 			if(isFunction(methods.available)){
 				log.channel("main").info("[AutoUpdater][update-available] available");
@@ -103,12 +103,12 @@ export class AutoUpdate {
 		
 		});
 		
-		autoUpdater.on('error', (err) => {
+		autoUpdater.on('error', (err:any) => {
 			log.channel("main").error("[AutoUpdater][Exception]",err)
 		// log.info('에러가 발생하였습니다. 에러내용 : ' + err);
 		// updateWin.webContents.send('message','에러가 발생하였습니다. 에러내용 : ' + err,'update_error')
 		});
-		autoUpdater.on('download-progress', (progressObj) => {
+		autoUpdater.on('download-progress', (progressObj:any) => {
 			log.channel("main").info("[AutoUpdater][download-progress]",progressObj.bytesPerSecond)
 		
 		// let log_message = "다운로드 속도: " + progressObj.bytesPerSecond;
@@ -119,7 +119,7 @@ export class AutoUpdate {
 		// updateWin.webContents.send('message',parseInt(progressObj.percent),'update_progress_percent')
 		
 		})
-		autoUpdater.on('update-downloaded', (info) => {
+		autoUpdater.on('update-downloaded', (info:any) => {
 			// log.info('업데이트가 완료되었습니다.');
 			log.channel("main").info("[AutoUpdater][update-downloaded] update completed",info)
 			// updateWin.webContents.send('message','','update_complete')

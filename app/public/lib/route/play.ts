@@ -49,7 +49,7 @@ router.get('/proxy/:contentId', (req:any, res:any) => {
 					read.on('error',(error) => {
 						console.log('read error',error)
 					})
-					res.on('error',(error) => {
+					res.on('error',(error:any) => {
 						console.log('res error',error)
 					})
 					read.pipe(res);

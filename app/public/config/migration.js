@@ -31,6 +31,12 @@ module.exports = {
         },
         items:[{
             "type": "local",
+            "code": "download",
+            "name": " 온라인 스토리지",
+            "path": path.resolve(app.getPath('downloads'), 'storage/downloads'),
+            "_id": "download"
+        },{
+            "type": "local",
             "code": "online",
             "name": " 온라인 스토리지",
             "path": path.resolve(app.getPath('downloads'), 'storage/online'),
@@ -138,6 +144,14 @@ module.exports = {
         },
         items : [{
             task_type : "fs_copy",
+            name : "원본 다운로드(온라인->로컬)",
+            source_media : "original",
+            target_media : "no",
+            target_storage : "download",
+            source_storage : "online",
+            _id:"original_download"
+        },{
+            task_type : "fs_copy",
             name : "원본 입수(로컬->온라인)",
             source_media : "out",
             target_media : "original",
@@ -177,6 +191,9 @@ module.exports = {
         items : [{
             name : "사용자 로컬 인제스트(Sample)",
             _id : "user_out_ingest"
+        },{
+            name : "원본 다운로드(Sample)",
+            _id : "original_download"
         }]
     },{
         model : "WorkflowRule",
@@ -184,6 +201,18 @@ module.exports = {
 
         },
         items : [{
+            workflow_id : "original_download",
+            module_id : null,
+            module_name : "start workflow",
+            parent_id : null,
+            _id : "original_download_start_workflow",
+        },{
+            workflow_id : "original_download",
+            module_id : "original_download",
+            module_name : "원본 다운로드(온라인->로컬)",
+            parent_id : "original_download_start_workflow",
+            _id : "fs_copy_original_download",
+        },{
             workflow_id : "user_out_ingest",
             module_id : null,
             module_name : "start workflow",

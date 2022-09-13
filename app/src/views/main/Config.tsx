@@ -18,7 +18,7 @@ import BaseGrid from "@views/components/grid/BaseGrid";
 export default function Config() {
 	const [view, setView] = React.useState(<Metadata />)
 
-
+	
 
 	return (
 		<>

@@ -14,7 +14,7 @@ export class ContentService extends BaseService{
         });
     }
 
-   createContent(metadata){
+   createContent(metadata:any){
         const _this = this;
         return new Promise((resolve,reject) => {
             _this.getModel('Content').insert(metadata,(contentError:any, content:null | {_id : string}) => {
@@ -37,10 +37,10 @@ export class ContentService extends BaseService{
             // _this.getModel('Content').count(search,(error,count:number) => {
                 const contents = _this.getModel('Content').find(search);
                 _this.pagenation(contents,page)
-                    .then((result) => {
+                    .then((result:any) => {
                         result.model
                             .sort({createdAt : -1})
-                            .exec((err,data) => {
+                            .exec((err:any,data:any) => {
                                 resolve(apiCountResolve(data,result.count));
                             })
                     })
@@ -58,7 +58,7 @@ export class ContentService extends BaseService{
    getCount(search:{} = {}){
        const _this = this;
        return  new Promise((resolve,reject) => {
-            _this.getModel('Content').count(search,(error,count:number) => {
+            _this.getModel('Content').count(search,(error:any,count:number) => {
                 return resolve(apiResolve(count));
             });
        })

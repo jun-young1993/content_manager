@@ -37,14 +37,14 @@ export class Transcoder extends Property{
 		const taskId = this.getTaskId();
 		const _this = this;
 		return ffmpeg(this.getSourceFullPath())
-			.on('filenames', function(filenames) {
+			.on('filenames', function(filenames:string[]) {
 				log.channel('ts').info('[transcoder filenames]',filenames);
 			})
-			.on('progress',function(progress){
+			.on('progress',function(progress:any){
 				console.log('Processing: ' + progress.percent + '% done');
 				_this.taskUpdater.progress(progress.percent);
 			})
-			.on('error',function(err, stdout, stderr){
+			.on('error',function(err:any, stdout:any, stderr:any){
 				sendIpc("#Utils/TaskSnackBar",{
 					variant : "error",
 					messages : `[Tc][error] ${err}`
