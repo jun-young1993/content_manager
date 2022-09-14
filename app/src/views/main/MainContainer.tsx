@@ -53,12 +53,6 @@ export default function MainContainer() {
         <>
         <Dashboard 
             leftMenu={[{
-                name : "검색",
-                onClick : (event : DrawerClickEvent) => {
-                    event.setMainContainer((<>검색</>));
-                },
-                icon : <SearchIcon />
-            },{
                 name : "설정",
                 onClick : (event : DrawerClickEvent) => {
                     event.setMainContainer((<>설정</>));

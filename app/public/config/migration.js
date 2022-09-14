@@ -92,6 +92,11 @@ module.exports = {
             name : "비디오",
             _id : "content_type_video"
         },{
+            parent_code : "content_type",
+            code : "image",
+            name : "이미지",
+            _id : "content_type_image"
+        },{
             parent_code : "media_type",
             code : "original",
             name : "원본",

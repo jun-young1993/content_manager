@@ -36,6 +36,12 @@ class Content {
         if(!isEmpty(args[0].category)){
             category = args[0].category;
         }
+
+        let contentType = null;
+        if(!isEmpty(args[0].contentType)){
+            contentType = args[0].contentType;
+        }
+
         let defaultSearch:{} = {};
             fieldService.getSearchFields()
                 .then((searchFields) => {
@@ -51,10 +57,14 @@ class Content {
                         if(!isEmpty(fieldSearch)){
                             defaultSearch['$or'] = fieldSearch;
                         }
+                     
                     }
 
                     if(!isEmpty(category)){
                         defaultSearch['category'] = category;
+                    }
+                    if(!isEmpty(contentType)){
+                        defaultSearch['content_type'] = contentType;
                     }
 
                     const contentPage:{

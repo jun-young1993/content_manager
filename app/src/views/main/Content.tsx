@@ -63,35 +63,18 @@ const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevSta
 
 
 function ContentContainer(){
-    // const dispatch = useDispatch();
-    // const { searchText } = useSelector((state:any) => {return state.searchText})
-    // const { category } = useSelector((state:any) => {return state.category})
+   
 
-    // const [contents , setContents] = React.useState<contentsViewerInterface[] | []>([]);
-    const TagMenu = (tag:{_id : string, name : string, color: string}) => {
-        console.log(tag._id)
-        return (
-            <>
-                <MenuItem value={tag._id}>
-                    {/*<Typography sx={{pr:1}}>*/}
-                    {/*    <CircleIcon*/}
-                    {/*        sx={{width:"15px", height:"15px", marginTop:"8px", color:tag.color}}*/}
-                    {/*    />*/}
-                    {/*</Typography>*/}
-                    {tag.name}
-                </MenuItem>
-            </>
-
-        )
-    }
     const [state , setState] = React.useReducer(reducer,{
         contents : [],
         tags : [],
-        count : 0
+        count : 0,
+        contentType : []
     })
     const [search , setSearch] = React.useReducer(searchReducer,{
         searchText : null,
         category : null,
+        contentType : null,
         page : 0,
         size : 10
     });
@@ -99,15 +82,22 @@ function ContentContainer(){
     const load = () => {
         sender("@Category/_index",{parent_id : "folder"})
             .then((tags : any) => {
+                console.log('search',search);
                 sender("@Content/_index",search)
                     .then((contents:any) => {
                         console.log('contents',contents);
                         console.log('categories',tags);
-                        setState({
-                            contents : contents.data,
-                            count : contents.count,
-                            tags : tags.data
+                        sender("@CodeItem/_indexByParentCode",'content_type')
+                        .then((contentTypes:any) => {
+                            console.log('contentTypes',contentTypes);
+                            setState({
+                                contents : contents.data,
+                                count : contents.count,
+                                tags : tags.data,
+                                contentType : contentTypes.data
+                            })
                         })
+                        
                     });
             })
 
@@ -129,7 +119,7 @@ function ContentContainer(){
                 <FormControl fullWidth variant="standard" >
                     <InputLabel id="tag-select-standard-label">Tag</InputLabel>
                     <Select
-                        labelId="tag-select-standard-label"
+                        // labelId="tag-select-standard-label"
                         // id="demo-simple-select-standard"
                         sx={{width : "100px"}}
                         value={search.category}
@@ -155,6 +145,26 @@ function ContentContainer(){
                                     />
                                     {tag.name}
                                 </Typography>
+                            </MenuItem>
+                            )
+                        })}
+                    </Select>
+                
+                </FormControl>
+                <FormControl fullWidth variant="standard" >
+                    <InputLabel >콘텐츠 유형</InputLabel>
+                    <Select
+                        sx={{width : "100px"}}
+                        value={search.contentType}
+                        onChange={(event : SelectChangeEvent)=>{
+                            setSearch({contentType : event.target.value});
+                        }}
+                    >
+    
+                        {state.contentType.map((tag : {name : string, code : string}) => {
+                            return (
+                            <MenuItem value={tag.code}>
+                                    {tag.name}
                             </MenuItem>
                             )
                         })}

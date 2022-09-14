@@ -37,6 +37,10 @@ var Content = /** @class */ (function () {
         if (!(0, lodash_1.isEmpty)(args[0].category)) {
             category = args[0].category;
         }
+        var contentType = null;
+        if (!(0, lodash_1.isEmpty)(args[0].contentType)) {
+            contentType = args[0].contentType;
+        }
         var defaultSearch = {};
         fieldService.getSearchFields()
             .then(function (searchFields) {
@@ -54,6 +58,9 @@ var Content = /** @class */ (function () {
             }
             if (!(0, lodash_1.isEmpty)(category)) {
                 defaultSearch['category'] = category;
+            }
+            if (!(0, lodash_1.isEmpty)(contentType)) {
+                defaultSearch['content_type'] = contentType;
             }
             var contentPage = {
                 'size': args[0].size,
