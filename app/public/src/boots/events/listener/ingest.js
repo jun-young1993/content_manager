@@ -11,13 +11,13 @@ var workflowService = new WorkflowService_1.WorkflowService();
 var taskService = new TaskService_1.TaskService();
 var path = require("path");
 var ElectronHelper_1 = require("../../../../lib/helper/ElectronHelper");
-var ingest = function (file) {
+var ingest = function (file, defaultValues) {
     return new Promise(function (resolve, reject) {
         var workflowId = "user_out_ingest";
-        contentService.createContent({
+        contentService.createContent(Object.assign({
             workflow_id: workflowId,
             title: path.basename(file)
-        })
+        }, defaultValues))
             .then(function (content) {
             log.channel('ingest').info("[Ingest][Request][Create Content]");
             log.channel('ingest').info(content);
@@ -33,16 +33,16 @@ var ingest = function (file) {
         });
     });
 };
-var recuriveIngest = function (files, number) {
+var recuriveIngest = function (files, defaultValues, number) {
     if (number === void 0) { number = 0; }
     log.channel('ingest').info("[Ingest][Request] : ".concat(number));
     log.channel('ingest').info(files);
-    ingest(files[number])
+    ingest(files[number], defaultValues)
         .then(function (result) {
         log.channel('ingest').info("[Ingest][Request] : ".concat(number, "  ").concat(files.length - 1));
         log.channel('ingest').info(files);
         if (number < (files.length - 1)) {
-            recuriveIngest(files, number + 1);
+            recuriveIngest(files, defaultValues, number + 1);
         }
         else {
             new TaskManager_1.TaskManager()
@@ -60,18 +60,18 @@ var recuriveIngest = function (files, number) {
         }
     });
 };
-onIpc("#ingest", function (event, args) {
+onIpc("#ingest", function (event, defaultValues) {
     var dialog = getElectronModule('dialog');
     dialog.showOpenDialog(getBrowserWindow(), {
         properties: ['openFile', 'multiSelections']
     })
         .then(function (result) {
+        event.reply("#ingest/reply");
         if (!result.canceled && result.filePaths) {
             console.log(result.filePaths);
-            var workflowId = "YMxc6i1EeoDhTKgY";
             // result.filePaths.map((file:string) => {
             // })
-            recuriveIngest(result.filePaths);
+            recuriveIngest(result.filePaths, defaultValues);
         }
         // event.reply("#ingest/reply",result);
     });

@@ -24,40 +24,6 @@ export default function Config() {
 		<>
 
 
-				<Grid container spacing={2} style={{height: 'auto'}}>
-						<Grid item xs={3} style={{height: 'auto'}}>
-							<Box sx={{borderRight: 1}} style={{height : 'auto'}}>
-								<MenuList
-									style={{height : 'auto'}}
-									onClick={(menuId: string) => {
-										if (menuId == 'metadata') {
-											setView(<Metadata/>);
-										}
-										if (menuId == 'storage') {
-											setView(<Storage/>);
-										}
-										if (menuId == 'code') {
-											setView(<Code/>);
-										}
-										if (menuId == 'module') {
-											setView(<Module/>);
-										}
-										if (menuId == 'workflow') {
-											setView(<Workflow/>);
-										}
-										// if (menuId == 'task_monitor'){
-										// 	setView(<TaskMonitor/>);
-										// }
-									}}/>
-							</Box>
-						</Grid>
-						<Grid item xs={9} style={{height: 'auto'}}>
-
-							<Provider store={ConfigStore} children={view} />
-
-						</Grid>
-				</Grid>
-
 		</>
 	);
 }

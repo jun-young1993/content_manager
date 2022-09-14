@@ -12,14 +12,14 @@ import * as path from "path";
 import { sendIpc } from "../../../../lib/helper/ElectronHelper";
 import TaskInterface from "../../../../interfaces/TaskInterface";
 import { reject } from "lodash";
-const ingest = (file:string) => {
+const ingest = (file:string,defaultValues:{}) => {
 	return new Promise((resolve, reject) => {
 		
 		const workflowId : string = "user_out_ingest";
-		contentService.createContent({
+		contentService.createContent(Object.assign({
 			workflow_id : workflowId,
 			title : path.basename(file)
-		})
+		},defaultValues))
 		.then((content:any) => {
 			log.channel('ingest').info(`[Ingest][Request][Create Content]`);
 			log.channel('ingest').info(content);
@@ -38,16 +38,16 @@ const ingest = (file:string) => {
 }
 
 
-const recuriveIngest = (files:string[], number:number=0) => {
+const recuriveIngest = (files:string[],defaultValues:{}, number:number=0) => {
 	log.channel('ingest').info(`[Ingest][Request] : ${number}`);
 	log.channel('ingest').info(files);
 	
-	ingest(files[number])
+	ingest(files[number],defaultValues)
 	.then((result) => {
 		log.channel('ingest').info(`[Ingest][Request] : ${number}  ${files.length - 1}`);
 		log.channel('ingest').info(files);
 		if(number < (files.length - 1)){
-			recuriveIngest(files,number+1);
+			recuriveIngest(files,defaultValues,number+1);
 		}else{
 			new TaskManager()
 			.initialize()
@@ -67,19 +67,21 @@ const recuriveIngest = (files:string[], number:number=0) => {
 		}
 	})
 }
-onIpc("#ingest",(event:IpcMainEvent,args) => {
+onIpc("#ingest",(event:IpcMainEvent,defaultValues:{}) => {
+	
 	const dialog = getElectronModule('dialog');
 	dialog.showOpenDialog(getBrowserWindow(),{
 		properties:['openFile','multiSelections']
 	})
 	.then((result) => {
+		event.reply("#ingest/reply");
 		if(!result.canceled && result.filePaths){
 			console.log(result.filePaths);
-			const workflowId : string = "YMxc6i1EeoDhTKgY";
+			
 			// result.filePaths.map((file:string) => {
 				
 			// })
-			recuriveIngest(result.filePaths)
+			recuriveIngest(result.filePaths,defaultValues)
 		
 		}
 		// event.reply("#ingest/reply",result);

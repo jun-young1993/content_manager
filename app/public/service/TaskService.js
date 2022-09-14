@@ -31,8 +31,6 @@ var TaskService = /** @class */ (function (_super) {
         var _this = this;
         console.log('search', search);
         console.log('page', page);
-        // console.log('search',_this.formatIndexParams(search));
-        // console.log('sample : ',{createdAt : {$gt : new Date("2022-08-01T10:45:17.000Z")}})
         return new Promise(function (resolve, reject) {
             var tasks = _this.getModel('Task').find(search);
             console.log('tasks', tasks);

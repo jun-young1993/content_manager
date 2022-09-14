@@ -21,6 +21,10 @@ import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import SearchField from "@views/components/fields/SearchField";
 import AddIcon from '@mui/icons-material/Add';
 import { HtmlTooltip } from '@views/components/tooltip/Tooltip';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Fade from '@mui/material/Fade';
+import Menu from '@mui/material/Menu';
+import LoadingButton from '@mui/lab/LoadingButton';
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -61,7 +65,72 @@ function ContentProvider(props:any) {
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 
-
+const IngestButton = (props:{contentTypes:any[]}) => {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [loading , setLoading] = React.useState(false);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    
+    const handleMenuClick = (ingestType:string) => {
+        
+        setLoading(true);
+        sender("#ingest",{
+            ingest_type : ingestType
+        })
+        .then((result) => {
+            setLoading(false);
+            handleClose();
+        });
+     
+        
+    }
+  
+    return (
+      <div>
+        <LoadingButton
+          loading={loading}
+          variant="outlined"
+          endIcon={<KeyboardArrowDownIcon />}
+        //   startIcon={<AddIcon />}
+          id="ingest-fade-button"
+          aria-controls={open ? 'ingest-fade-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+        >
+          인제스트
+        </LoadingButton>
+        <Menu
+          id="ingest-fade-menu"
+          MenuListProps={{
+            'aria-labelledby': 'ingest-fade-button',
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          TransitionComponent={Fade}
+        >
+            {props.contentTypes.map((contentType:{name:string, code: string}) => {
+                return (
+                    <MenuItem onClick={()=>{
+                        handleMenuClick(contentType.code);
+                    }}>
+                        <><KeyboardArrowDownIcon /> {contentType.name}</>
+                        </MenuItem>          
+                )
+            })}
+          {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+        </Menu>
+      </div>
+    );
+};
 function ContentContainer(){
    
 
@@ -184,7 +253,7 @@ function ContentContainer(){
                     //     console.log(event);
                     // }}
                 ></SearchField>
-                <IconButton
+                {/* <IconButton
                     onClick={()=>{
                         sender("#ingest")
                         .then((result:any)=>{
@@ -214,7 +283,10 @@ function ContentContainer(){
                     >
                         인제스트
                     </Button>
-                </HtmlTooltip>
+                </HtmlTooltip> */}
+                <IngestButton 
+                    contentTypes={state.contentType}
+                />
             </Stack>
         </Stack>
         <Container maxWidth="lg" sx={{  height:"75vh", flexGrow: 1, overflow: 'auto'}}>
