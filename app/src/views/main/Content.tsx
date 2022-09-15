@@ -34,6 +34,8 @@ import LoadingButton from '@mui/lab/LoadingButton';
 // }));
 import {Circle as CircleIcon} from '@mui/icons-material';
 import {ChangeEvent, KeyboardEventHandler} from "react";
+import Store from "electron-store";
+const store = new Store();
 function ContentProvider(props:any) {
     const dispatch = useDispatch();
     dispatch({type:'searchText.put',value:props.searchText})
@@ -132,7 +134,11 @@ const IngestButton = (props:{contentTypes:any[]}) => {
     );
 };
 function ContentContainer(){
-   
+
+    console.log("store.get('content.tag')",store.get('default_values.tag'));
+    console.log("store.get('content.tag')",store.get('default_values.content_type'));
+    console.log("store.get('content.tag')",store.get('default_values.rows_per_page'));
+    
 
     const [state , setState] = React.useReducer(reducer,{
         contents : [],
@@ -142,7 +148,7 @@ function ContentContainer(){
     })
     const [search , setSearch] = React.useReducer(searchReducer,{
         searchText : null,
-        category : null,
+        category : store.get('default_values.tag'),
         contentType : null,
         page : 0,
         size : 10
@@ -229,7 +235,9 @@ function ContentContainer(){
                             setSearch({contentType : event.target.value});
                         }}
                     >
-    
+                        <MenuItem value={""}>
+                            <em>None</em>
+                        </MenuItem>
                         {state.contentType.map((tag : {name : string, code : string}) => {
                             return (
                             <MenuItem value={tag.code}>

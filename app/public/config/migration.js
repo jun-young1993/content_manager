@@ -265,5 +265,18 @@ module.exports = {
             parent_id : "folder",
             _id : "sample_2"
         }]
+    }],
+    "config" : [{
+        "type" : "default_values",
+        "items" : [{
+            "key" : "tag",
+            "value" : null
+        },{
+            "key" : "content_type",
+            "value" : null
+        },{
+            "key" : "rows_per_page",
+            "value" : 10
+        }]
     }]
 };

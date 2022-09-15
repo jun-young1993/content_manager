@@ -5,6 +5,7 @@ import Dashboard from "@views/main/support/main/Dashboard";
 import Metadata from "@views/main/Metadata";
 import Code from "@views/main/Code";
 import Storage from "@views/main/Storage";
+import Config from "@views/main/Config";
 import Module from "@views/main/Module";
 import Workflow from "@views/main/Workflow";
 import {ipcRenderer, IpcRendererEvent} from "electron";
@@ -55,7 +56,7 @@ export default function MainContainer() {
             leftMenu={[{
                 name : "설정",
                 onClick : (event : DrawerClickEvent) => {
-                    event.setMainContainer((<>설정</>));
+                    event.setMainContainer((<Config />));
                 },
                 icon : <SettingsIcon />,
                 drive:true

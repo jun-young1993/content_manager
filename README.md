@@ -72,6 +72,7 @@
 - npm i array-move
 
 
+
 ## 참고문서
 - electorn ffmpeg build pakage.json
 	- https://github.com/OpenNewsLabs/autoEdit_2/blob/master/package.json
