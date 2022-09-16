@@ -36,34 +36,7 @@ import {Circle as CircleIcon} from '@mui/icons-material';
 import {ChangeEvent, KeyboardEventHandler} from "react";
 import Store from "electron-store";
 const store = new Store();
-function ContentProvider(props:any) {
-    const dispatch = useDispatch();
-    dispatch({type:'searchText.put',value:props.searchText})
-    
-    return (
-        
-            <Grid container spacing={2} style={{height: '100vh'}} >
-                <Grid item xs={2}  style={{height: '100vh'}}>
-                    <Box sx={{borderRight:1, height:'100vh'}}>
-                        <Category onClickCategory={(nodeId:string)=>{
-                            if(nodeId === 'folder'){
-                                dispatch({type: 'category.put', value: null})
 
-                            }else{
-                                dispatch({type: 'category.put', value: nodeId})
-                                
-                            }
-                            dispatch({type: 'PAGE.INIT'});
-                        }}/>
-                    </Box>
-                    
-                </Grid>
-                <Grid item xs={10} style={{height: '100vh'}}>
-                    {/*<ContentList />*/}
-                </Grid>
-            </Grid>
-    )
-}
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 
@@ -86,8 +59,10 @@ const IngestButton = (props:{contentTypes:any[]}) => {
         })
         .then((result) => {
             setLoading(false);
-            handleClose();
+            // handleClose();
         });
+
+        handleClose();
      
         
     }
@@ -121,8 +96,11 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                 return (
                     <MenuItem onClick={()=>{
                         handleMenuClick(contentType.code);
+                        
                     }}>
-                        <><KeyboardArrowDownIcon /> {contentType.name}</>
+                        <>
+                        <KeyboardArrowDownIcon />
+                        {contentType.name}</>
                         </MenuItem>          
                 )
             })}
@@ -137,7 +115,7 @@ function ContentContainer(){
 
     console.log("store.get('content.tag')",store.get('default_values.tag'));
     console.log("store.get('content.tag')",store.get('default_values.content_type'));
-    console.log("store.get('content.tag')",store.get('default_values.rows_per_page'));
+    console.log("store.get('content.tag')",store.get('default_values.rows_page_size_content'));
     
 
     const [state , setState] = React.useReducer(reducer,{
@@ -149,9 +127,9 @@ function ContentContainer(){
     const [search , setSearch] = React.useReducer(searchReducer,{
         searchText : null,
         category : store.get('default_values.tag'),
-        contentType : null,
+        contentType : store.get('default_values.content_type'),
         page : 0,
-        size : 10
+        size : store.get('default_values.rows_page_size_content')
     });
 
     const load = () => {
@@ -182,6 +160,7 @@ function ContentContainer(){
         load();
     },[])
     React.useEffect(()=>{
+        console.log('search',search);
         load();
     },[search])
 

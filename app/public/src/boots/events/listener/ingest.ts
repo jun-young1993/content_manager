@@ -11,14 +11,19 @@ const taskService = new TaskService();
 import * as path from "path";
 import { sendIpc } from "../../../../lib/helper/ElectronHelper";
 import TaskInterface from "../../../../interfaces/TaskInterface";
-import { reject } from "lodash";
-const ingest = (file:string,defaultValues:{}) => {
+import { isEmpty, reject } from "lodash";
+const Store = require("electron-store");
+const store = new Store();
+const ingest = (file:string,defaultValues:any) => {
 	return new Promise((resolve, reject) => {
-		
-		const workflowId : string = "user_out_ingest";
+		const workflowId : any = store.get(`default_values.ingest_workflow_${defaultValues.ingest_type}`);
+		if(isEmpty(workflowId)){
+			reject('not found ingest workflow');
+		}
 		contentService.createContent(Object.assign({
 			workflow_id : workflowId,
-			title : path.basename(file)
+			title : path.basename(file),
+			content_type : defaultValues.ingest_type
 		},defaultValues))
 		.then((content:any) => {
 			log.channel('ingest').info(`[Ingest][Request][Create Content]`);
@@ -59,12 +64,21 @@ const recuriveIngest = (files:string[],defaultValues:{}, number:number=0) => {
 			.catch((exception) => {
 				log.channel('ingest').info(`[Ingest][Exception] : ${exception}`);
 				sendIpc("#ShowMessageAlert/reply",{
-					severity : "success",
-					title : "작업이 성공적으로 요청되었습니다."
+					severity : "error",
+					title : `작업이 실행에 실패했습니다.
+						${exception}}`
 				})
 			})
 		
 		}
+	})
+	.catch((error) => {
+		log.channel('ingest').error(`[Ingest][Request Exception] : ${error}`);
+		sendIpc("#ShowMessageAlert/reply",{
+			severity : "error",
+			title : `작업요청에 실패했습니다. 
+				${error}`
+		})
 	})
 }
 onIpc("#ingest",(event:IpcMainEvent,defaultValues:{}) => {

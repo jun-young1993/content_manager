@@ -27,6 +27,7 @@ import { Typography } from '@mui/material';
 import {sender} from "@views/helper/helper";
 import {MenuItem} from "@mui/material";
 import {Circle as CircleIcon} from '@mui/icons-material';
+import {defaultValues} from "@views/main/support/config/ConfigItems";
 import Store from "electron-store";
 const store = new Store();
 interface TabPanelProps {
@@ -46,7 +47,7 @@ function TabPanel(props: TabPanelProps) {
 	    {...other}
 	  >
 	    {value === index && (
-	      <Box sx={{ p: 3 }}>
+	      <Box sx={{ p: 3}} >
 		{children}
 	      </Box>
 	    )}
@@ -68,82 +69,59 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: theme.palette.text.secondary,
       }));
 
-      
-const defaultValues = [{
-	"title" : "Tag",
-	"sub_title" : "콘텐츠 검색시 기본 검색 조건 태그",
-	"element" : <SelectApi 
-		sender={sender("@Category/_index",{parent_id : "folder"})}
-		value={()=>{
-			return store.get('default_values.tag');
-		}}
-		customList={(tag:any)=>{
-			return (
-				
-				<MenuItem value={tag._id}>
-					<Typography>
-					    <CircleIcon
-						sx={{
-						    width:"20px",
-						    height:"20px",
-						    pr : 1,
-						    // marginTop:"8px",
-						    color:tag.color || "#000000"
-						}}
-					    />
-					    {tag.name}
+const BaseItem = (item:{title:string, sub_title : string , element : any}) => {
+	return (
+		<Stack
+			direction="row"
+			justifyContent="space-around"
+			alignItems="center"
+			spacing={12}
+			>
+				<Box sx={{ width :'70%'}}>
+					<Stack
+						spacing={0}
+					>
+					<Typography variant="inherit">
+					{item.title}
 					</Typography>
-				    </MenuItem>
-				
-				
-			)
-		}}
-		onChange={(value:string)=>{
-			store.set('default_values.tag',value);
-			console.log('default_values.tag',value);
-			console.log(store.get('default_values.tag'));
-		}}
-	/>
+					<Typography variant="subtitle2">
+					{item.sub_title}
+					</Typography >
+					</Stack>
+				</Box>
+				<Box sx={{ width :'30%'}}>
+					{item.element}
+				</Box>
+		</Stack>
+	)
+}      
+
+const TitleItem = (item : {title : string}) => {
+	return (
+		<Typography sx={{borderBottom:1, borderBottomColor:'gray'}} variant={"h6"}>
+			{item.title}
+		</Typography>
+	)
 }
-// ,{
-// 	"title" : "콘텐츠 유형",
-// 	"sub_title" : "콘텐츠 검색시 기본 검색 조건 콘텐츠 유형",
-// 	"element" : <SelectApi />
-// }
-]
-
-
+const settingItem = (item:{type : string} | any) => {
+	let element = <></>;
+	switch(item.type){
+		case 'title' :
+			element = TitleItem(item);
+		break;
+		case 'base' :
+			element = BaseItem(item);
+		break;
+	}
+	return element;
+}
 const BaseLayout = (props:any) => {
 	return (
 	      <Box sx={{ width: '100%' }}>
 		<Stack spacing={4}>
 			{props.items.map((item:any) => {
 				console.log('baseLayout',store.get('default_values.tag'));
-				return (
-					<Stack
-					direction="row"
-					justifyContent="space-around"
-					alignItems="center"
-					spacing={12}
-					>
-						<Box sx={{ width :'70%'}}>
-							<Stack
-								spacing={0}
-							>
-							<Typography variant="inherit">
-							{item.title}
-							</Typography>
-							<Typography variant="subtitle2">
-							{item.sub_title}
-							</Typography >
-							</Stack>
-						</Box>
-						<Box sx={{ width :'30%'}}>
-							{item.element}
-						</Box>
-					
-					</Stack>
-				)
+				return (settingItem(item))
 			})}
 		</Stack>
 	      </Box>
@@ -152,7 +130,7 @@ const BaseLayout = (props:any) => {
 }
 export default function Config() {
 
-
+	console.log('store.get',store.get('default_values'));
 	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -171,12 +149,6 @@ export default function Config() {
 					aria-label="scrollable force tabs example"
 				>
 					<Tab label="기본값 변경" {...a11yProps(0)}/>
-					<Tab label="Item Two" {...a11yProps(1)}/>
-					<Tab label="Item Three" />
-					<Tab label="Item Four" />
-					<Tab label="Item Five" />
-					<Tab label="Item Six" />
-					<Tab label="Item Seven" />
 				</Tabs>
 			</Container>
 			<TabPanel value={value} index={0}>
@@ -184,9 +156,7 @@ export default function Config() {
 					items={defaultValues}
 				/>
 			</TabPanel>
-			<TabPanel value={value} index={1}>
-				<>bye</>
-			</TabPanel>
 		</Container>
+		
 	);
 }

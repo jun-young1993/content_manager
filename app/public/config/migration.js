@@ -202,6 +202,9 @@ module.exports = {
             name : "사용자 로컬 인제스트(Sample)",
             _id : "user_out_ingest"
         },{
+            name : "사용자 로컬 인제스트-이미지(Sample)",
+            _id : "user_out_ingest_image"
+        },{
             name : "원본 다운로드(Sample)",
             _id : "original_download"
         }]
@@ -222,6 +225,18 @@ module.exports = {
             module_name : "원본 다운로드(온라인->로컬)",
             parent_id : "original_download_start_workflow",
             _id : "fs_copy_original_download",
+        },{
+            workflow_id : "user_out_ingest_image",
+            module_id : null,
+            module_name : "start workflow",
+            parent_id : null,
+            _id : "user_out_ingest_start_workflow_image",
+        },{
+            workflow_id : "user_out_ingest_image",
+            module_id : "fs_copy_local_to_online",
+            module_name : "원본 입수(로컬->온라인)",
+            parent_id : "user_out_ingest_start_workflow_image",
+            _id : "user_out_ingest_fs_copy_local_to_online_image",
         },{
             workflow_id : "user_out_ingest",
             module_id : null,
@@ -275,8 +290,20 @@ module.exports = {
             "key" : "content_type",
             "value" : null
         },{
-            "key" : "rows_per_page",
+            "key" : "rows_page_size_content",
             "value" : 10
+        },{
+            "key" : "rows_page_size_task_monitor",
+            "value" : 10
+        },{
+            "key" : "task_monitor_status",
+            "value" : ['queue']
+        },{
+            "key" : "ingest_workflow_video",
+            "value" : "user_out_ingest"
+        },{
+            "key" : "ingest_workflow_image",
+            "value" : "user_out_ingest_image"
         }]
     }]
 };

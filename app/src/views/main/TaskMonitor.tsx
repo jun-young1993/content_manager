@@ -2,6 +2,8 @@ import * as React from "react";
 import BaseGrid from "@views/components/grid/BaseGrid";
 import {sender} from "@views/helper/helper";
 import TaskCircularProgress from "@views/main/support/taskMonitor/TaskCircularProgress";
+import Store from "electron-store";
+const store = new Store();
 const reducer = (prevState:any, newState:any) => ({
 	...prevState,
 	...newState
@@ -28,11 +30,11 @@ export default function TaskMonitor(){
 	const [values, setValues] = React.useReducer(reducer,{
 		createdAt : {$gte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
 			 $lte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),23,59,59)},
-		status : {$in : ['processing']}
+		status : {$in : store.get('default_values.task_monitor_status')}
 	});    
 	const [pagenation, setPagenation] = React.useReducer(pageReducer,{
 		page : 0,
-		size : 10
+		size : store.get('default_values.rows_page_size_task_monitor')
 	})
 
 	const [tasks, setTasks] = React.useReducer(taskReducer,{
@@ -118,7 +120,7 @@ export default function TaskMonitor(){
 					return row;
 				    }),
 				rowCount : tasks.count,
-				rowsPerPageOptions: [5,10,15,20,25,30],
+				rowsPerPageOptions: [10,25,50,100],
 				page : pagenation.page,
 				pageSize : pagenation.size,
 				onPageChange:(page:number)=>{

@@ -52,7 +52,18 @@ export class MediaService extends BaseService{
 		return this.findTypeByContentId('out',contentId);
 	}
 	findThumbnailByContentId(contentId:any){
-		return this.findTypeByContentId('thumbnail',contentId);
+		const _this = this;
+		return new Promise((resolve ,reject) => {
+			_this.getModel("Content").findOne({_id : contentId},(error , content) => {
+				if(content.content_type == 'image'){
+					resolve(_this.findTypeByContentId('original',contentId));
+				}else{
+					resolve(_this.findTypeByContentId('thumbnail',contentId));
+				}
+			})
+		})
+		
+		
 	}
 	findProxyByContentId(contentId:any){
 		return this.findTypeByContentId('proxy',contentId);
