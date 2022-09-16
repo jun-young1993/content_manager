@@ -20,7 +20,7 @@ import {Circle as CircleIcon} from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import {showDrawer} from "@views/helper/helper";
-
+import Chip from '@mui/material/Chip';
 import {
     Pageview as PageviewIcon,
     PageviewOutlined as PageviewOutlinedIcon,
@@ -94,6 +94,7 @@ export default function CardView(props:ViewerInterface) {
                                         }}
                                     />
                                     </LightTooltip>
+                                    <Chip label={content.content_type} size="small" />
                                 </Stack>
                                 <Card
                                     style={{height:"100%"}}
