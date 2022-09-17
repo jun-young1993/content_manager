@@ -29,9 +29,10 @@ import {
 
 import { ipcRenderer } from 'electron';
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
+import {OverridableStringUnion} from "@mui/types";
+import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 const workflowRequestReducer = (prevState:any, newState:any) => ({
@@ -57,15 +58,24 @@ const WorkflowButton = (props : {contentId : string}) => {
         </>
     )
 }
-export default function CardView(props:ViewerInterface) {
-    // const [openContentDetail , setOpenContentDetail] = React.useState(false);
-
-    const [selectedContent, setSelectedContent] = React.useState([]);
-
-
-    const handleWorkflowRequest = () => {
-
+const contentTypeChip = (contentType?:string) => {
+    const label = contentType || "None";
+    let color: OverridableStringUnion<
+        'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
+        ChipPropsColorOverrides
+        > = "primary";
+    switch(label){
+        case "video" :
+            color="success";
+        break;
+        case "image" :
+            color="info";
+        break;
     }
+    return (<Chip label={label} size="small" color={color} variant="outlined" />)
+}
+export default function CardView(props:ViewerInterface) {
+
 
     return (
         <>
@@ -75,26 +85,27 @@ export default function CardView(props:ViewerInterface) {
             <main  >
                 <Container sx={{ py: 3 , flexGrow: 1, overflow: 'auto', height: "65vh"}}  maxWidth="lg" >
                     {/* End hero unit */}
-                    <Grid container spacing={3} alignItems="stretch" >
+                    <Grid container spacing={2} rowSpacing={4} alignItems="stretch" >
                         {props.contents.map((content:contentsViewerInterface) => (
                             <Grid item key={content._id}
                                   xs={3}
                                   // sm={6}
                                   // md={4}
                             >
-                                <Stack direction="row" spacing={2}>
+                                <Stack direction="row" spacing={2} >
                                     <LightTooltip title={content.category_name || "지정된 테그가 없습니다."} >
-                                    <CircleIcon
-                                        sx={{
-                                            width:"20px",
-                                            height:"20px",
-                                            pr : 1,
-                                            // marginTop:"8px",
-                                            color:content.category_color || "#000000"
-                                        }}
-                                    />
+                                        <CircleIcon
+                                            sx={{
+                                                width:"20px",
+                                                height:"20px",
+                                                pr : 1,
+                                                // marginTop:"8px",
+                                                color:content.category_color || "#000000"
+                                            }}
+                                        />
                                     </LightTooltip>
-                                    <Chip label={content.content_type} size="small" />
+                                    {contentTypeChip(content.content_type)}
+                                    {/*<Chip label={content.content_type} size="small" color="primary" variant="outlined" />*/}
                                 </Stack>
                                 <Card
                                     style={{height:"100%"}}
@@ -104,7 +115,7 @@ export default function CardView(props:ViewerInterface) {
                                         component="img"
                                         sx={{
                                             // 16:9
-                                            // pt: '0%',
+                                            // pt: '1%',
                                         }}
                                         image={"http://localhost:11101/thumbnail/"+content._id+"?w=248&fit=crop&auto=format"}
                                         alt="썸네일 생성작업을 요청해주세요."

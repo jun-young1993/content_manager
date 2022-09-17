@@ -1,46 +1,34 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Category from '@views/main/support/content/Category';
-// import ContentList from '@views/main/support/content/ContentList';
 import Typography from "@mui/material/Typography";
 import ContentStore from "@views/store/ContentStore";
 import {useDispatch, useSelector, Provider} from "react-redux";
 import Container from "@mui/material/Container";
 import {sender} from "@views/helper/helper";
 import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import {contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
 import CardView from "@views/main/support/content/viewer/CardView";
 import ContentPagination from "@views/main/support/content/ContentPagination";
 import InputLabel from "@mui/material/InputLabel";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import SearchField from "@views/components/fields/SearchField";
-import AddIcon from '@mui/icons-material/Add';
-import { HtmlTooltip } from '@views/components/tooltip/Tooltip';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Fade from '@mui/material/Fade';
 import Menu from '@mui/material/Menu';
 import LoadingButton from '@mui/lab/LoadingButton';
-// const Item = styled(Paper)(({ theme }) => ({
-//     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//     ...theme.typography.body2,
-//     padding: theme.spacing(1),
-//     textAlign: 'center',
-//     color: theme.palette.text.secondary,
-// }));
-import {Circle as CircleIcon} from '@mui/icons-material';
+
+import {
+    Circle as CircleIcon,
+    Image as ImageIcon
+} from '@mui/icons-material';
 import {ChangeEvent, KeyboardEventHandler} from "react";
 import Store from "electron-store";
+import Icons from "@views/components/Icons";
 const store = new Store();
 
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 
 const IngestButton = (props:{contentTypes:any[]}) => {
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [loading , setLoading] = React.useState(false);
     const open = Boolean(anchorEl);
@@ -99,7 +87,12 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                         
                     }}>
                         <>
-                        <KeyboardArrowDownIcon />
+                        {Icons({
+                            type:contentType.code,
+                            sx:{
+                                mr : 1
+                            }
+                        })}
                         {contentType.name}</>
                         </MenuItem>          
                 )
