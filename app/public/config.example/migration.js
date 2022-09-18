@@ -203,12 +203,14 @@ module.exports = {
     },{
         model : "Category",
         items : [{
-            name : "sample_1",
+            name : "SampleTag(red)",
             parent_id : "folder",
+            color : "#D0021B",
             _id : "sample_1"
         },{
-            name : "sample_2",
+            name : "SampleTag(blue)",
             parent_id : "folder",
+            color : "#0041F4",
             _id : "sample_2"
         }]
     }]

@@ -42,7 +42,7 @@ var Category = /** @class */ (function () {
         });
     };
     Category._index = function (event, args) {
-        db.db().find(args[0], function (err, data) {
+        db.db().find(args[0]).sort({ createdAt: -1 }).exec(function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,
@@ -55,6 +55,16 @@ var Category = /** @class */ (function () {
         db.db().insert(Object.assign(args[0], {
             'use_yn': "Y"
         }), function (err, data) {
+            if (data) {
+                event.autoReplay({
+                    success: true,
+                    data: data
+                });
+            }
+        });
+    };
+    Category._update = function (event, args) {
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,
@@ -109,6 +119,14 @@ var Category = /** @class */ (function () {
                     success: false
                 };
             }
+        });
+    };
+    Category._delete = function (event, args) {
+        db.db().remove(args[0], function (err, data) {
+            return event.autoReplay({
+                success: true,
+                data: data
+            });
         });
     };
     Category["delete"] = function (event) {

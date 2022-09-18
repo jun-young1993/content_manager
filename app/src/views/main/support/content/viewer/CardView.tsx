@@ -1,7 +1,4 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -9,11 +6,8 @@ import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ViewerInterface, contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
 import {Circle as CircleIcon} from "@mui/icons-material";
@@ -22,12 +16,10 @@ import IconButton from "@mui/material/IconButton";
 import {showDrawer} from "@views/helper/helper";
 import Chip from '@mui/material/Chip';
 import {
-    Pageview as PageviewIcon,
     PageviewOutlined as PageviewOutlinedIcon,
     AccountTree as AccountTreeIcon
 } from '@mui/icons-material';
 
-import { ipcRenderer } from 'electron';
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
@@ -35,10 +27,6 @@ import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 
 
 const theme = createTheme();
-const workflowRequestReducer = (prevState:any, newState:any) => ({
-    ...prevState,
-    ...newState
-})
 const WorkflowButton = (props : {contentId : string}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -73,6 +61,18 @@ const contentTypeChip = (contentType?:string) => {
         break;
     }
     return (<Chip label={label} size="small" color={color} variant="outlined" />)
+}
+export function SimpleView(props:ViewerInterface){
+    return (<>
+        {props.contents.map((content:contentsViewerInterface) => {
+            return (
+            <>
+                {content.title}
+                <br/>
+            </>
+            )
+        })}
+    </>)
 }
 export default function CardView(props:ViewerInterface) {
 
@@ -120,10 +120,10 @@ export default function CardView(props:ViewerInterface) {
                                         image={"http://localhost:11101/thumbnail/"+content._id+"?w=248&fit=crop&auto=format"}
                                         alt="썸네일 생성작업을 요청해주세요."
                                         onError={(event:any)=>{
-                                            event.target.style['display'] = 'none';
+                                            // event.target.style['display'] = 'none';
                                             // event.target.style['background-image'] = 'red';
                                             // console.log(event);
-                                            // event.target.src = "https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png";
+                                            event.target.src = "https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png?w=248&fit=crop&auto=format";
                                             // console.log(event);
                                             // // event.stopPropagation();
                                             // event.target.onError = () => {

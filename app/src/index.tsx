@@ -15,7 +15,9 @@ import reportWebVitals from './reportWebVitals';
 import {ipcRenderer, IpcRendererEvent} from "electron";
 import UtilsContainer from "@views/main/UtilsContainer";
 import {Box} from "@mui/material";
-
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 ipcRenderer.send('auto-update-check','auto-update-check')
 ReactDOM.render(
             <Box sx={{height:'90vh'}}>

@@ -21,7 +21,8 @@ var TaskSeter = /** @class */ (function () {
                 source: sourceMedia.full_path,
                 target: target,
                 status: 'queue',
-                priority: 0
+                priority: 0,
+                progress: 0
             };
             if (!sourceMedia.is_media) {
             }

@@ -26,130 +26,107 @@ import {
     AccountTree as AccountTreeIcon,
     Monitor as MonitorIcon
 } from '@mui/icons-material';
-
+import Icons from "@views/components/Icons";
+import TagConfig from "@views/main/TagConfig";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import CssBaseline from '@mui/material/CssBaseline';
+import SketchColorPicker from "@views/components/fields/SketchColorPicker";
 export default function MainContainer() {
-    const mdTheme = createTheme();
-    const [value, setValue] = React.useState(<Content />);
-    const [open, setOpen] = React.useState(true);
-    const toggleDrawer = () => {
-		setOpen(!open);
-	      };
-    ipcRenderer.on("@Ingest/_ingest/reply",(event:IpcRendererEvent,result) => {
-        console.log('show ingest request',result)
-        setValue(<Content />);
-        ipcRenderer.removeAllListeners("@Ingest/_ingest/reply");
-        // setContentDialog(<ContentDialog
-        //     open={true}
-        //     metadata={metadata}
-        //     onClose={()=>{
-        //         console.log('close');
-        //     }}
-        // />)
-    })
-    // const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    //     setValue(newValue);
-    // };
-   
+
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+    const theme = React.useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode: prefersDarkMode ? 'dark' : 'dark',
+                },
+            }),
+        [prefersDarkMode],
+    );
     return (
-        <>
-        <Dashboard 
-            leftMenu={[{
-                name : "설정",
-                onClick : (event : DrawerClickEvent) => {
-                    event.setMainContainer((<Config />));
-                },
-                icon : <SettingsIcon />,
-                drive:true
-            },{
-                name : "콘텐츠",
-                onClick : (event : DrawerClickEvent) => {
-                    event.setMainContainer((<Content />));
-                },
-                icon : <TableViewIcon />,
-                drive:true
-            },{
-                name : "모니터링",
-                collapse : true,
-                onClick : (event : DrawerClickEvent) => {},
-                icon : <MonitorIcon />,
-                drive:true,
-                items : [{
-                    name : "작업관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<TaskMonitor />));
-                    },
-                    icon :<TaskIcon />
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+                <>
+                    <Dashboard
+                        leftMenu={[{
+                            name : "설정",
+                            onClick : (event : DrawerClickEvent) => {
+                                event.setMainContainer((<Config />));
+                            },
+                            icon : <SettingsIcon />,
+                            drive:true
+                        },{
+                            name : "콘텐츠",
+                            onClick : (event : DrawerClickEvent) => {
+                                event.setMainContainer((<Content />));
+                            },
+                            icon : <TableViewIcon />,
+                            drive:true
+                        },{
+                            name : "모니터링",
+                            collapse : true,
+                            onClick : (event : DrawerClickEvent) => {},
+                            icon : <MonitorIcon />,
+                            drive:true,
+                            items : [{
+                                name : "작업관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<TaskMonitor />));
+                                },
+                                icon :<TaskIcon />
 
-                }]
-            },{
-                name : "사용자 지정 관리",
-                collapse : true,
-                onClick : (event : DrawerClickEvent) => {},
-                icon : <PersonIcon />,
-                drive:true,
-                items : [{
-                    name : "메타데이터 관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<Metadata />));
-                    },
-                    icon :<PermDataSettingIcon />
+                            }]
+                        },{
+                            name : "사용자 지정 관리",
+                            collapse : true,
+                            onClick : (event : DrawerClickEvent) => {},
+                            icon : <PersonIcon />,
+                            drive:true,
+                            items : [{
+                                name : "메타데이터 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Metadata />));
+                                },
+                                icon :<PermDataSettingIcon />
 
-                },{
-                    name : "스토리지 관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<Storage />));
-                    },
-                    icon :<FolderIcon />
+                            },{
+                                name : "스토리지 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Storage />));
+                                },
+                                icon :<FolderIcon />
 
-                },{
-                    name : "코드 관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<Code />));
-                    },
-                    icon :<SettingsSuggestIcon />
-                },{
-                    name : "모듈 관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<Module />));
-                    },
-                    icon :<ViewModuleIcon />
-                },{
-                    name : "워크플로우 관리",
-                    onClick : (event : DrawerClickEvent) => {
-                        event.setMainContainer((<Workflow />));
-                    },
-                    icon :<AccountTreeIcon />
-                }]
-            }]}
-        />
-        
-        </>
-        
-        // <Box sx={{ width: '100%', height:'90vh'}}>
-            
-        //     < sx={{ width: '100%',height:'auto'}}>
-        //     <MenuAppBar
-        //         onSearch={(searchText:any)=>{
-        //             console.log(searchText);
-        //             setValue(<Content searchText={searchText}/>);
-        //         }}
-        //         onClick={(value:any)=>{
-        //             console.log('value menu click',value);
-        //             const container:any = {
-        //                 Content :<Content />,
-        //                 Ingest : <Ingest />,
-        //                 Config : <Config />,
-        //                 TaskMonitor : <TaskMonitor />
-        //             };
-        //             setValue(container[value]);
-        //         }}
-        //     />
-        //     </Box>
-        //     <Box sx={{ width: '100%',height:'auto'}}>
-        //     {value}
-        //     </Box>
-        // </Box>
-
-
+                            },{
+                                name : "코드 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Code />));
+                                },
+                                icon :<SettingsSuggestIcon />
+                            },{
+                                name : "모듈 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Module />));
+                                },
+                                icon :<ViewModuleIcon />
+                            },{
+                                name : "워크플로우 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Workflow />));
+                                },
+                                icon :<AccountTreeIcon />
+                            },{
+                                name : "태그 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer(<TagConfig />);
+                                },
+                                icon :<Icons
+                                    type={"tag"}
+                                />
+                            }]
+                        }]}
+                    />
+                </>
+        </ThemeProvider>
     );
 }

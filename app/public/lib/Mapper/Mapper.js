@@ -3,10 +3,9 @@ exports.__esModule = true;
 var Mapper = /** @class */ (function () {
     function Mapper(property) {
         var _this = this;
-        this.map = [];
+        this.map = {};
         property.maps.forEach(function (map) {
             var mapClass = require("./Map/".concat(map))[map];
-            console.log(mapClass);
             _this.map[map] = new mapClass();
         });
     }

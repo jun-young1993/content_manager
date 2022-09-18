@@ -48,7 +48,7 @@ class Category {
     }
 
     static _index(event, args){
-        db.db().find(args[0],(err,data) => {
+        db.db().find(args[0]).sort({createdAt : -1}).exec((err,data) => {
 
             if(data){
                 event.autoReplay({
@@ -65,6 +65,20 @@ class Category {
         db.db().insert(Object.assign(args[0],{
             'use_yn' : "Y"
         }),(err,data) => {
+
+            if(data){
+
+                event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            }
+
+        })
+    }
+
+    static _update(event,args){
+        db.db().update(args[1],{$set : args[0]},(err,data) => {
 
             if(data){
 
@@ -130,6 +144,14 @@ class Category {
             }
 
         })
+    }
+    static _delete(event,args){
+        db.db().remove(args[0],(err,data) => {
+            return event.autoReplay({
+                success : true,
+                data : data
+            })
+        });
     }
 
     static delete(event, ...args){

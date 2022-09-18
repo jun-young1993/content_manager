@@ -16,9 +16,7 @@ router.get('/:contentId', function (req, res) {
     console.log('[request thumbnail] 0 ', contentId);
     mediaSv.findThumbnailByContentId(contentId)
         .then(function (media) {
-        console.log('thumbnail contentId 1', contentId);
         if (media.success) {
-            console.log('thumbnail media 2');
             if (media.data) {
                 if (media.data.full_path) {
                     console.log('thumbnail media full path 3', media.data.full_path);

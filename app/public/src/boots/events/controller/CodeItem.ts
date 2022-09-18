@@ -114,7 +114,7 @@ class CodeItem {
 
     static _update(event,args){
         console.log('code item update args',args);
-        codeItemDb.db().update(args[1],{$ser : args[0]},(err,data) => {
+        codeItemDb.db().update(args[1],{$set : args[0]},(err,data) => {
 
             if(data){
                 return event.autoReplay({

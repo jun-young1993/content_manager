@@ -1,11 +1,9 @@
 import * as React from 'react';
 import Typography from "@mui/material/Typography";
-import ContentStore from "@views/store/ContentStore";
-import {useDispatch, useSelector, Provider} from "react-redux";
 import Container from "@mui/material/Container";
 import {sender} from "@views/helper/helper";
 import Stack from "@mui/material/Stack";
-import CardView from "@views/main/support/content/viewer/CardView";
+import CardView, {SimpleView} from "@views/main/support/content/viewer/CardView";
 import ContentPagination from "@views/main/support/content/ContentPagination";
 import InputLabel from "@mui/material/InputLabel";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
@@ -22,6 +20,7 @@ import {
 import {ChangeEvent, KeyboardEventHandler} from "react";
 import Store from "electron-store";
 import Icons from "@views/components/Icons";
+import {isEmpty} from "lodash";
 const store = new Store();
 
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
@@ -104,13 +103,29 @@ const IngestButton = (props:{contentTypes:any[]}) => {
       </div>
     );
 };
-function ContentContainer(){
 
-    console.log("store.get('content.tag')",store.get('default_values.tag'));
-    console.log("store.get('content.tag')",store.get('default_values.content_type'));
-    console.log("store.get('content.tag')",store.get('default_values.rows_page_size_content'));
-    
 
+type contentListType = "simple" | "card";
+function ContentList(contents:any, type:contentListType = "card"){
+
+        const view:{[key:string] : any} = {
+            "simple" : <SimpleView contents={contents} />,
+            "card" : <CardView contents={contents} />
+        };
+        const viewItem = view[type];
+        return viewItem;
+
+
+
+
+
+}
+interface ContentInterface {
+    type ?: contentListType
+    hidePagination ?: boolean
+    hideIngestButton ?: boolean
+}
+export default function Content(props:ContentInterface){
     const [state , setState] = React.useReducer(reducer,{
         contents : [],
         tags : [],
@@ -150,15 +165,13 @@ function ContentContainer(){
     }
 
     React.useEffect(()=>{
+
         load();
     },[])
     React.useEffect(()=>{
         console.log('search',search);
         load();
     },[search])
-
-
-    // dispatch({type:'searchText.put',value:props.searchText})
     return (
         <>
         <Stack direction="row"  justifyContent="space-between" spacing={12}>
@@ -166,8 +179,6 @@ function ContentContainer(){
                 <FormControl fullWidth variant="standard" >
                     <InputLabel id="tag-select-standard-label">Tag</InputLabel>
                     <Select
-                        // labelId="tag-select-standard-label"
-                        // id="demo-simple-select-standard"
                         sx={{width : "100px"}}
                         value={search.category}
                         onChange={(event : SelectChangeEvent)=>{
@@ -219,78 +230,36 @@ function ContentContainer(){
                         })}
                     </Select>
                 </FormControl>
-                {/*<Button>2</Button>*/}
-                {/*<Button>3</Button>*/}
             </Stack>
             <Stack direction="row"  justifyContent="flex-satrt" spacing={2}>
-                {/*<Button>4</Button>*/}
-                {/*<Button>5</Button>*/}
                 <SearchField
                     onChange={(event:ChangeEvent<HTMLInputElement>)=>{
                         setSearch({searchText : event.target.value});
                     }}
-                    // onKeyPress={(event:KeyboardEventHandler) => {
-                    //     console.log(event);
-                    // }}
                 ></SearchField>
-                {/* <IconButton
-                    onClick={()=>{
-                        sender("#ingest")
-                        .then((result:any)=>{
-
-                        })
-                    }}
-                >
-
-                </IconButton>
-                <HtmlTooltip
-                    title={
-                        <React.Fragment>
-                            <Typography color="inherit">인제스트</Typography>
-                            <em>콘텐츠 관리를 위해 지정된 온라인 스토리지로 미디어를 이동시킵니다.</em>
-                        </React.Fragment>
-                    }
-                >
-                    <Button
-                        variant="outlined"
-                        onClick={()=>{
-                            sender("#ingest")
-                            .then((result:any)=>{
-
-                            })
-                        }}
-                        startIcon={<AddIcon />}
-                    >
-                        인제스트
-                    </Button>
-                </HtmlTooltip> */}
-                <IngestButton 
+                {props.hideIngestButton
+                ? <></>
+                :<IngestButton
                     contentTypes={state.contentType}
-                />
+                />}
+
             </Stack>
         </Stack>
         <Container maxWidth="lg" sx={{  height:"75vh", flexGrow: 1, overflow: 'auto'}}>
-            <CardView
-                contents={state.contents}
-            />
-            <ContentPagination
-                count={state.count}
-                page={search.page}
-                size={search.size}
-                onChangeHandle={(event : {page : number, size :number})=>{
-                    setSearch(event);
-                }}
-            />
+            {ContentList(state.contents,props.type)}
+            {props.hidePagination
+            ? <></>
+            :<ContentPagination
+                    count={state.count}
+                    page={search.page}
+                    size={search.size}
+                    onChangeHandle={(event : {page : number, size :number})=>{
+                        setSearch(event);
+                    }}
+            />}
+
         </Container>
         </>
     );
 }
-export default function Content(props:any) {
-    
-    return (
-        <Provider store={ContentStore}>
-            {/*<ContentProvider searchText={props.searchText}/>*/}
-            <ContentContainer />
-        </Provider>
-    );
-}
+
