@@ -70,6 +70,7 @@
 - npm i react-smooth-dnd
 - npm i @material-ui/icons
 - npm i array-move
+- npm i react-color
 
 
 
