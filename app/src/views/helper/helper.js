@@ -23,7 +23,7 @@ var showAlert = function (options, onClose) {
         electron_1.ipcRenderer.send("#ShowMessageAlert", options);
         if (onClose) {
             electron_1.ipcRenderer.on("#ShowMessageAlertClose/reply", function (event, args) {
-                electron_1.ipcRenderer.removeAllListeners("ShowMessageAlertClose/reply");
+                electron_1.ipcRenderer.removeAllListeners("#ShowMessageAlertClose/reply");
                 onClose();
             });
         }

@@ -25,9 +25,10 @@ const showAlert = (options:ShowALertInterface,onClose ?: Function) => {
 	return new Promise((resolve,reject) => {
 
 		ipcRenderer.send("#ShowMessageAlert",options)
+		
 		if(onClose){
 			ipcRenderer.on("#ShowMessageAlertClose/reply",(event:IpcRendererEvent,args) => {
-				ipcRenderer.removeAllListeners("ShowMessageAlertClose/reply");
+				ipcRenderer.removeAllListeners("#ShowMessageAlertClose/reply");
 				onClose()
 			})
 		}

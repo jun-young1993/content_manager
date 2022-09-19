@@ -4,7 +4,7 @@ export interface  contentsViewerInterface {
     title : string
     category_color : string
     category_name : string
-    content_type ?: string
+    content_type ?: any
 }
 
 export interface ViewerInterface {

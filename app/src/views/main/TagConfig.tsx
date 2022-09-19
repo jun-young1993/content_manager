@@ -24,6 +24,7 @@ import Stack from "@mui/material/Stack";
 import TabPanel from "@views/components/TabPanel";
 import SketchColorPicker from "@views/components/fields/SketchColorPicker";
 import TextField from "@mui/material/TextField";
+import {isEmpty} from "lodash";
 
 
 const Demo = styled('div')(({ theme }) => ({
@@ -31,10 +32,9 @@ const Demo = styled('div')(({ theme }) => ({
 }));
 
 export function TagEdit() {
-    const [dense, setDense] = React.useState(false);
-    const [secondary, setSecondary] = React.useState(true);
     const [tags, setTags] = React.useState([]);
     const load = () => {
+        console.log('tags renderer load');
         sender("@Category/_index",{parent_id : "folder"})
             .then((tags : any) => {
                 setTags(tags.data);
@@ -47,17 +47,18 @@ export function TagEdit() {
                     title : "삭제되었습니다.",
                     severity : "success"
                 },()=>{
-                    load()
+                    setTags([])
                 });
 
             })
     }
-    React.useEffect(() => {
+    if(isEmpty(tags)){
+        console.log('첫 랜더링');
         load();
-    },[])
-    React.useEffect(() => {
-        load();
-    },[tags])
+    }
+    // React.useEffect(() => {
+    //     load();
+    // },[tags])
 
 
     return (
