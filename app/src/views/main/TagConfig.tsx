@@ -129,7 +129,6 @@ export function TagEdit() {
                     </Typography>
                     </Stack>
                 </Stack>
-                <Grid direction="row" spacing={2} sx={{flexGrow: 1, overflow: 'auto'}}>
                     <List dense={true}>
                         <Container sx={{  height:"65vh", flexGrow: 1, overflow: 'auto'}}>
                             {tags.map((tag:{name : string, color ?: string, _id : string}) => {
@@ -198,10 +197,7 @@ export function TagEdit() {
                         })}
                         </Container>
                     </List>
-                    <Container>
-                        <Typography>hihi</Typography>
-                    </Container>
-                </Grid>
+                
             </Demo>
 
     );
