@@ -115,14 +115,6 @@ export default function MainContainer() {
                                     event.setMainContainer((<Workflow />));
                                 },
                                 icon :<AccountTreeIcon />
-                            },{
-                                name : "태그 관리",
-                                onClick : (event : DrawerClickEvent) => {
-                                    event.setMainContainer(<TagConfig />);
-                                },
-                                icon :<Icons
-                                    type={"tag"}
-                                />
                             }]
                         }]}
                     />
