@@ -27,11 +27,159 @@ import SketchColorPicker from "@views/components/fields/SketchColorPicker";
 import TextField from "@mui/material/TextField";
 import {isEmpty} from "lodash";
 import InfoIcon from '@mui/icons-material/Info';
-
+import Modal from '@mui/material/Modal';
+import ListItemButton from '@mui/material/ListItemButton';
+import TransferList from "@views/components/TransferList";
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 const Demo = styled('div')(({ theme }) => ({
     // backgroundColor: theme.palette.background.paper
 }));
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: "100vh",
+    height : "80vh",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    overflow : 'auto'
+  };
+  
+  export function TagEditModal(props:{id : string,title:string}) {
+    const [open, setOpen] = React.useState(false);
+    const [contents , setContents] = React.useState([]);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [checked, setChecked] = React.useState<any>([]);
+    const [allChecked , setAllChecked] = React.useState(false);
+    const [transferList ,setTransferList] = React.useState(<></>);
+    const handleToggle = (value: string) => () => {
+      const currentIndex = checked.indexOf(value);
+      const newChecked = [...checked];
+  
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked.splice(currentIndex, 1);
+      }
+  
+      setChecked(newChecked);
+    };
+    React.useEffect(()=>{
+        // let tmp:any = [];
+        // if(allChecked){
+        //     contents.map((content: {_id : string}) => {
+        //         tmp.push(content._id);
+        //     })
+        // }
 
+        // setChecked(tmp);
+    },[allChecked])
+    React.useEffect(()=>{
+        console.log('tag edit modal',open)
+        if(open){
+            sender("@Content/_index",{
+                category : props.id
+            })
+            .then((results:any) => {
+                console.log('tag edit modal2',results)
+                // setContents(results.data);
+                setTransferList(<TransferList 
+                                leftData={results.data}
+                                rightData={[]}
+                                options={{
+                                    id : "_id",
+                                    text : "title"
+                                }}
+                                />)
+            })
+        }else{
+            setTransferList(<></>);
+        }
+    },[open])
+    return (
+      <>
+        {/* <Button onClick={handleOpen}>Open modal</Button> */}
+        <IconButton onClick={handleOpen}>
+            <DriveFileMoveIcon />
+        </IconButton>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="stretch"
+                spacing={5}
+            >
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing={1}
+                    >
+                        <Typography variant="h6">
+                        {props.title}
+                        </Typography>
+                </Stack>
+                {/* <ListItem
+                    sx={{borderBottom : 1}}
+                >
+                        <ListItemButton role={undefined} onClick={()=>{
+                            setAllChecked(!allChecked);
+                        }} dense>
+                        <ListItemIcon>
+                        <Checkbox
+                            edge="start"
+                            checked={allChecked}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ 'aria-labelledby': '' }}
+                        />
+                        </ListItemIcon>
+                        <ListItemText primary={"콘텐츠 명"}/>
+                        </ListItemButton>
+            
+                </ListItem> */}
+            </Stack>
+            <Stack sx={{pt:2}}>
+            {transferList}
+            </Stack>
+            
+            
+            {/* <List sx={{ width: '100%',height : '80%', bgcolor: 'background.paper', overflow: 'auto'}}>
+                        {contents.map((content:{_id : string,title : string}) => {
+                            return (
+                                <ListItem>
+                                <ListItemButton role={undefined} onClick={handleToggle(content._id)} dense>
+                                <ListItemIcon>
+                                <Checkbox
+                                    edge="start"
+                                    checked={checked.indexOf(content._id) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{ 'aria-labelledby': content._id }}
+                                />
+                                </ListItemIcon>
+                                <ListItemText id={content._id} primary={`Line item ${content.title}`} />
+                                </ListItemButton>
+                                </ListItem>
+                            )
+                        })}
+            </List> */}
+          </Box>
+        
+        </Modal>
+      </>
+    );
+  }
 export function TagEdit() {
     const [tags, setTags] = React.useState([]);
     const [currentContents , setCurrentContents] = React.useState([]);
@@ -125,7 +273,7 @@ export function TagEdit() {
                     </Stack>
                     <Stack direction="row" justifyContent="flex-start">
                     <Typography>
-                        총 {tags.length}건
+                        태그 개수 : {tags.length}건
                     </Typography>
                     </Stack>
                 </Stack>
@@ -169,7 +317,7 @@ export function TagEdit() {
                                                     sender("@Category/_update",{name : currentValue},{_id : tag._id})
                                                 }}
                                                 />
-                                                    <IconButton edge="end" aria-label="delete" onClick={()=>{
+                                                    {/* <IconButton edge="end" aria-label="delete" onClick={()=>{
                                                         // handleDeleteButton(tag._id,tag.name);
                                                         sender("@Content/_index",{
                                                             category : tag._id
@@ -180,7 +328,11 @@ export function TagEdit() {
                                                     }}>
                                                         <InfoIcon />
                                                     </IconButton>
-                                                
+                                                     */}
+                                                <TagEditModal 
+                                                    title={tag.name}
+                                                    id={tag._id}
+                                                />
                                                 <LightTooltip title={"태그 삭제"} placement={"top-end"}>
                                                     <IconButton edge="end" aria-label="delete" onClick={()=>{
                                                         handleDeleteButton(tag._id,tag.name);
@@ -197,7 +349,6 @@ export function TagEdit() {
                         })}
                         </Container>
                     </List>
-                
             </Demo>
 
     );
