@@ -10,46 +10,21 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 
-function not(a: any, b: any, id:string) {
-		// @ts-ignore
-		// return b.filter((value:any) => {
-		// 	if(a.indexOf(value[id]) === -1){
-		// 		return value[id];
-		// 	};
-		// })
-}
-
-function intersection(a: any, b: any, id : string) {
-	// console.log('intersection a',a)
-	// console.log('intersection b',b)
-	// b.map((value:any) => value[id]);
-	// console.log('intersection b custom',b)
-	// return b.filter((value:any) => {
-	// 	if(a.indexOf(value[id]) !== -1){
-	// 		return value[id];
-	// 	};
-	// })
-		// @ts-ignore
-  	// return a.filter((value) => b.indexOf(value) !== -1);
-
-}
-
-function union(a: any, b: any, id:string) {
-//   return [...a, ...not(b, a,id)];
-}
-
-
-
 interface TransferListOPtionsInterface {
 	text : string
 	id : string
+}
+interface PositionProps {
+	title : any
 }
 interface TransferListInterface {
 	leftData : any
 	rightData : any
 	options : TransferListOPtionsInterface
+	leftProps : PositionProps
+	rightProps : PositionProps
 }
-const reducer = (prevState:any, newState:any) => ({...prevState,...newState});
+
 export default function TransferList(props:TransferListInterface) {
   
   const listId:string = props.options.id;
@@ -59,11 +34,11 @@ export default function TransferList(props:TransferListInterface) {
 	console.log("props",props);
 //   const leftChecked = intersection(checked, left, props.options.id);
 //   const rightChecked = intersection(checked, right, props.options.id);
-const [checked, setChecked] = React.useState<any>({
-	"left" : [],
-	"right" : [],
-	"ids" : []
-});
+	const [checked, setChecked] = React.useState<any>({
+		"left" : [],
+		"right" : [],
+		"ids" : []
+	});
 
 
 
@@ -180,68 +155,73 @@ const [checked, setChecked] = React.useState<any>({
     
   };
 
-  const customList = (title: React.ReactNode, items: any,position : "right" | "left") => (
-	
-	
-	<Card>
-	<CardHeader
-		sx={{ px: 2, py: 1 }}
-		avatar={
-		<Checkbox
-			onClick={handleToggleAll(items,position)}
-			checked={numberOfChecked(position) === items.length && items.length !== 0}
-			indeterminate={
-			numberOfChecked(position) !== items.length && numberOfChecked(position) !== 0
+  const customList = (title: React.ReactNode, items: any,position : "right" | "left") =>{
+	const listPropsKey:"leftProps" | "rightProps" = `${position}Props`;
+	const listProps : PositionProps = props[listPropsKey];
+	console.log('[items]items',items,position);
+	return (
+		
+		
+		<Card>
+		<CardHeader
+			sx={{ px: 2, py: 1 }}
+			avatar={
+			<Checkbox
+				onClick={handleToggleAll(items,position)}
+				checked={numberOfChecked(position) === items.length && items.length !== 0}
+				indeterminate={
+				numberOfChecked(position) !== items.length && numberOfChecked(position) !== 0
+				}
+				disabled={items.length === 0}
+				inputProps={{
+				'aria-label': 'all items selected',
+				}}
+			/>
 			}
-			disabled={items.length === 0}
-			inputProps={{
-			'aria-label': 'all items selected',
-			}}
+			title={listProps.title}
+			subheader={`${numberOfChecked(position)}/${items.length} selected`}
 		/>
-		}
-		title={title}
-		subheader={`${numberOfChecked(position)}/${items.length} selected`}
-	/>
-	<Divider />
-	<List
-		sx={{
-		width: "30vh",
-		height: "50vh",
-		bgcolor: 'background.paper',
-		overflow: 'auto',
-		}}
-		dense
-		component="div"
-		role="list"
-	>
-		{items.map((value: any, index:number) => {
-			const labelId = value[props.options.id]
-		return (
-			<ListItem
-			key={labelId}
-			role="listitem"
-			button
-			onClick={handleToggle(value,position)}
-			>
-			<ListItemIcon>
-				<Checkbox
-					//@ts-ignore
-				checked={checked.ids.indexOf(labelId) !== -1}
-				tabIndex={-1}
-				disableRipple
-				/>
-			</ListItemIcon>
-			<ListItemText
-			//@ts-ignore
-			primary={value[props.options.text]} />
-			</ListItem>
-			);
-		})}
-		<ListItem />
-	</List>
-	</Card>
-    	
-  );
+		<Divider />
+		<List
+			sx={{
+			width: "30vh",
+			height: "50vh",
+			bgcolor: 'background.paper',
+			overflow: 'auto',
+			}}
+			dense
+			component="div"
+			role="list"
+		>
+			{items.map((value: any, index:number) => {
+				const labelId = value[props.options.id]
+			return (
+				<ListItem
+				key={labelId}
+				role="listitem"
+				button
+				onClick={handleToggle(value,position)}
+				>
+				<ListItemIcon>
+					<Checkbox
+						//@ts-ignore
+					checked={checked.ids.indexOf(labelId) !== -1}
+					tabIndex={-1}
+					disableRipple
+					/>
+				</ListItemIcon>
+				<ListItemText
+				//@ts-ignore
+				primary={value[props.options.text]} />
+				</ListItem>
+				);
+			})}
+			<ListItem />
+		</List>
+		</Card>
+		
+	);
+  }
 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">

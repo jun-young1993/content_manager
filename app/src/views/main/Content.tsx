@@ -120,6 +120,56 @@ function ContentList(contents:any, type:contentListType = "card"){
 
 
 }
+
+/**
+ * 태그 셀렉터
+ * @param props 
+ * @returns JSX.Element
+ */
+export function CategorySelect(props:
+    {
+        value ?: string, sx ?: any, tags : [{name : string, _id : string, color ?: string}], onChange?:(event : SelectChangeEvent, child: React.ReactNode) => void
+        typographyProps ?: any,
+        selectProps ?: any
+        autoChange ?: boolean
+    }) : JSX.Element
+{
+    const [value ,setValue] = React.useState(props.value || "");
+    return (
+        <Select
+        {...props.selectProps || {}}
+        sx={{...props.sx || {width : "100px"}}}
+        value={value}
+        onChange={props.onChange || props.autoChange ? (event : SelectChangeEvent,child: React.ReactNode) => {
+            setValue(event.target.value);
+        }: null}
+    >
+        <MenuItem value={""}>
+            <em>None</em>
+        </MenuItem>
+        {props.tags.map((tag : {name : string, _id : string, color ?: string}) => {
+            return (
+            <MenuItem value={tag._id}>
+                <Typography
+                    {...props.typographyProps || {}}
+                >
+                    <CircleIcon
+                        sx={{
+                            width:"20px",
+                            height:"20px",
+                            pr : 1,
+                            // marginTop:"8px",
+                            color:tag.color || "#000000"
+                        }}
+                    />
+                    {tag.name}
+                </Typography>
+            </MenuItem>
+            )
+        })}
+    </Select>
+    )
+}
 interface ContentInterface {
     type ?: contentListType
     hidePagination ?: boolean
@@ -211,7 +261,15 @@ export default function Content(props:ContentInterface){
                 </FormControl>
                 <FormControl fullWidth variant="standard" >
                     <InputLabel >콘텐츠 유형</InputLabel>
-                    <Select
+                    <CategorySelect 
+                        sx={{width : "100px"}}
+                        value={search.contentType}
+                        onChange={(event : SelectChangeEvent)=>{
+                            setSearch({contentType : event.target.value});
+                        }}
+                        tags={state.contentType}
+                    />
+                    {/* <Select
                         sx={{width : "100px"}}
                         value={search.contentType}
                         onChange={(event : SelectChangeEvent)=>{
@@ -228,7 +286,7 @@ export default function Content(props:ContentInterface){
                             </MenuItem>
                             )
                         })}
-                    </Select>
+                    </Select> */}
                 </FormControl>
             </Stack>
             <Stack direction="row"  justifyContent="flex-satrt" spacing={2}>

@@ -31,6 +31,8 @@ import Modal from '@mui/material/Modal';
 import ListItemButton from '@mui/material/ListItemButton';
 import TransferList from "@views/components/TransferList";
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
+import { CategorySelect } from '@views/main/Content';
+import {SelectChangeEvent} from "@mui/material";
 const Demo = styled('div')(({ theme }) => ({
     // backgroundColor: theme.palette.background.paper
 }));
@@ -47,8 +49,38 @@ const style = {
     p: 4,
     overflow : 'auto'
   };
-  
-  export function TagEditModal(props:{id : string,title:string}) {
+  function TagSelect(props:{
+    tags : any
+    value : string
+    onChange : Function
+  }){
+    // const [value , setValue] = React.useState<any>(<Typography></Typography>);
+
+    return (
+        <CategorySelect 
+            sx={{width : "100px"}}
+            value={""}
+            tags={props.tags}
+            onChange={(event : SelectChangeEvent,child: React.ReactNode)=>{
+                props.onChange(event.target.value)
+                // setValue(child);
+            }}
+            typographyProps={{
+                variant:"caption"
+            }}
+            selectProps={{
+                variant:"standard",
+                size:"small",
+                renderValue : () => {
+                    // console.log(value);
+                    // return value;
+                    
+                }
+            }}
+        />
+    )
+  }
+  export function TagEditModal(props:{id : string,title:string, color ?: string, tags:any}) {
     const [open, setOpen] = React.useState(false);
     const [contents , setContents] = React.useState([]);
     const handleOpen = () => setOpen(true);
@@ -56,45 +88,88 @@ const style = {
     const [checked, setChecked] = React.useState<any>([]);
     const [allChecked , setAllChecked] = React.useState(false);
     const [transferList ,setTransferList] = React.useState(<></>);
-    const handleToggle = (value: string) => () => {
-      const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-  
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-  
-      setChecked(newChecked);
-    };
-    React.useEffect(()=>{
-        // let tmp:any = [];
-        // if(allChecked){
-        //     contents.map((content: {_id : string}) => {
-        //         tmp.push(content._id);
-        //     })
-        // }
 
-        // setChecked(tmp);
-    },[allChecked])
+    
+    const [rightTagValue , setRightTagValue] = React.useState("");
+    const [rightTagSelect , setRightTagSelect] = React.useState();
+
+    const settingTransferList = (rightTagContent?:any):void =>  { 
+            console.log('[settingTransferList]contents',contents);
+            setTransferList(<TransferList 
+                leftData={contents}
+                rightData={rightTagContent || []}
+                options={{
+                    id : "_id",
+                    text : "title"
+                }}
+                leftProps={{
+                    title : (
+                    <Typography>
+                        <Circle 
+                            sx={{
+                                width:"20px",
+                                height:"20px",
+                                pr : 1,
+                                color: props.color
+                            }}
+                        /> 
+                        {props.title}
+                    </Typography>)
+                }}
+                rightProps={{
+                    title : (
+                        <CategorySelect 
+                            sx={{width : "100px"}}
+                            value={rightTagValue}
+                            tags={props.tags}
+                            onChange={(event : SelectChangeEvent, child: React.ReactNode)=>{
+                                    console.log("[onChange right]rightTagValue",rightTagValue)
+                                    setRightTagValue(event.target.value);
+                                
+                                
+                            }}
+                            typographyProps={{
+                                variant:"caption"
+                            }}
+                            selectProps={{
+                                variant:"standard",
+                                size:"small",
+                                renderValue : (value : any) => {
+                                    // tags.map(())
+                                    return value;
+                                    
+                                }
+                            }}
+                        />
+                    )
+                }}
+            />)
+    }
     React.useEffect(()=>{
-        console.log('tag edit modal',open)
+        console.log('[useEffect]rightTagValue',rightTagValue);
+        if(rightTagValue === ""){
+            return;
+        }
+        sender("@Content/_index",{
+            category : rightTagValue
+        })
+        .then((results:any) => {
+           settingTransferList(results.data);
+        })
+    },[rightTagValue])
+    React.useEffect(()=>{
+        console.log('[useEffect]contents',contents);
+        settingTransferList();
+    },[contents])
+
+    React.useEffect(()=>{
+        console.log('[useEffect]open',props.id);
         if(open){
             sender("@Content/_index",{
                 category : props.id
             })
             .then((results:any) => {
-                console.log('tag edit modal2',results)
-                // setContents(results.data);
-                setTransferList(<TransferList 
-                                leftData={results.data}
-                                rightData={[]}
-                                options={{
-                                    id : "_id",
-                                    text : "title"
-                                }}
-                                />)
+               setContents(results.data);
             })
         }else{
             setTransferList(<></>);
@@ -332,6 +407,8 @@ export function TagEdit() {
                                                 <TagEditModal 
                                                     title={tag.name}
                                                     id={tag._id}
+                                                    color={tag.color}
+                                                    tags={tags}
                                                 />
                                                 <LightTooltip title={"태그 삭제"} placement={"top-end"}>
                                                     <IconButton edge="end" aria-label="delete" onClick={()=>{
