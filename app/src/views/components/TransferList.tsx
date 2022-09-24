@@ -9,13 +9,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import {isEmpty} from "lodash";
+import {useEffect} from "react";
 
 interface TransferListOPtionsInterface {
 	text : string
 	id : string
 }
+type position = "left" | "right";
+
 interface PositionProps {
-	title : any
+	title : string | React.ReactNode
+	onAdd ?: (arg0: any, arg1 : position) => void
 }
 interface TransferListInterface {
 	leftData : any
@@ -29,11 +34,24 @@ export default function TransferList(props:TransferListInterface) {
   
   const listId:string = props.options.id;
   const [left, setLeft] = React.useState(props.leftData);
+
   const [right, setRight] = React.useState(props.rightData);
-	console.log("left",left);
-	console.log("props",props);
-//   const leftChecked = intersection(checked, left, props.options.id);
-//   const rightChecked = intersection(checked, right, props.options.id);
+
+
+
+	React.useEffect(()=>{
+		console.log('props.rightData');
+		setRight(props.rightData);
+
+	},[props.rightData])
+
+	React.useEffect(()=>{
+		console.log('props.leftData');
+		setLeft(props.leftData);
+	},[props.leftData])
+
+
+
 	const [checked, setChecked] = React.useState<any>({
 		"left" : [],
 		"right" : [],
@@ -48,7 +66,7 @@ export default function TransferList(props:TransferListInterface) {
    * @param position "left" 또는 "right"
    * @returns void
    */
-  const handleToggle = (value: any,position : "left" | "right") => () => {
+  const handleToggle = (value: any,position :position) => () => {
 	// @ts-ignore
     	const currentIndex = checked.ids.indexOf(value[listId]);
 		
@@ -81,23 +99,14 @@ export default function TransferList(props:TransferListInterface) {
   };
 
 //   const numberOfChecked = (items: any) => intersection(checked, items,props.options.id).length;
-  const numberOfChecked = (position: "left" | "right") => {
+  const numberOfChecked = (position: position) => {
 	console.log('numberOfChecked',checked);
 	return checked[position].length;
   };
     
 
-  const handleToggleAll = (items: any,position : "left" | "right") => () => {
-	
-//     if (numberOfChecked(items,position) === items.length ) {
-// //       setChecked(not(checked, items, props.options.id));
-// 	checked[position] = position === "left" ? left : right;
-// 	checked[position].map((data : any) => {
-// 		if(checked.ids.indexOf(data[listId]) === -1){
-// 			checked.ids.push(data[listId])	
-// 		}
-// 	})
-//     } else {
+  const handleToggleAll = (items: any,position : position) => () => {
+
 	if(numberOfChecked(position) === 0){
 		checked[position] = position === "left" ? left : right;
 		checked[position].map((data : any) => {
@@ -111,17 +120,14 @@ export default function TransferList(props:TransferListInterface) {
 		})
 		checked[position] = [];
 	}
-	
-//       setChecked(union(checked, items, props.options.id));
-//     }
+
     	setChecked({...checked})
   };
 
   const handleCheckedRight = () => {
 
 	setRight(right.concat(checked.left));
-	
-	
+	  props.rightProps.onAdd ? props.rightProps.onAdd(checked.left,"left") : false;
 	setLeft(left.filter((item:any) =>{
 		if(checked.ids.indexOf(item[listId]) !== -1){
 			checked.ids.splice(checked.ids.indexOf(item[listId]),1)
@@ -131,14 +137,13 @@ export default function TransferList(props:TransferListInterface) {
 	}))
 	checked.left = [];
 	setChecked(checked);
-//     setRight(right.concat(leftChecked));
-//     setLeft(not(left, leftChecked,props.options.id));
-//     setChecked(not(checked, leftChecked,props.options.id));
+
   };
 
   const handleCheckedLeft = () => {
 	setLeft(left.concat(checked.right));
-	
+
+	props.leftProps.onAdd ? props.leftProps.onAdd(checked.right,"left") : false;
 	
 	setRight(right.filter((item:any) =>{
 		if(checked.ids.indexOf(item[listId]) !== -1){
@@ -155,10 +160,11 @@ export default function TransferList(props:TransferListInterface) {
     
   };
 
-  const customList = (title: React.ReactNode, items: any,position : "right" | "left") =>{
+  const customList = (title: React.ReactNode, items: any,position : position) =>{
 	const listPropsKey:"leftProps" | "rightProps" = `${position}Props`;
 	const listProps : PositionProps = props[listPropsKey];
-	console.log('[items]items',items,position);
+
+	console.log('[items]items',items,position,left,right,listProps);
 	return (
 		
 		

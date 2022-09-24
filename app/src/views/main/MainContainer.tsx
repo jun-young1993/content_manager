@@ -8,6 +8,7 @@ import Storage from "@views/main/Storage";
 import Config from "@views/main/Config";
 import Module from "@views/main/Module";
 import Workflow from "@views/main/Workflow";
+import LabelIcon from '@mui/icons-material/Label';
 import {ipcRenderer, IpcRendererEvent} from "electron";
 import ShowDrawer from "@views/main/support/utils/ShowDrawer";
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
@@ -26,8 +27,9 @@ import {
     AccountTree as AccountTreeIcon,
     Monitor as MonitorIcon
 } from '@mui/icons-material';
+
 import Icons from "@views/components/Icons";
-import TagConfig from "@views/main/TagConfig";
+import TagConfig, {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 import SketchColorPicker from "@views/components/fields/SketchColorPicker";
@@ -115,6 +117,12 @@ export default function MainContainer() {
                                     event.setMainContainer((<Workflow />));
                                 },
                                 icon :<AccountTreeIcon />
+                            },{
+                                name : "태그 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<TagEdit />));
+                                },
+                                icon :<LabelIcon />
                             }]
                         }]}
                     />

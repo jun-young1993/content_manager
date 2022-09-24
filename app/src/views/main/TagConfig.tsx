@@ -4,17 +4,14 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
+
 import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
+
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
+
 import Typography from '@mui/material/Typography';
-import FolderIcon from '@mui/icons-material/Folder';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import {sender, showAlert, showConfirm} from "@views/helper/helper";
 import Container from "@mui/material/Container";
@@ -49,60 +46,54 @@ const style = {
     p: 4,
     overflow : 'auto'
   };
-  function TagSelect(props:{
-    tags : any
-    value : string
-    onChange : Function
-  }){
-    // const [value , setValue] = React.useState<any>(<Typography></Typography>);
 
-    return (
-        <CategorySelect 
-            sx={{width : "100px"}}
-            value={""}
-            tags={props.tags}
-            onChange={(event : SelectChangeEvent,child: React.ReactNode)=>{
-                props.onChange(event.target.value)
-                // setValue(child);
-            }}
-            typographyProps={{
-                variant:"caption"
-            }}
-            selectProps={{
-                variant:"standard",
-                size:"small",
-                renderValue : () => {
-                    // console.log(value);
-                    // return value;
-                    
-                }
-            }}
-        />
-    )
-  }
+
+
   export function TagEditModal(props:{id : string,title:string, color ?: string, tags:any}) {
     const [open, setOpen] = React.useState(false);
     const [contents , setContents] = React.useState([]);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [checked, setChecked] = React.useState<any>([]);
-    const [allChecked , setAllChecked] = React.useState(false);
+
     const [transferList ,setTransferList] = React.useState(<></>);
 
     
     const [rightTagValue , setRightTagValue] = React.useState("");
-    const [rightTagSelect , setRightTagSelect] = React.useState();
 
+    const [rightTagSelect , setRightTagSelect] = React.useState<React.ReactNode>(<></>);
+    const updateTag = (contents:any,categoryId:string) => {
+        let index = 0;
+        contents.map((content:any) => {
+
+            sender("@Content/_update",content._id,{
+                category : categoryId
+            })
+                .then(() => {
+                    index++;
+                    if(index == contents.length){
+                        showAlert({
+                            severity : "info",
+                            title : "태그 일괄변경되었습니다."
+                        })
+                    }
+                });
+        })
+    }
     const settingTransferList = (rightTagContent?:any):void =>  { 
-            console.log('[settingTransferList]contents',contents);
+
             setTransferList(<TransferList 
                 leftData={contents}
-                rightData={rightTagContent || []}
+                rightData={rightTagContent ? rightTagContent : []}
                 options={{
                     id : "_id",
                     text : "title"
                 }}
                 leftProps={{
+                    onAdd : (values,position)=>{
+
+                        updateTag(values,props.id)
+
+                    },
                     title : (
                     <Typography>
                         <Circle 
@@ -117,27 +108,42 @@ const style = {
                     </Typography>)
                 }}
                 rightProps={{
+                    onAdd : (values,position)=>{
+                        console.log('onAdd',values,position);
+                        updateTag(values,rightTagValue)
+
+
+                    },
                     title : (
                         <CategorySelect 
                             sx={{width : "100px"}}
                             value={rightTagValue}
-                            tags={props.tags}
+                            none={false}
+                            tags={props.tags.filter((tag:{_id : string}) => {
+                                console.log("tag",tag)
+                                if(tag._id !== props.id){
+                                    return tag;
+                                }
+                            })}
                             onChange={(event : SelectChangeEvent, child: React.ReactNode)=>{
-                                    console.log("[onChange right]rightTagValue",rightTagValue)
+
                                     setRightTagValue(event.target.value);
-                                
+
+                                    setRightTagSelect(child);
+
                                 
                             }}
                             typographyProps={{
-                                variant:"caption"
+                                variant:"caption",
+                                noWrap : true,
                             }}
                             selectProps={{
                                 variant:"standard",
                                 size:"small",
                                 renderValue : (value : any) => {
-                                    // tags.map(())
-                                    return value;
-                                    
+
+                                    return rightTagSelect;
+
                                 }
                             }}
                         />
@@ -146,7 +152,7 @@ const style = {
             />)
     }
     React.useEffect(()=>{
-        console.log('[useEffect]rightTagValue',rightTagValue);
+
         if(rightTagValue === ""){
             return;
         }
@@ -158,12 +164,12 @@ const style = {
         })
     },[rightTagValue])
     React.useEffect(()=>{
-        console.log('[useEffect]contents',contents);
+
         settingTransferList();
     },[contents])
 
     React.useEffect(()=>{
-        console.log('[useEffect]open',props.id);
+
         if(open){
             sender("@Content/_index",{
                 category : props.id
@@ -259,11 +265,11 @@ export function TagEdit() {
     const [tags, setTags] = React.useState([]);
     const [currentContents , setCurrentContents] = React.useState([]);
     const load = () => {
-        console.log('tags renderer load');
+
         sender("@Category/_index",{parent_id : "folder"})
             .then((tags : any) => {
                 if(!isEmpty(tags.data)){
-                    console.log('tags',tags.data)
+
                     setTags(tags.data);
                 }
                 
@@ -310,13 +316,13 @@ export function TagEdit() {
                         handleDelete(tagId)
                     }
 
-                    console.log('contents',contents);
+
                 })
 
         
     }
     if(isEmpty(tags)){
-        console.log('첫 랜더링');
+
         load();
     }
     // React.useEffect(() => {
@@ -369,7 +375,7 @@ export function TagEdit() {
                                             <SketchColorPicker
                                                 color={tag.color}
                                                 onClose={(event : {color : { hex : string}})=>{
-                                                    console.log("event",event);
+
                                                     sender("@Category/_update",{color : event.color.hex},{_id : tag._id})
                                                 }}
                                             />

@@ -93,10 +93,12 @@ export default function Config() {
 				"children" : (	<BaseLayout
 					items={defaultValues}
 				/>)
-			},{
-				"label" : "태그 관리",
-				"children" : (<TagEdit />)
-			}]}
+			}
+			// ,{
+			// 	"label" : "태그 관리",
+			// 	"children" : (<TagEdit />)
+			// }
+			]}
 		/>
 		// <Container fixed sx={{ height : '80vh'}}>
 		// 	<Container fixed sx={{bgcolor: 'background.paper' }}>

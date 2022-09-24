@@ -132,21 +132,38 @@ export function CategorySelect(props:
         typographyProps ?: any,
         selectProps ?: any
         autoChange ?: boolean
+        none ?: boolean
     }) : JSX.Element
 {
     const [value ,setValue] = React.useState(props.value || "");
+    React.useEffect(()=>{
+        setValue(props.value || "");
+    },[props.value])
     return (
         <Select
         {...props.selectProps || {}}
         sx={{...props.sx || {width : "100px"}}}
         value={value}
-        onChange={props.onChange || props.autoChange ? (event : SelectChangeEvent,child: React.ReactNode) => {
-            setValue(event.target.value);
-        }: null}
+        onChange={props.onChange
+            ? props.onChange
+            :props.autoChange
+                ? (event : SelectChangeEvent,child: React.ReactNode) => {
+                    setValue(event.target.value);
+                }
+                : null
+            // props.onChange
+            // || props.autoChange
+            //     ? (event : SelectChangeEvent,child: React.ReactNode) => {
+            //         setValue(event.target.value);
+            //     }
+            //     : null
+        }
     >
-        <MenuItem value={""}>
-            <em>None</em>
-        </MenuItem>
+            {props.none !== false
+            ?<MenuItem value={""}>
+                    <em>None</em>
+                </MenuItem>
+            : <></>}
         {props.tags.map((tag : {name : string, _id : string, color ?: string}) => {
             return (
             <MenuItem value={tag._id}>
