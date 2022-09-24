@@ -89,6 +89,9 @@ const style = {
                     text : "title"
                 }}
                 leftProps={{
+                    emptyText : (<Typography>
+                        해당 태그에 콘텐츠가 없습니다.
+                    </Typography>),
                     onAdd : (values,position)=>{
 
                         updateTag(values,props.id)
@@ -108,6 +111,9 @@ const style = {
                     </Typography>)
                 }}
                 rightProps={{
+                    emptyText : (<Typography>
+                        해당 태그에 콘텐츠가 없습니다.
+                    </Typography>),
                     onAdd : (values,position)=>{
                         console.log('onAdd',values,position);
                         updateTag(values,rightTagValue)
@@ -207,54 +213,16 @@ const style = {
                     spacing={1}
                     >
                         <Typography variant="h6">
-                        {props.title}
+                        {/*{props.title} */}
+                            콘텐츠 태그 일괄 변경
                         </Typography>
                 </Stack>
-                {/* <ListItem
-                    sx={{borderBottom : 1}}
-                >
-                        <ListItemButton role={undefined} onClick={()=>{
-                            setAllChecked(!allChecked);
-                        }} dense>
-                        <ListItemIcon>
-                        <Checkbox
-                            edge="start"
-                            checked={allChecked}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ 'aria-labelledby': '' }}
-                        />
-                        </ListItemIcon>
-                        <ListItemText primary={"콘텐츠 명"}/>
-                        </ListItemButton>
-            
-                </ListItem> */}
             </Stack>
             <Stack sx={{pt:2}}>
             {transferList}
             </Stack>
             
-            
-            {/* <List sx={{ width: '100%',height : '80%', bgcolor: 'background.paper', overflow: 'auto'}}>
-                        {contents.map((content:{_id : string,title : string}) => {
-                            return (
-                                <ListItem>
-                                <ListItemButton role={undefined} onClick={handleToggle(content._id)} dense>
-                                <ListItemIcon>
-                                <Checkbox
-                                    edge="start"
-                                    checked={checked.indexOf(content._id) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': content._id }}
-                                />
-                                </ListItemIcon>
-                                <ListItemText id={content._id} primary={`Line item ${content.title}`} />
-                                </ListItemButton>
-                                </ListItem>
-                            )
-                        })}
-            </List> */}
+
           </Box>
         
         </Modal>

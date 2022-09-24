@@ -21,6 +21,7 @@ type position = "left" | "right";
 interface PositionProps {
 	title : string | React.ReactNode
 	onAdd ?: (arg0: any, arg1 : position) => void
+	emptyText ?: string | React.ReactNode
 }
 interface TransferListInterface {
 	leftData : any
@@ -188,42 +189,53 @@ export default function TransferList(props:TransferListInterface) {
 			subheader={`${numberOfChecked(position)}/${items.length} selected`}
 		/>
 		<Divider />
-		<List
-			sx={{
-			width: "30vh",
-			height: "50vh",
-			bgcolor: 'background.paper',
-			overflow: 'auto',
-			}}
-			dense
-			component="div"
-			role="list"
-		>
-			{items.map((value: any, index:number) => {
-				const labelId = value[props.options.id]
-			return (
-				<ListItem
-				key={labelId}
-				role="listitem"
-				button
-				onClick={handleToggle(value,position)}
+			{
+
+				<List
+					sx={{
+						width: "30vh",
+						height: "50vh",
+						bgcolor: 'background.paper',
+						overflow: 'auto',
+					}}
+					dense
+					component="div"
+					role="list"
 				>
-				<ListItemIcon>
-					<Checkbox
-						//@ts-ignore
-					checked={checked.ids.indexOf(labelId) !== -1}
-					tabIndex={-1}
-					disableRipple
-					/>
-				</ListItemIcon>
-				<ListItemText
-				//@ts-ignore
-				primary={value[props.options.text]} />
-				</ListItem>
-				);
-			})}
-			<ListItem />
-		</List>
+					{(items.length == 0)
+						? listProps.emptyText
+							? listProps.emptyText
+							: <></>
+						: items.map((value: any, index:number) => {
+							const labelId = value[props.options.id]
+							return (
+								<ListItem
+									key={labelId}
+									role="listitem"
+									button
+									onClick={handleToggle(value,position)}
+								>
+									<ListItemIcon>
+										<Checkbox
+											//@ts-ignore
+											checked={checked.ids.indexOf(labelId) !== -1}
+											tabIndex={-1}
+											disableRipple
+										/>
+									</ListItemIcon>
+									<ListItemText
+										//@ts-ignore
+										primary={value[props.options.text]} />
+								</ListItem>
+							);
+						})
+
+					}
+				</List>
+
+
+			}
+
 		</Card>
 		
 	);
@@ -239,7 +251,7 @@ export default function TransferList(props:TransferListInterface) {
             variant="outlined"
             size="small"
             onClick={handleCheckedRight}
-        //     disabled={leftChecked.length === 0}
+            disabled={checked.left.length === 0}
             aria-label="move selected right"
           >
             &gt;
@@ -249,7 +261,7 @@ export default function TransferList(props:TransferListInterface) {
             variant="outlined"
             size="small"
             onClick={handleCheckedLeft}
-        //     disabled={rightChecked.length === 0}
+            disabled={checked.right.length === 0}
             aria-label="move selected left"
           >
             &lt;
