@@ -5,7 +5,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import {IconButton} from "@mui/material";
+import {Box, IconButton, MenuItem, Stack} from "@mui/material";
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -16,22 +16,14 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import WorkflowDetail from '@views/main/support/workflow/WorkflowDetail';
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import WorkflowDetailEditDialog from '@views/main/support/workflow/WorkflowDetailEditDialog';
-const { createTreeHierarchy } = require('hierarchy-js');
-import {useDispatch, useSelector} from "react-redux";
-import {
-	Button,
-	Stack,
-	FormControlLabel,
-	FormControl,
-	Select,
-	MenuItem,
-	Box
-    } from '@mui/material';
-    import CustomAlert from "@views/components/CustomAlert";
+import {useDispatch} from "react-redux";
+import CustomAlert from "@views/components/CustomAlert";
 
-    import electron from "electron";
-import { isEmpty } from 'lodash';
+import electron from "electron";
+import {isEmpty} from 'lodash';
 import {sender, showAlert, showConfirm} from '@views/helper/helper';
+
+const { createTreeHierarchy } = require('hierarchy-js');
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -341,13 +333,9 @@ export default function WorkflowList() {
 				})
 
 				}
-				{/*<ListItem disablePadding>*/}
-				{/*<ListItemButton component="a" href="#simple-list">*/}
-				{/*<ListItemText primary="Spam" />*/}
-				{/*</ListItemButton>*/}
-				{/*</ListItem>*/}
+
 				</List>
-				{/*<Divider />*/}
+
 				{alert}
 			</Box>
 		</Grid>

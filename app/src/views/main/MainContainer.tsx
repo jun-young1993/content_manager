@@ -9,30 +9,26 @@ import Config from "@views/main/Config";
 import Module from "@views/main/Module";
 import Workflow from "@views/main/Workflow";
 import LabelIcon from '@mui/icons-material/Label';
-import {ipcRenderer, IpcRendererEvent} from "electron";
-import ShowDrawer from "@views/main/support/utils/ShowDrawer";
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {DrawerClickEvent} from "@views/main/support/main/MainInterface";
 import {
-    Search as SearchIcon,
+    AccountTree as AccountTreeIcon,
+    Dns as DnsIcon,
+    Folder as FolderIcon,
+    Monitor as MonitorIcon,
+    PermDataSetting as PermDataSettingIcon,
+    Person as PersonIcon,
     Settings as SettingsIcon,
-    List as ListIcon,
+    SettingsSuggest as SettingsSuggestIcon,
     TableView as TableViewIcon,
     Task as TaskIcon,
-    Person as PersonIcon,
-    PermDataSetting as PermDataSettingIcon,
-    Folder as FolderIcon,
-    SettingsSuggest as SettingsSuggestIcon,
-    ViewModule as ViewModuleIcon,
-    AccountTree as AccountTreeIcon,
-    Monitor as MonitorIcon
+    ViewModule as ViewModuleIcon
 } from '@mui/icons-material';
 
-import Icons from "@views/components/Icons";
-import TagConfig, {TagEdit} from "@views/main/TagConfig";
+import {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
-import SketchColorPicker from "@views/components/fields/SketchColorPicker";
+
 export default function MainContainer() {
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -100,12 +96,6 @@ export default function MainContainer() {
                                 icon :<FolderIcon />
 
                             },{
-                                name : "코드 관리",
-                                onClick : (event : DrawerClickEvent) => {
-                                    event.setMainContainer((<Code />));
-                                },
-                                icon :<SettingsSuggestIcon />
-                            },{
                                 name : "모듈 관리",
                                 onClick : (event : DrawerClickEvent) => {
                                     event.setMainContainer((<Module />));
@@ -123,6 +113,19 @@ export default function MainContainer() {
                                     event.setMainContainer((<TagEdit />));
                                 },
                                 icon :<LabelIcon />
+                            }]
+                        },{
+                            name : "시스템",
+                            collapse : true,
+                            onClick : (event : DrawerClickEvent) => {},
+                            icon : <DnsIcon />,
+                            drive:true,
+                            items : [{
+                                name : "코드 관리",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Code />));
+                                },
+                                icon :<SettingsSuggestIcon />
                             }]
                         }]}
                     />

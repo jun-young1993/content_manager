@@ -1,33 +1,23 @@
 import * as React from 'react';
-import { GridToolbarContainer,
-    DataGrid,
-    GridRowsProp,
-    GridColDef,
-    GridRowParams,
-    GridCallbackDetails } from '@mui/x-data-grid';
-import MetadataFormDialog from "@views/main/support/metadata/MetadataFormDialog";
-import FormDialog from "@views/components/FormDialog";
 import {
-    Box,
-    Button,
-} from '@mui/material';
+    DataGrid,
+    GridCallbackDetails,
+    GridColDef,
+    GridRowId,
+    GridRowParams,
+    GridToolbarContainer
+} from '@mui/x-data-grid';
+import FormDialog from "@views/components/FormDialog";
+import {Box, Button,} from '@mui/material';
 
 import electron, {IpcRendererEvent} from "electron";
-
-import IconButton from '@mui/material/IconButton';
 import CustomAlert from "@views/components/CustomAlert";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import {isEmpty} from 'lodash'
+import Grid from "@mui/material/Grid";
+import {GridPanel} from "@views/components/grid/BaseGrid";
+import {sender} from "@views/helper/helper";
 
 const ipcRenderer = electron.ipcRenderer;
-import {cloneDeep, isEmpty} from 'lodash'
-
-import {useDispatch, useSelector} from "react-redux";
-import Grid from "@mui/material/Grid";
-
-
-
-
 
 
 const reducer = (prevState:any, newState:any) => ({
@@ -36,25 +26,10 @@ const reducer = (prevState:any, newState:any) => ({
 })
 
 
-const makeCodeList = (codes:any) => {
-        console.log('makecodelist',codes);
-        return codes.map((code : any) => {
-
-            code.id = code._id;
-            code.root = true;
-            code.collapse = false;
-            return code;
-        });
-
-
-}
-
-export default function Code() {
+export function Code_backup() {
     const [rows,setRows] = React.useState<any>([]);
     const [childrenRows,setChildrenRows] = React.useState<any>([]);
-    // const dispatch = useDispatch()
-    //
-    // const { code} = useSelector((state:any) => {return state.code})
+
 
 
 
@@ -204,8 +179,8 @@ export default function Code() {
             setChildrenRows(children.data);
         })
     }
-  
-    // const [buttons , setButtons] = React.useState(baseCode);
+
+    // const [buttons , se¡uttons] = React.useState(baseCode);
     return (
         <Grid container spacing={2} >
             <Grid item xs={6}  >
@@ -594,5 +569,54 @@ export default function Code() {
             {alert}
         </Grid>
 
+    );
+}
+
+export default function Code(){
+    const [rows,setRows] = React.useState<any>([]);
+    const [rowItems,setRowItems] = React.useState<any>([]);
+    React.useEffect(()=>{
+        sender("@Code/_all")
+            .then((result:any) => {
+                setRows(result.data);
+            })
+    },[])
+
+    return (
+        <GridPanel
+            items={[{
+                title:"코드",
+                dataGridProps:{
+                    columns:[
+                        {field : 'code', headerName : '코드',flex : 1},
+                        {field : 'name', headerName : '코드명',flex : 1}
+                    ],
+                    rows : rows,
+                    onRowClick:(params:GridRowParams)=>{
+                        const code:GridRowId = params.id;
+                        sender("@CodeItem/_indexByParentCode",code)
+                            .then((result : any) => {
+                                setRowItems(result.data);
+                            });
+                    },
+                    hideFooterPagination : true,
+                    HideFooterSelectedRowCount : true,
+                    hideFooter : true,
+                }
+            },{
+                title:"코드 아이템",
+                dataGridProps:{
+                    columns:[
+                        {field : 'code', headerName : '코드',flex : 1},
+                        {field : 'name', headerName : '코드명',flex : 1}
+                    ],
+                    rows : rowItems,
+                    hideFooterPagination : true,
+                    HideFooterSelectedRowCount : true,
+                    hideFooter : true
+                }
+            }]}
+
+        />
     );
 }

@@ -3,6 +3,9 @@ import BaseGrid from "@views/components/grid/BaseGrid";
 import {sender} from "@views/helper/helper";
 import TaskCircularProgress from "@views/main/support/taskMonitor/TaskCircularProgress";
 import Store from "electron-store";
+import {TaskStatus} from "../../../public/interfaces/Types/TaskStatus"
+import dayjs from "dayjs";
+
 const store = new Store();
 const reducer = (prevState:any, newState:any) => ({
 	...prevState,
@@ -16,8 +19,7 @@ const taskReducer = (prevState:any, newState:any) => ({
 	...prevState,
 	...newState
 })
-import {TaskStatus} from "../../../public/interfaces/Types/TaskStatus"
-import dayjs from "dayjs";
+
 export interface valuesInterface {
 	createdAt : {
 		$gte : Date,
@@ -83,12 +85,6 @@ export default function TaskMonitor(){
 	
 	return (
 		<BaseGrid
-			// title={"작업 모니터링"}
-			
-			// rows={tasks.rows.map((row:{_id : string, id ?: string}) => {
-			// 	row.id = row._id;
-			// 	return row;
-			//     })}
 			searchToolbar={[
 				{ field : "date_range" , onChange : onDateChangeHandle , values : [values.createdAt.$gte, values.createdAt.$lte]},
 				{ 
@@ -115,7 +111,6 @@ export default function TaskMonitor(){
 					}}	
 				],
 				rows : tasks.rows.map((row:{_id : string, id ?: string, progress ?: any}) => {
-					// row.progress = (<CircularStatic />)
 					row.id = row._id;
 					return row;
 				    }),

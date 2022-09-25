@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import {createTheme, styled, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
@@ -19,19 +18,14 @@ import SaveIcon from '@mui/icons-material/Save';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
 // import Tooltip from '@mui/material/Tooltip';
-import {HtmlTooltip, LightTooltip} from "@src/views/components/tooltip/Tooltip";
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
+import {LightTooltip} from "@src/views/components/tooltip/Tooltip";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import {DashboardInterface, leftMenuInterface, DrawerClickEvent} from "@views/main/support/main/MainInterface";
+import {DashboardInterface, DrawerClickEvent, leftMenuInterface} from "@views/main/support/main/MainInterface";
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import { Collapse } from '@mui/material';
+import {Collapse} from '@mui/material';
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import {ExpandMore} from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
@@ -168,11 +162,6 @@ export default function Dashboard(props:DashboardInterface) {
             >
               {title}
             </Typography>
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -195,7 +184,6 @@ export default function Dashboard(props:DashboardInterface) {
 			const drive = <Divider sx={{ my: 1 }} />
             const isCollapse:boolean = leftMenu.collapse || false;
             const collapseItems : leftMenuInterface[] | [] = leftMenu.items || [];
-
 
 			return (
 				<>
@@ -259,21 +247,6 @@ export default function Dashboard(props:DashboardInterface) {
                                       </ListItemButton>
                                     )
                                 })}
-                                {/*{collapseItems.map(collapseItem:any) => {*/}
-                                {/*  return (*/}
-                                {/*    //   <></>*/}
-                                {/*    // <ListItemButton onClick={(event)=>{*/}
-                                {/*    //*/}
-                                {/*    // }}>*/}
-                                {/*    // <ListItemIcon>*/}
-                                {/*    //*/}
-                                {/*    // </ListItemIcon>*/}
-                                {/*    // <ListItemText primary={leftMenuItem.name} />*/}
-                                {/*    // </ListItemButton>*/}
-                                {/*  )*/}
-
-                                {/*}}*/}
-
                               </List>
                             </Collapse>
                         )
