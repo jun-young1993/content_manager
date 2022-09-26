@@ -133,6 +133,7 @@ export function CategorySelect(props:
         selectProps ?: any
         autoChange ?: boolean
         none ?: boolean
+        icon ?: boolean
     }) : JSX.Element
 {
     const [value ,setValue] = React.useState(props.value || "");
@@ -170,7 +171,9 @@ export function CategorySelect(props:
                 <Typography
                     {...props.typographyProps || {}}
                 >
-                    <CircleIcon
+                    {(props.icon === false)
+                    ? <></>
+                    : <CircleIcon
                         sx={{
                             width:"20px",
                             height:"20px",
@@ -178,7 +181,7 @@ export function CategorySelect(props:
                             // marginTop:"8px",
                             color:tag.color || "#000000"
                         }}
-                    />
+                    />}
                     {tag.name}
                 </Typography>
             </MenuItem>
@@ -245,7 +248,15 @@ export default function Content(props:ContentInterface){
             <Stack direction="row"  justifyContent="flex-start" spacing={2}>
                 <FormControl fullWidth variant="standard" >
                     <InputLabel id="tag-select-standard-label">Tag</InputLabel>
-                    <Select
+                    <CategorySelect 
+                        sx={{width : "100px"}}
+                        value={search.category}
+                        onChange={(event : SelectChangeEvent)=>{
+                            setSearch({category : event.target.value});
+                        }}
+                        tags={state.tags}
+                    />
+                    {/* <Select
                         sx={{width : "100px"}}
                         value={search.category}
                         onChange={(event : SelectChangeEvent)=>{
@@ -273,20 +284,22 @@ export default function Content(props:ContentInterface){
                             </MenuItem>
                             )
                         })}
-                    </Select>
+                    </Select> */}
                 
                 </FormControl>
                 <FormControl fullWidth variant="standard" >
                     <InputLabel >콘텐츠 유형</InputLabel>
-                    <CategorySelect 
+                    {/* <CategorySelect 
                         sx={{width : "100px"}}
                         value={search.contentType}
                         onChange={(event : SelectChangeEvent)=>{
+                            console.log('content_type setSearch' , event.target.value)
                             setSearch({contentType : event.target.value});
                         }}
+                        icon={false}
                         tags={state.contentType}
-                    />
-                    {/* <Select
+                    /> */}
+                    <Select
                         sx={{width : "100px"}}
                         value={search.contentType}
                         onChange={(event : SelectChangeEvent)=>{
@@ -303,7 +316,7 @@ export default function Content(props:ContentInterface){
                             </MenuItem>
                             )
                         })}
-                    </Select> */}
+                    </Select>
                 </FormControl>
             </Stack>
             <Stack direction="row"  justifyContent="flex-satrt" spacing={2}>
