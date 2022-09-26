@@ -65,28 +65,73 @@ module.exports = {
         model : 'Code',
         default : {
             "description":"migration data",
-            "use_yn":"Y"
+            "use_yn":"Y",
+            "order" : 1
         },
         items : [{
             "code" : "media_type",
             "name" : "미디어 구분 코드",
+            "order" : 1,
             "_id" : "media_type"
         },{
             "code" : "task_module_type",
             "name" : "작업모듈 타입",
+            "order" : 2,
             "_id" : "task_module_type"
         },{
             "code" : "content_type",
             "name" : "콘텐츠 유형",
+            "order" : 3,
             "_id" : "content_type"
+        },{
+            "code" : "video_allow_extention",
+            "name" : "비디오 허용확장자",
+            "order" : 4,
+            "_id" : "video_allow_extention"
+        },{
+            "code" : "image_allow_extention",
+            "name" : "이미지 허용확장자",
+            "order" : 5,
+            "_id" : "image_allow_extention"
         }]
     },{
         model : 'CodeItem',
         default : {
             "description":"migration data",
-            "use_yn":"Y"
+            "use_yn":"Y",
+            "order" : 1,
         },
         items : [{
+            parent_code : "video_allow_extention",
+            code : "mxf",
+            name : "mxf",
+            _id : "video_allow_extention_mxf"
+        },{
+            parent_code : "video_allow_extention",
+            code : "mov",
+            name : "mov",
+            _id : "video_allow_extention_mov"
+        },{
+            parent_code : "video_allow_extention",
+            code : "mp4",
+            name : "mp4",
+            _id : "video_allow_extention_mp4"
+        },{
+            parent_code : "image_allow_extention",
+            code : "jpg",
+            name : "jpg",
+            _id : "image_allow_extention_jpg"
+        },{
+            parent_code : "image_allow_extention",
+            code : "png",
+            name : "png",
+            _id : "image_allow_extention_png"
+        },{
+            parent_code : "image_allow_extention",
+            code : "png",
+            name : "png",
+            _id : "image_allow_extention_png"
+        },{
             parent_code : "content_type",
             code : "video",
             name : "비디오",

@@ -19,7 +19,7 @@ const codeDb = new codeModel();
 // ipcRenderer.send('asynchronous-message', 'ping')
 class Code {
     static _all(event:any){
-        codeDb.db().find({},(err:any,data:any) => {
+        codeDb.db().find({}).sort({order : 1}).exec((err:any,data:any) => {
             if(data){
                 event.autoReplay({
                     success : true,

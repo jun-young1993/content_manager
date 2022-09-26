@@ -8,10 +8,13 @@ const log = require("../../../../lib/Logger");
 const contentService = new ContentService();
 const workflowService  = new WorkflowService();
 const taskService = new TaskService();
+
 import * as path from "path";
 import { sendIpc } from "../../../../lib/helper/ElectronHelper";
 import TaskInterface from "../../../../interfaces/TaskInterface";
 import { isEmpty, reject } from "lodash";
+import { CodeItemService } from "../../../../service/CodeItemService";
+const codeItemService = new CodeItemService;
 const Store = require("electron-store");
 const store = new Store();
 const ingest = (file:string,defaultValues:any) => {
@@ -81,7 +84,29 @@ const recuriveIngest = (files:string[],defaultValues:{}, number:number=0) => {
 		})
 	})
 }
-onIpc("#ingest",(event:IpcMainEvent,defaultValues:{}) => {
+const extentionValid = (files:string[], ingestType : string) => {
+	return new Promise((resolve,reject) => {
+		codeItemService.findByParentCode(`${ingestType}_allow_extention`)
+		.then((codes:any) => {
+			let extentions:string[] = [];
+			codes.data.map((code : {code : string}) => {
+				extentions.push(code.code);
+			})
+			
+			
+			return files.map((file:string,index:number) => {
+				const ext:string = path.extname(file).slice(1);
+				if(extentions.indexOf(ext) === -1){
+					return	reject(`허용가능한 확장자(${extentions.join()})만 선택해 다시요청해주세요.`);
+				}
+				if((files.length -1) === index){
+					return resolve(files);
+				}
+			})
+		}) 
+	})
+}
+onIpc("#ingest",(event:IpcMainEvent,defaultValues:{ingest_type : string}) => {
 	
 	const dialog = getElectronModule('dialog');
 	dialog.showOpenDialog(getBrowserWindow(),{
@@ -90,12 +115,21 @@ onIpc("#ingest",(event:IpcMainEvent,defaultValues:{}) => {
 	.then((result) => {
 		event.reply("#ingest/reply");
 		if(!result.canceled && result.filePaths){
-			console.log(result.filePaths);
-			
+			const files : string[] = result.filePaths;
+			extentionValid(files,defaultValues.ingest_type)		
+			.then((valid) => {
+				recuriveIngest(files,defaultValues)
+			})
+			.catch((validException) => {
+				sendIpc("#ShowMessageAlert/reply",{
+					severity : "error",
+					title : `${validException}`
+				})
+			})
 			// result.filePaths.map((file:string) => {
 				
 			// })
-			recuriveIngest(result.filePaths,defaultValues)
+			
 		
 		}
 		// event.reply("#ingest/reply",result);

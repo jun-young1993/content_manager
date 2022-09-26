@@ -20,7 +20,7 @@ var Code = /** @class */ (function () {
     function Code() {
     }
     Code._all = function (event) {
-        codeDb.db().find({}, function (err, data) {
+        codeDb.db().find({}).sort({ order: 1 }).exec(function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,

@@ -12,6 +12,8 @@ var taskService = new TaskService_1.TaskService();
 var path = require("path");
 var ElectronHelper_1 = require("../../../../lib/helper/ElectronHelper");
 var lodash_1 = require("lodash");
+var CodeItemService_1 = require("../../../../service/CodeItemService");
+var codeItemService = new CodeItemService_1.CodeItemService;
 var Store = require("electron-store");
 var store = new Store();
 var ingest = function (file, defaultValues) {
@@ -73,6 +75,26 @@ var recuriveIngest = function (files, defaultValues, number) {
         });
     });
 };
+var extentionValid = function (files, ingestType) {
+    return new Promise(function (resolve, reject) {
+        codeItemService.findByParentCode("".concat(ingestType, "_allow_extention"))
+            .then(function (codes) {
+            var extentions = [];
+            codes.data.map(function (code) {
+                extentions.push(code.code);
+            });
+            return files.map(function (file, index) {
+                var ext = path.extname(file).slice(1);
+                if (extentions.indexOf(ext) === -1) {
+                    return reject("\uD5C8\uC6A9\uAC00\uB2A5\uD55C \uD655\uC7A5\uC790(".concat(extentions.join(), ")\uB9CC \uC120\uD0DD\uD574 \uB2E4\uC2DC\uC694\uCCAD\uD574\uC8FC\uC138\uC694."));
+                }
+                if ((files.length - 1) === index) {
+                    return resolve(files);
+                }
+            });
+        });
+    });
+};
 onIpc("#ingest", function (event, defaultValues) {
     var dialog = getElectronModule('dialog');
     dialog.showOpenDialog(getBrowserWindow(), {
@@ -81,10 +103,18 @@ onIpc("#ingest", function (event, defaultValues) {
         .then(function (result) {
         event.reply("#ingest/reply");
         if (!result.canceled && result.filePaths) {
-            console.log(result.filePaths);
+            var files_1 = result.filePaths;
+            extentionValid(files_1, defaultValues.ingest_type)
+                .then(function (valid) {
+                recuriveIngest(files_1, defaultValues);
+            })["catch"](function (validException) {
+                (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
+                    severity: "error",
+                    title: "".concat(validException)
+                });
+            });
             // result.filePaths.map((file:string) => {
             // })
-            recuriveIngest(result.filePaths, defaultValues);
         }
         // event.reply("#ingest/reply",result);
     });
