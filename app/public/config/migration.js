@@ -93,6 +93,11 @@ module.exports = {
             "name" : "이미지 허용확장자",
             "order" : 5,
             "_id" : "image_allow_extention"
+        },{
+            "code" : "music_allow_extention",
+            "name" : "음원 허용확장자",
+            "order" : 6,
+            "_id" : "music_allow_extention"
         }]
     },{
         model : 'CodeItem',
@@ -132,6 +137,11 @@ module.exports = {
             name : "png",
             _id : "image_allow_extention_png"
         },{
+            parent_code : "music_allow_extention",
+            code : "mp3",
+            name : "mp3",
+            _id : "music_allow_extention_png"
+        },{
             parent_code : "content_type",
             code : "video",
             name : "비디오",
@@ -141,6 +151,11 @@ module.exports = {
             code : "image",
             name : "이미지",
             _id : "content_type_image"
+        },{
+            parent_code : "content_type",
+            code : "music",
+            name : "음원",
+            _id : "content_type_music"
         },{
             parent_code : "media_type",
             code : "original",
@@ -244,11 +259,14 @@ module.exports = {
             description : "migration data"
         },
         items : [{
-            name : "사용자 로컬 인제스트(Sample)",
+            name : "인제스트-비디오(Sample)",
             _id : "user_out_ingest"
         },{
-            name : "사용자 로컬 인제스트-이미지(Sample)",
+            name : "인제스트-이미지(Sample)",
             _id : "user_out_ingest_image"
+        },{
+            name : "인제스트-음원(Sample)",
+            _id : "user_out_ingest_music"
         },{
             name : "원본 다운로드(Sample)",
             _id : "original_download"
@@ -282,6 +300,18 @@ module.exports = {
             module_name : "원본 입수(로컬->온라인)",
             parent_id : "user_out_ingest_start_workflow_image",
             _id : "user_out_ingest_fs_copy_local_to_online_image",
+        },{
+            workflow_id : "user_out_ingest_music",
+            module_id : null,
+            module_name : "start workflow",
+            parent_id : null,
+            _id : "user_out_ingest_start_workflow_music",
+        },{
+            workflow_id : "user_out_ingest_music",
+            module_id : "fs_copy_local_to_online",
+            module_name : "원본 입수(로컬->온라인)",
+            parent_id : "user_out_ingest_start_workflow_music",
+            _id : "user_out_ingest_fs_copy_local_to_online_music",
         },{
             workflow_id : "user_out_ingest",
             module_id : null,
@@ -349,6 +379,9 @@ module.exports = {
         },{
             "key" : "ingest_workflow_image",
             "value" : "user_out_ingest_image"
+        },{
+            "key" : "ingest_workflow_music",
+            "value" : "user_out_ingest_music"
         }]
     }]
 };
