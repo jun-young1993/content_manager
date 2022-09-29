@@ -13,21 +13,23 @@ const ipcRenderer = electron.ipcRenderer;
 const defaultField = () => {
     const workflowes = ipcRenderer.sendSync("@WorkFlow/all");
     const categorys = ipcRenderer.sendSync("@Category/index",{parent_id : 'folder'});
-    const defaultFields = [{
-        required : true,
-        // helperText:"required field",
-        select: true,
-        fullWidth: true,
-        name : 'workflow_id',
-        label : '워크플로우',
-        variant : "standard",
-        color:"secondary",
-        focused : true,
-        // defaultValue:workflowes.data[0]._id,
-        children : (workflowes.data.map((code: any) => {
-            return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
-        }))
-    },{
+    const defaultFields = [
+    //     {
+    //     required : true,
+    //     // helperText:"required field",
+    //     select: true,
+    //     fullWidth: true,
+    //     name : 'workflow_id',
+    //     label : '워크플로우',
+    //     variant : "standard",
+    //     color:"secondary",
+    //     focused : true,
+    //     // defaultValue:workflowes.data[0]._id,
+    //     children : (workflowes.data.map((code: any) => {
+    //         return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
+    //     }))
+    // },
+    {
         required : true,
         // helperText:"required field",
         select: true,
@@ -41,7 +43,8 @@ const defaultField = () => {
         children : (categorys.data.map((code: any) => {
             return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
         }))
-    }];
+    }
+];
 
     return defaultFields;
 }
@@ -93,19 +96,24 @@ export default function ContentMetadata(props:any){
     })
 
     React.useEffect(()=>{
-        ipcRenderer.send("@Field/_index");
-        ipcRenderer.on('@Field/_index/reply',(event,result)=>{
-            console.log('@Field/_index/reply',result)  
-            console.log('settingField(result.data)',settingField(result.data))
-            if(result.success){
-
-                const fields:any = {fields : settingField(result.data)};
+        sender("@Field/_index",{content_type : props.metadata.content_type})
+        .then((result:any) => {
+            const fields:any = {fields : settingField(result.data)};
                 setState(fields);
-                ipcRenderer.removeAllListeners("@Field/_index/reply");
-            }
-                
-                
         })
+        // ipcRenderer.send("@Field/_index");
+        // ipcRenderer.on('@Field/_index/reply',(event,result)=>{
+        //     console.log('@Field/_index/reply',result)  
+        //     console.log('settingField(result.data)',settingField(result.data))
+        //     if(result.success){
+
+        //         const fields:any = {fields : settingField(result.data)};
+        //         setState(fields);
+        //         ipcRenderer.removeAllListeners("@Field/_index/reply");
+        //     }
+                
+                
+        // })
     },[])
    
     const updateFiledValue = (event: { target: { name: string; value: string; }; }) => {

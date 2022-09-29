@@ -18,15 +18,32 @@ var Field = /** @class */ (function () {
             }
         });
     };
+    Field._all = function (event, args) {
+        db.db().find(args[0]).sort({ order: 1 }).exec(function (err, data) {
+            event.autoReplay({
+                success: true,
+                data: data
+            });
+        });
+    };
     Field._index = function (event, args) {
+        if (args === void 0) { args = [{}]; }
         console.log('_index field', args);
-        db.db().find({ use_yn: "Y" }, function (err, data) {
+        db.db().find(Object.assign({ is_use: true }, args[0]), function (err, data) {
             if (data) {
                 event.autoReplay({
                     success: true,
                     data: data
                 });
             }
+        });
+    };
+    Field._update = function (event, args) {
+        db.db().update(args[1], { $set: args[0] }, function (err, data) {
+            event.autoReplay({
+                success: true,
+                data: data
+            });
         });
     };
     Field.index = function (event, args) {
@@ -45,7 +62,7 @@ var Field = /** @class */ (function () {
             args[_i - 1] = arguments[_i];
         }
         db.db().insert(Object.assign(args[0], {
-            'use_yn': "Y",
+            'is_use': true,
             'deleted_at': null
         }), function (err, data) {
             if (data) {

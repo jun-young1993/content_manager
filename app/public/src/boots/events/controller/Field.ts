@@ -18,9 +18,17 @@ class Field {
 
         })
     }
-    static _index(event, args){
+    static _all(event, args){
+        db.db().find(args[0]).sort({order : 1}).exec((err, data) => {
+            event.autoReplay({
+                success : true,
+                data : data
+            })
+        })
+    }
+    static _index(event, args=[{}]){
         console.log('_index field',args);
-        db.db().find({use_yn : "Y"},(err,data) => {
+        db.db().find(Object.assign({is_use : true},args[0]),(err,data) => {
 
             if(data){
                 event.autoReplay({
@@ -29,6 +37,18 @@ class Field {
                 })
             }
 
+        })
+    }
+
+    static _update(event , args){
+        
+        db.db().update(args[1],{$set : args[0]},(err,data) => {
+            
+                event.autoReplay({
+                    success : true,
+                    data : data
+                })
+            
         })
     }
     static index(event, args){
@@ -45,7 +65,7 @@ class Field {
     static insert(event,...args){
 
         db.db().insert(Object.assign(args[0],{
-            'use_yn' : "Y",
+            'is_use' : true,
             'deleted_at' : null,
         }),(err,data) => {
 

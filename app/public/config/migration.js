@@ -9,19 +9,37 @@ module.exports = {
         model : 'Field',
         default : {
             "description":"migration data",
-            "use_yn":"Y",
-            "search_yn" : "Y",
+            "is_use":true,
+            "is_search" : true,
         },
-        items : [{
-            "type":"code",
-            "code":"content_type",
-            "name":"콘텐츠 유형 테스트",
-            "_id" : "field_content_type"
-        },{
+        items : [
+        //     {
+        //     "type":"code",
+        //     "code":"content_type",
+        //     "name":"콘텐츠 유형 테스트",
+        //     "_id" : "field_content_type"
+        // },
+        {
+            "content_type" : "video",
             "type":"text",
             "code":"title",
-            "name":"콘텐츠 명",
-            "_id" : "field_content_title"
+            "name":"비디오 명",
+            "_id" : "field_video_title",
+            "order" : 1
+        },{
+            "content_type" : "image",
+            "type":"text",
+            "code":"title",
+            "name":"이미지 명",
+            "_id" : "field_image_title",
+            "order" : 1
+        },{
+            "content_type" : "music",
+            "type":"text",
+            "code":"title",
+            "name":"음원 명",
+            "_id" : "field_music_title",
+            "order" : 1
         }]
     },{
         model : 'Storage',
