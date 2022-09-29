@@ -69,7 +69,7 @@ var Field = /** @class */ (function () {
         });
     };
     Field._insert = function (event, args) {
-        db.db().findOne({ code: args[0].code }, function (error, code) {
+        db.db().findOne({ code: args[0].code, content_type: args[0], content_type: content_type }, function (error, code) {
             if ((0, lodash_1.isEmpty)(code)) {
                 db.db().count({ content_type: args[0].content_type }, function (error, count) {
                     // db.db().insert({...args[0],{is_use:true, is_search:true,order : count+1}},(error , data) => {
