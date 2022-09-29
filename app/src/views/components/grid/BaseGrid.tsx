@@ -1,15 +1,21 @@
 import * as React from "react";
 import {DataGrid, GridToolbarContainer,} from '@mui/x-data-grid';
-import {Container, Stack, Typography} from "@mui/material";
+import {Container, Stack, Typography, Button} from "@mui/material";
 import {isEmpty} from "lodash";
 import FieldMapper from "@views/components/fields/FieldMapper";
 import Grid from "@mui/material/Grid";
 
+interface toolbarItemInterface {
+    title : string
+    onClick : () => void
+};
+type toolbarType = toolbarItemInterface | React.ReactNode | JSX.Element;
 
 export interface BaseGridInterface {
     title ?: string
     searchToolbar ?: any
     dataGridProps ?: any
+    toolbar ?: toolbarType[]
 }
 export interface GridPanelInterface {
     height ?: string
@@ -27,7 +33,20 @@ const makeTitle = (title ?: string) => {
     return title;
 }
 
+const ArrayItems = (items:toolbarType[] | [] = []) => {
 
+    
+    return (
+        items.map((item:toolbarType)=>{
+            
+                return item;
+            
+            
+        })
+    );
+    
+    
+}
 export default function BaseGrid(props:BaseGridInterface){
     props.dataGridProps.rows.map((row : {_id : string, id ?: string }) => {
         row.id = row._id;
@@ -57,6 +76,7 @@ export default function BaseGrid(props:BaseGridInterface){
                                         }}
                                         fields={props.searchToolbar}
                                     />
+                                    {ArrayItems(props.toolbar)}
                                 </Stack>
                             </GridToolbarContainer>
                         )

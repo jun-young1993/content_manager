@@ -18,7 +18,7 @@ import AlertDialog from "@views/components/AlertDialog";
 import CustomAlert from "@views/components/CustomAlert";
 const ipcRenderer = electron.ipcRenderer;
 import TabPanel from "@views/components/TabPanel";
-import { sender } from '@views/helper/helper';
+import { sender, showAlert } from '@views/helper/helper';
 import BaseGrid from "@views/components/grid/BaseGrid";
 import Switch from '@mui/material/Switch';
 import { CheckRounded } from '@mui/icons-material';
@@ -78,7 +78,13 @@ const reducer = (prevState:any, newState:any) => ({
     ...newState
 })
 export function MetadataGrid(props:{content_type : string}) {
-    const [rows,setRows] = React.useState([]);
+    const [rows,setRows] = React.useState<any>([]);
+    const [values, setValues] = React.useState({
+        type : 'text',
+        code : '',
+        name : '',
+        description : ''
+    })
     React.useEffect(() => {
         sender("@Field/_all",{content_type : props.content_type})
         .then((result:any) => {
@@ -161,6 +167,100 @@ export function MetadataGrid(props:{content_type : string}) {
   
     return (
         <BaseGrid 
+            toolbar={[  <FormDialog
+                buttonTitle="등록"
+                values={values}
+                variant="standard"
+                changeFields={[]}
+                fields={[
+                    {
+                        select : true,
+                        fullWidth : true,
+                        name : "type",
+                        label : "필드타입",
+                        variant:"standard",
+                        onChangeValue:handleTypeChange,
+                        children : (
+                            [
+                                (<MenuItem
+                                key="text" value="text"
+                            >
+                                텍스트필드
+                            </MenuItem>),
+                                (<MenuItem
+                                key="code" value="code"
+                            >
+                                코드콤보
+                            </MenuItem>)
+                        ])
+                    },
+                    {
+                        name : "code",
+                        label : "필드코드",
+                        variant:"standard"
+                    },
+                    {
+                        name : "name",
+                        label : "필드명",
+                        variant:"standard"
+                    },
+                    {
+                        name: "description",
+                        label: "설명",
+                        variant: "standard"
+                    }
+
+                ]}
+                onSaveClick={(result:any)=>{
+                    console.log('result',result);
+                    let errorMsg:string = '';
+                    // if(result){
+                        const values = {...result.values,...{content_type : props.content_type}};
+                        console.log('values',values);
+                        sender("@Field/_insert",values)
+                        .then((result:any) => {
+                            console.log("result",result);
+                            if(result.success){
+                                showAlert({
+                                    title : `[${result.data.code}] 메타데이터 필드가 추가되었습니다.`,
+                                    severity : "success",
+                                },() => {
+                                    sender("@Field/_all",{content_type : props.content_type})
+                                    .then((result:any) => {
+                                        setRows(result.data);
+                                    })
+                                })      
+                            }else{
+                                showAlert({
+                                    title : `${result.msg}`,
+                                    severity : "warning",
+                                })      
+                            }
+                        })
+                    //     if(values){
+                    //         const exists = ipcRenderer.sendSync("@Field/first",{code:values.code});
+                    //         if(exists.success){
+                    //             setALert((<CustomAlert serverity="info" title="중복된 필드코드입니다. \r\n 다른 필드코드로 요청해주세요." />));
+                    //             return false;
+                    //         }
+
+                    //         const insert = ipcRenderer.sendSync("@Field/insert",values);
+                    //         if(insert.success){
+                    //             reload();
+                    //             setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                    //             return  true;
+                    //         }
+
+                    //         console.log('insert',insert);
+                    //     }
+                    //     setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                    //     return false;
+                    // }
+
+                    
+    
+                }}
+            />]}
             dataGridProps={{
                 columns:columns,
                 rows:rows,

@@ -2,6 +2,7 @@
 
 import {BaseController} from "./BaseController";
 import {Field as FieldModel} from "../../../../models/Field";
+import { isEmpty } from "lodash";
 // import {User} from "@model/User";
 const db = new FieldModel();
 
@@ -60,6 +61,36 @@ class Field {
                 }
             }
 
+        })
+    }
+    static _insert(event, args){
+
+        db.db().findOne({code : args[0].code},(error, code) => {
+            if(isEmpty(code)){
+                db.db().count({content_type : args[0].content_type},(error , count) => {
+                    // db.db().insert({...args[0],{is_use:true, is_search:true,order : count+1}},(error , data) => {
+                    //         event.autoReplay({
+                    //             success : true,
+                    //             data : code
+                    //         })
+                    //     })
+                    // })
+                    db.db().insert({...args[0],...{is_use:true, is_search:true,order : count +1}},(error, data) => {
+                            event.autoReplay({
+                                success : true,
+                                data : {...args[0],...{is_use:true, is_search:true,order : count +1}}
+                            })
+                    })
+                })
+
+
+            }else{
+                event.autoReplay({
+                    success : false,
+                    data : null,
+                    msg : "중복된 필드코드 입니다."
+                })
+            }
         })
     }
     static insert(event,...args){
