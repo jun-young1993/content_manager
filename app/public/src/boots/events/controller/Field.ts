@@ -63,11 +63,23 @@ class Field {
 
         })
     }
+    static _delete(event , args){
+        db.db().remove(args[0],(error , remove) => {
+            event.autoReplay({
+                success : true,
+                data : remove
+            })
+        })
+    }
     static _insert(event, args){
 
-        db.db().findOne({code : args[0].code,content_type : args[0],content_type},(error, code) => {
+        db.db().findOne({code : args[0].code,content_type : args[0],content_type})
+        .exec((error, code) => {
             if(isEmpty(code)){
-                db.db().count({content_type : args[0].content_type},(error , count) => {
+                db.db().findOne({content_type : args[0].content_type})
+                .sort({createdAt : -1})
+                .exec((error , data) => {
+                    const sort:number = data.order + 1;
                     // db.db().insert({...args[0],{is_use:true, is_search:true,order : count+1}},(error , data) => {
                     //         event.autoReplay({
                     //             success : true,
@@ -75,10 +87,10 @@ class Field {
                     //         })
                     //     })
                     // })
-                    db.db().insert({...args[0],...{is_use:true, is_search:true,order : count +1}},(error, data) => {
+                    db.db().insert({...args[0],...{is_use:true, is_search:true,order :sort}},(error, data) => {
                             event.autoReplay({
                                 success : true,
-                                data : {...args[0],...{is_use:true, is_search:true,order : count +1}}
+                                data : {...args[0],...{is_use:true, is_search:true,order : sort}}
                             })
                     })
                 })

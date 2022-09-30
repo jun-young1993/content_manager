@@ -22,6 +22,7 @@ import { sender, showAlert } from '@views/helper/helper';
 import BaseGrid from "@views/components/grid/BaseGrid";
 import Switch from '@mui/material/Switch';
 import { CheckRounded } from '@mui/icons-material';
+import { isEmpty } from 'lodash';
 // const rows: GridRowsProp = [
 //     { id: 1, col1: 'Hello', col2: 'World' },
 //     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
@@ -85,11 +86,17 @@ export function MetadataGrid(props:{content_type : string}) {
         name : '',
         description : ''
     })
-    React.useEffect(() => {
+    const [selected, setSelected] = React.useState({
+        _id : null
+    })
+    const load = () => {
         sender("@Field/_all",{content_type : props.content_type})
         .then((result:any) => {
             setRows(result.data);
         })
+    }
+    React.useEffect(() => {
+        load();
     },[])
 
     const baseAlert = ((<CustomAlert open={false} />));
@@ -260,8 +267,114 @@ export function MetadataGrid(props:{content_type : string}) {
                     
     
                 }}
-            />]}
+            />,     
+                <FormDialog
+                    buttonTitle="수정"
+                    values={selected}
+                    fields={[
+                        {
+                            select : true,
+                            name : "type",
+                            label : "필드타입",
+                            onChange : handleTypeChange,
+                            variant:"standard",
+                            children : (
+                                [
+                                    (<MenuItem
+                                    key="text" value="text"
+                                >
+                                    텍스트필드
+                                </MenuItem>),
+                                    (<MenuItem
+                                    key="code" value="code"
+                                >
+                                    코드콤보
+                                </MenuItem>)
+                            ])
+                        },
+                        {
+                            name : "code",
+                            label : "필드코드",
+                            variant:"standard"
+                        },
+                        {
+                            name : "name",
+                            label : "필드명",
+                            variant:"standard"
+                        },
+                        {
+                            name: "description",
+                            label: "설명",
+                            variant: "standard"
+                        }
+
+                    ]}
+                    onSaveClick={(result:any)=>{
+                        console.log('result',result);
+                        let errorMsg:string = '';
+                        // if(isEmpty(selected._id)){
+                        //     showAlert({
+                        //         title : "목록 선택후 수정해주세요.",
+                        //         severity : "warning"
+                        //     })
+                        //     return false;
+                        // }
+                        if(result){
+                            sender("@Field/_update",result.values,{_id : result.oldValues._id})
+                            .then((result) => {
+                                showAlert({
+                                    title : "수정되었습니다.",
+                                    severity : "info"
+                                },()=>{
+                                    load();
+                                })
+
+                            })
+                            // const update = ipcRenderer.sendSync("@Field/update",result.values,{
+                            //     _id : result.oldValues._id
+                            // });
+                            // if(update.success){
+                            //     reload();
+                            //     setALert((<CustomAlert serverity="success" title="등록되었습니다." />));
+                            //     return  true;
+                            // }
+                            // setALert((<CustomAlert serverity="error" title="등록에 실패했습니다." />))
+                            // return false;
+                        }
+
+                        
+                    }}
+                />,
+                <Button
+                    variant="outlined"
+                    onClick={()=>{
+                        const id:any = selected._id;
+                        if(isEmpty(id)){
+                            showAlert({
+                                title : "항목을 선택후 시도해주세요.",
+                                severity : "warning"
+                            })
+                            return false;
+                        }
+
+                        sender("@Field/_delete",{_id : id})
+                        .then((result) => {
+                            showAlert({
+                                title : "삭제처리되었습니다.",
+                                severity : "info"
+                            },() => {
+                                load();
+                            })
+                        })
+                    }}
+                >
+                    삭제
+                </Button>
+            ]}
             dataGridProps={{
+                onRowClick:(params: any, event: any, details: GridCallbackDetails)=>{
+                    setSelected(params.row);
+                },
                 columns:columns,
                 rows:rows,
                 hideFooter:true

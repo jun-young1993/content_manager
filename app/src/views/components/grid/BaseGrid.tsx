@@ -68,7 +68,7 @@ export default function BaseGrid(props:BaseGridInterface){
                     Toolbar : () => {
                         return (
                             <GridToolbarContainer>
-                                <Stack direction={"row"}>
+                                <Stack direction={"row"} spacing={2} >
                                     <FieldMapper 
                                         default={{
                                             size : "small",

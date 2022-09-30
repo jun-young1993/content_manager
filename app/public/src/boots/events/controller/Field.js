@@ -68,10 +68,22 @@ var Field = /** @class */ (function () {
             }
         });
     };
+    Field._delete = function (event, args) {
+        db.db().remove(args[0], function (error, remove) {
+            event.autoReplay({
+                success: true,
+                data: remove
+            });
+        });
+    };
     Field._insert = function (event, args) {
-        db.db().findOne({ code: args[0].code, content_type: args[0], content_type: content_type }, function (error, code) {
+        db.db().findOne({ code: args[0].code, content_type: args[0], content_type: content_type })
+            .exec(function (error, code) {
             if ((0, lodash_1.isEmpty)(code)) {
-                db.db().count({ content_type: args[0].content_type }, function (error, count) {
+                db.db().findOne({ content_type: args[0].content_type })
+                    .sort({ createdAt: -1 })
+                    .exec(function (error, data) {
+                    var sort = data.order + 1;
                     // db.db().insert({...args[0],{is_use:true, is_search:true,order : count+1}},(error , data) => {
                     //         event.autoReplay({
                     //             success : true,
@@ -79,10 +91,10 @@ var Field = /** @class */ (function () {
                     //         })
                     //     })
                     // })
-                    db.db().insert(__assign(__assign({}, args[0]), { is_use: true, is_search: true, order: count + 1 }), function (error, data) {
+                    db.db().insert(__assign(__assign({}, args[0]), { is_use: true, is_search: true, order: sort }), function (error, data) {
                         event.autoReplay({
                             success: true,
-                            data: __assign(__assign({}, args[0]), { is_use: true, is_search: true, order: count + 1 })
+                            data: __assign(__assign({}, args[0]), { is_use: true, is_search: true, order: sort })
                         });
                     });
                 });
