@@ -2,9 +2,10 @@
 
 import {BaseController} from "./BaseController";
 import {CodeItem as codeItemModel} from "../../../../models/CodeItem";
+import { CodeItemService } from "../../../../service/CodeItemService";
 
 const codeItemDb = new codeItemModel();
-
+const codeItemService = new CodeItemService();
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //     console.log(arg) // prints "ping"
 //     event.reply('asynchronous-reply', 'pong')
@@ -33,7 +34,14 @@ class CodeItem {
     }
 
     static _indexByParentCode(event, args){
-
+        codeItemService.findByParentCode(args[0])
+        .then((result) => {
+            return event.autoReplay( {
+                success : true,
+                data : result
+            })
+        })
+        return;
         codeItemDb.db().find({use_yn : 'Y',
                                 parent_code : args[0]},(err,data) => {
             if(data){

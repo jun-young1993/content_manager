@@ -31,7 +31,7 @@ var CodeItemService = /** @class */ (function (_super) {
     CodeItemService.prototype.findByParentCode = function (parentCode) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('CodeItem').find({ parent_code: parentCode }, function (err, codes) {
+            _this.getModel('CodeItem').find({ parent_code: parentCode }).sort({ order: 1 }).exec(function (err, codes) {
                 if ((0, lodash_1.isEmpty)(codes)) {
                     reject((0, ApiHelper_1.apiReject)('[CodeItemService][findByParentCode] not found codes'));
                 }

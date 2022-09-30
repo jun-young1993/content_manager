@@ -133,21 +133,26 @@ export const defaultValues = [{
 	"sub_title" : "콘텐츠 리스트 항목 열 개수 설정",
 	"element" : <SelectApi 
 		sender={new Promise((resolve) => {
-			resolve({
-				data : [{
-					"_id" : 10,
-					"name" : 10
-				},{
-					"_id" : 25,
-					"name" : 25
-				},{
-					"_id" : 50,
-					"name" : 50
-				},{
-					"_id" : 100,
-					"name" : 100
-				}]
+			sender("@CodeItem/_indexByParentCode","grid_row_count")
+			.then((result:any) => {
+				console.log('content list row count ',result);
+				resolve(result.data);
 			})
+			// resolve({
+			// 	data : [{
+			// 		"_id" : 10,
+			// 		"name" : 10
+			// 	},{
+			// 		"_id" : 25,
+			// 		"name" : 25
+			// 	},{
+			// 		"_id" : 50,
+			// 		"name" : 50
+			// 	},{
+			// 		"_id" : 100,
+			// 		"name" : 100
+			// 	}]
+			// })
 		})}
 		value={()=>{
 			return store.get('default_values.rows_page_size_content');
@@ -178,21 +183,26 @@ export const defaultValues = [{
 	"sub_title" : "작업모니터링 리스트 항목 열 개수 설정",
 	"element" : <SelectApi 
 		sender={new Promise((resolve) => {
-			resolve({
-				data : [{
-					"_id" : 10,
-					"name" : 10
-				},{
-					"_id" : 25,
-					"name" : 25
-				},{
-					"_id" : 50,
-					"name" : 50
-				},{
-					"_id" : 100,
-					"name" : 100
-				}]
+			sender("@CodeItem/_indexByParentCode","grid_row_count")
+			.then((result:any) => {
+				resolve(result.data);
+				// resolve({
+				// 	data : [{
+				// 		"_id" : 10,
+				// 		"name" : 10
+				// 	},{
+				// 		"_id" : 25,
+				// 		"name" : 25
+				// 	},{
+				// 		"_id" : 50,
+				// 		"name" : 50
+				// 	},{
+				// 		"_id" : 100,
+				// 		"name" : 100
+				// 	}]
+				// })
 			})
+		
 		})}
 		value={()=>{
 			return store.get('default_values.rows_page_size_task_monitor');

@@ -15,7 +15,7 @@ export class CodeItemService extends BaseService {
 
     findByParentCode(parentCode:string){
         return new Promise((resolve, reject) => {
-            this.getModel('CodeItem').find({parent_code : parentCode},(err:any,codes:any) => {
+            this.getModel('CodeItem').find({parent_code : parentCode}).sort({order : 1}).exec((err:any,codes:any) => {
                 if(isEmpty(codes)){
                     reject(apiReject('[CodeItemService][findByParentCode] not found codes'))
                 }

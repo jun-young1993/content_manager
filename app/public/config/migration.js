@@ -116,6 +116,11 @@ module.exports = {
             "name" : "음원 허용확장자",
             "order" : 6,
             "_id" : "music_allow_extention"
+        },{
+            "code" : "grid_row_count",
+            "name" : "그리드 열 개수",
+            "order" : 7,
+            "_id" : "grid_row_count"
         }]
     },{
         model : 'CodeItem',
@@ -125,6 +130,26 @@ module.exports = {
             "order" : 1,
         },
         items : [{
+            parent_code : "grid_row_count",
+            code : "10",
+            name : "10",
+            _id : "grid_row_count_10"
+        },{
+            parent_code : "grid_row_count",
+            code : "25",
+            name : "25",
+            _id : "grid_row_count_25"
+        },{
+            parent_code : "grid_row_count",
+            code : "50",
+            name : "50",
+            _id : "grid_row_count_50"
+        },{
+            parent_code : "grid_row_count",
+            code : "100",
+            name : "100",
+            _id : "grid_row_count_100"
+        },{
             parent_code : "video_allow_extention",
             code : "mxf",
             name : "mxf",

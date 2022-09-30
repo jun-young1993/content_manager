@@ -1,4 +1,4 @@
-import Dialog from "@mui/material/Dialog";
+
 
 import * as React from "react";
 import CustomAlert from "@views/components/CustomAlert";
@@ -25,6 +25,8 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import SourceIcon from '@mui/icons-material/Source';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
+import Dialog,{DialogProps} from '@mui/material/Dialog';
+import {  Settings as SettingsIcon,} from '@mui/icons-material';
 export interface ListenerAlert {
     open ?: boolean
     width ?: number
@@ -36,6 +38,39 @@ const reducer = (prevState:any, newState:any) => ({
     ...prevState,
     ...newState
 })
+interface DrawerConfigDialogProps {
+
+}
+function DrawerConfigDialog(props:DrawerConfigDialogProps){
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = (event:any,reason:any) => {
+        
+        setOpen(false);
+
+    };
+    return (
+        <>
+        <LightTooltip title={"콘텐츠 상세 설정"} placement={"top-end"}>
+                <IconButton
+                    onClick={handleClickOpen}
+                >
+                    <SettingsIcon 
+                        color={(open) ? 'primary' : "inherit"}
+                    />
+                </IconButton>
+        </LightTooltip>
+        <Dialog 
+              open={open}
+              onClose={handleClose}
+        >
+
+        </Dialog>
+        </>
+    )
+}
 function ListenerDrawer(){
     
     const [state , setState] = React.useReducer(reducer,{
@@ -140,6 +175,7 @@ function ListenerDrawer(){
                             />
                         </IconButton>
                     </LightTooltip>
+                    <DrawerConfigDialog />
                 </Stack>
                 </>
             </Toolbar>
