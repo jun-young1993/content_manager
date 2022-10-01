@@ -1,20 +1,11 @@
 import * as React from 'react';
-import { Provider } from 'react-redux'
-import { useSelector, useDispatch } from "react-redux";
-
-import Container from '@mui/material/Container';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
+import {Typography} from '@mui/material';
 import {defaultValues} from "@views/main/support/config/ConfigItems";
-import Content from "@views/main/Content";
 import Store from "electron-store";
-import {TagEdit} from "@views/main/TagConfig";
 import TabPanel from "@views/components/TabPanel";
+
 const store = new Store();
 
 
@@ -76,6 +67,16 @@ const BaseLayout = (props:any) => {
 	      </Box>
 	)
 
+}
+
+export function ContentDetailPanelConfigLayout(){
+	return (
+		<BaseLayout
+			items={defaultValues}
+		/>
+
+
+	)
 }
 export default function Config() {
 

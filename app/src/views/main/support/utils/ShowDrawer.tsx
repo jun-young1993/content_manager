@@ -1,32 +1,21 @@
-
-
 import * as React from "react";
-import CustomAlert from "@views/components/CustomAlert";
 import {ipcRenderer, IpcRendererEvent} from "electron";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import List from '@mui/material/List';
-import { Typography } from "@mui/material";
+import {Typography} from "@mui/material";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ContentDetail from "@views/main/support/content/ContentDetail";
 import PreviewIcon from '@mui/icons-material/Preview';
 import SourceIcon from '@mui/icons-material/Source';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
-import Dialog,{DialogProps} from '@mui/material/Dialog';
-import {  Settings as SettingsIcon,} from '@mui/icons-material';
+import Dialog from '@mui/material/Dialog';
+import {ContentDetailPanelConfigLayout} from "@views/main/Config";
+
 export interface ListenerAlert {
     open ?: boolean
     width ?: number
@@ -53,20 +42,20 @@ function DrawerConfigDialog(props:DrawerConfigDialogProps){
     };
     return (
         <>
-        <LightTooltip title={"콘텐츠 상세 설정"} placement={"top-end"}>
-                <IconButton
-                    onClick={handleClickOpen}
-                >
-                    <SettingsIcon 
-                        color={(open) ? 'primary' : "inherit"}
-                    />
-                </IconButton>
-        </LightTooltip>
-        <Dialog 
+        {/*<LightTooltip title={"콘텐츠 상세보기 설정"} placement={"top-end"}>*/}
+        {/*        <IconButton*/}
+        {/*            onClick={handleClickOpen}*/}
+        {/*        >*/}
+        {/*            <SettingsIcon */}
+        {/*                color={(open) ? 'primary' : "inherit"}*/}
+        {/*            />*/}
+        {/*        </IconButton>*/}
+        {/*</LightTooltip>*/}
+        <Dialog
               open={open}
               onClose={handleClose}
         >
-
+            <ContentDetailPanelConfigLayout />
         </Dialog>
         </>
     )

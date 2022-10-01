@@ -5,9 +5,14 @@ import {invoker, sender} from "@views/helper/helper";
 import {Circle as CircleIcon} from '@mui/icons-material';
 import MultiSelect from "@views/components/fields/MultiSelect";
 import Store from "electron-store";
+import InputSlider from "@views/components/fields/InputSlider";
 
 const store = new Store();
-
+export const contentDetailPanel = [{
+	"type" : "base",
+	"title" : "패널 넓이 조절",
+	element : <InputSlider />
+}];
 export const defaultValues = [{
 	"type" : "title",
 	"title" : "인제스트"
