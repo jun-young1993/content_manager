@@ -1,12 +1,10 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import { MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import Store from "electron-store";
+
 const store = new Store();
-import {isEmpty} from 'lodash';
 
 /**
  * label - 셀렉트 박스 라벨
@@ -41,7 +39,11 @@ export default function SelectApi(props:SelectApiInterface) {
     
     props.sender
     .then((result : any) => {
-      setList(result.data);
+      // if(Array.isArray(result.data)){
+      //     return setList([]);
+      // }
+      return setList(result.data);
+
     })
   }
   React.useEffect(()=>{

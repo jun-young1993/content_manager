@@ -133,21 +133,25 @@ module.exports = {
             parent_code : "grid_row_count",
             code : "10",
             name : "10",
+            order : 1,
             _id : "grid_row_count_10"
         },{
             parent_code : "grid_row_count",
             code : "25",
             name : "25",
+            order : 2,
             _id : "grid_row_count_25"
         },{
             parent_code : "grid_row_count",
             code : "50",
             name : "50",
+            order : 3,
             _id : "grid_row_count_50"
         },{
             parent_code : "grid_row_count",
             code : "100",
             name : "100",
+            order : 4,
             _id : "grid_row_count_100"
         },{
             parent_code : "video_allow_extention",

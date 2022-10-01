@@ -32,13 +32,14 @@ var CodeItem = /** @class */ (function () {
             }
         });
     };
+    CodeItem.$indexByParentCode = function (event, args) {
+        console.log("=>(CodeItem.ts:37) args", args);
+        return codeItemService.findByParentCode(args[0]);
+    };
     CodeItem._indexByParentCode = function (event, args) {
         codeItemService.findByParentCode(args[0])
             .then(function (result) {
-            return event.autoReplay({
-                success: true,
-                data: result
-            });
+            return event.autoReplay(result);
         });
         return;
         codeItemDb.db().find({ use_yn: 'Y',

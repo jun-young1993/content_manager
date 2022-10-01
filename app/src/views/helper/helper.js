@@ -1,7 +1,8 @@
 "use strict";
 exports.__esModule = true;
-exports.showDrawer = exports.showConfirm = exports.showAlert = exports.sender = void 0;
+exports.invoker = exports.showDrawer = exports.showConfirm = exports.showAlert = exports.sender = void 0;
 var electron_1 = require("electron");
+// declare var _MODELS: any;
 var sender = function (channel, arg1, arg2) {
     return new Promise(function (resolve, reject) {
         try {
@@ -18,6 +19,14 @@ var sender = function (channel, arg1, arg2) {
     });
 };
 exports.sender = sender;
+var invoker = function (channel) {
+    var arg = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        arg[_i - 1] = arguments[_i];
+    }
+    return electron_1.ipcRenderer.invoke(channel, arg);
+};
+exports.invoker = invoker;
 var showAlert = function (options, onClose) {
     return new Promise(function (resolve, reject) {
         electron_1.ipcRenderer.send("#ShowMessageAlert", options);

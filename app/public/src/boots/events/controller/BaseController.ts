@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import {ipcMain} from "electron";
-import {method} from "lodash";
+
 interface Property {
     controller : any;
 
@@ -35,6 +35,8 @@ export class BaseController implements Property{
             //     _this.controller[methodName](event,args);
             // });
             // console.log('start method',methodName);
+            console.log("=>(BaseController.ts:39) isAsyncMethod(methodName)", this.isAsyncMethod(methodName),methodName);
+            console.log("=>(BaseController.ts:40) this.isInvokeMethod(methodName)", this.isInvokeMethod(methodName),methodName);
             if(_this.isAsyncMethod(methodName)){
                 //async method
                 ipcMain.on(channel,(event,...args)=>{
@@ -50,6 +52,12 @@ export class BaseController implements Property{
 
 
                 })
+            }else if(_this.isInvokeMethod(methodName)){
+                ipcMain.handle(channel,(event,args)=>{
+                    console.log("=>(BaseController.ts:58) args", args);
+                    return _this.controller[methodName](event,args);
+                })
+
             }else{
                 // sync method
                 ipcMain.on(channel,_this.controller[methodName]);
@@ -60,7 +68,9 @@ export class BaseController implements Property{
 
         }
     }
-
+    isInvokeMethod(methodName:string){
+        return methodName.charAt(0) === '$';
+    }
     isAsyncMethod(methodName:string){
         return methodName.charAt(0) === '_';
     }

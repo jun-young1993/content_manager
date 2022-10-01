@@ -2,7 +2,7 @@
 
 import {BaseController} from "./BaseController";
 import {CodeItem as codeItemModel} from "../../../../models/CodeItem";
-import { CodeItemService } from "../../../../service/CodeItemService";
+import {CodeItemService} from "../../../../service/CodeItemService";
 
 const codeItemDb = new codeItemModel();
 const codeItemService = new CodeItemService();
@@ -32,14 +32,14 @@ class CodeItem {
             }
         })
     }
-
+    static $indexByParentCode(event, args){
+console.log("=>(CodeItem.ts:37) args", args);
+        return codeItemService.findByParentCode(args[0]);
+    }
     static _indexByParentCode(event, args){
         codeItemService.findByParentCode(args[0])
         .then((result) => {
-            return event.autoReplay( {
-                success : true,
-                data : result
-            })
+            return event.autoReplay( result)
         })
         return;
         codeItemDb.db().find({use_yn : 'Y',

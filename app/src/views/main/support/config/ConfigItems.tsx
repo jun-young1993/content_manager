@@ -1,34 +1,11 @@
 import * as React from 'react';
-import { Provider } from 'react-redux'
-import { useSelector, useDispatch } from "react-redux";
-
-import Container from '@mui/material/Container';
-
-import Grid from '@mui/material/Grid';
-import MenuList from '@views/main/support/config/MenuList';
-
-import Metadata from "@views/main/Metadata";
-import Code from "@views/main/Code";
-import Storage from "@views/main/Storage";
-import Module from "@views/main/Module";
-import Workflow from "@views/main/Workflow";
-import ConfigStore from "@views/store/ConfigStore";
-import {ipcRenderer, IpcRendererEvent} from "electron";
-import TaskMonitor from "@views/main/TaskMonitor";
-import BaseGrid from "@views/components/grid/BaseGrid";
 import SelectApi from "@views/components/fields/SelectApi";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
-import {sender} from "@views/helper/helper";
-import {MenuItem} from "@mui/material";
+import {MenuItem, Typography} from '@mui/material';
+import {invoker, sender} from "@views/helper/helper";
 import {Circle as CircleIcon} from '@mui/icons-material';
 import MultiSelect from "@views/components/fields/MultiSelect";
 import Store from "electron-store";
+
 const store = new Store();
 
 export const defaultValues = [{
@@ -131,29 +108,9 @@ export const defaultValues = [{
 	'type' : "base",
 	"title" : "콘텐츠 노출 항목 개수",
 	"sub_title" : "콘텐츠 리스트 항목 열 개수 설정",
-	"element" : <SelectApi 
-		sender={new Promise((resolve) => {
-			sender("@CodeItem/_indexByParentCode","grid_row_count")
-			.then((result:any) => {
-				console.log('content list row count ',result);
-				resolve(result.data);
-			})
-			// resolve({
-			// 	data : [{
-			// 		"_id" : 10,
-			// 		"name" : 10
-			// 	},{
-			// 		"_id" : 25,
-			// 		"name" : 25
-			// 	},{
-			// 		"_id" : 50,
-			// 		"name" : 50
-			// 	},{
-			// 		"_id" : 100,
-			// 		"name" : 100
-			// 	}]
-			// })
-		})}
+	"element" : <SelectApi
+		valueField={"code"}
+		sender={invoker("@CodeItem/$indexByParentCode","grid_row_count")}
 		value={()=>{
 			return store.get('default_values.rows_page_size_content');
 		}}
@@ -181,29 +138,9 @@ export const defaultValues = [{
 	'type' : "base",
 	"title" : "작업모니터링 노출 항목 개수",
 	"sub_title" : "작업모니터링 리스트 항목 열 개수 설정",
-	"element" : <SelectApi 
-		sender={new Promise((resolve) => {
-			sender("@CodeItem/_indexByParentCode","grid_row_count")
-			.then((result:any) => {
-				resolve(result.data);
-				// resolve({
-				// 	data : [{
-				// 		"_id" : 10,
-				// 		"name" : 10
-				// 	},{
-				// 		"_id" : 25,
-				// 		"name" : 25
-				// 	},{
-				// 		"_id" : 50,
-				// 		"name" : 50
-				// 	},{
-				// 		"_id" : 100,
-				// 		"name" : 100
-				// 	}]
-				// })
-			})
-		
-		})}
+	"element" : <SelectApi
+		valueField={"code"}
+		sender={invoker("@CodeItem/$indexByParentCode","grid_row_count")}
 		value={()=>{
 			return store.get('default_values.rows_page_size_task_monitor');
 		}}

@@ -1,24 +1,33 @@
-import { ipcRenderer, IpcRendererEvent } from "electron";
+import {ipcRenderer, IpcRendererEvent} from "electron";
 import {ShowALertInterface} from "./helperInterface";
+
+// declare var _MODELS: any;
 const sender = (channel:string,arg1 ?:any,arg2 ?:any) => {
 	return new Promise((resolve ,reject) => {
 		try{
 			const replyChannel:string = `${channel}/reply`;
 			ipcRenderer.send(channel,arg1,arg2);
+
+
 			ipcRenderer.on(replyChannel,(event:IpcRendererEvent,result) => {
+
 				ipcRenderer.removeAllListeners(replyChannel)
 
 				resolve(result);
 
 			})
 
+
 		}catch(e){
 			reject(e);
 		}
 	})
-	
+
 }
 
+const invoker = (channel:string, ...arg:any) => {
+	return ipcRenderer.invoke(channel,arg);
+}
 
 
 const showAlert = (options:ShowALertInterface,onClose ?: Function) => {
@@ -63,5 +72,6 @@ export {
 	sender,
 	showAlert,
 	showConfirm,
-	showDrawer
+	showDrawer,
+	invoker
 };

@@ -39,6 +39,8 @@ var BaseController = /** @class */ (function () {
             //     _this.controller[methodName](event,args);
             // });
             // console.log('start method',methodName);
+            console.log("=>(BaseController.ts:39) isAsyncMethod(methodName)", this_1.isAsyncMethod(methodName), methodName);
+            console.log("=>(BaseController.ts:40) this.isInvokeMethod(methodName)", this_1.isInvokeMethod(methodName), methodName);
             if (_this.isAsyncMethod(methodName)) {
                 //async method
                 electron_1.ipcMain.on(channel, function (event) {
@@ -56,14 +58,24 @@ var BaseController = /** @class */ (function () {
                     _this.controller[methodName](event, args);
                 });
             }
+            else if (_this.isInvokeMethod(methodName)) {
+                electron_1.ipcMain.handle(channel, function (event, args) {
+                    console.log("=>(BaseController.ts:58) args", args);
+                    return _this.controller[methodName](event, args);
+                });
+            }
             else {
                 // sync method
                 electron_1.ipcMain.on(channel, _this.controller[methodName]);
             }
         };
+        var this_1 = this;
         for (var index = 0; index < allMethods.length; index++) {
             _loop_1(index);
         }
+    };
+    BaseController.prototype.isInvokeMethod = function (methodName) {
+        return methodName.charAt(0) === '$';
     };
     BaseController.prototype.isAsyncMethod = function (methodName) {
         return methodName.charAt(0) === '_';
