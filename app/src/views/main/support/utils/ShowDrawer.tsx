@@ -12,10 +12,15 @@ import ContentDetail from "@views/main/support/content/ContentDetail";
 import PreviewIcon from '@mui/icons-material/Preview';
 import SourceIcon from '@mui/icons-material/Source';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import Dialog from '@mui/material/Dialog';
-import {ContentDetailPanelConfigLayout} from "@views/main/Config";
+import {contentDetailPanel} from "@views/main/support/config/ConfigItems";
+import {BaseLayout, ContentDetailPanelConfigLayout} from "@views/main/Config";
+import Store from "electron-store";
+import InputSlider from "@views/components/fields/InputSlider";
 
+const store = new Store();
 export interface ListenerAlert {
     open ?: boolean
     width ?: number
@@ -61,14 +66,23 @@ function DrawerConfigDialog(props:DrawerConfigDialogProps){
     )
 }
 function ListenerDrawer(){
-    
+    const width:any = store.get('content.panel_width');
+    const panelWidth = () => {
+        const width:any = store.get('content.panel_width');
+        return `${width+30}vh`;
+    }
     const [state , setState] = React.useReducer(reducer,{
         open : false,
-        width : 500,
+        width : panelWidth(),
         view : "player",
+        element : <></>,
         metadata : {},
     });
+    console.log("=>(ShowDrawer.tsx:79) renderer",state.width);
 
+    if(state.width !== panelWidth()){
+        setState({width : panelWidth()});
+    }
 
 
 
@@ -122,7 +136,7 @@ function ListenerDrawer(){
                         <Typography
                             component="p" variant="h6"
                         >
-                         
+
                         </Typography>
                     </Stack>
                 <Stack
@@ -137,7 +151,7 @@ function ListenerDrawer(){
                                 setState({view : "player"});
                             }}
                         >
-                            <PreviewIcon 
+                            <PreviewIcon
                                 color={(state.view == 'player') ? 'primary' : "inherit"}
                             />
                         </IconButton>
@@ -148,7 +162,7 @@ function ListenerDrawer(){
                                 setState({view : "metadata"});
                             }}
                         >
-                            <SourceIcon 
+                            <SourceIcon
                                 color={(state.view == 'metadata') ? 'primary' : "inherit"}
                             />
                         </IconButton>
@@ -159,19 +173,52 @@ function ListenerDrawer(){
                                 setState({view : "media_list"});
                             }}
                         >
-                            <PermMediaIcon 
+                            <PermMediaIcon
                                 color={(state.view == 'media_list') ? 'primary' : "inherit"}
                             />
                         </IconButton>
                     </LightTooltip>
-                    <DrawerConfigDialog />
+                    <LightTooltip title={"상세보기 설정"} placement={"top-end"}>
+                        <IconButton
+                            onClick={(event:React.MouseEvent)=>{
+                                contentDetailPanel.map((item :any) => {
+                                    if(item.key == "panel_width"){
+                                        item.element = <InputSlider
+                                            title={"패널 넓이 조절"}
+                                            value={()=>{
+                                                return store.get("content.panel_width");
+                                            }}
+                                            onChange={(number:number)=>{
+
+                                                store.set("content.panel_width",number)
+                                                setState({width : panelWidth()});
+                                            }}
+                                        />
+                                    }
+
+                                })
+                                setState({
+                                    view : "config",
+                                    element : (<BaseLayout
+                                        items={contentDetailPanel}
+                                    />)
+                                });
+                            }}
+                        >
+                            <SettingsIcon
+                                color={(state.view == 'config') ? 'primary' : "inherit"}
+                            />
+                        </IconButton>
+                    </LightTooltip>
+                    {/*<DrawerConfigDialog />*/}
                 </Stack>
                 </>
             </Toolbar>
             <Divider />
-                    <ContentDetail 
+                    <ContentDetail
                         view={state.view}
                         metadata={state.metadata}
+                        element={state.element}
                     />
         </Box>
       );

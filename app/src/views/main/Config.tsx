@@ -1,37 +1,56 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import {Typography} from '@mui/material';
-import {defaultValues} from "@views/main/support/config/ConfigItems";
+import {SxProps, Typography} from '@mui/material';
+import {contentDetailPanel, defaultValues} from "@views/main/support/config/ConfigItems";
 import Store from "electron-store";
 import TabPanel from "@views/components/TabPanel";
+import {Theme} from "@mui/material/styles";
 
 const store = new Store();
 
+interface BaseItemLayoutPropsInterface {
+	spacing ?: number
+	leftBoxSx ?:  SxProps<Theme>
 
-const BaseItem = (item:{title:string, sub_title : string , element : any}) => {
+	rightBoxSx ?: SxProps<Theme>
+}
+const BaseItem = (item:{title:string, sub_title : string , element : JSX.Element, layoutProps ?:BaseItemLayoutPropsInterface }) => {
+
+	const layoutProps : BaseItemLayoutPropsInterface = item.layoutProps || {};
+	let spacing = layoutProps.spacing || 12;
+	let leftBoxSx = layoutProps.leftBoxSx || {width : '70%'};
+	let rightBoxSx = layoutProps.rightBoxSx || {width : '30%'};
+
+
+	const RightBox = () => {
+		return (
+			<Box sx={rightBoxSx}>
+				{item.element}
+			</Box>
+		)
+	}
+
 	return (
 		<Stack
 			direction="row"
 			justifyContent="space-around"
 			alignItems="center"
-			spacing={12}
+			spacing={spacing}
 			>
-				<Box sx={{ width :'70%'}}>
+				<Box sx={leftBoxSx}>
 					<Stack
 						spacing={0}
 					>
-					<Typography variant="inherit">
-					{item.title}
-					</Typography>
-					<Typography variant="subtitle2">
-					{item.sub_title}
-					</Typography >
+						<Typography variant="inherit">
+							{item.title}
+						</Typography>
+						<Typography variant="subtitle2">
+							{item.sub_title}
+						</Typography>
 					</Stack>
 				</Box>
-				<Box sx={{ width :'30%'}}>
-					{item.element}
-				</Box>
+			{<RightBox />}
 		</Stack>
 	)
 }      
@@ -44,7 +63,7 @@ const TitleItem = (item : {title : string}) => {
 	)
 }
 const settingItem = (item:{type : string} | any) => {
-	let element = <></>;
+	let element: (() => JSX.Element) | JSX.Element = <></>;
 	switch(item.type){
 		case 'title' :
 			element = TitleItem(item);
@@ -55,12 +74,15 @@ const settingItem = (item:{type : string} | any) => {
 	}
 	return element;
 }
-const BaseLayout = (props:any) => {
+export const BaseLayout = (props:any) => {
 	return (
 	      <Box sx={{ width: '100%' }}>
 		<Stack spacing={4}>
 			{props.items.map((item:any) => {
-				console.log('baseLayout',store.get('default_values.tag'));
+				// if(props.render){
+				// 	const custom:JSX.Element = props.render(item,props.type);
+				// 	return (settingItem(custom));
+				// }
 				return (settingItem(item))
 			})}
 		</Stack>
@@ -68,11 +90,13 @@ const BaseLayout = (props:any) => {
 	)
 
 }
-
+export interface ContentDetailListenerInterface {
+	onChange ?: () => void
+}
 export function ContentDetailPanelConfigLayout(){
 	return (
 		<BaseLayout
-			items={defaultValues}
+			items={contentDetailPanel}
 		/>
 
 
@@ -93,6 +117,11 @@ export default function Config() {
 				"label" : "기본값 변경",
 				"children" : (	<BaseLayout
 					items={defaultValues}
+				/>)
+			},{
+				"label" : "콘텐츠 상세",
+				"children" : 	(<BaseLayout
+					items={contentDetailPanel}
 				/>)
 			}
 			// ,{

@@ -9,9 +9,30 @@ import InputSlider from "@views/components/fields/InputSlider";
 
 const store = new Store();
 export const contentDetailPanel = [{
+	"type" : "title",
+	"title" : "콘텐츠 상세보기 설정"
+},{
 	"type" : "base",
-	"title" : "패널 넓이 조절",
-	element : <InputSlider />
+	key : "panel_width",
+	// "title" : "패널 넓이 조절",
+	layoutProps :{
+		spacing : 0,
+		leftBoxSx : {
+			width : "1%"
+		},
+		rightBoxSx : {
+			width : "99%"
+		}
+	},
+	element : <InputSlider
+		title={"패널 넓이 조절"}
+		value={()=>{
+			return store.get("content.panel_width");
+		}}
+		onChange={(number:number)=>{
+			store.set("content.panel_width",number)
+		}}
+	/>
 }];
 export const defaultValues = [{
 	"type" : "title",

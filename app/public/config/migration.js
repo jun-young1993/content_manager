@@ -430,5 +430,11 @@ module.exports = {
             "key" : "ingest_workflow_music",
             "value" : "user_out_ingest_music"
         }]
+    },{
+        "type" : "content",
+        "items" : [{
+            "key" : "panel_width",
+            "value" : 80
+        }]
     }]
 };

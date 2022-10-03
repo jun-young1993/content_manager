@@ -2,9 +2,20 @@ import * as React from 'react';
 import VideoViewer from "@views/main/support/content/viewer/Video";
 import ContentMetadata from "@views/main/support/ingest/ContentMetadata";
 import MediaInfo from "@views/main/support/ingest/MediaInfo";
-import Button from "@mui/material/Button";
 import CardMedia from '@mui/material/CardMedia';
-export default function ContentDetail(props:{view : string, metadata : any}){
+import MusicPlayer from "@views/main/support/content/viewer/MusicPlayer";
+import Container from "@mui/material/Container";
+import {ContentDetailListenerInterface} from "@views/main/Config";
+
+type views = "player" | "metadata" | "media_list" | "config" ;
+
+interface ContentDetailInterface {
+	view : views
+	metadata : any
+	element : JSX.Element
+	listener ?:ContentDetailListenerInterface
+}
+export default function ContentDetail(props:ContentDetailInterface){
 	const contentId = props.metadata._id;
 
 	console.log('detail props ',props);
@@ -36,6 +47,17 @@ export default function ContentDetail(props:{view : string, metadata : any}){
 			    />
 			    
 			}
+			if(props.metadata.content_type == 'music'){
+				// "http://localhost:11101/play/original/XFAuz7G07wHjDfof"
+				return (
+					<Container sx={{height : "auto"}}>
+					<MusicPlayer
+						url={`http://localhost:11101/play/original/${contentId}`}
+					/>
+					</Container>
+				);
+
+			}
 			return (				
 				<VideoViewer 
 					content_id={contentId}
@@ -52,6 +74,12 @@ export default function ContentDetail(props:{view : string, metadata : any}){
 			return (
 				<MediaInfo metadata={props.metadata}></MediaInfo>
 			)
+		}
+
+		if(props.view == "config"){
+			return props.element;
+			// return (<ContentDetailPanelConfigLayout
+			// />)
 		}
 
 		return (<></>);

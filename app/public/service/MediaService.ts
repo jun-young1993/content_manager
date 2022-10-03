@@ -2,7 +2,8 @@
 const {BaseService} = require('../service/BaseService');
 import MediaInterface from "../interfaces/MediaInterface";
 import {isEmpty} from "lodash";
-import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
+import {apiReject, apiResolve} from "../lib/helper/ApiHelper";
+
 export class MediaService extends BaseService{
 	constructor(){
 		super({

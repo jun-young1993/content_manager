@@ -1,13 +1,22 @@
 import * as React from "react";
 import {
-    Image, SmartDisplay, Sell, Circle, Help, QuestionMarkRounded
-    ,QuestionMarkTwoTone, PlaylistAdd, DoNotDisturb
+    Circle,
+    DoNotDisturb,
+    Help,
+    Image,
+    MusicNote,
+    PlaylistAdd,
+    QuestionMarkRounded,
+    QuestionMarkTwoTone,
+    Sell,
+    SmartDisplay
 } from '@mui/icons-material';
 import {isEmpty} from "lodash";
 
 const IconMap:{[key : string] : any} = {
     "video" : <SmartDisplay />,
     "image" : <Image />,
+    "music" : <MusicNote /> ,
     "tag" : <Sell />,
     "circle" : <Circle />,
     "help" : <Help />,
