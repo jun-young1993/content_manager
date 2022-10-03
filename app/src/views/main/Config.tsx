@@ -119,7 +119,7 @@ export default function Config() {
 					items={defaultValues}
 				/>)
 			},{
-				"label" : "콘텐츠 상세",
+				"label" : "콘텐츠 상세보기",
 				"children" : 	(<BaseLayout
 					items={contentDetailPanel}
 				/>)
