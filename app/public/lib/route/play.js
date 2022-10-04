@@ -68,9 +68,13 @@ router.get('/original/:contentId', function (req, res) {
                         'Content-Range': "bytes 0-".concat(fileSize - 1, "/").concat(fileSize)
                     });
                     read.on('error', function (error) {
+                        log.channel('play').error("[play][original]");
+                        log.channel('play').error(error);
                         console.log('read error', error);
                     });
                     res.on('error', function (error) {
+                        log.channel('play').error("[play][original]");
+                        log.channel('play').error(error);
                         console.log('res error', error);
                     });
                     read.pipe(res);

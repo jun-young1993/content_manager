@@ -10,11 +10,21 @@ const Input = styled(MuiInput)`
   width: 42px;
 `;
 interface inputSliderInterface {
-    value ?: number | any
+    value ?: number | {():number}
     title ?: string
     onChange ?: Function
+    hideSlider ?: boolean
 }
+const reducer = (prevState:any, newState:any) => ({
+    ...{},
+    ...prevState,
+    ...newState
+})
 export default function InputSlider(props:inputSliderInterface) {
+   
+    const [state , setState] = React.useReducer(reducer,{
+        hideSlider : props.hideSlider || false
+    })
     const [value, setValue] = React.useState<number | string | Array<number | string>>(
         props.value || 0
     );
@@ -53,13 +63,15 @@ export default function InputSlider(props:inputSliderInterface) {
                 {/*<Grid item>*/}
                 {/*    <VolumeUp />*/}
                 {/*</Grid>*/}
-                <Grid item xs>
+                {state.hideSlider 
+                    ? <></>
+                :<Grid item xs>    
                     <Slider
                         value={typeof value === 'number' ? value : 0}
                         onChange={handleSliderChange}
                         aria-labelledby="input-slider"
                     />
-                </Grid>
+                </Grid>}
                 <Grid item>
                     <Input
                         value={value}

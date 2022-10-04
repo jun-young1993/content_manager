@@ -11,7 +11,10 @@ import FastForwardRounded from '@mui/icons-material/FastForwardRounded';
 import FastRewindRounded from '@mui/icons-material/FastRewindRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
+import {sender} from "@views/helper/helper";
+import Store from "electron-store";
 
+const store = new Store();
 const WallPaper = styled('div')({
     position: 'absolute',
     width: '100%',
@@ -80,7 +83,7 @@ const TinyText = styled(Typography)({
 const useAudio = (url:string) =>
 {
     const [audio] = React.useState(new Audio(url));
-    const [playing, setPlaying] = React.useState(false);
+    const [playing, setPlaying] = React.useState<boolean>(false);
 
     const toggle = () => setPlaying(!playing);
 
@@ -97,17 +100,55 @@ const useAudio = (url:string) =>
         };
     }, []);
 
-    return [playing, toggle];
+    return [playing, setPlaying];
 };
 interface MusicPlayerInterface {
     url : string
+    metadata : any
 }
 export default function MusicPlayer(props:MusicPlayerInterface) {
-    const [playing , playToggle] = useAudio(props.url)
+    // const [playing , playToggle] = useAudio(props.url)
+    
+    const [duration, setDuration] = React.useState(0);
+    const [format, setFormat] = React.useState({
+        duration : 0,
+        type : "audio/mp3"
+    });
     const theme = useTheme();
-    const duration = 200; // seconds
-    const [position, setPosition] = React.useState(32);
-    const [paused, setPaused] = React.useState<any>(playing);
+    // React.useEffect(() => {
+       
+    // },[]);
+    const [audio] = React.useState(new Audio(props.url));
+    
+
+    
+
+
+    React.useEffect(() => {
+        sender("@MediaInfo/_index",props.metadata._id)
+        .then((metadata:any) => {
+            console.log(metadata);
+            setDuration(metadata.data[0].format.duration);
+        })
+        audio.addEventListener('ended', () => setPlaying(false));
+        return () => {
+            audio.removeEventListener('ended', () => setPlaying(false));
+        };
+    }, []);
+    // const duration = 200; // seconds
+    const [position, setPosition] = React.useState(0);
+    const [paused, setPaused] = React.useState<boolean>(true);
+    const [playing, setPlaying] = React.useState<boolean>(paused);
+    const toggle = () => setPlaying(!playing);
+    React.useEffect(() => {
+        playing ?  audio.play() : audio.pause() ;
+    },
+    [playing]
+    );
+    React.useEffect(()=>{
+        // playToggle();
+        toggle();
+    },[paused])
     function formatDuration(value: number) {
         const minute = Math.floor(value / 60);
         const secondLeft = value - minute * 60;
@@ -122,19 +163,19 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <CoverImage>
                         <img
-                            alt="can't win - Chilling Sunday"
+                            alt="앨범 이미지가 없습니다."
                             src="/static/images/sliders/chilling-sunday.jpg"
                         />
                     </CoverImage>
                     <Box sx={{ ml: 1.5, minWidth: 0 }}>
                         <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                            Jun Pulse
+                            {props.metadata[String(store.get('content_detail_music.preview_caption'))] || "no data"}
                         </Typography>
                         <Typography noWrap>
-                            <b>คนเก่าเขาทำไว้ดี (Can&apos;t win)</b>
+                            <b>{props.metadata[String(store.get('content_detail_music.preview_caption'))]  || "no data"}</b>
                         </Typography>
                         <Typography noWrap letterSpacing={-0.25}>
-                            Chilling Sunday &mdash; คนเก่าเขาทำไว้ดี
+                            {props.metadata[String(store.get('content_detail_music.preview_caption'))]  || "no data"}
                         </Typography>
                     </Box>
                 </Box>
@@ -145,7 +186,10 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                     min={0}
                     step={1}
                     max={duration}
-                    onChange={(_, value) => setPosition(value as number)}
+                    onChange={(_, value) => {
+                        console.log("value",value);
+                        setPosition(value as number)
+                    }}
                     sx={{
                         color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
                         height: 4,

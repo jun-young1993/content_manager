@@ -80,9 +80,13 @@ router.get('/original/:contentId',(req:any, res:any) => {
 						'Content-Range' : `bytes 0-${fileSize-1}/${fileSize}`
 					});
 					read.on('error',(error) => {
+						log.channel('play').error(`[play][original]`);
+						log.channel('play').error(error);
 						console.log('read error',error)
 					})
 					res.on('error',(error:any) => {
+						log.channel('play').error(`[play][original]`);
+						log.channel('play').error(error);
 						console.log('res error',error)
 					})
 					read.pipe(res);

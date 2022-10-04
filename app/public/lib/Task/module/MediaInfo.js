@@ -61,6 +61,20 @@ var MediaInfo = /** @class */ (function (_super) {
             new TaskUpdater(taskId).complete();
         });
     };
+    MediaInfo.prototype.music = function () {
+        var source = this.getSourceFullPath();
+        var contentId = this.getContentId();
+        var taskId = this.getTaskId();
+        log.channel('ts').info('[MediaInfo][source path]', source);
+        ffmpeg.ffprobe(source, function (error, metadata) {
+            mediaInfoService.create(metadata, contentId);
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "success",
+                messages: "[MediaInfo][complete]"
+            });
+            new TaskUpdater(taskId).complete();
+        });
+    };
     return MediaInfo;
 }(Property));
 exports.MediaInfo = MediaInfo;

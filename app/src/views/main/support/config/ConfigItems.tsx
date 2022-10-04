@@ -26,8 +26,8 @@ export const contentDetailPanel = [{
 	},
 	element : <InputSlider
 		title={"패널 넓이 조절"}
-		value={()=>{
-			return store.get("content.panel_width");
+		value={():number=>{
+			return Number(store.get("content.panel_width"));
 		}}
 		onChange={(number:number)=>{
 			store.set("content.panel_width",number)

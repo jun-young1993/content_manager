@@ -19,6 +19,7 @@ import {contentDetailPanel} from "@views/main/support/config/ConfigItems";
 import {BaseLayout, ContentDetailPanelConfigLayout} from "@views/main/Config";
 import Store from "electron-store";
 import InputSlider from "@views/components/fields/InputSlider";
+import NumberField from "@views/components/fields/NumberField";
 
 const store = new Store();
 export interface ListenerAlert {
@@ -35,55 +36,35 @@ const reducer = (prevState:any, newState:any) => ({
 interface DrawerConfigDialogProps {
 
 }
-function DrawerConfigDialog(props:DrawerConfigDialogProps){
-    const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
-    const handleClose = (event:any,reason:any) => {
-        
-        setOpen(false);
 
-    };
-    return (
-        <>
-        {/*<LightTooltip title={"콘텐츠 상세보기 설정"} placement={"top-end"}>*/}
-        {/*        <IconButton*/}
-        {/*            onClick={handleClickOpen}*/}
-        {/*        >*/}
-        {/*            <SettingsIcon */}
-        {/*                color={(open) ? 'primary' : "inherit"}*/}
-        {/*            />*/}
-        {/*        </IconButton>*/}
-        {/*</LightTooltip>*/}
-        <Dialog
-              open={open}
-              onClose={handleClose}
-        >
-            <ContentDetailPanelConfigLayout />
-        </Dialog>
-        </>
-    )
-}
 function ListenerDrawer(){
     const width:any = store.get('content.panel_width');
-    const panelWidth = () => {
-        const width:any = store.get('content.panel_width');
+    const panelWidth = (width : number) => {
+        
         return `${width+30}vh`;
     }
     const [state , setState] = React.useReducer(reducer,{
         open : false,
-        width : panelWidth(),
+        width : store.get('content.panel_width'),
         view : "player",
         element : <></>,
         metadata : {},
     });
     console.log("=>(ShowDrawer.tsx:79) renderer",state.width);
+    // React.useEffect(()=>{
+    //     console.log('effect width',state.width);
+    //     store.set('content.panel_width',state.width);
+    // },[state.width])
+    // if(state.width !== panelWidth(Number(store.get('content.panel_width')))){
+    //     setState({width : panelWidth(Number(store.get('content.panel_width')))});
+    // }
 
-    if(state.width !== panelWidth()){
-        setState({width : panelWidth()});
-    }
-
+    React.useEffect(()=>{
+        console.log('effect',state.width,store.get('content.panel_width'));
+        // if(state.width !== panelWidth(Number(store.get('content.panel_width')))){
+        //     setState({width : panelWidth(Number(store.get('content.panel_width')))});
+        // }   
+    },[state])
 
 
     const toggleDrawer = (event : any) => {
@@ -99,9 +80,11 @@ function ListenerDrawer(){
         ipcRenderer.removeAllListeners("ShowDrawer/reply");
 
     })
+
+    
     const list = () => (
         <Box
-          sx={{width : state.width }}
+          sx={{width : panelWidth(state.width) }}
           role="presentation"
         >
             <Toolbar
@@ -178,25 +161,31 @@ function ListenerDrawer(){
                             />
                         </IconButton>
                     </LightTooltip>
-                    <LightTooltip title={"상세보기 설정"} placement={"top-end"}>
+                    {/* <LightTooltip title={"상세보기 설정"} placement={"top-end"}>
                         <IconButton
                             onClick={(event:React.MouseEvent)=>{
                                 contentDetailPanel.map((item :any) => {
                                     if(item.key == "panel_width"){
-                                        item.element = <InputSlider
-                                            title={"패널 넓이 조절"}
-                                            value={()=>{
-                                                return store.get("content.panel_width");
-                                            }}
-                                            onChange={(number:number)=>{
-
-                                                store.set("content.panel_width",number)
-                                                setState({width : panelWidth()});
-                                            }}
-                                        />
+                                        return item = null;
+                                        // return item= {
+                                        //     type : "base",
+                                        //     key : "panel_width",
+                                        //     title : "패널 넓이 조절",
+                                        //     element : <NumberField 
+                                        //         value={Number(store.get("content.panel_width"))}
+                                        //         onChange={(value : number)=>{
+                                                    
+                                        //             store.set("content.panel_width",value)
+                                        //             setState({width : panelWidth()});
+                                                    
+                                        //         }}
+                                        //     />
+                                        // }
+                                        
                                     }
 
                                 })
+                                console.log('contentDetailPanel',contentDetailPanel);
                                 setState({
                                     view : "config",
                                     element : (<BaseLayout
@@ -209,7 +198,7 @@ function ListenerDrawer(){
                                 color={(state.view == 'config') ? 'primary' : "inherit"}
                             />
                         </IconButton>
-                    </LightTooltip>
+                    </LightTooltip> */}
                     {/*<DrawerConfigDialog />*/}
                 </Stack>
                 </>

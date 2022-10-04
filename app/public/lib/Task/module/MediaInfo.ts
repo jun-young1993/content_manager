@@ -48,6 +48,21 @@ export class MediaInfo extends Property{
 		})
 	}
 
+	music(){
+		const source:string = this.getSourceFullPath();
+		const contentId:string = this.getContentId();
+		const taskId = this.getTaskId();
+		log.channel('ts').info('[MediaInfo][source path]',source);
+		ffmpeg.ffprobe(source,(error:any,metadata:any) => {
+			mediaInfoService.create(metadata,contentId);
+			sendIpc("#Utils/TaskSnackBar",{
+				variant : "success",
+				messages : `[MediaInfo][complete]`
+			});
+			new TaskUpdater(taskId).complete();
+		})
+	}
+
 
 
 

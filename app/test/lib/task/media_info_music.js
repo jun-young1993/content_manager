@@ -47,17 +47,28 @@ var ffprobePath = require('ffprobe-static-electron').path;
 // return;
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
-const {MediaInfo} = require("../../../public/lib/Task/module/MediaInfo");
+// const {MediaInfo} = require("../../../public/lib/Task/module/MediaInfo");
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath)
 
 
 const originalName = 'sample.pgn';
-const source = `/Users/junyoungkim/Downloads/sample file/${originalName}`;
-const target = `/Users/junyoungkim/Downloads/sample file/${originalName}.mp4`;
-const outStream = fs.createWriteStream(target)
+// const source = `/Users/junyoungkim/Downloads/sample file/${originalName}`;
+// const target = `/Users/junyoungkim/Downloads/sample file/${originalName}.mp4`;
+// const outStream = fs.createWriteStream(target)
 //       .pipe(outStream)
-new MediaInfo()
+const source = "C:\\Users\\jun\\Downloads\\storage\\online\\HoP7NnFY0bfWvz30.mp3";
+
+ffmpeg.ffprobe(source,(error,metadata) => {
+    console.log(metadata)
+    // mediaInfoService.create(metadata,contentId);
+    // sendIpc("#Utils/TaskSnackBar",{
+    //     variant : "success",
+    //     messages : `[MediaInfo][complete]`
+    // });
+    // new TaskUpdater(taskId).complete();
+})
+
 
 return;
 const test = new MediaInfo({

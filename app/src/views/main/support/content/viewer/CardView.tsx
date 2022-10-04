@@ -51,14 +51,17 @@ const contentTypeChip = (contentType?:string) => {
     let color: OverridableStringUnion<
         'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
         ChipPropsColorOverrides
-        > = "primary";
+        > = "warning";
     switch(label){
         case "video" :
             color="success";
-        break;
+            break;
         case "image" :
             color="info";
-        break;
+            break;
+        case "music" :
+            color="secondary";
+            break;
     }
     return (<Chip label={label} size="small" color={color} variant="outlined" />)
 }

@@ -436,5 +436,17 @@ module.exports = {
             "key" : "panel_width",
             "value" : 80
         }]
+    },{
+        "type" : "content_detail_music",
+        "items" : [{
+            "key" : "preview_caption",
+            "value" : "title"
+        },{
+            "key" : "preview_title",
+            "value" : "title"
+        },{
+            "key" : "preview_sub_title",
+            "value" : "title"
+        }]
     }]
 };

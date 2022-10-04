@@ -49,10 +49,14 @@ export default function ContentDetail(props:ContentDetailInterface){
 			}
 			if(props.metadata.content_type == 'music'){
 				// "http://localhost:11101/play/original/XFAuz7G07wHjDfof"
+				
+				
 				return (
 					<Container sx={{height : "auto"}}>
 					<MusicPlayer
 						url={`http://localhost:11101/play/original/${contentId}`}
+						// url={"C:\\Users\\jun\\Downloads\\storage\\online\\HoP7NnFY0bfWvz30.mp3"}
+						metadata={props.metadata}
 					/>
 					</Container>
 				);

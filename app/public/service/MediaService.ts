@@ -22,18 +22,23 @@ export class MediaService extends BaseService{
 
 			this.getModel('Media').findOne({content_id : contentId, type : type},(err:any,media:any)=>{
 				console.log('[find media by content id]',{content_id : contentId, type : type},media)
-				if(media){
-					resolve({
-						success : true,
-						data : media
-					})
-				}else{
-					reject({
-						success : false,
-						data : null,
-						err : err
-					})
+				try{
+					if(media){
+						resolve({
+							success : true,
+							data : media
+						})
+					}else{
+						reject({
+							success : false,
+							data : null,
+							err : err
+						})
+					}
+				}catch(e){
+					console.log('findTypeByContentId',e);
 				}
+			
 				
 			})
 		})
