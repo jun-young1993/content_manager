@@ -27,6 +27,20 @@ class Field {
             })
         })
     }
+    static $index(event, args=[{}]){
+        console.log('_index field',args);
+        return new Promise((resolve, reject) => {
+            db.db().find(Object.assign({is_use : true},args[0]),(err,data) => {
+                resolve({
+                    success : true,
+                    data : data
+                })
+            
+
+            })
+        })
+        
+    }
     static _index(event, args=[{}]){
         console.log('_index field',args);
         db.db().find(Object.assign({is_use : true},args[0]),(err,data) => {

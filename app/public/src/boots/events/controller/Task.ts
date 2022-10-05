@@ -56,6 +56,20 @@ class Task {
             })
 
     }
+    static $findOne(event,args){
+        return new Promise((resolve) => {
+            db.db().findOne({_id : args[0]},(error,result) => {
+                resolve({
+                    success : true,
+                    data : result
+                });
+            })
+            
+                
+            
+        })
+        
+    }
 
     static _getStatus(event, args){
         taskService.find(args[0])

@@ -5,6 +5,8 @@ import TaskCircularProgress from "@views/main/support/taskMonitor/TaskCircularPr
 import Store from "electron-store";
 import {TaskStatus} from "../../../public/interfaces/Types/TaskStatus"
 import dayjs from "dayjs";
+import { ipcRenderer,IpcRendererEvent } from "electron";
+
 
 const store = new Store();
 const reducer = (prevState:any, newState:any) => ({
@@ -28,7 +30,7 @@ export interface valuesInterface {
 	status : TaskStatus[]
 }
 export default function TaskMonitor(){
-	
+	console.log('first renderer');
 	const [values, setValues] = React.useReducer(reducer,{
 		createdAt : {$gte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
 			 $lte : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(),23,59,59)},
@@ -63,14 +65,43 @@ export default function TaskMonitor(){
 		sender("@Task/_index",values,pagenation)
 		    .then((result:any) => {
 			console.log("@Task/_index",result.data);
-			setTasks({rows : result.data, count : result.count});
+		
+			setTasks({rows : result.data, count : result.count});	
+			
+			
 		    })
     
 	}
-    
+	const delayLoad = (ms:number = 0) => {
+		return new Promise((resolve) => {
+			setTimeout(()=>{
+				sender("@Task/_index",values,pagenation)
+				.then((result:any) => {
+				    console.log("@Task/_index recurive",result.data);
+			    
+				    setTasks({rows : result.data, count : result.count});	
+				    resolve(result);    
+				    
+				})
+				
+			},ms);
+		})
+	};
+	// ipcRenderer.on("#TaskMonitor/create",(event:IpcRendererEvent, options:any) => {
+	// 	load();
+	// 	console.log(options);
+	// })
+	const recurciveLoad = (ms:number = 0) => {
+		delayLoad(ms).then((result) => {
+			console.log()
+			recurciveLoad(ms);
+		})
+	}
 	React.useEffect(() => {
 	    console.log('one render');
-	    load();
+	//     recurciveLoad(1000);
+		load();
+		
 	},[])
 
 	React.useEffect(() => {
@@ -99,7 +130,11 @@ export default function TaskMonitor(){
 				columns:[
 					{ field: 'progress', headerName: '진행률', width: 100, renderCell : (row:{id : string, row : {status : string, progress ?: number}}) => {
 						// console.log('render cell',row);
-						return (<TaskCircularProgress taskId={row.id} status={row.row.status} progress={row.row.progress}/>);
+						return (<TaskCircularProgress 
+							taskId={row.id} 
+							status={row.row.status} 
+							progress={row.row.progress}
+						/>);
 					} },
 					{ field: 'status', headerName: '상태', width: 150 },
 					{ field: 'workflow_nm', headerName: '워크플로우명', width: 250 },

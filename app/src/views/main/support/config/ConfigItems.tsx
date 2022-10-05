@@ -33,6 +33,48 @@ export const contentDetailPanel = [{
 			store.set("content.panel_width",number)
 		}}
 	/>
+},{
+	"type" : "title",
+	"title" : "음원 미리보기 설정"
+},{
+	'type' : "base",
+	"title" : "음원 소제목 필드 설정",
+	"element" : <SelectApi
+		valueField={"code"}
+		sender={invoker("@Field/$index",{content_type : "music"})}
+		value={()=>{
+			return store.get('content_detail_music.preview_caption');
+		}}
+		onChange={(value:string)=>{
+			store.set('content_detail_music.preview_caption',value);
+		}}
+	/>	
+},{
+	'type' : "base",
+	"title" : "음원 제목 필드 설정",
+	"element" : <SelectApi
+		valueField={"code"}
+		sender={invoker("@Field/$index",{content_type : "music"})}
+		value={()=>{
+			return store.get('content_detail_music.preview_title');
+		}}
+		onChange={(value:string)=>{
+			store.set('content_detail_music.preview_title',value);
+		}}
+	/>	
+},{
+	'type' : "base",
+	"title" : "음원 부제목 필드 설정",
+	"element" : <SelectApi
+		valueField={"code"}
+		sender={invoker("@Field/$index",{content_type : "music"})}
+		value={()=>{
+			return store.get('content_detail_music.preview_sub_title');
+		}}
+		onChange={(value:string)=>{
+			store.set('content_detail_music.preview_sub_title',value);
+		}}
+	/>	
 }];
 export const defaultValues = [{
 	"type" : "title",

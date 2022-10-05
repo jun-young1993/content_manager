@@ -44,6 +44,7 @@ var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
 var Transcoder = require("./module/Transcoder").Transcoder;
 var MediaInfo = require("./module/MediaInfo").MediaInfo;
+var ElectronHelper_1 = require("../helper/ElectronHelper");
 var log = require('../Logger');
 var lodash_1 = require("lodash");
 // const {isEmpty} = require('lodash');
@@ -457,6 +458,7 @@ var TaskParse = /** @class */ (function () {
                         }
                         taskSetting
                             .then(function (complete) {
+                            (0, ElectronHelper_1.sendIpc)("#TaskMonitor/create", complete);
                             resolve(complete);
                         })["catch"](function (error) {
                             log.channel('task_parse').error(error);

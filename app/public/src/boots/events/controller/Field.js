@@ -38,6 +38,18 @@ var Field = /** @class */ (function () {
             });
         });
     };
+    Field.$index = function (event, args) {
+        if (args === void 0) { args = [{}]; }
+        console.log('_index field', args);
+        return new Promise(function (resolve, reject) {
+            db.db().find(Object.assign({ is_use: true }, args[0]), function (err, data) {
+                resolve({
+                    success: true,
+                    data: data
+                });
+            });
+        });
+    };
     Field._index = function (event, args) {
         if (args === void 0) { args = [{}]; }
         console.log('_index field', args);

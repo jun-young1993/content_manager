@@ -40,6 +40,20 @@ module.exports = {
             "name":"음원 명",
             "_id" : "field_music_title",
             "order" : 1
+        },{
+            "content_type" : "music",
+            "type":"text",
+            "code":"singer",
+            "name":"가수명",
+            "_id" : "field_music_singer",
+            "order" : 2
+        },{
+            "content_type" : "music",
+            "type":"text",
+            "code":"album",
+            "name":"앨범명",
+            "_id" : "field_music_album",
+            "order" : 3
         }]
     },{
         model : 'Storage',
@@ -360,6 +374,12 @@ module.exports = {
             parent_id : "user_out_ingest_start_workflow_music",
             _id : "user_out_ingest_fs_copy_local_to_online_music",
         },{
+            workflow_id : "user_out_ingest_music",
+            module_id : "mediainfo_video_online",
+            module_name : "미디어정보추출(원본)",
+            parent_id : "user_out_ingest_fs_copy_local_to_online_music",
+            _id : "user_out_ingest_mediainfo_music_online",
+        },{
             workflow_id : "user_out_ingest",
             module_id : null,
             module_name : "start workflow",
@@ -440,13 +460,13 @@ module.exports = {
         "type" : "content_detail_music",
         "items" : [{
             "key" : "preview_caption",
-            "value" : "title"
+            "value" : "singer"
         },{
             "key" : "preview_title",
             "value" : "title"
         },{
             "key" : "preview_sub_title",
-            "value" : "title"
+            "value" : "album"
         }]
     }]
 };

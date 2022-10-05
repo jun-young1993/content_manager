@@ -53,6 +53,16 @@ var Task = /** @class */ (function () {
             });
         });
     };
+    Task.$findOne = function (event, args) {
+        return new Promise(function (resolve) {
+            db.db().findOne({ _id: args[0] }, function (error, result) {
+                resolve({
+                    success: true,
+                    data: result
+                });
+            });
+        });
+    };
     Task._getStatus = function (event, args) {
         taskService.find(args[0])
             .then(function (task) {

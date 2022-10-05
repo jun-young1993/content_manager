@@ -90,13 +90,13 @@ const extentionValid = (files:string[], ingestType : string) => {
 		.then((codes:any) => {
 			let extentions:string[] = [];
 			codes.data.map((code : {code : string}) => {
-				extentions.push(code.code);
+				extentions.push(code.code.toLowerCase());
 			})
 			
 			
 			return files.map((file:string,index:number) => {
 				const ext:string = path.extname(file).slice(1);
-				if(extentions.indexOf(ext) === -1){
+				if(extentions.indexOf(ext.toLowerCase()) === -1){
 					return	reject(`허용가능한 확장자(${extentions.join()})만 선택해 다시요청해주세요.`);
 				}
 				if((files.length -1) === index){

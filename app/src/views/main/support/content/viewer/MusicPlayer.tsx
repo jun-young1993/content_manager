@@ -12,6 +12,7 @@ import FastRewindRounded from '@mui/icons-material/FastRewindRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
 import {sender} from "@views/helper/helper";
+import { isEmpty } from 'lodash';
 import Store from "electron-store";
 
 const store = new Store();
@@ -121,22 +122,26 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     const [audio] = React.useState(new Audio(props.url));
     
 
-    
+    const [position, setPosition] = React.useState(0);
 
 
     React.useEffect(() => {
         sender("@MediaInfo/_index",props.metadata._id)
         .then((metadata:any) => {
             console.log(metadata);
-            setDuration(metadata.data[0].format.duration);
+            if(!isEmpty(metadata.data)){
+                setDuration(metadata.data[0].format.duration);
+            }
+            
         })
         audio.addEventListener('ended', () => setPlaying(false));
+       
         return () => {
             audio.removeEventListener('ended', () => setPlaying(false));
         };
     }, []);
     // const duration = 200; // seconds
-    const [position, setPosition] = React.useState(0);
+    
     const [paused, setPaused] = React.useState<boolean>(true);
     const [playing, setPlaying] = React.useState<boolean>(paused);
     const toggle = () => setPlaying(!playing);
@@ -172,10 +177,10 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                             {props.metadata[String(store.get('content_detail_music.preview_caption'))] || "no data"}
                         </Typography>
                         <Typography noWrap>
-                            <b>{props.metadata[String(store.get('content_detail_music.preview_caption'))]  || "no data"}</b>
+                            <b>{props.metadata[String(store.get('content_detail_music.preview_title'))]  || "no data"}</b>
                         </Typography>
                         <Typography noWrap letterSpacing={-0.25}>
-                            {props.metadata[String(store.get('content_detail_music.preview_caption'))]  || "no data"}
+                            {props.metadata[String(store.get('content_detail_music.preview_sub_title'))]  || "no data"}
                         </Typography>
                     </Box>
                 </Box>

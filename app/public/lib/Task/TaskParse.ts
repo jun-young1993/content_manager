@@ -7,6 +7,7 @@ const {Module} = require("../../models/Module");
 const {FileManager} = require("./module/FileManager");
 const {Transcoder} = require("./module/Transcoder");
 const {MediaInfo} = require("./module/MediaInfo");
+import { sendIpc } from '../helper/ElectronHelper';
 const log = require('../Logger');
 import {isEmpty} from 'lodash';
 // const {isEmpty} = require('lodash');
@@ -447,7 +448,7 @@ export class TaskParse {
 			}
 			taskSetting
 				.then((complete:any) => {
-					
+					sendIpc("#TaskMonitor/create",complete);
 					resolve(complete);
 				})
 				.catch((error:string) => {

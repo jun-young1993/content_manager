@@ -59,12 +59,12 @@ function ListenerDrawer(){
     //     setState({width : panelWidth(Number(store.get('content.panel_width')))});
     // }
 
-    React.useEffect(()=>{
-        console.log('effect',state.width,store.get('content.panel_width'));
-        // if(state.width !== panelWidth(Number(store.get('content.panel_width')))){
-        //     setState({width : panelWidth(Number(store.get('content.panel_width')))});
-        // }   
-    },[state])
+    // React.useEffect(()=>{
+    //     console.log('effect',state.width,store.get('content.panel_width'));
+    //     // if(state.width !== panelWidth(Number(store.get('content.panel_width')))){
+    //     //     setState({width : panelWidth(Number(store.get('content.panel_width')))});
+    //     // }   
+    // },[state])
 
 
     const toggleDrawer = (event : any) => {
@@ -77,7 +77,7 @@ function ListenerDrawer(){
         console.log('showDrawer args',args);
 
         setState(args);
-        ipcRenderer.removeAllListeners("ShowDrawer/reply");
+        ipcRenderer.removeAllListeners("#ShowDrawer/reply");
 
     })
 
@@ -207,7 +207,6 @@ function ListenerDrawer(){
                     <ContentDetail
                         view={state.view}
                         metadata={state.metadata}
-                        element={state.element}
                     />
         </Box>
       );

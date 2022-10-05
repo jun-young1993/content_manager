@@ -12,7 +12,6 @@ type views = "player" | "metadata" | "media_list" | "config" ;
 interface ContentDetailInterface {
 	view : views
 	metadata : any
-	element : JSX.Element
 	listener ?:ContentDetailListenerInterface
 }
 export default function ContentDetail(props:ContentDetailInterface){
@@ -81,7 +80,7 @@ export default function ContentDetail(props:ContentDetailInterface){
 		}
 
 		if(props.view == "config"){
-			return props.element;
+			// return props.element;
 			// return (<ContentDetailPanelConfigLayout
 			// />)
 		}

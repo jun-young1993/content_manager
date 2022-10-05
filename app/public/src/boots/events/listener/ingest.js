@@ -81,11 +81,11 @@ var extentionValid = function (files, ingestType) {
             .then(function (codes) {
             var extentions = [];
             codes.data.map(function (code) {
-                extentions.push(code.code);
+                extentions.push(code.code.toLowerCase());
             });
             return files.map(function (file, index) {
                 var ext = path.extname(file).slice(1);
-                if (extentions.indexOf(ext) === -1) {
+                if (extentions.indexOf(ext.toLowerCase()) === -1) {
                     return reject("\uD5C8\uC6A9\uAC00\uB2A5\uD55C \uD655\uC7A5\uC790(".concat(extentions.join(), ")\uB9CC \uC120\uD0DD\uD574 \uB2E4\uC2DC\uC694\uCCAD\uD574\uC8FC\uC138\uC694."));
                 }
                 if ((files.length - 1) === index) {
