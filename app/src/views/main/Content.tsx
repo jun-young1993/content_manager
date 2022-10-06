@@ -120,7 +120,42 @@ function ContentList(contents:any, type:contentListType = "card"){
 
 
 }
-
+export function CategorySelectMenuItem(props:{
+    tags : [{name : string, _id : string, color ?: string}],
+    typographyProps ?: any,
+    icon ?: boolean,
+    none ?: boolean}):any  {
+    const items : any = [(props.none !== false)
+                                    ?<MenuItem value={""} key={""}>
+                                            <em>None</em>
+                                        </MenuItem>
+                                    : <></>].concat(props.tags.map((tag : {name : string, _id : string, color ?: string}) => {
+                                        console.log("tag._id",tag._id);
+                                        return (
+                                        <MenuItem value={tag._id} key={tag._id}>
+                                            <Typography
+                                                {...props.typographyProps || {}}
+                                            >
+                                                {(props.icon === false)
+                                                ? <></>
+                                                : <CircleIcon
+                                                    sx={{
+                                                        width:"20px",
+                                                        height:"20px",
+                                                        pr : 1,
+                                                        // marginTop:"8px",
+                                                        color:tag.color || "#000000"
+                                                    }}
+                                                />}
+                                                {tag.name}
+                                            </Typography>
+                                        </MenuItem>
+                                        )
+                                    }));
+    return items;
+    
+    
+}
 /**
  * 태그 셀렉터
  * @param props 
@@ -128,7 +163,8 @@ function ContentList(contents:any, type:contentListType = "card"){
  */
 export function CategorySelect(props:
     {
-        value ?: string, sx ?: any, tags : [{name : string, _id : string, color ?: string}], onChange?:(event : SelectChangeEvent, child: React.ReactNode) => void
+        value ?: string, sx ?: any, tags : [{name : string, _id : string, color ?: string}], 
+        onChange?:(event : SelectChangeEvent, child: React.ReactNode) => void
         typographyProps ?: any,
         selectProps ?: any
         autoChange ?: boolean
@@ -149,6 +185,7 @@ export function CategorySelect(props:
             ? props.onChange
             :props.autoChange
                 ? (event : SelectChangeEvent,child: React.ReactNode) => {
+                    console.log('change ',event);
                     setValue(event.target.value);
                 }
                 : null
@@ -160,7 +197,18 @@ export function CategorySelect(props:
             //     : null
         }
     >
-            {props.none !== false
+        {CategorySelectMenuItem({
+            none: props.none,
+            tags:props.tags,
+            typographyProps : props.typographyProps
+        }).map((item:any) => item)}
+        {/* {<CategorySelectMenuItem 
+            none={props.none}
+            tags={props.tags}
+            typographyProps={props.typographyProps}
+        />} */}
+        {/* <> */}
+            {/* {props.none !== false
             ?<MenuItem value={""}>
                     <em>None</em>
                 </MenuItem>
@@ -186,7 +234,8 @@ export function CategorySelect(props:
                 </Typography>
             </MenuItem>
             )
-        })}
+        })} */}
+        {/* </> */}
     </Select>
     )
 }

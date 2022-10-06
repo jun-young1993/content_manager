@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Stack from "@mui/material/Stack";
 import EditIcon from '@mui/icons-material/Edit';
 import {sender, showConfirm, showAlert} from "@views/helper/helper";
-
+import { CategorySelectMenuItem } from '@views/main/Content';;
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -40,9 +40,9 @@ const defaultField = () => {
         color:"secondary",
         focused : true,
         // defaultValue:workflowes.data[0]._id,
-        children : (categorys.data.map((code: any) => {
-            return (<MenuItem key={code._id} value={code._id}>{code.name}</MenuItem>)
-        }))
+        children : CategorySelectMenuItem({
+            tags : categorys.data
+        }).map((item: any) => item)
     }
 ];
 
