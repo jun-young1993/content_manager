@@ -416,11 +416,13 @@ module.exports = {
         items : [{
             name : "sample_1",
             parent_id : "folder",
+            color:"#ed0f0f",
             _id : "sample_1"
         },{
             name : "sample_2",
             parent_id : "folder",
-            _id : "sample_2"
+            color:"#f8e71c",
+            _id : "sample_2",
         }]
     }],
     "config" : [{
