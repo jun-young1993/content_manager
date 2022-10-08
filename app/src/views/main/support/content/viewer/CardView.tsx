@@ -23,7 +23,7 @@ import Chip from '@mui/material/Chip';
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
-import logo from "@views/images/logo.svg";
+import notFoundThumb from "@views/images/not_found_thumb.png";
 
 const Store = require("electron-store");
 const store = new Store();
@@ -139,7 +139,7 @@ export default function CardView(props:ViewerInterface) {
                                             // console.log(event);
                                             // event.target.onerror = null;
                                             // event.target.src = store.get('url.no_thumb');
-                                            event.target.src = logo;
+                                            event.target.src = notFoundThumb;
                                             // event.target.src = logo;
 
                                             // console.log(event);
