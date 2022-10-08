@@ -23,7 +23,8 @@ import {
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
-
+const Store = require("electron-store");
+const store = new Store();
 
 
 const theme = createTheme();
@@ -117,6 +118,12 @@ export default function CardView(props:ViewerInterface) {
                                     <CardMedia
                                         component="img"
                                         sx={{
+                                            '&:hover' :{
+                                                cursor: "pointer",
+                                                 transform: "scale(1.4)",
+                                                 transition: "all 0.2s linear",
+                                                 overflow: "hidden"
+                                            }
                                             // 16:9
                                             // pt: '1%',
                                         }}
@@ -126,13 +133,24 @@ export default function CardView(props:ViewerInterface) {
                                             // event.target.style['display'] = 'none';
                                             // event.target.style['background-image'] = 'red';
                                             // console.log(event);
-                                            event.target.src = "https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png?w=248&fit=crop&auto=format";
+                                            event.target.src = store.get('url.no_thumb');
                                             // console.log(event);
                                             // // event.stopPropagation();
                                             // event.target.onError = () => {
                                             //     console.log('target on error');
                                             // }
                                             // return false;
+                                        }}
+                                        onClick={(event:any)=>{
+                                            showDrawer({
+                                                open : true,
+                                                metadata : content
+                                            },(checked:boolean)=>{
+
+                                                    console.log('수정완료 close event',content._id);
+
+                                            });
+                                            console.log('content click');
                                         }}
                                     >
                                     </CardMedia>

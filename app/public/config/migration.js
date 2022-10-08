@@ -426,6 +426,12 @@ module.exports = {
         }]
     }],
     "config" : [{
+        "type" : "url",
+        "items" : [{
+            "key" : "no_thumb",
+            "value" : "https://user-images.githubusercontent.com/102360897/194304792-d41d2e46-2d96-4075-9eaf-15daa52b87af.png?w=248&fit=crop&auto=format"
+        }]
+    },{
         "type" : "default_values",
         "items" : [{
             "key" : "tag",
