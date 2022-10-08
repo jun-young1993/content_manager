@@ -195,7 +195,8 @@ export default function WorkflowList() {
 						buttonTitle="등록"
 						values={{
 							name : '',
-							description : ''
+							description : '',
+							content_type : "",
 						}}
 						variant="standard"
 						fields={[
@@ -203,6 +204,37 @@ export default function WorkflowList() {
 							name : "name",
 							label : "워크플로우 명",
 							variant:"standard"
+							},
+							{
+								fullWidth : true,
+								select : true,
+								name : "content_type",
+								label : "콘텐츠 타입",
+								variant: "standard",
+								children : (
+									[(<MenuItem
+											key={"all"} value={"all"}
+										>
+											전체
+										</MenuItem>),
+									(<MenuItem
+										key={"video"} value={"video"}
+									>
+										영상
+									</MenuItem>),
+									(<MenuItem
+										key={"image"} value={"image"}
+									>
+										이미지
+									</MenuItem>),
+									(<MenuItem
+										key={"music"} value={"music"}
+									>
+										음원
+									</MenuItem>)
+									]
+								)
+
 							},
 							{
 							name: "description",
@@ -223,6 +255,9 @@ export default function WorkflowList() {
 									}
 
 									// const insert = ipcRenderer.sendSync("@WorkFlow/insert",values);
+										if(values.content_type == "all"){
+											values.content_type = null;
+										}
 										ipcRenderer.send("@WorkFlow/_insert",values);
 										ipcRenderer.on("@WorkFlow/_insert/reply",(event, insert) => {
 											console.log('insert ager ',insert);

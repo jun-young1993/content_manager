@@ -1,14 +1,12 @@
-import {Box, Modal, Stack, Typography } from "@mui/material";
+import {Box, Modal, Stack} from "@mui/material";
 import React from "react";
-import BaseGrid from "@views/components/grid/BaseGrid";
-import Workflows from "@views/main/support/workflow/WorkflowRequestList";
 import WorkflowRequestList from "@views/main/support/workflow/WorkflowRequestList";
-import {GridRowParams, DataGridProps} from "@mui/x-data-grid";
-import IconButton from "@mui/material/IconButton";
+import {GridRowParams} from "@mui/x-data-grid";
 import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import Button from "@mui/material/Button";
 import {sender, showAlert, showConfirm} from "@views/helper/helper";
 import {isEmpty} from "lodash";
+
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -41,6 +39,7 @@ export default function WorkflowRequest(props:any) {
             <Box sx={style}>
 
                 <WorkflowRequestList
+                    params={{content_type : {$in : [props.contentType,null]}}}
                     onRowClick={(row:GridRowParams)=>{
                         setSelected(row.row);
                         console.log('click row',row);

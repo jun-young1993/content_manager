@@ -1,11 +1,11 @@
 // @ts-nocheck
 
 import {BaseController} from "./BaseController";
-const {TaskManager} = require("../../../../lib/Task/TaskManager");
 import {Workflow as Model} from "../../../../models/Workflow";
-const db = new Model();
-
 import {WorkflowService} from "../../../../service/WorkflowService";
+
+const {TaskManager} = require("../../../../lib/Task/TaskManager");
+const db = new Model();
 
 const workflowService = new WorkflowService();
 class WorkFlow{
@@ -44,9 +44,9 @@ class WorkFlow{
 		})
 	}
 
-	static _all(event){
+	static _all(event,args = {}){
 
-		db.db().find({},(err,data) => {
+		db.db().find(args[0],(err,data) => {
 			if(data){
 				return event.autoReplay({
 					success : true,

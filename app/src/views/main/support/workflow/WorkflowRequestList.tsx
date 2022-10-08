@@ -2,18 +2,11 @@ import * as React from "react";
 import BaseGrid from "@views/components/grid/BaseGrid";
 import {sender} from "@views/helper/helper";
 import {HtmlTooltip} from "@views/components/tooltip/Tooltip";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import AccountTreeIcon from "@mui/icons-material/AccountTree"
-import WorkflowDetail from "@views/main/support/workflow/WorkflowDetail";
-import Typography from "@mui/material/Typography";
-import {WorkflowRuleInterface} from "@/public/interfaces/WorkflowRuleInterface";
 import WorkflowDetail2 from "@views/main/support/workflow/WorkflowDetail2";
-import {
-    DataGridProps
-} from '@mui/x-data-grid';
-import {Box} from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
+import {DataGridProps} from '@mui/x-data-grid';
+
 interface WorkflowRequestListInterface extends DataGridProps{
 
 }
@@ -21,7 +14,7 @@ export default function WorkflowRequestList(props:any){
     const [rows , setRows] = React.useState([]);
 
     React.useEffect(()=> {
-        sender("@WorkFlow/_all")
+        sender("@WorkFlow/_all",props.params || {})
             .then((rows:any) => {
                 setRows(rows.data);
             })

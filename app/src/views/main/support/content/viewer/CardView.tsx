@@ -8,27 +8,29 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {ViewerInterface, contentsViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
-import {Circle as CircleIcon} from "@mui/icons-material";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {contentsViewerInterface, ViewerInterface} from "@views/main/support/content/viewer/ViewerInterface";
+import {
+    AccountTree as AccountTreeIcon,
+    Circle as CircleIcon,
+    PageviewOutlined as PageviewOutlinedIcon
+} from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import {showDrawer} from "@views/helper/helper";
 import Chip from '@mui/material/Chip';
-import {
-    PageviewOutlined as PageviewOutlinedIcon,
-    AccountTree as AccountTreeIcon
-} from '@mui/icons-material';
 
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
+import logo from "@views/images/logo.svg";
+
 const Store = require("electron-store");
 const store = new Store();
 
 
 const theme = createTheme();
-const WorkflowButton = (props : {contentId : string}) => {
+const WorkflowButton = (props : {contentId : string, contentType ?: string}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -41,6 +43,7 @@ const WorkflowButton = (props : {contentId : string}) => {
         </LightTooltip>
         <WorkflowRequest
             contentId={props.contentId}
+            contentType={props.contentType}
             open={open}
             onClose={handleClose}
         />
@@ -133,7 +136,12 @@ export default function CardView(props:ViewerInterface) {
                                             // event.target.style['display'] = 'none';
                                             // event.target.style['background-image'] = 'red';
                                             // console.log(event);
-                                            event.target.src = store.get('url.no_thumb');
+                                            // console.log(event);
+                                            // event.target.onerror = null;
+                                            // event.target.src = store.get('url.no_thumb');
+                                            event.target.src = logo;
+                                            // event.target.src = logo;
+
                                             // console.log(event);
                                             // // event.stopPropagation();
                                             // event.target.onError = () => {
@@ -179,7 +187,10 @@ export default function CardView(props:ViewerInterface) {
                                                 <PageviewOutlinedIcon />
                                             </IconButton>
                                         </LightTooltip>
-                                        <WorkflowButton contentId={content._id}/>
+                                        <WorkflowButton
+                                            contentId={content._id}
+                                            contentType={content.content_type}
+                                        />
                                     </CardActions>
                                 </Card>
                             </Grid>

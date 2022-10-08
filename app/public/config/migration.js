@@ -321,15 +321,19 @@ module.exports = {
         },
         items : [{
             name : "인제스트-비디오(Sample)",
+            content_type:  "video",
             _id : "user_out_ingest"
         },{
             name : "인제스트-이미지(Sample)",
+            content_type:  "image",
             _id : "user_out_ingest_image"
         },{
             name : "인제스트-음원(Sample)",
+            content_type:  "music",
             _id : "user_out_ingest_music"
         },{
             name : "원본 다운로드(Sample)",
+            content_type:  null,
             _id : "original_download"
         }]
     },{

@@ -2,10 +2,10 @@
 // @ts-nocheck
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
-var TaskManager = require("../../../../lib/Task/TaskManager").TaskManager;
 var Workflow_1 = require("../../../../models/Workflow");
-var db = new Workflow_1.Workflow();
 var WorkflowService_1 = require("../../../../service/WorkflowService");
+var TaskManager = require("../../../../lib/Task/TaskManager").TaskManager;
+var db = new Workflow_1.Workflow();
 var workflowService = new WorkflowService_1.WorkflowService();
 var WorkFlow = /** @class */ (function () {
     function WorkFlow() {
@@ -40,8 +40,9 @@ var WorkFlow = /** @class */ (function () {
             }
         });
     };
-    WorkFlow._all = function (event) {
-        db.db().find({}, function (err, data) {
+    WorkFlow._all = function (event, args) {
+        if (args === void 0) { args = {}; }
+        db.db().find(args[0], function (err, data) {
             if (data) {
                 return event.autoReplay({
                     success: true,
