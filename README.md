@@ -6,20 +6,12 @@
 <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac »</strong></a>
 
 ## 스크린샷
-<table>
-  <tr>
-        <td> <p><img src="./app/test/readme_images/Config.png" width=80000px ></p></td>
-        <td><p><img src="./app/test/readme_images/Metadata.png" width=80000px></p></td>
-        <td><p><img src="./app/test/readme_images/Preview.png"  width=80000px></p></td>
-        <td><p><img src="./app/test/readme_images/TagAllChange.png" width=80000px></p> </td>
-   </tr> 
-   <tr>
-      <td> <p><img src="./app/test/readme_images/TagChange.png" width=8000px></p></td>
-        <td><p><img src="./app/test/readme_images/TaskMonitoring.png" width=8000px></p></td>
-        <td><p><img src="./app/test/readme_images/Workflow.png"  width=8000px></p></td>
-        <td><p><img src="./app/test/readme_images/MetadataEdit.png" width=8000px></p> </td>
-  </tr>
-</table>
+|[]()|[]()|[]()|
+|---|---|---|
+| [![](./app/test/readme_images/Config.png)](./app/test/readme_images/Config.png) |[![](./app/test/readme_images/Metadata.png)](./app/test/readme_images/Metadata.png)|[![](./app/test/readme_images/Preview.png)](./app/test/readme_images/Preview.png)|
+| [![](./app/test/readme_images/TagAllChange.png)](./app/test/readme_images/TagAllChange.png) |[![](./app/test/readme_images/TagChange.png)](./app/test/readme_images/TagChange.png)|[![](./app/test/readme_images/TaskMonitoring.png)](./app/test/readme_images/TaskMonitoring.png)|
+| [![](./app/test/readme_images/Workflow.png)](./app/test/readme_images/Workflow.png) |[![](./app/test/readme_images/MetadataEdit.png)](./app/test/readme_images/MetadataEdit.png)|[![](./app/test/readme_images/ContentManagerThumbnail.png)](./app/test/readme_images/ContentManagerThumbnail.png)|
+
 
 ## 개발 환경
 - version
