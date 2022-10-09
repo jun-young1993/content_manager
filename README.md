@@ -1,9 +1,14 @@
 # Content Manager v1.1.9
 
-<br>
-<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-Setup-1.1.8-x64.exe"><strong>App Download for Windows x64 »</strong></a>
-<br>
-<a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac »</strong></a>
+## Content Manager 다운로드 링크
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-Setup-1.1.8-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac »</strong></a> 
+
+## 기능
+> 유형별 / 태그별 / 메타데이터별 콘텐츠 검색  
+> 영상 인제스트시 저해상도 / 썸네일 생성  
+> 미디어 다운로드  
+> 사용자 정의 워크플로우/메타데이터 변경
 
 ## 스크린샷
 |[]()|[]()|[]()|
