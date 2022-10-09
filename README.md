@@ -1,4 +1,4 @@
-# Content Manager
+# Content Manager v1.1.9
 
 <br>
 <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-Setup-1.1.8-x64.exe"><strong>App Download for Windows x64 »</strong></a>
@@ -6,19 +6,20 @@
 <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.8/ContentManager-1.1.8-arm64.dmg"><strong>App Download for mac »</strong></a>
 
 ## 스크린샷
-![main](https://user-images.githubusercontent.com/102360897/184477107-6769a937-5cdb-4906-8aa2-ef29e6a4c4c9.png)
-
-![](https://user-images.githubusercontent.com/102360897/184477100-0a7908d6-6f51-4127-b6f1-9b28e3f08c40.png)
-![](https://user-images.githubusercontent.com/102360897/184477083-6c02d27d-aac4-4ea1-9009-450d67894a8c.png)
-![](https://user-images.githubusercontent.com/102360897/184477103-9c7e3d8a-5a1c-4b74-8578-723f78b9649a.png)
-
-
-![](https://user-images.githubusercontent.com/102360897/184477098-55b66e2a-119f-4c95-b5ef-ec25c0e709a7.png)
-
-![](https://user-images.githubusercontent.com/102360897/184477091-162cda17-07f2-48c4-bc56-d9e690647fb0.png)
-![](https://user-images.githubusercontent.com/102360897/184477108-fb649eb3-5d70-4ecb-b2a7-49843dce1bb8.png)
-![](https://user-images.githubusercontent.com/102360897/184477110-daebdcf1-b7d7-46a0-b0f9-c97e60e56804.png)
-![](https://user-images.githubusercontent.com/102360897/184477111-add5ebee-3edc-4011-a97d-d9121d94765f.png)
+<table>
+  <tr>
+        <td> <p><img src="./app/test/readme_images/Config.png" width=80000px ></p></td>
+        <td><p><img src="./app/test/readme_images/Metadata.png" width=80000px></p></td>
+        <td><p><img src="./app/test/readme_images/Preview.png"  width=80000px></p></td>
+        <td><p><img src="./app/test/readme_images/TagAllChange.png" width=80000px></p> </td>
+   </tr> 
+   <tr>
+      <td> <p><img src="./app/test/readme_images/TagChange.png" width=8000px></p></td>
+        <td><p><img src="./app/test/readme_images/TaskMonitoring.png" width=8000px></p></td>
+        <td><p><img src="./app/test/readme_images/Workflow.png"  width=8000px></p></td>
+        <td><p><img src="./app/test/readme_images/MetadataEdit.png" width=8000px></p> </td>
+  </tr>
+</table>
 
 ## 개발 환경
 - version
