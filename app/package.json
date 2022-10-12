@@ -1,6 +1,6 @@
 {
-  "name": "ContentManager",
-  "version": "1.1.8",
+  "name": "content_manager",
+  "version": "1.1.9",
   "main": "public/main.js",
   "homepage": "./",
   "publish": {
@@ -153,7 +153,7 @@
       "target": [
         "default"
       ],
-      "icon": "./electron-root/favicon.ico",
+      "icon": "./src/views/images/cm.ico",
       "files": [
         "!node_modules/ffmpeg-static-electron/bin/win/${arch}/ffmpeg",
         "!node_modules/ffmpeg-static-electron/bin/win/ia32${/*}",
@@ -166,11 +166,12 @@
       ]
     },
     "dmg": {
-      "title": "${productName}-Setup-${version}-${arch}"
+      "title": "${productName}-Setup-${version}-${arch}",
+      "icon": "./src/views/images/cm.ico"
     },
     "win": {
       "target": "nsis",
-      "icon": "./electron-root/favicon.ico",
+      "icon": "./src/views/images/cm.ico",
       "files": [
         "node_modules/ffmpeg-static-electron/bin/win/${arch}/ffmpeg",
         "!node_modules/ffmpeg-static-electron/bin/win/ia32${/*}",

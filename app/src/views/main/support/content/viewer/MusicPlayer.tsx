@@ -81,28 +81,7 @@ const TinyText = styled(Typography)({
     letterSpacing: 0.2,
 });
 
-const useAudio = (url:string) =>
-{
-    const [audio] = React.useState(new Audio(url));
-    const [playing, setPlaying] = React.useState<boolean>(false);
 
-    const toggle = () => setPlaying(!playing);
-
-    React.useEffect(() => {
-            playing ? audio.play() : audio.pause();
-        },
-        [playing]
-    );
-
-    React.useEffect(() => {
-        audio.addEventListener('ended', () => setPlaying(false));
-        return () => {
-            audio.removeEventListener('ended', () => setPlaying(false));
-        };
-    }, []);
-
-    return [playing, setPlaying];
-};
 interface MusicPlayerInterface {
     url : string
     metadata : any
@@ -120,7 +99,6 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
        
     // },[]);
     const [audio] = React.useState(new Audio(props.url));
-    
 
     const [position, setPosition] = React.useState(0);
 
@@ -135,8 +113,9 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
             
         })
         audio.addEventListener('ended', () => setPlaying(false));
-       
+        
         return () => {
+            
             audio.removeEventListener('ended', () => setPlaying(false));
         };
     }, []);
