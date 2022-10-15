@@ -101,22 +101,42 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     const [audio] = React.useState(new Audio(props.url));
 
     const [position, setPosition] = React.useState(0);
+    let progressInterval : NodeJS.Timeout | null = null;
 
+    const stopProgressInterval = () => {
+        if(progressInterval !== null){
+            clearInterval(progressInterval);
+        }
+    }
+    const startProgressInterval = () => {
+        
+        progressInterval = setInterval(() => {
+            console.log('audio.currentTime',audio.currentTime,audio.duration);
+    
+            setPosition(Math.floor(audio.currentTime))
+          }, 1000);
+    }
+    
 
     React.useEffect(() => {
         sender("@MediaInfo/_index",props.metadata._id)
         .then((metadata:any) => {
             console.log(metadata);
             if(!isEmpty(metadata.data)){
-                setDuration(metadata.data[0].format.duration);
+                setDuration(Math.floor(metadata.data[0].format.duration));
             }
             
         })
         audio.addEventListener('ended', () => setPlaying(false));
-        
-        return () => {
+   
+        // audio.addEventListener('progress',function(event){
             
-            audio.removeEventListener('ended', () => setPlaying(false));
+        //     console.log('progress',audio.currentTime,event);
+        // })
+        return () => {
+            // audio.removeEventListener('playing',() => {console.log('remove playing')});
+            // audio.removeEventListener('progress',() => {console.log('remove progress')});
+            audio.removeEventListener('ended', () => {setPlaying(false)});
         };
     }, []);
     // const duration = 200; // seconds
@@ -125,7 +145,13 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     const [playing, setPlaying] = React.useState<boolean>(paused);
     const toggle = () => setPlaying(!playing);
     React.useEffect(() => {
-        playing ?  audio.play() : audio.pause() ;
+        if(playing){
+            startProgressInterval();
+            audio.play()
+        }else{
+            stopProgressInterval();
+            audio.pause()
+        }
     },
     [playing]
     );
