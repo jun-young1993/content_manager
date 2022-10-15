@@ -2,17 +2,8 @@ import * as React from 'react';
 import {styled, useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Slider from '@mui/material/Slider';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import PauseRounded from '@mui/icons-material/PauseRounded';
-import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
-import FastForwardRounded from '@mui/icons-material/FastForwardRounded';
-import FastRewindRounded from '@mui/icons-material/FastRewindRounded';
-import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
-import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
 import {sender} from "@views/helper/helper";
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 import Store from "electron-store";
 
 const store = new Store();
@@ -110,11 +101,12 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     }
     const startProgressInterval = () => {
         
-        progressInterval = setInterval(() => {
+        const progressInterval = setInterval(() => {
             console.log('audio.currentTime',audio.currentTime,audio.duration);
     
             setPosition(Math.floor(audio.currentTime))
           }, 1000);
+        return progressInterval;
     }
     
 
@@ -128,7 +120,15 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
             
         })
         audio.addEventListener('ended', () => setPlaying(false));
-   
+        function handleEvent(event:any) {
+            console.log("=>(MusicPlayer.tsx:104) event.type", event.type);
+
+
+        }
+        audio.addEventListener('loadstart', handleEvent);
+        audio.addEventListener('progress', handleEvent);
+        audio.addEventListener('canplay', handleEvent);
+        audio.addEventListener('canplaythrough', handleEvent);
         // audio.addEventListener('progress',function(event){
             
         //     console.log('progress',audio.currentTime,event);
@@ -146,10 +146,10 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     const toggle = () => setPlaying(!playing);
     React.useEffect(() => {
         if(playing){
-            startProgressInterval();
+            // startProgressInterval();
             audio.play()
         }else{
-            stopProgressInterval();
+            // stopProgressInterval();
             audio.pause()
         }
     },
@@ -189,108 +189,109 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                         </Typography>
                     </Box>
                 </Box>
-                <Slider
-                    aria-label="time-indicator"
-                    size="small"
-                    value={position}
-                    min={0}
-                    step={1}
-                    max={duration}
-                    onChange={(_, value) => {
-                        console.log("value",value);
-                        setPosition(value as number)
-                    }}
-                    sx={{
-                        color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
-                        height: 4,
-                        '& .MuiSlider-thumb': {
-                            width: 8,
-                            height: 8,
-                            transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
-                            '&:before': {
-                                boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
-                            },
-                            '&:hover, &.Mui-focusVisible': {
-                                boxShadow: `0px 0px 0px 8px ${
-                                    theme.palette.mode === 'dark'
-                                        ? 'rgb(255 255 255 / 16%)'
-                                        : 'rgb(0 0 0 / 16%)'
-                                }`,
-                            },
-                            '&.Mui-active': {
-                                width: 20,
-                                height: 20,
-                            },
-                        },
-                        '& .MuiSlider-rail': {
-                            opacity: 0.28,
-                        },
-                    }}
-                />
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mt: -2,
-                    }}
-                >
-                    <TinyText>{formatDuration(position)}</TinyText>
-                    <TinyText>-{formatDuration(duration - position)}</TinyText>
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mt: -1,
-                    }}
-                >
-                    <IconButton aria-label="previous song">
-                        <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />
-                    </IconButton>
-                    <IconButton
-                        aria-label={paused ? 'play' : 'pause'}
-                        onClick={() => setPaused(!paused)}
-                    >
-                        {paused ? (
-                            <PlayArrowRounded
-                                sx={{ fontSize: '3rem' }}
-                                htmlColor={mainIconColor}
-                            />
-                        ) : (
-                            <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />
-                        )}
-                    </IconButton>
-                    <IconButton aria-label="next song">
-                        <FastForwardRounded fontSize="large" htmlColor={mainIconColor} />
-                    </IconButton>
-                </Box>
-                <Stack spacing={2} direction="row" sx={{ mb: 1, px: 1 }} alignItems="center">
-                    <VolumeDownRounded htmlColor={lightIconColor} />
-                    <Slider
-                        aria-label="Volume"
-                        defaultValue={30}
-                        sx={{
-                            color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
-                            '& .MuiSlider-track': {
-                                border: 'none',
-                            },
-                            '& .MuiSlider-thumb': {
-                                width: 24,
-                                height: 24,
-                                backgroundColor: '#fff',
-                                '&:before': {
-                                    boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
-                                },
-                                '&:hover, &.Mui-focusVisible, &.Mui-active': {
-                                    boxShadow: 'none',
-                                },
-                            },
-                        }}
-                    />
-                    <VolumeUpRounded htmlColor={lightIconColor} />
-                </Stack>
+                <audio src={props.url} controls/>
+                {/*<Slider*/}
+                {/*    aria-label="time-indicator"*/}
+                {/*    size="small"*/}
+                {/*    value={position}*/}
+                {/*    min={0}*/}
+                {/*    step={1}*/}
+                {/*    max={duration}*/}
+                {/*    onChange={(_, value) => {*/}
+                {/*        console.log("value",value);*/}
+                {/*        setPosition(value as number)*/}
+                {/*    }}*/}
+                {/*    sx={{*/}
+                {/*        color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',*/}
+                {/*        height: 4,*/}
+                {/*        '& .MuiSlider-thumb': {*/}
+                {/*            width: 8,*/}
+                {/*            height: 8,*/}
+                {/*            transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',*/}
+                {/*            '&:before': {*/}
+                {/*                boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',*/}
+                {/*            },*/}
+                {/*            '&:hover, &.Mui-focusVisible': {*/}
+                {/*                boxShadow: `0px 0px 0px 8px ${*/}
+                {/*                    theme.palette.mode === 'dark'*/}
+                {/*                        ? 'rgb(255 255 255 / 16%)'*/}
+                {/*                        : 'rgb(0 0 0 / 16%)'*/}
+                {/*                }`,*/}
+                {/*            },*/}
+                {/*            '&.Mui-active': {*/}
+                {/*                width: 20,*/}
+                {/*                height: 20,*/}
+                {/*            },*/}
+                {/*        },*/}
+                {/*        '& .MuiSlider-rail': {*/}
+                {/*            opacity: 0.28,*/}
+                {/*        },*/}
+                {/*    }}*/}
+                {/*/>*/}
+                {/*<Box*/}
+                {/*    sx={{*/}
+                {/*        display: 'flex',*/}
+                {/*        alignItems: 'center',*/}
+                {/*        justifyContent: 'space-between',*/}
+                {/*        mt: -2,*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <TinyText>{formatDuration(position)}</TinyText>*/}
+                {/*    <TinyText>-{formatDuration(duration - position)}</TinyText>*/}
+                {/*</Box>*/}
+                {/*<Box*/}
+                {/*    sx={{*/}
+                {/*        display: 'flex',*/}
+                {/*        alignItems: 'center',*/}
+                {/*        justifyContent: 'center',*/}
+                {/*        mt: -1,*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <IconButton aria-label="previous song">*/}
+                {/*        <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />*/}
+                {/*    </IconButton>*/}
+                {/*    <IconButton*/}
+                {/*        aria-label={paused ? 'play' : 'pause'}*/}
+                {/*        onClick={() => setPaused(!paused)}*/}
+                {/*    >*/}
+                {/*        {paused ? (*/}
+                {/*            <PlayArrowRounded*/}
+                {/*                sx={{ fontSize: '3rem' }}*/}
+                {/*                htmlColor={mainIconColor}*/}
+                {/*            />*/}
+                {/*        ) : (*/}
+                {/*            <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />*/}
+                {/*        )}*/}
+                {/*    </IconButton>*/}
+                {/*    <IconButton aria-label="next song">*/}
+                {/*        <FastForwardRounded fontSize="large" htmlColor={mainIconColor} />*/}
+                {/*    </IconButton>*/}
+                {/*</Box>*/}
+                {/*<Stack spacing={2} direction="row" sx={{ mb: 1, px: 1 }} alignItems="center">*/}
+                {/*    <VolumeDownRounded htmlColor={lightIconColor} />*/}
+                {/*    <Slider*/}
+                {/*        aria-label="Volume"*/}
+                {/*        defaultValue={30}*/}
+                {/*        sx={{*/}
+                {/*            color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',*/}
+                {/*            '& .MuiSlider-track': {*/}
+                {/*                border: 'none',*/}
+                {/*            },*/}
+                {/*            '& .MuiSlider-thumb': {*/}
+                {/*                width: 24,*/}
+                {/*                height: 24,*/}
+                {/*                backgroundColor: '#fff',*/}
+                {/*                '&:before': {*/}
+                {/*                    boxShadow: '0 4px 8px rgba(0,0,0,0.4)',*/}
+                {/*                },*/}
+                {/*                '&:hover, &.Mui-focusVisible, &.Mui-active': {*/}
+                {/*                    boxShadow: 'none',*/}
+                {/*                },*/}
+                {/*            },*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*    <VolumeUpRounded htmlColor={lightIconColor} />*/}
+                {/*</Stack>*/}
             </Widget>
             {/*<WallPaper />*/}
         </Box>
