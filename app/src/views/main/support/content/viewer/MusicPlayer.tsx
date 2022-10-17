@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {styled, useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import {sender} from "@views/helper/helper";
 import {isEmpty} from 'lodash';
@@ -79,7 +80,42 @@ interface MusicPlayerInterface {
 }
 export default function MusicPlayer(props:MusicPlayerInterface) {
     // const [playing , playToggle] = useAudio(props.url)
-    
+    const [albumImage, setAlbumImage] = React.useState<any>((
+        <CoverImage>
+                    
+                        <img
+                            alt="앨범 이미지가 없습니다."
+                            src="/static/images/sliders/chilling-sunday.jpg"
+                            onError={(event:any)=>{
+                                setAlbumImage((<CoverImage
+                                    sx={{
+                                        '&:hover' : {
+                                            cursor : "pointer"
+                                        }
+                                    }}
+                                    onClick={()=>{
+                                        console.log('click')
+                                    }}
+                                >
+                                    <Stack 
+                                    direction="column"
+                                    sx={{width : "100%"}}
+                                    >
+                                    <Typography
+                                        variant='caption'
+                                    >
+                                        No Image
+                                    </Typography>
+                                    <Typography
+                                            variant='caption'
+                                        >
+                                            클릭하여 등록하기
+                                    </Typography>
+                                    </Stack>
+                                </CoverImage>));
+                            }}
+                        />
+    </CoverImage>));
     const [duration, setDuration] = React.useState(0);
     const [format, setFormat] = React.useState({
         duration : 0,
@@ -171,12 +207,7 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
         <Box sx={{ width: '100%', overflow: 'hidden' }}>
             <Widget>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <CoverImage>
-                        <img
-                            alt="앨범 이미지가 없습니다."
-                            src="/static/images/sliders/chilling-sunday.jpg"
-                        />
-                    </CoverImage>
+                        {albumImage}
                     <Box sx={{ ml: 1.5, minWidth: 0 }}>
                         <Typography variant="caption" color="text.secondary" fontWeight={500}>
                             {props.metadata[String(store.get('content_detail_music.preview_caption'))] || "no data"}
