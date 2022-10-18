@@ -3,17 +3,17 @@ import {IpcMainEvent} from "electron";
 import {ContentService} from '../../../../service/ContentService';
 import {WorkflowService} from '../../../../service/WorkflowService';
 import {TaskService} from '../../../../service/TaskService';
-import { TaskManager } from "../../../../lib/Task/TaskManager";
+import {TaskManager} from "../../../../lib/Task/TaskManager";
+import * as path from "path";
+import {sendIpc} from "../../../../lib/helper/ElectronHelper";
+import {isEmpty} from "lodash";
+import {CodeItemService} from "../../../../service/CodeItemService";
+
 const log = require("../../../../lib/Logger");
 const contentService = new ContentService();
 const workflowService  = new WorkflowService();
 const taskService = new TaskService();
 
-import * as path from "path";
-import { sendIpc } from "../../../../lib/helper/ElectronHelper";
-import TaskInterface from "../../../../interfaces/TaskInterface";
-import { isEmpty, reject } from "lodash";
-import { CodeItemService } from "../../../../service/CodeItemService";
 const codeItemService = new CodeItemService;
 const Store = require("electron-store");
 const store = new Store();
@@ -86,6 +86,7 @@ const recuriveIngest = (files:string[],defaultValues:{}, number:number=0) => {
 }
 const extentionValid = (files:string[], ingestType : string) => {
 	return new Promise((resolve,reject) => {
+		
 		codeItemService.findByParentCode(`${ingestType}_allow_extention`)
 		.then((codes:any) => {
 			let extentions:string[] = [];

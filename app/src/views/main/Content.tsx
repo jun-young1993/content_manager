@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {ChangeEvent} from 'react';
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import {sender} from "@views/helper/helper";
@@ -13,14 +14,10 @@ import Fade from '@mui/material/Fade';
 import Menu from '@mui/material/Menu';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import {
-    Circle as CircleIcon,
-    Image as ImageIcon
-} from '@mui/icons-material';
-import {ChangeEvent, KeyboardEventHandler} from "react";
+import {Circle as CircleIcon} from '@mui/icons-material';
 import Store from "electron-store";
 import Icons from "@views/components/Icons";
-import {isEmpty} from "lodash";
+
 const store = new Store();
 
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
@@ -79,11 +76,12 @@ const IngestButton = (props:{contentTypes:any[]}) => {
           onClose={handleClose}
           TransitionComponent={Fade}
         >
+
             {props.contentTypes.map((contentType:{name:string, code: string}) => {
                 return (
                     <MenuItem onClick={()=>{
                         handleMenuClick(contentType.code);
-                        
+
                     }}>
                         <>
                         {Icons({
@@ -93,10 +91,11 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                             }
                         })}
                         {contentType.name}</>
-                        </MenuItem>          
+                        </MenuItem>
                 )
             })}
-          {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+          {
+              /* <MenuItem onClick={handleClose}>Profile</MenuItem>
           <MenuItem onClick={handleClose}>My account</MenuItem>
           <MenuItem onClick={handleClose}>Logout</MenuItem> */}
         </Menu>
