@@ -210,13 +210,13 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                         {albumImage}
                     <Box sx={{ ml: 1.5, minWidth: 0 }}>
                         <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                            {props.metadata[String(store.get('content_detail_music.preview_caption'))] || "no data"}
+                            {props.metadata[String(store.get('content_detail_music.preview_caption'))] || "-"}
                         </Typography>
                         <Typography noWrap>
-                            <b>{props.metadata[String(store.get('content_detail_music.preview_title'))]  || "no data"}</b>
+                            <b>{props.metadata[String(store.get('content_detail_music.preview_title'))]  || "-"}</b>
                         </Typography>
                         <Typography noWrap letterSpacing={-0.25}>
-                            {props.metadata[String(store.get('content_detail_music.preview_sub_title'))]  || "no data"}
+                            {props.metadata[String(store.get('content_detail_music.preview_sub_title'))]  || "-"}
                         </Typography>
                     </Box>
                 </Box>
