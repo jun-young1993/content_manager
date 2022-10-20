@@ -39,6 +39,14 @@ var ModuleService = /** @class */ (function (_super) {
             });
         });
     };
+    ModuleService.prototype.find = function (moduleId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Module').findOne({ _id: moduleId }).exec(function (err, data) {
+                resolve((0, ApiHelper_1.apiResolve)(data));
+            });
+        });
+    };
     return ModuleService;
 }(BaseService));
 exports.ModuleService = ModuleService;

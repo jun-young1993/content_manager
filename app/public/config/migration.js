@@ -298,6 +298,14 @@ module.exports = {
             target_storage : "proxy",
             _id:"transcoder_thumbnail_online_to_proxy"
         },{
+            task_type : "fs_copy",
+            name : "음원 썸네일 입수(로컬 -> 온라인)",
+            source_media : "out",
+            target_media : "thumbnail",
+            target_storage : "online",
+            source_storage : "out",
+            _id:"fs_copy_local_to_online_music_thumbnail"
+        },{
             task_type : "transcoder_proxy",
             name : "저해상도 생성(온라인->프록시)",
             source_media : "original",
@@ -320,28 +328,44 @@ module.exports = {
             description : "migration data"
         },
         items : [{
-            name : "인제스트-비디오(Sample)",
+            name : "입수-비디오(Sample)",
             content_type:  "video",
             _id : "user_out_ingest"
         },{
-            name : "인제스트-이미지(Sample)",
+            name : "입수-이미지(Sample)",
             content_type:  "image",
             _id : "user_out_ingest_image"
         },{
-            name : "인제스트-음원(Sample)",
+            name : "입수-음원(Sample)",
             content_type:  "music",
             _id : "user_out_ingest_music"
         },{
             name : "원본 다운로드(Sample)",
             content_type:  null,
             _id : "original_download"
+        },{
+            name : "입수 - 썸네일(음원)",
+            content_type:  "music",
+            _id : "ingest_thumbnail_music"
         }]
     },{
         model : "WorkflowRule",
         default : {
-
+            // fs_copy_local_to_online_music_thumbnail
         },
         items : [{
+            workflow_id : "ingest_thumbnail_music",
+            module_id : null,
+            module_name : "start_workflow",
+            parent_id : null,
+            _id : "ingest_thumbnail_music_start_workflow"
+        },{
+            workflow_id : "ingest_thumbnail_music",
+            module_id : "fs_copy_local_to_online_music_thumbnail",
+            module_name : "입수 - 썸네일(음원)",
+            parent_id : "ingest_thumbnail_music_start_workflow",
+            _id : "ingest_thumbnail_music_local_to_online"
+        },{
             workflow_id : "original_download",
             module_id : null,
             module_name : "start workflow",

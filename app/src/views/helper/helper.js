@@ -45,7 +45,7 @@ var showConfirm = function (options, onClick) {
         if (onClick) {
             electron_1.ipcRenderer.on("#ShowMessageConfirmClose/reply", function (event, args) {
                 onClick(args);
-                electron_1.ipcRenderer.removeAllListeners("ShowMessageConfirmClose/reply");
+                electron_1.ipcRenderer.removeAllListeners("#ShowMessageConfirmClose/reply");
             });
         }
     });
@@ -57,7 +57,7 @@ var showDrawer = function (options, onClick) {
         electron_1.ipcRenderer.on("#ShowDrawerClose/reply", function (event) {
             console.log('heper drawre close');
             onClick();
-            electron_1.ipcRenderer.removeAllListeners("ShowDrawerClose/reply");
+            electron_1.ipcRenderer.removeAllListeners("#ShowDrawerClose/reply");
         });
     }
 };

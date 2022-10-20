@@ -30,6 +30,16 @@ export class ModuleService extends BaseService{
 
     }
 
+    find(moduleId : string){
+        const _this = this;
+        return new Promise((resolve, reject) => {
+            _this.getModel('Module').findOne({_id : moduleId}).exec((err, data) => {
+                resolve(apiResolve(data));
+            })
+        })
+
+    }
+
 
   
       

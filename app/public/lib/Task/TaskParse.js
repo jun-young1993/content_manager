@@ -333,7 +333,13 @@ var TaskParse = /** @class */ (function () {
                                     .then(function (sourceMedia) {
                                     if (sourceMedia) {
                                         log.channel('task_parse').info('[setting][getSourceMedia]', sourceMedia);
-                                        _this.task.source = sourceMedia.path;
+                                        log.channel('task_parse').info('[isEmpty(_this.task.source)]', (0, lodash_1.isEmpty)(_this.task.source));
+                                        log.channel('task_parse').info('[_this.task.source]', _this.task.source);
+                                        log.channel('task_parse').info('[sourceStorage]', sourceStorage);
+                                        // 외부경로에서 들어온경로는 제외
+                                        if (!(!(0, lodash_1.isEmpty)(_this.task.source) && sourceStorage.code === "out")) {
+                                            _this.task.source = sourceMedia.path;
+                                        }
                                         if ((0, lodash_1.isEmpty)(sourceMedia.path)) {
                                             return reject('[setting][sourceMedia] not found sourceMedia.path');
                                         }

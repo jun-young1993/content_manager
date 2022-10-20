@@ -52,7 +52,7 @@ const showConfirm = (options:ShowALertInterface,onClick ?: Function) => {
 			ipcRenderer.on("#ShowMessageConfirmClose/reply",(event:IpcRendererEvent,args:boolean) => {
 
 				onClick(args)
-				ipcRenderer.removeAllListeners("ShowMessageConfirmClose/reply");
+				ipcRenderer.removeAllListeners("#ShowMessageConfirmClose/reply");
 			})
 		}
 	})
@@ -64,7 +64,7 @@ const showDrawer = (options:any,onClick ?: Function) => {
 		ipcRenderer.on("#ShowDrawerClose/reply",(event:IpcRendererEvent) => {
 			console.log('heper drawre close');
 			onClick()
-			ipcRenderer.removeAllListeners("ShowDrawerClose/reply");
+			ipcRenderer.removeAllListeners("#ShowDrawerClose/reply");
 		})
 	}
 }
