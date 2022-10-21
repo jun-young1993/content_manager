@@ -5,7 +5,7 @@ import { AutoUpdate } from '../../../../lib/AutoUpdate/AutoUpdate';
 
 onIpc('auto-update-check',(event:IpcMainEvent) => {
 
-	console.log('check plz');
+	
 		new AutoUpdate({
 			available : () => {
 				console.log('auto-update-available');
