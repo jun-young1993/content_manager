@@ -1,7 +1,8 @@
 const {app} = require('electron');
 const path = require('path');
+const {DATA_FOLDER_NAME} = require('./configs');
 module.exports = {
-	"directory" : path.resolve(app.getPath('downloads'),'logs'),
+	"directory" : path.resolve(app.getPath('appData'),`${DATA_FOLDER_NAME}/logs`),
 	// "directory" : "/Users/junyoungkim/Downloads/logs",
 	// "directory" : 'C:\\Users\\jun\\Downloads\\logs',
 	"fix" : "full",
