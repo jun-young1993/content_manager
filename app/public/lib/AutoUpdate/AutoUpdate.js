@@ -31,15 +31,6 @@ var AutoUpdate = /** @class */ (function () {
         autoUpdater.checkForUpdates();
     }
     AutoUpdate.prototype.isCheck = function (autoUpdater, methods) {
-        autoUpdater.on('checking-for-update', function () {
-            log.channel("main").info("[AutoUpdater][checking-for-update] checking for update");
-            methods.available();
-            // log.info('checking-for-update...');
-            // createDefaultUpdateWindow()
-            // updateWin.webContents.send('message','업데이트 확인 중...','auto-update')
-        });
-    };
-    AutoUpdate.prototype.update = function (autoUpdater, methods) {
         autoUpdater.on('update-available', function (info) {
             log.channel("main").info("[AutoUpdater][update-available]", info);
             log.channel("main").info("[AutoUpdater][update-available] available");
@@ -48,12 +39,20 @@ var AutoUpdate = /** @class */ (function () {
             // createDefaultUpdateWindow()
             // updateWin.webContents.send('message','업데이트가 가능합니다.','auto-update')
         });
+    };
+    AutoUpdate.prototype.update = function (autoUpdater, methods) {
         autoUpdater.on('update-downloaded', function (info) {
             // log.info('update-downloaded')
             log.channel("main").info("[AutoUpdater][update-downloaded] quit and install", info);
             log.channel("main").info("[AutoUpdater][update-downloaded] quit and install start");
             autoUpdater.quitAndInstall();
             methods.update();
+        });
+        autoUpdater.on('checking-for-update', function () {
+            log.channel("main").info("[AutoUpdater][checking-for-update] checking for update");
+            // log.info('checking-for-update...');
+            // createDefaultUpdateWindow()
+            // updateWin.webContents.send('message','업데이트 확인 중...','auto-update')
         });
         autoUpdater.on('update-not-available', function (info) {
             log.channel("main").info("[AutoUpdater][update-not-available] update not available / currently the latest version", info);

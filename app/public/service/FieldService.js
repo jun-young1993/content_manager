@@ -30,7 +30,7 @@ var FieldService = /** @class */ (function (_super) {
     FieldService.prototype.getSearchFields = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.getModel('Field').find({ search_yn: "Y" }, function (err, data) {
+            _this.getModel('Field').find({ is_search: true }, function (err, data) {
                 resolve((0, ApiHelper_1.apiResolve)(data));
             });
         });

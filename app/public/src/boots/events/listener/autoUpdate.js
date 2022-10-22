@@ -3,7 +3,6 @@ exports.__esModule = true;
 var _a = require('../../../../lib/helper/ElectronHelper'), onIpc = _a.onIpc, getElectronModule = _a.getElectronModule, getBrowserWindow = _a.getBrowserWindow, getPath = _a.getPath, getApp = _a.getApp;
 var AutoUpdate_1 = require("../../../../lib/AutoUpdate/AutoUpdate");
 onIpc('auto-update-check', function (event) {
-    console.log('check plz');
     new AutoUpdate_1.AutoUpdate({
         available: function () {
             console.log('auto-update-available');

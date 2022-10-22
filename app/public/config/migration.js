@@ -321,6 +321,14 @@ module.exports = {
             source_storage : "online",
             target_storage : "no",
             _id:"mediainfo_video_online"
+        },{
+            task_type : "mediainfo_video",
+            name : "미디어정보 추출(원본)",
+            source_media : "original",
+            target_media : "no",
+            source_storage : "online",
+            target_storage : "no",
+            _id:"mediainfo_image_online"
         }]
     },{
         model : "Workflow",
@@ -389,6 +397,12 @@ module.exports = {
             module_name : "원본 입수(로컬->온라인)",
             parent_id : "user_out_ingest_start_workflow_image",
             _id : "user_out_ingest_fs_copy_local_to_online_image",
+        },{
+            workflow_id : "user_out_ingest_image",
+            module_id : "mediainfo_image_online",
+            module_name : "미디어정보추출(이미지)",
+            parent_id : "user_out_ingest_fs_copy_local_to_online_image",
+            _id : "user_out_ingest_mediainfo_image",
         },{
             workflow_id : "user_out_ingest_music",
             module_id : null,

@@ -39,3 +39,30 @@ onIpc("#start-workflow", function (event, options) {
         electron_1.ipcRenderer.removeAllListeners("#start-workflow");
     });
 });
+electron_1.ipcMain.handle('$start-workflow', function (event, options) {
+    return new Promise(function (resolve, reject) {
+        new TaskManager_1.TaskManager()
+            .startWorkflow(options)
+            .then(function (task) {
+            log.channel('ingest').info("[START-WORKFLOW]");
+            log.channel('ingest').info(task);
+            new TaskManager_1.TaskManager()
+                .initialize()
+                .then(function (taskParse) {
+                log.channel('ingest').info("[Ingest] success Task : ".concat(taskParse.data));
+                sendIpc("#ShowMessageAlert/reply", {
+                    severity: "success",
+                    title: "작업이 성공적으로 요청되었습니다."
+                });
+                electron_1.ipcRenderer.removeAllListeners("#start-workflow");
+                // resolve(taskParse);
+            })["catch"](function (exception) {
+                log.channel('ingest').info("[Ingest][Exception] : ".concat(exception));
+                reject(exception);
+            });
+        })["catch"](function (taskException) {
+            log.channel('ingest').info("[START-WORKFLOW][EXCEPTION] ".concat(taskException));
+            reject(taskException);
+        });
+    });
+});

@@ -1,8 +1,7 @@
 
 const {BaseService} = require('../service/BaseService');
-import MediaInterface from "../interfaces/MediaInterface";
-import {isEmpty} from "lodash";
-import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
+import {apiResolve} from "../lib/helper/ApiHelper";
+
 export class FieldService extends BaseService{
     constructor(){
         super({
@@ -15,7 +14,7 @@ export class FieldService extends BaseService{
     getSearchFields(){
         const _this = this;
         return new Promise((resolve, reject) => {
-            _this.getModel('Field').find({search_yn : "Y"},(err, data) => {
+            _this.getModel('Field').find({is_search : true},(err, data) => {
                 resolve(apiResolve(data));
             })
         })

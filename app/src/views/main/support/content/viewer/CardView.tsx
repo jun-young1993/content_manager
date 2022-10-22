@@ -24,6 +24,7 @@ import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 import notFoundThumb from "@views/images/not_found_thumb.png";
+import {Box} from "@mui/material";
 
 const Store = require("electron-store");
 const store = new Store();
@@ -92,110 +93,121 @@ export default function CardView(props:ViewerInterface) {
             <main  >
                 <Container sx={{ py: 3 , flexGrow: 1, overflow: 'auto', height: "65vh"}}  maxWidth="lg" >
                     {/* End hero unit */}
-                    <Grid container spacing={2} rowSpacing={4} alignItems="stretch" >
-                        {props.contents.map((content:contentsViewerInterface) => (
-                            <Grid item key={content._id}
-                                  xs={3}
-                                  // sm={6}
-                                  // md={4}
-                            >
-                                <Stack direction="row" spacing={2} >
-                                    <LightTooltip title={content.category_name || "지정된 테그가 없습니다."} >
-                                        <CircleIcon
-                                            sx={{
-                                                width:"20px",
-                                                height:"20px",
-                                                pr : 1,
-                                                // marginTop:"8px",
-                                                color:content.category_color || "#000000"
-                                            }}
-                                        />
-                                    </LightTooltip>
-                                    {contentTypeChip(content.content_type)}
-                                    {/*<Chip label={content.content_type} size="small" color="primary" variant="outlined" />*/}
-                                </Stack>
-                                <Card
-                                    style={{height:"100%"}}
-                                    sx={{display: 'flex', flexDirection: 'column' }}
-                                >
-                                    <CardMedia
-                                        component="img"
-                                        sx={{
-                                            '&:hover' :{
-                                                cursor: "pointer",
-                                                 transform: "scale(1.4)",
-                                                 transition: "all 0.2s linear",
-                                                 overflow: "hidden"
-                                            }
-                                            // 16:9
-                                            // pt: '1%',
-                                        }}
-                                        image={"http://localhost:11101/thumbnail/"+content._id+"?w=248&fit=crop&auto=format"}
-                                        alt="썸네일 생성작업을 요청해주세요."
-                                        onError={(event:any)=>{
-                                            // event.target.style['display'] = 'none';
-                                            // event.target.style['background-image'] = 'red';
-                                            // console.log(event);
-                                            // console.log(event);
-                                            // event.target.onerror = null;
-                                            // event.target.src = store.get('url.no_thumb');
-                                            event.target.src = notFoundThumb;
-                                            // event.target.src = logo;
-
-                                            // console.log(event);
-                                            // // event.stopPropagation();
-                                            // event.target.onError = () => {
-                                            //     console.log('target on error');
-                                            // }
-                                            // return false;
-                                        }}
-                                        onClick={(event:any)=>{
-                                            showDrawer({
-                                                open : true,
-                                                metadata : content
-                                            },(checked:boolean)=>{
-
-                                                    console.log('수정완료 close event',content._id);
-
-                                            });
-                                            console.log('content click');
-                                        }}
+                    {props.contents.length === 0
+                        ? <Box id={"test"} sx={
+                            { textAlign: "center",
+                                margin : "0 auto",
+                                position:"absolute",
+                                left:"50%",
+                                top:"50%"}
+                        }>항목이 없습니다.</Box>
+                        : <Grid container spacing={2} rowSpacing={4} alignItems="stretch">
+                            {
+                                props.contents.map((content: contentsViewerInterface) => (
+                                    <Grid item key={content._id}
+                                          xs={3}
+                                        // sm={6}
+                                        // md={4}
                                     >
-                                    </CardMedia>
-                                    <CardContent sx={{ flexGrow: 1 , padding:"3px", height : "3vh"}}>
-                                        <Typography gutterBottom noWrap variant="h6" component="h6">
-                                            {content.title}
-                                        </Typography>
-                                        {/*<Typography>*/}
-                                            {/*This is a media card. You can use this section to describe the*/}
-                                            {/*content.*/}
-                                        {/*</Typography>*/}
-                                    </CardContent>
-                                    <CardActions sx={{height:"3vh", justifyContent:"flex-end"}} >
-                                        <LightTooltip title={"상세보기"} placement={"top-end"}>
-                                            <IconButton onClick={()=>{
-                                                // setOpenContentDetail(true);
-                                                showDrawer({
-                                                    open : true,
-                                                    metadata : content
-                                                },(checked:boolean)=>{
+                                        <Stack direction="row" spacing={2}>
+                                            <LightTooltip title={content.category_name || "지정된 테그가 없습니다."}>
+                                                <CircleIcon
+                                                    sx={{
+                                                        width: "20px",
+                                                        height: "20px",
+                                                        pr: 1,
+                                                        // marginTop:"8px",
+                                                        color: content.category_color || "#000000"
+                                                    }}
+                                                />
+                                            </LightTooltip>
+                                            {contentTypeChip(content.content_type)}
+                                            {/*<Chip label={content.content_type} size="small" color="primary" variant="outlined" />*/}
+                                        </Stack>
+                                        <Card
+                                            style={{height: "100%"}}
+                                            sx={{display: 'flex', flexDirection: 'column'}}
+                                        >
+                                            <CardMedia
+                                                component="img"
+                                                sx={{
+                                                    '&:hover': {
+                                                        cursor: "pointer",
+                                                        transform: "scale(1.4)",
+                                                        transition: "all 0.2s linear",
+                                                        overflow: "hidden"
+                                                    }
+                                                    // 16:9
+                                                    // pt: '1%',
+                                                }}
+                                                image={"http://localhost:11101/thumbnail/" + content._id + "?w=248&fit=crop&auto=format"}
+                                                alt="썸네일 생성작업을 요청해주세요."
+                                                onError={(event: any) => {
+                                                    // event.target.style['display'] = 'none';
+                                                    // event.target.style['background-image'] = 'red';
+                                                    // console.log(event);
+                                                    // console.log(event);
+                                                    // event.target.onerror = null;
+                                                    // event.target.src = store.get('url.no_thumb');
+                                                    event.target.src = notFoundThumb;
+                                                    // event.target.src = logo;
 
-                                                        console.log('수정완료 close event',content._id);
+                                                    // console.log(event);
+                                                    // // event.stopPropagation();
+                                                    // event.target.onError = () => {
+                                                    //     console.log('target on error');
+                                                    // }
+                                                    // return false;
+                                                }}
+                                                onClick={(event: any) => {
+                                                    showDrawer({
+                                                        open: true,
+                                                        metadata: content
+                                                    }, (checked: boolean) => {
 
-                                                });
-                                            }}>
-                                                <PageviewOutlinedIcon />
-                                            </IconButton>
-                                        </LightTooltip>
-                                        <WorkflowButton
-                                            contentId={content._id}
-                                            contentType={content.content_type}
-                                        />
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                                                        console.log('수정완료 close event', content._id);
+
+                                                    });
+                                                    console.log('content click');
+                                                }}
+                                            >
+                                            </CardMedia>
+                                            <CardContent sx={{flexGrow: 1, padding: "3px", height: "3vh"}}>
+                                                <Typography gutterBottom noWrap variant="h6" component="h6">
+                                                    {content.title}
+                                                </Typography>
+                                                {/*<Typography>*/}
+                                                {/*This is a media card. You can use this section to describe the*/}
+                                                {/*content.*/}
+                                                {/*</Typography>*/}
+                                            </CardContent>
+                                            <CardActions sx={{height: "3vh", justifyContent: "flex-end"}}>
+                                                <LightTooltip title={"상세보기"} placement={"top-end"}>
+                                                    <IconButton onClick={() => {
+                                                        // setOpenContentDetail(true);
+                                                        showDrawer({
+                                                            open: true,
+                                                            metadata: content
+                                                        }, (checked: boolean) => {
+
+                                                            console.log('수정완료 close event', content._id);
+
+                                                        });
+                                                    }}>
+                                                        <PageviewOutlinedIcon/>
+                                                    </IconButton>
+                                                </LightTooltip>
+                                                <WorkflowButton
+                                                    contentId={content._id}
+                                                    contentType={content.content_type}
+                                                />
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
+                                ))
+                            }
+                        </Grid>
+                    }
                 </Container>
                 
             </main>
