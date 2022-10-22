@@ -1,9 +1,10 @@
 
 
 const {onIpc, sendIpc} = require('../../../../lib/helper/ElectronHelper')
-import {IpcMainEvent, ipcRenderer, ipcMain, IpcMainInvokeEvent} from "electron";
-const log = require("../../../../lib/Logger");
+import {ipcMain, IpcMainEvent, IpcMainInvokeEvent, ipcRenderer} from "electron";
 import {TaskManager} from "../../../../lib/Task/TaskManager";
+
+const log = require("../../../../lib/Logger");
 
 
 interface startWorkflowOptions {
@@ -51,9 +52,11 @@ onIpc("#start-workflow",(event:IpcMainEvent,options:startWorkflowOptions)=>{
 })
 
 ipcMain.handle('$start-workflow',(event:IpcMainInvokeEvent, options:startWorkflowOptions) => {
+    log.channel('ingest').info('[START-WORKFLOW PARAMS ]');
+    log.channel('ingest').info(options);
     return new Promise((resolve,reject) => {
         new TaskManager()
-        .startWorkflow(options)
+        .startWorkflow(options[0])
         .then((task:any) => {
             log.channel('ingest').info(`[START-WORKFLOW]`);
             log.channel('ingest').info(task);
@@ -65,8 +68,8 @@ ipcMain.handle('$start-workflow',(event:IpcMainInvokeEvent, options:startWorkflo
                         severity : "success",
                         title : "작업이 성공적으로 요청되었습니다."
                     })
-                    ipcRenderer.removeAllListeners("#start-workflow");
-                    // resolve(taskParse);
+
+                    resolve(taskParse);
                 })
                 .catch((exception) => {
                     log.channel('ingest').info(`[Ingest][Exception] : ${exception}`);

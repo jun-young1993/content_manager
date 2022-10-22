@@ -3,7 +3,7 @@ import {styled, useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import {sender} from "@views/helper/helper";
+import {invoker, sender} from "@views/helper/helper";
 import {isEmpty} from 'lodash';
 import Store from "electron-store";
 
@@ -82,10 +82,10 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
     // const [playing , playToggle] = useAudio(props.url)
     const [albumImage, setAlbumImage] = React.useState<any>((
         <CoverImage>
-                    
+            {/*"http://localhost:11101/thumbnail/" + content._id + "?w=248&fit=crop&auto=format"*/}
                         <img
                             alt="앨범 이미지가 없습니다."
-                            src="/static/images/sliders/chilling-sunday.jpg"
+                            src={"http://localhost:11101/thumbnail/" + props.metadata._id}
                             onError={(event:any)=>{
                                 setAlbumImage((<CoverImage
                                     sx={{
@@ -94,7 +94,17 @@ export default function MusicPlayer(props:MusicPlayerInterface) {
                                         }
                                     }}
                                     onClick={()=>{
-                                        console.log('click')
+                                        console.log('click',props)
+                                        invoker("$start-workflow",{
+                                            content_id : props.metadata._id,
+                                            workflow_id : "ingest_thumbnail_music"
+                                        })
+                                            .then((result) => {
+                                                console.log("=>(MusicPlayer.tsx:96) result", result);
+                                            })
+                                            .catch((workflowException) => {
+                                                console.log("=>(MusicPlayer.tsx:99) workflowException", workflowException);
+                                            })
                                     }}
                                 >
                                     <Stack 

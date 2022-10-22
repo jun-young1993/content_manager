@@ -2,8 +2,8 @@
 exports.__esModule = true;
 var _a = require('../../../../lib/helper/ElectronHelper'), onIpc = _a.onIpc, sendIpc = _a.sendIpc;
 var electron_1 = require("electron");
-var log = require("../../../../lib/Logger");
 var TaskManager_1 = require("../../../../lib/Task/TaskManager");
+var log = require("../../../../lib/Logger");
 onIpc("#start-workflow", function (event, options) {
     log.channel("start-workflow").info("[START-WORKFLOW]");
     log.channel("start-workflow").info(options);
@@ -40,9 +40,11 @@ onIpc("#start-workflow", function (event, options) {
     });
 });
 electron_1.ipcMain.handle('$start-workflow', function (event, options) {
+    log.channel('ingest').info('[START-WORKFLOW PARAMS ]');
+    log.channel('ingest').info(options);
     return new Promise(function (resolve, reject) {
         new TaskManager_1.TaskManager()
-            .startWorkflow(options)
+            .startWorkflow(options[0])
             .then(function (task) {
             log.channel('ingest').info("[START-WORKFLOW]");
             log.channel('ingest').info(task);
@@ -54,8 +56,7 @@ electron_1.ipcMain.handle('$start-workflow', function (event, options) {
                     severity: "success",
                     title: "작업이 성공적으로 요청되었습니다."
                 });
-                electron_1.ipcRenderer.removeAllListeners("#start-workflow");
-                // resolve(taskParse);
+                resolve(taskParse);
             })["catch"](function (exception) {
                 log.channel('ingest').info("[Ingest][Exception] : ".concat(exception));
                 reject(exception);
