@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ChangeEvent} from 'react';
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import {sender} from "@views/helper/helper";
+import {sender, invoker} from "@views/helper/helper";
 import Stack from "@mui/material/Stack";
 import CardView, {SimpleView} from "@views/main/support/content/viewer/CardView";
 import ContentPagination from "@views/main/support/content/ContentPagination";
@@ -76,8 +76,32 @@ const IngestButton = (props:{contentTypes:any[]}) => {
           onClose={handleClose}
           TransitionComponent={Fade}
         >
+            
+                <MenuItem onClick={()=>{
+                    
+                        setLoading(true);
+                        invoker("$ingest")
+                        .then((result) => {
 
-            {props.contentTypes.map((contentType:{name:string, code: string}) => {
+                            setLoading(false);
+                            // handleClose();
+                        });
+                
+                        handleClose();
+                    
+                            // handleClose();
+                    }}>
+                        {Icons({
+                            type:"video",
+                            sx:{
+                                mr : 1
+                            }
+                        })}
+                        {"사용자 로컬 입수"}
+                  
+                </MenuItem>
+            
+            {/* {props.contentTypes.map((contentType:{name:string, code: string}) => {
                 return (
                     <MenuItem onClick={()=>{
                         handleMenuClick(contentType.code);
@@ -93,7 +117,7 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                         {contentType.name}</>
                         </MenuItem>
                 )
-            })}
+            })} */}
           {
               /* <MenuItem onClick={handleClose}>Profile</MenuItem>
           <MenuItem onClick={handleClose}>My account</MenuItem>

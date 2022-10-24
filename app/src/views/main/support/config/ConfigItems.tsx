@@ -119,6 +119,19 @@ export const defaultValues = [{
 		}}
 	/>
 },{
+	'type' : "base",
+	"title" : "기타 인제스트 호출 워크플로우",
+	"sub_title" : "워크플로우 흐름이 외부입수로 시작하는 워크플로우만 등록해주세요.",
+	"element" : <SelectApi 
+		sender={sender("@WorkFlow/_all")}
+		value={()=>{
+			return store.get('default_values.ingest_workflow_other');
+		}}
+		onChange={(value:string)=>{
+			store.set('default_values.ingest_workflow_other',value);
+		}}
+	/>
+},{
 	"type" : "title",
 	"title" : "콘텐츠 검색"
 },{

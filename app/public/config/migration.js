@@ -54,6 +54,13 @@ module.exports = {
             "name":"앨범명",
             "_id" : "field_music_album",
             "order" : 3
+        },{
+            "content_type" : "other",
+            "type":"text",
+            "code":"title",
+            "name":"기타자료 명",
+            "_id" : "field_other_title",
+            "order" : 1
         }]
     },{
         model : 'Storage',
@@ -130,10 +137,15 @@ module.exports = {
             "name" : "음원 허용확장자",
             "order" : 6,
             "_id" : "music_allow_extention"
+        },,{
+            "code" : "other_allow_extention",
+            "name" : "기타 허용확장자",
+            "order" : 7,
+            "_id" : "other_allow_extention"
         },{
             "code" : "grid_row_count",
             "name" : "그리드 열 개수",
-            "order" : 7,
+            "order" : 8,
             "_id" : "grid_row_count"
         }]
     },{
@@ -203,6 +215,11 @@ module.exports = {
             name : "mp3",
             _id : "music_allow_extention_png"
         },{
+            parent_code : "other_allow_extention",
+            code : "zip",
+            name : "zip",
+            _id : "other_allow_extention_zip"
+        },{
             parent_code : "content_type",
             code : "video",
             name : "비디오",
@@ -217,6 +234,11 @@ module.exports = {
             code : "music",
             name : "음원",
             _id : "content_type_music"
+        },{
+            parent_code : "content_type",
+            code : "other",
+            name : "기타자료",
+            _id : "content_type_other"
         },{
             parent_code : "media_type",
             code : "original",
@@ -348,6 +370,10 @@ module.exports = {
             content_type:  "music",
             _id : "user_out_ingest_music"
         },{
+            name : "입수-기타(Sample)",
+            content_type:  "other",
+            _id : "user_out_ingest_other"
+        },{
             name : "원본 다운로드(Sample)",
             content_type:  null,
             _id : "original_download"
@@ -403,6 +429,24 @@ module.exports = {
             module_name : "미디어정보추출(이미지)",
             parent_id : "user_out_ingest_fs_copy_local_to_online_image",
             _id : "user_out_ingest_mediainfo_image",
+        },{
+            workflow_id : "user_out_ingest_other",
+            module_id : null,
+            module_name : "start workflow",
+            parent_id : null,
+            _id : "user_out_ingest_start_workflow_other",
+        },{
+            workflow_id : "user_out_ingest_other",
+            module_id : "fs_copy_local_to_online",
+            module_name : "원본 입수(로컬->온라인)",
+            parent_id : "user_out_ingest_start_workflow_other",
+            _id : "user_out_ingest_fs_copy_local_to_online_other",
+        },{
+            workflow_id : "user_out_ingest_other",
+            module_id : "mediainfo_image_online",
+            module_name : "미디어정보추출(기타)",
+            parent_id : "user_out_ingest_fs_copy_local_to_online_other",
+            _id : "user_out_ingest_mediainfo_other",
         },{
             workflow_id : "user_out_ingest_music",
             module_id : null,
@@ -499,6 +543,9 @@ module.exports = {
         },{
             "key" : "ingest_workflow_music",
             "value" : "user_out_ingest_music"
+        },{
+            "key" : "ingest_workflow_other",
+            "value" : "user_out_ingest_other"
         }]
     },{
         "type" : "content",

@@ -7,13 +7,15 @@ const {Module} = require("../../models/Module");
 const {FileManager} = require("./module/FileManager");
 const {Transcoder} = require("./module/Transcoder");
 const {MediaInfo} = require("./module/MediaInfo");
+
 import { sendIpc } from '../helper/ElectronHelper';
 const log = require('../Logger');
 import {isEmpty} from 'lodash';
 // const {isEmpty} = require('lodash');
 import * as path from "path";
-import { apiReject, apiResolve } from '../helper/ApiHelper';
+import { apiReject, apiResolve, convertArrayToKeyValue } from '../helper/ApiHelper';
 import { TaskUpdater } from './TaskUpdater';
+
 export class TaskParse {
 	private sourceMediaId : any = null;
 	private targetMediaId : any = null;
@@ -60,8 +62,6 @@ export class TaskParse {
 		})
 		return storage;
 	};
-
-
 
 	// getSourceDir(){
 

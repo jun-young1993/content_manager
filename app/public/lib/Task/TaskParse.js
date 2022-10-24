@@ -44,12 +44,14 @@ var Module = require("../../models/Module").Module;
 var FileManager = require("./module/FileManager").FileManager;
 var Transcoder = require("./module/Transcoder").Transcoder;
 var MediaInfo = require("./module/MediaInfo").MediaInfo;
+var CodeItemService = require("../../service/CodeItemService").CodeItemService;
 var ElectronHelper_1 = require("../helper/ElectronHelper");
 var log = require('../Logger');
 var lodash_1 = require("lodash");
 // const {isEmpty} = require('lodash');
 var path = require("path");
 var ApiHelper_1 = require("../helper/ApiHelper");
+var codeItemService = new CodeItemService();
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
         this.sourceMediaId = null;

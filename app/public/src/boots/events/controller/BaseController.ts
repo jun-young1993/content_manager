@@ -53,6 +53,7 @@ export class BaseController implements Property{
 
                 })
             }else if(_this.isInvokeMethod(methodName)){
+                //promise method
                 ipcMain.handle(channel,(event,args)=>{
                     console.log("=>(BaseController.ts:58) args", args);
                     return _this.controller[methodName](event,args);
