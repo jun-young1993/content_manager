@@ -100,7 +100,18 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                         {"사용자 로컬 입수"}
                   
                 </MenuItem>
-            
+                <MenuItem onClick={()=>{
+
+                }}>
+                        {Icons({
+                            type:"share",
+                            sx:{
+                                mr : 1
+                            }
+                        })}
+                        {"네트워크 공유 입수"}
+              
+                </MenuItem>
             {/* {props.contentTypes.map((contentType:{name:string, code: string}) => {
                 return (
                     <MenuItem onClick={()=>{

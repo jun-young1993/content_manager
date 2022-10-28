@@ -9,7 +9,9 @@ import {
     QuestionMarkRounded,
     QuestionMarkTwoTone,
     Sell,
-    SmartDisplay
+    SmartDisplay,
+    Upload,
+    Share
 } from '@mui/icons-material';
 import {isEmpty} from "lodash";
 
@@ -22,7 +24,9 @@ const IconMap:{[key : string] : any} = {
     "help" : <Help />,
     "questionMarkRounded" : <QuestionMarkRounded />,
     "questionMarkTwoTone" : <QuestionMarkTwoTone />,
-    "listplus" : <PlaylistAdd />
+    "listplus" : <PlaylistAdd />,
+    "upload" : <Upload />,
+    "share" : <Share />
 }
 export default function Icons(props:{type : string}|any){
     let Icon = IconMap[props.type.toLowerCase()];

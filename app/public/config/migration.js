@@ -565,5 +565,14 @@ module.exports = {
             "key" : "preview_sub_title",
             "value" : "album"
         }]
+    },{
+        "type" : "app",
+        "items" : [{
+            "key" : "network_port",
+            "value" : 11101
+        },{
+            "key" : "share_port",
+            "value" : 11103
+        }]
     }]
 };
