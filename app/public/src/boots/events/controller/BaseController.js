@@ -59,6 +59,7 @@ var BaseController = /** @class */ (function () {
                 });
             }
             else if (_this.isInvokeMethod(methodName)) {
+                //promise method
                 electron_1.ipcMain.handle(channel, function (event, args) {
                     console.log("=>(BaseController.ts:58) args", args);
                     return _this.controller[methodName](event, args);

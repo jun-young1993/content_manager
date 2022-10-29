@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ChangeEvent} from 'react';
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import {sender, invoker} from "@views/helper/helper";
+import {invoker, sender} from "@views/helper/helper";
 import Stack from "@mui/material/Stack";
 import CardView, {SimpleView} from "@views/main/support/content/viewer/CardView";
 import ContentPagination from "@views/main/support/content/ContentPagination";
@@ -101,7 +101,14 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                   
                 </MenuItem>
                 <MenuItem onClick={()=>{
-
+                    setLoading(true);
+                    invoker("$content-detail-window")
+                        .then((result) => {
+                            console.log('result',result);
+                            setLoading(false);
+                            // handleClose();
+                        });
+                    handleClose();
                 }}>
                         {Icons({
                             type:"share",
