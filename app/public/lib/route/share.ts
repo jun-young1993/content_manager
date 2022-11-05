@@ -2,11 +2,13 @@
 
 
 const router = require('express').Router();
+const QRCode = require("qrcode");
 
 const {formidable} = require('formidable');
 const fs = require("fs");
 const path = require("path");
-router.use(require('express').static(path.resolve(__dirname,"views/public")));
+// router.use(require('express').static(path.resolve(__dirname,"views/public")));
+router.use(require('express').static(path.resolve(__dirname,"share")));
 // router.get('/',(req:any, res:any, next:any) => {
 // 	res.sendFile(path.resolve(__dirname,"/views/public/share.html"));
 // })
@@ -56,7 +58,7 @@ router.get('/info',(req:any, res:any, next:any) => {
 		/** @type {ServerInfoResult} */
 		const info = {
 			"addresses": ["172.28.192.1"],
-			"port": 11102,
+			"port": 11101,
 			"allowDeletion": true,
 			"multiUpload": true,
 			"folderUpload": false,
@@ -66,6 +68,26 @@ router.get('/info',(req:any, res:any, next:any) => {
 	
 		    res.json(info);
 });
+
+router.get("/qr-code/:ip/:port",(req:any, res:any) => {
+	const {ip, port} = req.params;
+
+
+	console.log("=>(share.ts:76) ", `http://${ip}:${port}`);
+	QRCode.toDataURL(`http://${ip}:${port}/share`, (err, url) => {
+		const data = url.replace(/.*,/, "");
+		// @ts-ignore
+		const img = new Buffer.from(data, "base64");
+
+		res.writeHead(200, {
+			"Content-Type": "image/png",
+			"Content-Length": img.length
+		});
+
+		res.end(img);
+	});
+})
+
 router.post('/', (req:any, res:any, next:any) => {
 
 	const form = formidable({ 

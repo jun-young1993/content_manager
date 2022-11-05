@@ -18,8 +18,8 @@ electron_1.ipcMain.handle("$content-detail-window", function (event) {
             devTools: isDev
         }
     });
-    console.log('child browser url', isDev ? "http://localhost:3000/#/content-detail/1" : "file://".concat(path.join(__dirname, '../build/index.html/#/content-detail/1')));
-    detailWindow.loadURL(isDev ? "http://localhost:3000/#/content-detail/1" : "file://".concat(path.join(__dirname, '../build/index.html/#/content-detail/1')));
+    console.log('child browser url', isDev ? "http://localhost:3000/#/share" : "file://".concat(path.join(__dirname, '../build/index.html/#/share')));
+    detailWindow.loadURL(isDev ? "http://localhost:3000/#/share" : "file://".concat(path.join(__dirname, '../build/index.html/#/share')));
     detailWindow.once('ready-to-show', function () {
         detailWindow.show();
         // setTimeout(() => {

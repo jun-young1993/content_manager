@@ -1,14 +1,7 @@
-
 import React from 'react';
-window.React = React
-
 import ReactDOM from 'react-dom';
 // import './index.css';
-
-
-
 import MainContainer from '@views/main/MainContainer';
-import ContentDetail from '@views/main/ContentDetail';
 
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
@@ -16,7 +9,11 @@ import reportWebVitals from './reportWebVitals';
 import {ipcRenderer} from "electron";
 import UtilsContainer from "@views/main/UtilsContainer";
 import {Box} from "@mui/material";
-import { HashRouter, Navigation , Routes, Route } from 'react-router-dom';
+import {HashRouter, Route, Routes} from 'react-router-dom';
+import LanShare from "@views/main/LanShare";
+
+window.React = React
+
 ipcRenderer.send('auto-update-check','auto-update-check')
 
 
@@ -30,8 +27,8 @@ ReactDOM.render(
                         <UtilsContainer />
                         </>
                         )} />
-                        <Route path="/content-detail/:id" element={<>hi</>} />
-                        <Route path="/admin" element={<>hi</>} />
+                        <Route path="/content-detail/:id" element={<>hi content detail</>} />
+                        <Route path="/share" element={<LanShare />} />
                     </Routes>
                 </HashRouter>
             </Box>,

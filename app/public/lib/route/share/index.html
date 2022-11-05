@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Manager Lan Share</title>
+    <link href="index.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div id="root">
+<!--    <canvas id="qr_code"></canvas>-->
+<!--    <div>-->
+
+        <h2 class="title" >
+            <img alt="make qrcode" src="http://localhost:11101/share/qr-code/127.0.0.1/11101"  style="float:left;" />
+            Content Manager
+            <br/>
+            File Upload
+        </h2>
+<!--    <h2 class="title" >File Upload</h2>-->
+<!--    </div>-->
+    <hr>
+    <div class="contents">
+        <div class="upload-box">
+            <div class="drag-file" id="drop-file">
+                <img alt="파일 아이콘" class="image" src="https://img.icons8.com/pastel-glyph/2x/image-file.png">
+                <p class="message">Drag files to upload</p>
+            </div>
+            <label class="file-label" for="chooseFile">Choose File</label>
+            <input class="file" id="chooseFile" multiple onchange="dropFile.handleFiles(this.files)" type="file">
+        </div>
+        <div class="files" id="files">
+            <div class="file">
+                <div class="thumbnail">
+                    <img alt="파일타입 이미지" class="image" src="https://img.icons8.com/pastel-glyph/2x/image-file.png">
+                </div>
+                <div class="details">
+                    <header class="header">
+                        <span class="name">Photo.png</span>
+                        <span class="size">7.5 mb</span>
+                    </header>
+                    <div class="progress">
+                        <div class="bar"></div>
+                    </div>
+                    <div class="status">
+                        <span class="percent">37% done</span>
+                        <span class="speed">90KB/sec</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="index.js" type="module"></script><script />
+</html>
