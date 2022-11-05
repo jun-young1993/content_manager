@@ -1,24 +1,34 @@
 import {BrowserWindow, ipcMain, IpcMainInvokeEvent} from "electron";
-
+import * as isDev from 'electron-is-dev';
+import * as path from 'path';
 // const {getBrowserWindow} = require('../../../../lib/helper/ElectronHelper');
 
 ipcMain.handle("$content-detail-window",(event:IpcMainInvokeEvent)=>{
-
+        const parentBrowerser : any =  BrowserWindow.getFocusedWindow();
     // return new Promise((resolve, reject) => {
         const detailWindow:BrowserWindow = new BrowserWindow({
-            parent: BrowserWindow.getFocusedWindow(),
+            parent: parentBrowerser,
+            webPreferences: {
+                // node환경처럼 사용하기
+                nodeIntegration: true,
+                // enableRemoteModule: true,
+                // 개발자도구
+                contextIsolation: false,
+                devTools: isDev,
+              },
             // modal: true,
             // show : false,
             // frame: true
         });
-        detailWindow.loadURL("http://localhost:11101/share/");
+        console.log('child browser url',isDev ? "http://localhost:3000/#/content-detail/1" : `file://${path.join(__dirname, '../build/index.html/#/content-detail/1')}`);
+        detailWindow.loadURL(isDev ? "http://localhost:3000/#/content-detail/1" : `file://${path.join(__dirname, '../build/index.html/#/content-detail/1')}`);
         detailWindow.once('ready-to-show', () => {
             detailWindow.show();
             // setTimeout(() => {
             //     detailWindow.close();
             // },3000)
         })
-
+        return true;
 
     // })
 

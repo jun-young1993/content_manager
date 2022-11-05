@@ -4,25 +4,36 @@ window.React = React
 
 import ReactDOM from 'react-dom';
 // import './index.css';
-import App from './App';
+
 
 
 import MainContainer from '@views/main/MainContainer';
-import MainTabBar from '@src/views/main/MainTabBar';
+import ContentDetail from '@views/main/ContentDetail';
+
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
 // import './views/css/main.css';
-import {ipcRenderer, IpcRendererEvent} from "electron";
+import {ipcRenderer} from "electron";
 import UtilsContainer from "@views/main/UtilsContainer";
 import {Box} from "@mui/material";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { HashRouter, Navigation , Routes, Route } from 'react-router-dom';
 ipcRenderer.send('auto-update-check','auto-update-check')
+
+
 ReactDOM.render(
             <Box sx={{height:'90vh'}}>
-                <MainContainer />
-                <UtilsContainer />
+                <HashRouter>
+                    <Routes>
+                        <Route path="/" element={
+                        (<>
+                        <MainContainer />
+                        <UtilsContainer />
+                        </>
+                        )} />
+                        <Route path="/content-detail/:id" element={<>hi</>} />
+                        <Route path="/admin" element={<>hi</>} />
+                    </Routes>
+                </HashRouter>
             </Box>,
     document.getElementById('root')
     
