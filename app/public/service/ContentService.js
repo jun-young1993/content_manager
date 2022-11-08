@@ -16,6 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 exports.ContentService = void 0;
+// @ts-nocheck
 var BaseService = require('../service/BaseService').BaseService;
 var lodash_1 = require("lodash");
 var ApiHelper_1 = require("../lib/helper/ApiHelper");
@@ -73,6 +74,14 @@ var ContentService = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             _this.getModel('Content').count(search, function (error, count) {
                 return resolve((0, ApiHelper_1.apiResolve)(count));
+            });
+        });
+    };
+    ContentService.prototype.show = function (contentId) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getModel('Content').findOne({ _id: contentId }, function (error, content) {
+                return resolve((0, ApiHelper_1.apiResolve)(content));
             });
         });
     };

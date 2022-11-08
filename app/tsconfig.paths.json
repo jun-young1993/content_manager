@@ -16,6 +16,9 @@
       ],
       "@task/*": [
         "./public/lib/Task/*"
+      ],
+      "@public/*" :[
+        "./public/*"
       ]
     }
   }

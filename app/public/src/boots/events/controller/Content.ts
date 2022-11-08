@@ -215,6 +215,11 @@ class Content {
     }
 
 
+    static $show(event,args){
+        return contentService.show(args[0]);
+        
+    }
+
 }
 
 

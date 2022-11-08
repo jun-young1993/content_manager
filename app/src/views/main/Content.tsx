@@ -102,7 +102,7 @@ const IngestButton = (props:{contentTypes:any[]}) => {
                 </MenuItem>
                 <MenuItem onClick={()=>{
                     setLoading(true);
-                    invoker("$content-detail-window")
+                    invoker("$lan-share-window")
                         .then((result) => {
                             console.log('result',result);
                             setLoading(false);

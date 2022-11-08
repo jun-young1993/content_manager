@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 const {BaseService} = require('../service/BaseService');
 import MediaInterface from "../interfaces/MediaInterface";
 import {isEmpty} from "lodash";
@@ -63,11 +63,18 @@ export class ContentService extends BaseService{
             });
        })
    }
-
+   show(contentId:string){
+    const _this = this;
+       return  new Promise((resolve,reject) => {
+           _this.getModel('Content').findOne({_id : contentId},(error:any,content:any) => {
+               return resolve(apiResolve(content));
+           });
+       })
+   }
    update(contentId:string, metadata : any){
        const _this = this;
        return  new Promise((resolve,reject) => {
-           _this.getModel('Content').update({_id : contentId},{$set : metadata},(error,update) => {
+           _this.getModel('Content').update({_id : contentId},{$set : metadata},(error:any,update:any) => {
                return resolve(apiResolve(update));
            });
        })

@@ -181,6 +181,9 @@ var Content = /** @class */ (function () {
             return event.autoReply(result);
         });
     };
+    Content.$show = function (event, args) {
+        return contentService.show(args[0]);
+    };
     return Content;
 }());
 new BaseController_1.BaseController(Content);

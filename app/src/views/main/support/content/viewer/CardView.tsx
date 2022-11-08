@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import {showDrawer} from "@views/helper/helper";
+import {invoker, showDrawer} from "@views/helper/helper";
 import Chip from '@mui/material/Chip';
 
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
@@ -25,6 +25,7 @@ import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 import notFoundThumb from "@views/images/not_found_thumb.png";
 import {Box} from "@mui/material";
+import LoadMask from "@views/main/support/utils/LoadMask";
 
 const Store = require("electron-store");
 const store = new Store();
@@ -84,9 +85,18 @@ export function SimpleView(props:ViewerInterface){
 }
 export default function CardView(props:ViewerInterface) {
 
-
+    const [loadMask,setLoadMask] = React.useState(<></>);
+    const showDetailWindow = (contentId:string) => {
+        setLoadMask(<LoadMask />);
+        invoker('$content-detail-window',contentId)
+        .then((resolve) => {
+            setLoadMask(<></>);
+            console.log("resolve",resolve);
+        });
+    }
     return (
         <>
+        {loadMask}
         <ThemeProvider theme={theme}>
             <CssBaseline />
 
@@ -160,14 +170,19 @@ export default function CardView(props:ViewerInterface) {
                                                     // return false;
                                                 }}
                                                 onClick={(event: any) => {
-                                                    showDrawer({
-                                                        open: true,
-                                                        metadata: content
-                                                    }, (checked: boolean) => {
+                                                    showDetailWindow(content._id)
+                                                    // invoker('$content-detail-window',content._id)
+                                                    // .then((resolve) => {
+                                                    //     console.log("resolve",resolve);
+                                                    // });
+                                                    // showDrawer({
+                                                    //     open: true,
+                                                    //     metadata: content
+                                                    // }, (checked: boolean) => {
 
-                                                        console.log('수정완료 close event', content._id);
+                                                    //     console.log('수정완료 close event', content._id);
 
-                                                    });
+                                                    // });
                                                     console.log('content click');
                                                 }}
                                             >
@@ -185,14 +200,16 @@ export default function CardView(props:ViewerInterface) {
                                                 <LightTooltip title={"상세보기"} placement={"top-end"}>
                                                     <IconButton onClick={() => {
                                                         // setOpenContentDetail(true);
-                                                        showDrawer({
-                                                            open: true,
-                                                            metadata: content
-                                                        }, (checked: boolean) => {
+                                                        // invoker('$content-detail-window',content._id);
+                                                        showDetailWindow(content._id);
+                                                        // showDrawer({
+                                                        //     open: true,
+                                                        //     metadata: content
+                                                        // }, (checked: boolean) => {
 
-                                                            console.log('수정완료 close event', content._id);
+                                                        //     console.log('수정완료 close event', content._id);
 
-                                                        });
+                                                        // });
                                                     }}>
                                                         <PageviewOutlinedIcon/>
                                                     </IconButton>

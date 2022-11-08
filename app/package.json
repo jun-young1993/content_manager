@@ -143,6 +143,7 @@
   },
   "_moduleAliases": {
     "@": "./",
+    "@public" : "./public",
     "@src": "./src",
     "@lib": "./public/lib",
     "@models": "./public/models",
