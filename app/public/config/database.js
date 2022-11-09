@@ -9,10 +9,13 @@ try{
 		// "directory" : "/Users/junyoungkim/Desktop/junyoung/app/source/electron/db"
 	};	
 }catch(e){
-	const devPath = "C:\\Users\\jun\\AppData\\Roaming\\ContentManagerData\\db";
-	module.exports = {
-		"directory" : devPath
-		// "directory" : "C:\\Users\\jun\\Downloads\\db"
-		// "directory" : "/Users/junyoungkim/Desktop/junyoung/app/source/electron/db"
-	};	
+	if(process.platform === 'win32'){
+		const devPath = "C:\\Users\\jun\\AppData\\Roaming\\ContentManagerData\\db";
+		module.exports = {
+			"directory" : devPath
+			// "directory" : "C:\\Users\\jun\\Downloads\\db"
+			// "directory" : "/Users/junyoungkim/Desktop/junyoung/app/source/electron/db"
+		};	
+	}
+	
 }
