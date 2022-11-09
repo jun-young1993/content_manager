@@ -153,6 +153,7 @@ export default function ContentMetadata(props:any){
                     variant="outlined"
                     startIcon={<EditIcon />}
                     onClick={()=>{
+                        console.log('click edit metadata');
                         showConfirm({
                             title : `메타데이터를 수정하시겠습니까?`,
                             severity : "info"

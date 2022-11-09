@@ -1,41 +1,24 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 exports.__esModule = true;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
-// const {getBrowserWindow} = require('../../../../lib/helper/ElectronHelper');
-electron_1.ipcMain.handle("$lan-share-window", function (event) {
-    var parentBrowerser = electron_1.BrowserWindow.getFocusedWindow();
-    // return new Promise((resolve, reject) => {
-    var detailWindow = new electron_1.BrowserWindow({
-        parent: parentBrowerser,
-        webPreferences: {
-            // node환경처럼 사용하기
-            nodeIntegration: true,
-            // enableRemoteModule: true,
-            // 개발자도구
-            contextIsolation: false,
-            devTools: isDev
-        },
-        modal: true,
-        show: false
-    });
-    console.log('child browser url', isDev ? "http://localhost:3000/index.html/#/share" : "file://".concat(path.join(__dirname, '../build/index.html/#/share')));
-    detailWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/share" : "file://".concat(path.join(__dirname, '../build/index.html/#/share')));
-    detailWindow.once('ready-to-show', function () {
-        detailWindow.show();
-        // setTimeout(() => {
-        //     detailWindow.close();
-        // },3000)
-    });
-    return true;
-    // })
-});
-electron_1.ipcMain.handle("$content-detail-window", function (event, contentId) {
-    return new Promise(function (resolve) {
+var Store = require("electron-store");
+var ChildrenBrowserWindow = /** @class */ (function () {
+    function ChildrenBrowserWindow(options) {
         var parentBrowerser = electron_1.BrowserWindow.getFocusedWindow();
-        // return new Promise((resolve, reject) => {
-        var detailWindow = new electron_1.BrowserWindow({
+        var childrenBrowserWindowProperty = __assign(__assign({}, (options || {})), {
             parent: parentBrowerser,
             webPreferences: {
                 // node환경처럼 사용하기
@@ -45,19 +28,47 @@ electron_1.ipcMain.handle("$content-detail-window", function (event, contentId) 
                 contextIsolation: false,
                 devTools: isDev
             },
-            modal: true,
+            modal: isDev,
             show: false,
-            frame: false
+            frame: !isDev,
+            alwaysOnTop: true,
+            thickFrame: false
         });
-        // logger().info('child browser url',isDev ? `http://localhost:3000/index.html/#/content-detail?content_id=${contentId}` : `file://${path.join(__dirname, `../build/index.html/#/content-detail?content_id=${contentId}`)}`);
-        detailWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/content-detail?content_id=".concat(contentId) : "file://".concat(path.join(__dirname, "../build/index.html/#/content-detail?content_id=".concat(contentId))));
-        detailWindow.once('ready-to-show', function () {
-            detailWindow.show();
-            return resolve(true);
-            // setTimeout(() => {
-            //     detailWindow.close();
-            // },3000)
+        this.browserWindow = new electron_1.BrowserWindow(childrenBrowserWindowProperty);
+    }
+    ChildrenBrowserWindow.prototype.readyToShow = function (url) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.browserWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/".concat(url) : "file://".concat(path.join(__dirname, "../build/index.html/#/".concat(url))));
+            _this.browserWindow.once('ready-to-show', function () {
+                _this.browserWindow.show();
+                return resolve(true);
+                // setTimeout(() => {
+                //     detailWindow.close();
+                // },3000)
+            });
         });
-        // })
+    };
+    return ChildrenBrowserWindow;
+}());
+electron_1.ipcMain.handle("$lan-share-window", function (event) {
+    var detailWindow = new ChildrenBrowserWindow({});
+    return detailWindow.readyToShow("share");
+});
+/**
+ * @params event - no
+ * @params contentId - contentId
+ * @returns Promise<Boolean>
+ */
+electron_1.ipcMain.handle("$content-detail-window", function (event, contentId) {
+    var store = new Store();
+    var widthPercent = store.get('content.panel_width');
+    var heightPercent = store.get('content.panel_height');
+    var primaryDisplay = electron_1.screen.getPrimaryDisplay();
+    var _a = primaryDisplay.workAreaSize, width = _a.width, height = _a.height;
+    var detailWindow = new ChildrenBrowserWindow({
+        width: widthPercent ? width * widthPercent / 100 : 800,
+        height: heightPercent ? height * heightPercent / 100 : 800
     });
+    return detailWindow.readyToShow("content-detail?content_id=".concat(contentId));
 });

@@ -1,12 +1,17 @@
-import {BrowserWindow, ipcMain, IpcMainInvokeEvent} from "electron";
+import {BrowserWindow, ipcMain, IpcMainInvokeEvent , BrowserWindowConstructorOptions, screen} from "electron";
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
-// const {getBrowserWindow} = require('../../../../lib/helper/ElectronHelper');
+const Store = require("electron-store");
 
-ipcMain.handle("$lan-share-window",(event:IpcMainInvokeEvent)=>{
+// const {getBrowserWindow} = require('../../../../lib/helper/ElectronHelper');
+interface ChildrenBrowserWindowProperty {
+    
+}
+class ChildrenBrowserWindow{
+    browserWindow : BrowserWindow;
+    constructor(options ?: ChildrenBrowserWindowProperty){
         const parentBrowerser : any =  BrowserWindow.getFocusedWindow();
-    // return new Promise((resolve, reject) => {
-        const detailWindow:BrowserWindow = new BrowserWindow({
+        const childrenBrowserWindowProperty : BrowserWindowConstructorOptions= {...{},...(options || {}),...{
             parent: parentBrowerser,
             webPreferences: {
                 // node환경처럼 사용하기
@@ -16,21 +21,43 @@ ipcMain.handle("$lan-share-window",(event:IpcMainInvokeEvent)=>{
                 contextIsolation: false,
                 devTools: isDev,
               },
-            modal: true,
+            modal: isDev,
             show : false,
-            // frame: true
-        });
-        console.log('child browser url',isDev ? "http://localhost:3000/index.html/#/share" : `file://${path.join(__dirname, '../build/index.html/#/share')}`);
-        detailWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/share" : `file://${path.join(__dirname, '../build/index.html/#/share')}`);
-        detailWindow.once('ready-to-show', () => {
-            detailWindow.show();
-            // setTimeout(() => {
-            //     detailWindow.close();
-            // },3000)
+            frame: !isDev,
+            alwaysOnTop : true,
+            thickFrame : false
+        }};
+        
+        this.browserWindow = new BrowserWindow(childrenBrowserWindowProperty)
+        
+        
+        
+        
+   
+    }
+    
+    readyToShow(url:string): Promise<Boolean> {
+        
+        return new Promise((resolve , reject) => {
+            this.browserWindow.loadURL(isDev? `http://localhost:3000/index.html/#/${url}` : `file://${path.join(__dirname, `../build/index.html/#/${url}`)}`);    
+            this.browserWindow.once('ready-to-show', () => {
+                this.browserWindow.show();
+                return resolve(true);
+                // setTimeout(() => {
+                //     detailWindow.close();
+                // },3000)
+            })
         })
-        return true;
+    }
+}
+ipcMain.handle("$lan-share-window",(event:IpcMainInvokeEvent) : Promise<Boolean> => {
+        
+        const detailWindow : ChildrenBrowserWindow = new ChildrenBrowserWindow({
+            
+        });
+        return detailWindow.readyToShow(`share`)
 
-    // })
+    
 
 
 
@@ -38,46 +65,23 @@ ipcMain.handle("$lan-share-window",(event:IpcMainInvokeEvent)=>{
 });
 
 
+/**
+ * @params event - no
+ * @params contentId - contentId
+ * @returns Promise<Boolean>
+ */
+ipcMain.handle("$content-detail-window",(event:IpcMainInvokeEvent,contentId:string) : Promise<Boolean> => {
 
-ipcMain.handle("$content-detail-window",(event:IpcMainInvokeEvent,contentId:string)=>{
-
-    return new Promise((resolve) => {
-        const parentBrowerser : any =  BrowserWindow.getFocusedWindow();
-        // return new Promise((resolve, reject) => {
-            const detailWindow:BrowserWindow = new BrowserWindow({
-                parent: parentBrowerser,
-                webPreferences: {
-                    // node환경처럼 사용하기
-                    nodeIntegration: true,
-                    // enableRemoteModule: true,
-                    // 개발자도구
-                    contextIsolation: false,
-                    devTools: isDev,
-                  },
-                modal: isDev,
-                show : false,
-                frame: !isDev
-            });
-            
-            
-        
-            // logger().info('child browser url',isDev ? `http://localhost:3000/index.html/#/content-detail?content_id=${contentId}` : `file://${path.join(__dirname, `../build/index.html/#/content-detail?content_id=${contentId}`)}`);
-            detailWindow.loadURL(isDev ? `http://localhost:3000/index.html/#/content-detail?content_id=${contentId}` : `file://${path.join(__dirname, `../build/index.html/#/content-detail?content_id=${contentId}`)}`);
-            detailWindow.once('ready-to-show', () => {
-                detailWindow.show();
-                return resolve(true);
-                // setTimeout(() => {
-                //     detailWindow.close();
-                // },3000)
-            })
-            
-        
-        // })
-        
-    })
-   
-
-
+    const store = new Store();
+    const widthPercent = store.get('content.panel_width');
+    const heightPercent = store.get('content.panel_height');
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width , height  } = primaryDisplay.workAreaSize;
+    const detailWindow : ChildrenBrowserWindow = new ChildrenBrowserWindow({
+        width : widthPercent ? width * widthPercent / 100 : 800,
+        height : heightPercent ? height * heightPercent / 100 : 800
+    });
+    return detailWindow.readyToShow(`content-detail?content_id=${contentId}`)
 
 });
 

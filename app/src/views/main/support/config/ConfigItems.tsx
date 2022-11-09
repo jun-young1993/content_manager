@@ -1,11 +1,12 @@
 import * as React from 'react';
 import SelectApi from "@views/components/fields/SelectApi";
-import {MenuItem, Typography} from '@mui/material';
+import {MenuItem, Typography, Stack} from '@mui/material';
 import {invoker, sender} from "@views/helper/helper";
 import {Circle as CircleIcon} from '@mui/icons-material';
 import MultiSelect from "@views/components/fields/MultiSelect";
 import Store from "electron-store";
 import InputSlider from "@views/components/fields/InputSlider";
+import NumberField from '@views/components/fields/NumberField';
 
 const store = new Store();
 export const contentDetailPanel = [{
@@ -14,25 +15,36 @@ export const contentDetailPanel = [{
 },{
 	"type" : "base",
 	key : "panel_width",
-	// "title" : "패널 넓이 조절",
-	layoutProps :{
-		spacing : 0,
-		leftBoxSx : {
-			width : "1%"
-		},
-		rightBoxSx : {
-			width : "99%"
-		}
-	},
-	element : <InputSlider
-		title={"패널 넓이 조절"}
-		value={():number=>{
-			return Number(store.get("content.panel_width"));
-		}}
-		onChange={(number:number)=>{
-			store.set("content.panel_width",number)
-		}}
-	/>
+	title : "크기 조절",
+	element : (
+		<Stack direction="row" spacing={2}>
+			<Typography>
+				width
+			</Typography>
+			<NumberField
+				title={"패널 넓이 조절"}
+				value={():number=>{
+					return Number(store.get("content.panel_width"));
+				}}
+				onChange={(number:number)=>{
+					store.set("content.panel_width",number)
+				}}
+			/>
+			<Typography>
+				height
+			</Typography>
+			<NumberField
+				title={"패널 높이 조절"}
+				value={():number=>{
+					return Number(store.get("content.panel_height"));
+				}}
+				onChange={(number:number)=>{
+					store.set("content.panel_height",number)
+				}}
+			/>
+		</Stack>
+	)
+	
 },{
 	"type" : "title",
 	"title" : "음원 미리보기 설정"

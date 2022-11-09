@@ -1,13 +1,13 @@
 import { app, BrowserWindow, session, Event} from 'electron';
 const electron = require('electron');
-import {ipcMain,ipcRenderer} from "electron";
+
 // import * as remoteMain from '@electron/remote/main';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
-import {sendIpc, onIpc} from "./lib/helper/ElectronHelper";
+import {showMessageBox} from "./lib/helper/ElectronHelper";
 // import 'module-alias/register';
-
+import {channel as logChannel} from "./lib/Logger";
 let mainWindow: BrowserWindow;
 const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
 boots.loader();
@@ -101,7 +101,24 @@ app.on('activate', () => {
     createWindow();
   }
 });
+process.on('uncaughtException', (err) => {
+  logChannel('uncaughtException').error('[an uncaught exception detected]', err)
+  showMessageBox({
+    title : "uncaughtException",
+    type : "warning",
+    detail  : err
+  })
+})
 
+process.on('unhandledRejection', (err) => {
+  logChannel('unhandledRejection').error('[an unhandled rejection detected]', err)
+
+  showMessageBox({
+    title : 'unhandledRejection',
+    type : "warning",
+    detail  : err
+  })
+})
 // app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
     
 //     // AutoUpdate.checkForUpdates();

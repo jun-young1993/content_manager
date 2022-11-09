@@ -551,7 +551,10 @@ module.exports = {
         "type" : "content",
         "items" : [{
             "key" : "panel_width",
-            "value" : 80
+            "value" : 50
+        },{
+            "key" : "panel_height",
+            "value" : 50
         }]
     },{
         "type" : "content_detail_music",

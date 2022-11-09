@@ -7,7 +7,7 @@ import MusicPlayer from "@views/main/support/content/viewer/MusicPlayer";
 import Container from "@mui/material/Container";
 import {ContentDetailListenerInterface} from "@views/main/Config";
 
-type views = "player" | "metadata" | "media_list" | "config" ;
+export type views = "player" | "metadata" | "media_list" | "config" ;
 
 interface ContentDetailInterface {
 	view : views

@@ -33,6 +33,7 @@ module.exports = {
   openUrl: openUrl,
   sendIpc: sendIpc,
   showErrorBox: showErrorBox,
+  showMessageBox : showMessageBox,
   singleInstanceLock : singleInstanceLock,
   getIpc : getIpc,
   getElectronModule : getElectronModule,
@@ -248,6 +249,16 @@ function showErrorBox(title, message) {
 
   dialog.showErrorBox(title, message);
 }
+
+function showMessageBox(options){
+  const dialog = getElectronModule('dialog'); 
+  if(!Boolean(dialog)) return;
+  if(typeof options.detail === "object"){
+    options.detail = JSON.stringify(options.detail);
+  }
+  dialog.showMessageBox(getBrowserWindow(),options)
+}
+
 
 /**
  * @param {string} url

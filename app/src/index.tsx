@@ -22,16 +22,12 @@ ReactDOM.render(
             <Box sx={{height:'90vh'}}>
                 <HashRouter>
                     <Routes>
-                        <Route path="/" element={
-                        (<>
-                        <MainContainer />
-                        <UtilsContainer />
-                        </>
-                        )} />
+                        <Route path="/" element={<MainContainer />} />
                         <Route path="/content-detail" element={<ContentDetail />} />
                         <Route path="/share" element={<LanShare />} />
                     </Routes>
                 </HashRouter>
+                <UtilsContainer />
             </Box>,
     document.getElementById('root')
     

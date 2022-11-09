@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { isEmpty } from "lodash";
-import ContentDetails from "@views/main/support/content/ContentDetail";
+import ContentDetails , {views} from "@views/main/support/content/ContentDetail";
 import { invoker } from "@views/helper/helper";
 import DropDownMenu from "@views/components/menu/DropDownMenu";
 import BasicAppBar from "@views/components/BasicAppBar";
+import Box from '@mui/material/Box';
 export type ContentDetailWindowMode = "hash" | "base";
+
 export interface ContentDetailWindowProps {
 	mode ?: ContentDetailWindowMode
 	contentId ?: string
@@ -44,6 +46,14 @@ export default function ContentDetail(props:ContentDetailWindowProps){
 		element : <></>,
 		metadata : {},
 	});
+	console.log('content detail renderer',state);
+	const changeView = (view:views) => {
+		if(state.view !== view){
+			const viewState = {view :view};
+			console.log('content detail renderer view State',viewState);
+			setState(viewState);
+		}
+	}
 	const contentId : string | null = props.contentId || getContentId();
 	React.useEffect(()=>{
 		if(contentId !== null){
@@ -59,17 +69,40 @@ export default function ContentDetail(props:ContentDetailWindowProps){
 		// console.log("searchParams.get('content_id')",searchParams.get('content_id'));
 		
 	return (
+		// <Box sx={{display : 'flex'}}>
 		<>
-		<BasicAppBar 
-			toolbar={[
-				<DropDownMenu />
-			]}
-		/>
-		<ContentDetails 
-			view={state.view}
-			metadata={state.metadata}
-		/>
+			<BasicAppBar 
+				toolbar={[
+					<DropDownMenu 
+						items={[{
+							title : "미리보기",
+							key : "player",
+							onClick : () => {
+								changeView("player");
+							}
+						},{
+							title : "메타데이터",
+							key : "metadata",
+							onClick : () => {
+								changeView("metadata");
+							}
+						},{
+							title : "미디어 목록",
+							key : "media_list",
+							onClick : () => {
+								changeView("media_list");
+							}
+						}]}
+					/>
+				]}
+				title={"콘텐츠 상세보기"}
+			/>
+			<ContentDetails 
+				view={state.view}
+				metadata={state.metadata}
+			/>
 		</>
+		// </Box>
 		// <>content detail component</>
 	)
 	

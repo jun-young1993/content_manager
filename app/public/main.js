@@ -42,7 +42,9 @@ var electron = require('electron');
 var isDev = require("electron-is-dev");
 var path = require("path");
 var AutoLoader_1 = require("./lib/AutoLoad/AutoLoader");
+var ElectronHelper_1 = require("./lib/helper/ElectronHelper");
 // import 'module-alias/register';
+var Logger_1 = require("./lib/Logger");
 var mainWindow;
 var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();
@@ -111,6 +113,22 @@ electron_1.app.on('activate', function () {
     if (mainWindow === null) {
         createWindow();
     }
+});
+process.on('uncaughtException', function (err) {
+    (0, Logger_1.channel)('uncaughtException').error('[an uncaught exception detected]', err);
+    (0, ElectronHelper_1.showMessageBox)({
+        title: "uncaughtException",
+        type: "error",
+        detail: err
+    });
+});
+process.on('unhandledRejection', function (err) {
+    (0, Logger_1.channel)('unhandledRejection').error('[an unhandled rejection detected]', err);
+    (0, ElectronHelper_1.showMessageBox)({
+        title: 'unhandledRejection',
+        type: "error",
+        detail: err
+    });
 });
 // app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
 //     // AutoUpdate.checkForUpdates();
