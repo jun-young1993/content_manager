@@ -46,6 +46,9 @@ var ElectronHelper_1 = require("./lib/helper/ElectronHelper");
 // import 'module-alias/register';
 var Logger_1 = require("./lib/Logger");
 var mainWindow;
+var Store = require("electron-store");
+var store = new Store();
+(0, Logger_1.channel)("full").info('[APP BEFORE START]');
 var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();
 // ipcMain.on('test',(events,...args)=>{
@@ -81,6 +84,7 @@ var createWindow = function () {
     // remoteMain.enable(mainWindow.webContents);
     // production에서는 패키지 내부 리소스에 접근.
     // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
+    (0, Logger_1.channel)('main').info('[MAIN WINDOW LOAD URL]', isDev ? 'localhost:3000' : "".concat(path.join(__dirname, '../build/index.html')));
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : "file://".concat(path.join(__dirname, '../build/index.html')));
     if (isDev) {
         mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -99,6 +103,7 @@ electron_1.app.whenReady().then(function () { return __awaiter(void 0, void 0, v
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 electron_1.app.on('ready', function () {
+    (0, Logger_1.channel)("full").info('[APP READY]');
     createWindow();
     var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/events/ready/**/*.js'));
     boots.loader();
@@ -116,19 +121,23 @@ electron_1.app.on('activate', function () {
 });
 process.on('uncaughtException', function (err) {
     (0, Logger_1.channel)('uncaughtException').error('[an uncaught exception detected]', err);
-    (0, ElectronHelper_1.showMessageBox)({
-        title: "uncaughtException",
-        type: "error",
-        detail: err
-    });
+    if (Boolean(store.get('exception.alert_show'))) {
+        (0, ElectronHelper_1.showMessageBox)({
+            title: "uncaughtException",
+            type: "warning",
+            detail: err
+        });
+    }
 });
 process.on('unhandledRejection', function (err) {
     (0, Logger_1.channel)('unhandledRejection').error('[an unhandled rejection detected]', err);
-    (0, ElectronHelper_1.showMessageBox)({
-        title: 'unhandledRejection',
-        type: "error",
-        detail: err
-    });
+    if (Boolean(store.get('exception.alert_show'))) {
+        (0, ElectronHelper_1.showMessageBox)({
+            title: 'unhandledRejection',
+            type: "warning",
+            detail: err
+        });
+    }
 });
 // app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
 //     // AutoUpdate.checkForUpdates();

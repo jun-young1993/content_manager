@@ -18,6 +18,7 @@ exports.__esModule = true;
 exports.MigrationService = void 0;
 var BaseService_1 = require("./BaseService");
 var lodash_1 = require("lodash");
+var Logger_1 = require("../lib/Logger");
 var MigrationService = /** @class */ (function (_super) {
     __extends(MigrationService, _super);
     function MigrationService(model) {
@@ -32,9 +33,10 @@ var MigrationService = /** @class */ (function (_super) {
     MigrationService.prototype.findOrInsert = function (insertData) {
         var _this = this;
         _this.getModel(_this.migModel).findOne({ _id: insertData._id }, function (err, data) {
+            (0, Logger_1.channel)('full').info("[MIGRATION BEFORE INSERT DATA] ".concat(_this.migModel), insertData);
             if ((0, lodash_1.isEmpty)(data)) {
                 _this.getModel(_this.migModel).insert(insertData, function (insertErr, insertData) {
-                    console.log('insertdata', insertData);
+                    (0, Logger_1.channel)('full').info('[MIGRATION AFTER INSERT DATA]', insertData);
                 });
             }
         });

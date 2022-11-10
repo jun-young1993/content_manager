@@ -15,6 +15,7 @@ var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
 var Store = require("electron-store");
+var Logger_1 = require("../../../../lib/Logger");
 var ChildrenBrowserWindow = /** @class */ (function () {
     function ChildrenBrowserWindow(options) {
         var parentBrowerser = electron_1.BrowserWindow.getFocusedWindow();
@@ -28,9 +29,9 @@ var ChildrenBrowserWindow = /** @class */ (function () {
                 contextIsolation: false,
                 devTools: isDev
             },
-            modal: isDev,
+            modal: true,
             show: false,
-            frame: !isDev,
+            frame: false,
             alwaysOnTop: true,
             thickFrame: false
         });
@@ -39,8 +40,14 @@ var ChildrenBrowserWindow = /** @class */ (function () {
     ChildrenBrowserWindow.prototype.readyToShow = function (url) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.browserWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/".concat(url) : "file://".concat(path.join(__dirname, "../build/index.html/#/".concat(url))));
+            (0, Logger_1.channel)("children-window").info('[CHILDREN DIR]', isDev ? "localhost:3000/index.html/#/".concat(url) : "".concat(path.join(__dirname, "../../../../../build/index.html")));
+            _this.browserWindow.loadURL(isDev ? "http://localhost:3000/index.html/#/".concat(url) : "file://".concat(path.join(__dirname, "../../../../../build/index.html")));
             _this.browserWindow.once('ready-to-show', function () {
+                if (!isDev) {
+                    _this.browserWindow.webContents.executeJavaScript("window.location.hash = \"#/".concat(url, "\"")).then(function (response) {
+                        (0, Logger_1.channel)("children-window").info('[HSAH ROUTER]', "#/".concat(url));
+                    });
+                }
                 _this.browserWindow.show();
                 return resolve(true);
                 // setTimeout(() => {
@@ -68,7 +75,7 @@ electron_1.ipcMain.handle("$content-detail-window", function (event, contentId) 
     var _a = primaryDisplay.workAreaSize, width = _a.width, height = _a.height;
     var detailWindow = new ChildrenBrowserWindow({
         width: widthPercent ? width * widthPercent / 100 : 800,
-        height: heightPercent ? height * heightPercent / 100 : 800
+        height: heightPercent ? height * heightPercent / 100 : 600
     });
     return detailWindow.readyToShow("content-detail?content_id=".concat(contentId));
 });

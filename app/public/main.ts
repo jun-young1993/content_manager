@@ -1,3 +1,4 @@
+
 import { app, BrowserWindow, session, Event} from 'electron';
 const electron = require('electron');
 
@@ -7,8 +8,12 @@ import * as path from 'path';
 import {AutoLoader} from './lib/AutoLoad/AutoLoader';
 import {showMessageBox} from "./lib/helper/ElectronHelper";
 // import 'module-alias/register';
-import {channel as logChannel} from "./lib/Logger";
+import {channel, channel as logChannel} from "./lib/Logger";
 let mainWindow: BrowserWindow;
+const Store = require("electron-store");
+const store = new Store();
+
+logChannel("full").info('[APP BEFORE START]');
 const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
 boots.loader();
 
@@ -48,6 +53,7 @@ const createWindow = () => {
   // remoteMain.enable(mainWindow.webContents);
   // production에서는 패키지 내부 리소스에 접근.
   // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
+  channel('main').info('[MAIN WINDOW LOAD URL]',isDev ? 'localhost:3000' : `${path.join(__dirname, '../build/index.html')}`)
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
 
   if (isDev) {
@@ -78,7 +84,7 @@ app.whenReady().then(async () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', ()=>{
-  
+  logChannel("full").info('[APP READY]');
   createWindow();
 
 
@@ -103,21 +109,28 @@ app.on('activate', () => {
 });
 process.on('uncaughtException', (err) => {
   logChannel('uncaughtException').error('[an uncaught exception detected]', err)
-  showMessageBox({
-    title : "uncaughtException",
-    type : "warning",
-    detail  : err
-  })
+  
+  if(Boolean(store.get('exception.alert_show'))){
+    showMessageBox({
+      title : "uncaughtException",
+      type : "warning",
+      detail  : err
+    })
+  }
+
+  
+
 })
 
 process.on('unhandledRejection', (err) => {
   logChannel('unhandledRejection').error('[an unhandled rejection detected]', err)
-
-  showMessageBox({
-    title : 'unhandledRejection',
-    type : "warning",
-    detail  : err
-  })
+  if(Boolean(store.get('exception.alert_show'))){
+    showMessageBox({
+      title : 'unhandledRejection',
+      type : "warning",
+      detail  : err
+    })
+  }
 })
 // app.on('web-contents-created',(event:Event, browserWindow: BrowserWindow) => {
     

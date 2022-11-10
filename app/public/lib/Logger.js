@@ -10,7 +10,6 @@ var channel = function (channel) {
     }
     var directory = logConfig.directory;
     var logPath = logConfig.channels[channel].path;
-    console.log(directory, logPath);
     log.transports.file.resolvePath = function () { return path.resolve(directory, logPath); };
     return log;
 };

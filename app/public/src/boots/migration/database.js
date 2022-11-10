@@ -13,7 +13,7 @@ if(db){
          const current = migration[migrationIndex];
          const model = current.model;
 
-         console.log(current['model']);
+         
 
          const defaultData = current.default;
          const items = current.items;

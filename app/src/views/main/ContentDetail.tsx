@@ -5,6 +5,7 @@ import { invoker } from "@views/helper/helper";
 import DropDownMenu from "@views/components/menu/DropDownMenu";
 import BasicAppBar from "@views/components/BasicAppBar";
 import Box from '@mui/material/Box';
+
 export type ContentDetailWindowMode = "hash" | "base";
 
 export interface ContentDetailWindowProps {
@@ -49,14 +50,12 @@ export default function ContentDetail(props:ContentDetailWindowProps){
 	console.log('content detail renderer',state);
 	const changeView = (view:views) => {
 		if(state.view !== view){
-			const viewState = {view :view};
-			console.log('content detail renderer view State',viewState);
-			setState(viewState);
+			setState({view :view});
 		}
 	}
 	const contentId : string | null = props.contentId || getContentId();
 	React.useEffect(()=>{
-		if(contentId !== null){
+		if(!isEmpty(contentId)){
 			invoker("@Content/$show",contentId)
 			.then((result) => {
 				setState({metadata:result.data});

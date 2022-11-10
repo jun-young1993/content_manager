@@ -2,6 +2,7 @@ import {BrowserWindow, ipcMain, IpcMainInvokeEvent , BrowserWindowConstructorOpt
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 const Store = require("electron-store");
+import {channel} from "../../../../lib/Logger";
 
 // const {getBrowserWindow} = require('../../../../lib/helper/ElectronHelper');
 interface ChildrenBrowserWindowProperty {
@@ -21,11 +22,11 @@ class ChildrenBrowserWindow{
                 contextIsolation: false,
                 devTools: isDev,
               },
-            modal: isDev,
-            show : false,
-            frame: !isDev,
-            alwaysOnTop : true,
-            thickFrame : false
+              modal: true,
+              show: false,
+              frame: false,
+              alwaysOnTop: true,
+              thickFrame: false
         }};
         
         this.browserWindow = new BrowserWindow(childrenBrowserWindowProperty)
@@ -39,8 +40,18 @@ class ChildrenBrowserWindow{
     readyToShow(url:string): Promise<Boolean> {
         
         return new Promise((resolve , reject) => {
-            this.browserWindow.loadURL(isDev? `http://localhost:3000/index.html/#/${url}` : `file://${path.join(__dirname, `../build/index.html/#/${url}`)}`);    
+            channel("children-window").info('[CHILDREN DIR]',isDev? `localhost:3000/index.html/#/${url}` : `${path.join(__dirname, `../../../../../build/index.html`)}`);
+            this.browserWindow.loadURL(isDev? `http://localhost:3000/index.html/#/${url}` : `file://${path.join(__dirname, `../../../../../build/index.html`)}`);    
+            
+            
             this.browserWindow.once('ready-to-show', () => {
+                if(!isDev){
+                this.browserWindow.webContents.executeJavaScript(`window.location.hash = "#/${url}"`).then((response) => {
+                    
+                        channel("children-window").info('[HSAH ROUTER]',`#/${url}`);
+                    
+                })
+                }
                 this.browserWindow.show();
                 return resolve(true);
                 // setTimeout(() => {
@@ -79,7 +90,7 @@ ipcMain.handle("$content-detail-window",(event:IpcMainInvokeEvent,contentId:stri
     const { width , height  } = primaryDisplay.workAreaSize;
     const detailWindow : ChildrenBrowserWindow = new ChildrenBrowserWindow({
         width : widthPercent ? width * widthPercent / 100 : 800,
-        height : heightPercent ? height * heightPercent / 100 : 800
+        height : heightPercent ? height * heightPercent / 100 : 600
     });
     return detailWindow.readyToShow(`content-detail?content_id=${contentId}`)
 

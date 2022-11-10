@@ -577,5 +577,11 @@ module.exports = {
             "key" : "share_port",
             "value" : 11103
         }]
+    },{
+        "type" : "exception",
+        "items" : [{
+            "key" : "alert_show",
+            "value" : false
+        }]
     }]
 };
