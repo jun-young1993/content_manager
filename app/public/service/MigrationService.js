@@ -33,8 +33,8 @@ var MigrationService = /** @class */ (function (_super) {
     MigrationService.prototype.findOrInsert = function (insertData) {
         var _this = this;
         _this.getModel(_this.migModel).findOne({ _id: insertData._id }, function (err, data) {
-            (0, Logger_1.channel)('full').info("[MIGRATION BEFORE INSERT DATA] ".concat(_this.migModel), insertData);
             if ((0, lodash_1.isEmpty)(data)) {
+                (0, Logger_1.channel)('full').info("[MIGRATION BEFORE INSERT DATA] ".concat(_this.migModel), insertData);
                 _this.getModel(_this.migModel).insert(insertData, function (insertErr, insertData) {
                     (0, Logger_1.channel)('full').info('[MIGRATION AFTER INSERT DATA]', insertData);
                 });

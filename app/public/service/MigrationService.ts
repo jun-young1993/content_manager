@@ -17,8 +17,9 @@ export class MigrationService extends BaseService {
     findOrInsert(insertData:any){
         const _this = this;
         _this.getModel(_this.migModel).findOne({_id : insertData._id},(err,data) => {
-            channel('full').info(`[MIGRATION BEFORE INSERT DATA] ${_this.migModel}`,insertData);
+            
             if(isEmpty(data)){
+                channel('full').info(`[MIGRATION BEFORE INSERT DATA] ${_this.migModel}`,insertData);
                 _this.getModel(_this.migModel).insert(insertData,(insertErr,insertData) => {
                     channel('full').info('[MIGRATION AFTER INSERT DATA]',insertData);
                 })
