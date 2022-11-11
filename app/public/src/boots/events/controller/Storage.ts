@@ -2,6 +2,7 @@
 
 import {BaseController} from "./BaseController";
 import {Storage as StorageModel} from "../../../../models/Storage";
+import { apiReject, apiResolve } from "../../../../lib/helper/ApiHelper";
 // import {User} from "@model/User";
 const db = new StorageModel();
 
@@ -57,6 +58,26 @@ class Storage {
 
         })
     }
+
+    /**
+     * 
+     * @param event 
+     * @param args 
+     * @returns 
+     */
+    static $index(event,args){
+        return new Promise((resolve,reject) => {
+            db.db().find({is_deleted : 'N'},(err,data) => {
+                if(data){
+                    return resolve(apiResolve(data))
+                }
+
+                return reject(apiReject(err));
+    
+            })  
+        })
+    }
+
     static _insert(event,args){
 
         db.db().insert(Object.assign(args[0],{

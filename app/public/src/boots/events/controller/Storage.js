@@ -3,6 +3,7 @@
 exports.__esModule = true;
 var BaseController_1 = require("./BaseController");
 var Storage_1 = require("../../../../models/Storage");
+var ApiHelper_1 = require("../../../../lib/helper/ApiHelper");
 // import {User} from "@model/User";
 var db = new Storage_1.Storage();
 // ipcMain.on('asynchronous-message', (event, arg) => {
@@ -49,6 +50,22 @@ var Storage = /** @class */ (function () {
                     data: data
                 });
             }
+        });
+    };
+    /**
+     *
+     * @param event
+     * @param args
+     * @returns
+     */
+    Storage.$index = function (event, args) {
+        return new Promise(function (resolve, reject) {
+            db.db().find({ is_deleted: 'N' }, function (err, data) {
+                if (data) {
+                    return resolve((0, ApiHelper_1.apiResolve)(data));
+                }
+                return reject((0, ApiHelper_1.apiReject)(err));
+            });
         });
     };
     Storage._insert = function (event, args) {

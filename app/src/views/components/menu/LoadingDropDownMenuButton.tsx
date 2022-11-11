@@ -52,7 +52,7 @@ export default function LoadingDropDownMenuButton(props:LoadingMenuButtonProps) 
 			>
 				{
 				isEmpty(props.item)
-				? (<MenuItem>No Item</MenuItem>)
+				? (<MenuItem onClick={()=>{handleClose()}}>No Item</MenuItem>)
 				: props.item.map((item : LoadingMenuItemInterface) => {					
 						return (<MenuItem onClick={()=>{
 							if(item.onClick) item.onClick(setLoading);
