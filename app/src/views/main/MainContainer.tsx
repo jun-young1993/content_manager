@@ -28,6 +28,7 @@ import {
 import {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
+import StorageMonitor from '@views/main/StorageMonitor';
 
 export default function MainContainer() {
 
@@ -73,7 +74,12 @@ export default function MainContainer() {
                                     event.setMainContainer((<TaskMonitor />));
                                 },
                                 icon :<TaskIcon />
-
+                            },{
+                                name : "스토리지 모니터링",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<StorageMonitor />));
+                                },
+                                icon :<TaskIcon />
                             }]
                         },{
                             name : "사용자 지정 관리",

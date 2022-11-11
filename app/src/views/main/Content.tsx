@@ -9,10 +9,8 @@ import ContentPagination from "@views/main/support/content/ContentPagination";
 import InputLabel from "@mui/material/InputLabel";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import SearchField from "@views/components/fields/SearchField";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Fade from '@mui/material/Fade';
-import Menu from '@mui/material/Menu';
-import LoadingButton from '@mui/lab/LoadingButton';
+
+import LoadingDropDownMenuButton from "@views/components/menu/LoadingDropDownMenuButton";
 
 import {Circle as CircleIcon} from '@mui/icons-material';
 import Store from "electron-store";
@@ -23,127 +21,6 @@ const store = new Store();
 const reducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 const searchReducer = (prevState:any, newState:any) => (Object.assign({},prevState,newState));
 
-const IngestButton = (props:{contentTypes:any[]}) => {
-
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [loading , setLoading] = React.useState(false);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-    
-    const handleMenuClick = (ingestType:string) => {
-        
-        setLoading(true);
-        sender("#ingest",{
-            ingest_type : ingestType
-        })
-        .then((result) => {
-            setLoading(false);
-            // handleClose();
-        });
-
-        handleClose();
-     
-        
-    }
-  
-    return (
-      <div>
-        <LoadingButton
-          loading={loading}
-          variant="outlined"
-          endIcon={<KeyboardArrowDownIcon />}
-        //   startIcon={<AddIcon />}
-          id="ingest-fade-button"
-          aria-controls={open ? 'ingest-fade-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-        >
-          인제스트
-        </LoadingButton>
-        <Menu
-          id="ingest-fade-menu"
-          MenuListProps={{
-            'aria-labelledby': 'ingest-fade-button',
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          TransitionComponent={Fade}
-        >
-            
-                <MenuItem onClick={()=>{
-                    
-                        setLoading(true);
-                        invoker("$ingest")
-                        .then((result) => {
-
-                            setLoading(false);
-                            // handleClose();
-                        });
-                
-                        handleClose();
-                    
-                            // handleClose();
-                    }}>
-                        {Icons({
-                            type:"video",
-                            sx:{
-                                mr : 1
-                            }
-                        })}
-                        {"사용자 로컬 입수"}
-                  
-                </MenuItem>
-                <MenuItem onClick={()=>{
-                    setLoading(true);
-                    invoker("$lan-share-window")
-                        .then((result) => {
-                            console.log('result',result);
-                            setLoading(false);
-                            // handleClose();
-                        });
-                    handleClose();
-                }}>
-                        {Icons({
-                            type:"share",
-                            sx:{
-                                mr : 1
-                            }
-                        })}
-                        {"네트워크 공유 입수"}
-              
-                </MenuItem>
-            {/* {props.contentTypes.map((contentType:{name:string, code: string}) => {
-                return (
-                    <MenuItem onClick={()=>{
-                        handleMenuClick(contentType.code);
-
-                    }}>
-                        <>
-                        {Icons({
-                            type:contentType.code,
-                            sx:{
-                                mr : 1
-                            }
-                        })}
-                        {contentType.name}</>
-                        </MenuItem>
-                )
-            })} */}
-          {
-              /* <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem> */}
-        </Menu>
-      </div>
-    );
-};
 
 
 type contentListType = "simple" | "card";
@@ -417,9 +294,46 @@ export default function Content(props:ContentInterface){
                 ></SearchField>
                 {props.hideIngestButton
                 ? <></>
-                :<IngestButton
-                    contentTypes={state.contentType}
-                />}
+                :
+                // <IngestButton
+                //     contentTypes={state.contentType}
+                // />
+                <LoadingDropDownMenuButton 
+                    
+                    title={"인제스트"}
+                    item={[{
+                        startTitleIcon : (Icons({
+                            type:"video",
+                            sx:{
+                                mr : 1
+                            }
+                        })),
+                        title : "사용자 로컬 입수",
+                        onClick : (setLoading) => {
+                                setLoading(true);
+                                invoker("$ingest")
+                                .then((result) => {
+                                    setLoading(false);
+                                });
+                        }
+                    },{
+                        startTitleIcon : (Icons({
+                            type:"share",
+                            sx:{
+                                mr : 1
+                            }
+                        })),
+                        title : "네트워크 공유 입수",
+                        onClick : (setLoading) => {
+                            setLoading(true);
+                            invoker("$lan-share-window")
+                                .then((result) => {
+                                    setLoading(false);
+                                });
+                        }
+                    }]}
+                />
+                }
 
             </Stack>
         </Stack>

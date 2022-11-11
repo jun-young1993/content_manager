@@ -44,7 +44,7 @@ export class FileManager extends Property{
 		log.channel('fs').info(`[Start Fs Copy] ${sourceFullPath} => ${targetFullPath}`);
 		sendIpc("#Utils/TaskSnackBar",{
 			variant : "info",
-			messages : `[Fs][start]${taskId} `
+			messages : `[Fs][Copy][start]${taskId} `
 		});
 		this._copy(sourceFullPath,targetFullPath,taskId);
 	}
@@ -58,6 +58,10 @@ export class FileManager extends Property{
 		fs.createReadStream(sourceFullPath)
 			.on('error',(error:Error)=>{
 				log.channel('fs').info('[Fs Read Stream Error]',error)
+				sendIpc("#Utils/TaskSnackBar",{
+					variant : "error",
+					messages : `[Fs]][Copy][error]${taskId} ${error}`
+				});
 				_this.taskUpdater.error();
 			})
 			.on('data',(data:any) => {
@@ -70,7 +74,7 @@ export class FileManager extends Property{
 				log.channel('fs').info('[Fs Write Stream Error]',error)
 				sendIpc("#Utils/TaskSnackBar",{
 					variant : "error",
-					messages : `[Fs]][error]${taskId} ${error}`
+					messages : `[Fs]][Copy][error]${taskId} ${error}`
 				});
 				_this.taskUpdater.error();
 			})
@@ -79,12 +83,42 @@ export class FileManager extends Property{
 				log.channel('fs').info(`[Fs Complete] TaskId : ${taskId}`)
 				sendIpc("#Utils/TaskSnackBar",{
 					variant : "success",
-					messages : `[Fs][complete]${taskId}`
+					messages : `[Fs][Copy][complete]${taskId}`
 				});
 				_this.taskUpdater.complete();
 
 
 			});
+	}
+
+	delete(){
+		const _this = this;
+		const taskId = this.getTaskId();
+		
+		const sourceFullPath = this.getSourceFullPath()
+		log.channel('fs').info(`[Start Fs Unlink] ${sourceFullPath}`);
+		sendIpc("#Utils/TaskSnackBar",{
+			variant : "info",
+			messages : `[Fs][Unlink][start]${taskId} `
+		});
+		fs.unlink(sourceFullPath,(error) => {
+			if(error){
+				sendIpc("#Utils/TaskSnackBar",{
+					variant : "error",
+					messages : `[Fs][Unlink][error]${taskId} ${error}`
+				});
+				_this.taskUpdater.error();
+				log.channel('fs').info('[Fs Unlink Exception]',error);
+				return false;
+			}
+
+			log.channel('fs').info(`[Fs Unlink Complete] TaskId : ${taskId}`)
+			sendIpc("#Utils/TaskSnackBar",{
+				variant : "success",
+				messages : `[Fs][Unlink][complete]${taskId}`
+			});
+			_this.taskUpdater.complete();
+		})
 	}
 
 

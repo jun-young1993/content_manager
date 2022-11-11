@@ -54,7 +54,7 @@ var FileManager = /** @class */ (function (_super) {
         log.channel('fs').info("[Start Fs Copy] ".concat(sourceFullPath, " => ").concat(targetFullPath));
         (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
             variant: "info",
-            messages: "[Fs][start]".concat(taskId, " ")
+            messages: "[Fs][Copy][start]".concat(taskId, " ")
         });
         this._copy(sourceFullPath, targetFullPath, taskId);
     };
@@ -65,6 +65,10 @@ var FileManager = /** @class */ (function (_super) {
         fs.createReadStream(sourceFullPath)
             .on('error', function (error) {
             log.channel('fs').info('[Fs Read Stream Error]', error);
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "error",
+                messages: "[Fs]][Copy][error]".concat(taskId, " ").concat(error)
+            });
             _this.taskUpdater.error();
         })
             .on('data', function (data) {
@@ -76,7 +80,7 @@ var FileManager = /** @class */ (function (_super) {
             log.channel('fs').info('[Fs Write Stream Error]', error);
             (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
                 variant: "error",
-                messages: "[Fs]][error]".concat(taskId, " ").concat(error)
+                messages: "[Fs]][Copy][error]".concat(taskId, " ").concat(error)
             });
             _this.taskUpdater.error();
         })
@@ -84,7 +88,34 @@ var FileManager = /** @class */ (function (_super) {
             log.channel('fs').info("[Fs Complete] TaskId : ".concat(taskId));
             (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
                 variant: "success",
-                messages: "[Fs][complete]".concat(taskId)
+                messages: "[Fs][Copy][complete]".concat(taskId)
+            });
+            _this.taskUpdater.complete();
+        });
+    };
+    FileManager.prototype["delete"] = function () {
+        var _this = this;
+        var taskId = this.getTaskId();
+        var sourceFullPath = this.getSourceFullPath();
+        log.channel('fs').info("[Start Fs Unlink] ".concat(sourceFullPath));
+        (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+            variant: "info",
+            messages: "[Fs][Unlink][start]".concat(taskId, " ")
+        });
+        fs.unlink(sourceFullPath, function (error) {
+            if (error) {
+                (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                    variant: "error",
+                    messages: "[Fs][Unlink][error]".concat(taskId, " ").concat(error)
+                });
+                _this.taskUpdater.error();
+                log.channel('fs').info('[Fs Unlink Exception]', error);
+                return false;
+            }
+            log.channel('fs').info("[Fs Unlink Complete] TaskId : ".concat(taskId));
+            (0, ElectronHelper_1.sendIpc)("#Utils/TaskSnackBar", {
+                variant: "success",
+                messages: "[Fs][Unlink][complete]".concat(taskId)
             });
             _this.taskUpdater.complete();
         });

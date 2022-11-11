@@ -61,11 +61,16 @@ export default function ContentDetail(props:ContentDetailInterface){
 				);
 
 			}
-			return (				
-				<VideoViewer 
-					content_id={contentId}
-				/>
-			)
+			if(props.metadata.content_type == 'video'){
+				return (				
+					<VideoViewer 
+						content_id={contentId}
+					/>
+				)
+			}
+
+			return <>None</>
+		
 		}
 		if(props.view == "metadata"){
 			return (

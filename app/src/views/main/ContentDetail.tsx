@@ -58,6 +58,7 @@ export default function ContentDetail(props:ContentDetailWindowProps){
 		if(!isEmpty(contentId)){
 			invoker("@Content/$show",contentId)
 			.then((result) => {
+				console.log('요청순');
 				setState({metadata:result.data});
 			})
 		}

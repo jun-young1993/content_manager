@@ -8,14 +8,20 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {invoker} from "@views/helper/helper";
 import CloseIcon from '@mui/icons-material/Close';
+import {styled} from '@mui/material/styles';
+const AppBarTitle = styled(Typography)`
+  -webkit-app-region: drag;
+`;
+// style={"-webkit-app-region: drag;"}
+
 export interface BasicAppBarProps {
   toolbar ?: JSX.Element[]
   title ?: string
 }
 export default function BasicAppBar(props:BasicAppBarProps) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1}} >
+      <AppBar position="static" >
         <Toolbar>
           {props.toolbar 
           ? props.toolbar.map((toolbarItem : JSX.Element) => toolbarItem)
@@ -30,9 +36,14 @@ export default function BasicAppBar(props:BasicAppBarProps) {
           >
             <MenuIcon />
           </IconButton> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <AppBarTitle variant="h6" sx={{ flexGrow: 1 }}>
             {props.title || ""}
-          </Typography>
+          </AppBarTitle>
+          {/* "-webkit-app-region: drag;" */}
+          {/* <IconButton aria-label="close" size="large" >
+            
+            <CloseIcon fontSize="inherit" />
+          </IconButton> */}
           <IconButton aria-label="close" size="large" onClick={()=>{
               invoker("$focus-window-close")
               .then((result) => {
@@ -42,6 +53,7 @@ export default function BasicAppBar(props:BasicAppBarProps) {
             <CloseIcon fontSize="inherit" />
           </IconButton>
           
+          {/* style="-webkit-app-region: drag;" */}
         </Toolbar>
       </AppBar>
     </Box>
