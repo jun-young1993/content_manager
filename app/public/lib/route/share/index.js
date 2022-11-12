@@ -1,22 +1,32 @@
-// const QRCode = require('qrcode')
-// import QRCode from "qrcode";
+function requestPost(file){
+    const uploadRequest = new XMLHttpRequest();
+    uploadRequest.open('POST', "/share/", true);
+
+    uploadRequest.upload.addEventListener('progress', (event) => {
+        if(event.lengthComputable) {
+            const percent = Math.floor((event.loaded / event.total) * 100);
+            console.log('progress', percent);
+            // progressMessageDiv.innerText = percent + "%";
+        } else {
+            console.log('progress', uploadRequest);
+            // progressMessageDiv.innerHTML = "&nbsp;&nbsp;&nbsp;Uploading...";
+        }
+    });
+    const formData = new FormData();
+    const filePath = (
+        (file.webkitRelativePath != null && file.webkitRelativePath != "") ?
+            file.webkitRelativePath :
+            file.name
+    )
+    formData.append(filePath,file);
+    uploadRequest.send(formData);
+}
 
 function DropFile(dropAreaId, fileListId) {
     console.log("=>(index.js:3) dropAreaId", dropAreaId);
     console.log("=>(index.js:4) fileListId", fileListId);
     let dropArea = document.getElementById(dropAreaId);
     let fileList = document.getElementById(fileListId);
-
-
-
-
-
-    // QRCode.toCanvas(canvas, 'sample text');
-    //     .then(()
-    // function (error) {
-    //     if (error) console.error(error)
-    //     console.log('success!');
-    // })
 
     function preventDefaults(e) {
         e.preventDefault();
@@ -52,7 +62,8 @@ function DropFile(dropAreaId, fileListId) {
     }
 
     function previewFile(file) {
-        console.log(file);
+        console.log("=>(index.js:44) file", file);
+        requestPost(file);
         fileList.appendChild(renderFile(file));
     }
 

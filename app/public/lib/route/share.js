@@ -1,8 +1,28 @@
+"use strict";
+exports.__esModule = true;
+var os_1 = require("os");
+var lodash_1 = require("lodash");
+var Store = require("electron-store");
 var router = require('express').Router();
 var QRCode = require("qrcode");
 var formidable = require('formidable').formidable;
 var fs = require("fs");
 var path = require("path");
+function getIPAddress() {
+    var interfaces = (0, os_1.networkInterfaces)();
+    var ips = [];
+    for (var devName in interfaces) {
+        var face = interfaces[devName];
+        for (var i = 0; i < face.length; i++) {
+            var alias = face[i];
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                // @ts-ignore
+                if ((0, lodash_1.isString)(alias.address))
+                    ips.push(alias.address);
+        }
+    }
+    return ips;
+}
 // router.use(require('express').static(path.resolve(__dirname,"views/public")));
 router.use(require('express').static(path.resolve(__dirname, "share")));
 // router.get('/',(req:any, res:any, next:any) => {
@@ -44,15 +64,10 @@ router.get('/info', function (req, res, next) {
     // 	};
     // 	res.json(info);
     //     })
-    /** @type {ServerInfoResult} */
+    var store = new Store();
     var info = {
-        "addresses": ["172.28.192.1"],
-        "port": 11101,
-        "allowDeletion": true,
-        "multiUpload": true,
-        "folderUpload": false,
-        "rootContent": null,
-        "rootContentMD5": null
+        "addresses": getIPAddress(),
+        "port": store.get("app.network_port")
     };
     res.json(info);
 });

@@ -1,4 +1,7 @@
+import {NetworkInterfaceInfo, networkInterfaces} from "os";
+import {isString} from "lodash";
 
+const Store = require("electron-store");
 
 
 const router = require('express').Router();
@@ -7,6 +10,26 @@ const QRCode = require("qrcode");
 const {formidable} = require('formidable');
 const fs = require("fs");
 const path = require("path");
+
+
+function getIPAddress() : string[] | []
+{
+	const interfaces : NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces();
+	const ips : string[] | [] = [];
+	for (let devName in interfaces) {
+		const face = interfaces[devName];
+
+		for (let i = 0; i < face.length; i++) {
+			const alias : NetworkInterfaceInfo = face[i];
+			if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+				// @ts-ignore
+				if(isString(alias.address)) ips.push(alias.address);
+
+
+		}
+	}
+	return ips;
+}
 // router.use(require('express').static(path.resolve(__dirname,"views/public")));
 router.use(require('express').static(path.resolve(__dirname,"share")));
 // router.get('/',(req:any, res:any, next:any) => {
@@ -54,19 +77,14 @@ router.get('/info',(req:any, res:any, next:any) => {
     
 	// 	res.json(info);
 	//     })
-	
-		/** @type {ServerInfoResult} */
+
+		const store = new Store();
 		const info = {
-			"addresses": ["172.28.192.1"],
-			"port": 11101,
-			"allowDeletion": true,
-			"multiUpload": true,
-			"folderUpload": false,
-			"rootContent": null,
-			"rootContentMD5": null
-		    };
+			"addresses": getIPAddress(),
+			"port": store.get("app.network_port"),
+		};
 	
-		    res.json(info);
+		res.json(info);
 });
 
 router.get("/qr-code/:ip/:port",(req:any, res:any) => {
