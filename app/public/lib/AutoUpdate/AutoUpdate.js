@@ -12,23 +12,25 @@ var AutoUpdate = /** @class */ (function () {
         var logger = log.channel("main");
         logger.transports.file.level = "debug";
         autoUpdater.logger = logger;
-        log.channel("main").info('[Start App Updater]');
-        var _this = this;
-        // event.reply('auto-update/available','available');
-        if ((0, lodash_1.isFunction)(methods.available)) {
-            this.isCheck(autoUpdater, methods);
+        var instanceLock = electron_1.app.requestSingleInstanceLock();
+        log.channel("main").info('[Start App Updater] => ', instanceLock);
+        if (!instanceLock) {
+            var _this = this;
+            if ((0, lodash_1.isFunction)(methods.available)) {
+                this.isCheck(autoUpdater, methods);
+            }
+            if ((0, lodash_1.isFunction)(methods.update)) {
+                this.update(autoUpdater, methods);
+            }
+            if (isDev) {
+                Object.defineProperty(electron_1.app, 'isPackaged', {
+                    get: function () {
+                        return true;
+                    }
+                });
+            }
+            autoUpdater.checkForUpdates();
         }
-        if ((0, lodash_1.isFunction)(methods.update)) {
-            this.update(autoUpdater, methods);
-        }
-        if (isDev) {
-            Object.defineProperty(electron_1.app, 'isPackaged', {
-                get: function () {
-                    return true;
-                }
-            });
-        }
-        autoUpdater.checkForUpdates();
     }
     AutoUpdate.prototype.isCheck = function (autoUpdater, methods) {
         autoUpdater.on('update-available', function (info) {

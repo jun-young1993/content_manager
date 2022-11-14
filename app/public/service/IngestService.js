@@ -21,6 +21,12 @@ var lodash_1 = require("lodash");
 var ApiHelper_1 = require("../lib/helper/ApiHelper");
 var log = require("../lib/Logger");
 var TaskManager_1 = require("../lib/Task/TaskManager");
+var OptionParse_1 = require("../lib/Task/OptionParse");
+var path = require("path");
+var ContentService_1 = require("./ContentService");
+var contentService = new ContentService_1.ContentService();
+var Store = require("electron-store");
+var store = new Store();
 var IngestService = /** @class */ (function (_super) {
     __extends(IngestService, _super);
     function IngestService() {
@@ -83,6 +89,90 @@ var IngestService = /** @class */ (function (_super) {
             //     }
             //     resolve(apiResolve(content));
             // })
+        });
+    };
+    /**
+     *
+     * @param file
+     * @param ingestType
+     * @param defaultValues
+     * @returns
+     */
+    IngestService.prototype.ingest = function (file, ingestType, defaultValues) {
+        if (defaultValues === void 0) { defaultValues = {}; }
+        return new Promise(function (resolve, reject) {
+            var workflowId = store.get("default_values.ingest_workflow_".concat(ingestType));
+            if ((0, lodash_1.isEmpty)(workflowId)) {
+                reject('not found ingest workflow');
+            }
+            contentService.createContent(Object.assign({
+                workflow_id: workflowId,
+                title: path.basename(file),
+                content_type: ingestType
+            }, defaultValues))
+                .then(function (content) {
+                log.channel('ingest').info("[Ingest][Request][Create Content]");
+                log.channel('ingest').info(content);
+                new TaskManager_1.TaskManager()
+                    .startWorkflow({
+                    content_id: content.data._id,
+                    workflow_id: workflowId,
+                    source: file
+                })
+                    .then(function (task) {
+                    resolve(task);
+                });
+            });
+        });
+    };
+    IngestService.prototype.outIngestByFiles = function (files) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            new OptionParse_1.OptionParse().getContentTypeByFiles(files)
+                .then(function (result) {
+                var ingestPromises = [];
+                for (var ingestType in result) {
+                    for (var fileIndex = 0; fileIndex < result[ingestType].length; fileIndex++) {
+                        var filePath = result[ingestType][fileIndex];
+                        log.channel('ingest').info("[Ingest][Request][BeforeParams]");
+                        log.channel('ingest').info({
+                            file_path: filePath,
+                            ingest_type: ingestType
+                        });
+                        ingestPromises.push(_this.ingest(filePath, ingestType));
+                    }
+                }
+                Promise.all(ingestPromises)
+                    .then(function (ingestes) {
+                    new TaskManager_1.TaskManager()
+                        .initialize()
+                        .then(function (taskParse) {
+                        log.channel('ingest').info("[Ingest] success Task : ".concat(taskParse.data));
+                        resolve(ingestes);
+                        // sendIpc("#ShowMessageAlert/reply",{
+                        //     severity : "success",
+                        //     title : `작업요청에 성공했습니다.`
+                        // })
+                        // resolve(taskParse);
+                    })["catch"](function (exception) {
+                        log.channel('ingest').info("[Ingest][Exception] : ".concat(exception));
+                        reject(exception);
+                        // sendIpc("#ShowMessageAlert/reply",{
+                        //     severity : "error",
+                        //     title : `작업요청에 실패했습니다.
+                        //         ${exception}}`
+                        // })
+                    });
+                })["catch"](function (ingestPromisesException) {
+                    log.channel('ingest').info("[Ingest][Request][IngestPromisesException]");
+                    log.channel('ingest').info(ingestPromisesException);
+                    reject(ingestPromisesException);
+                });
+            })["catch"](function (getContentTypeByFilesException) {
+                log.channel('ingest').info("[Ingest][Request][GetContentTypeByFilesException]");
+                log.channel('ingest').info(getContentTypeByFilesException);
+                reject(getContentTypeByFilesException);
+            });
         });
     };
     return IngestService;

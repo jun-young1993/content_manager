@@ -24,7 +24,7 @@ electron_1.ipcMain.handle("$share/ip-info", function (event) {
     return new Promise(function (resolve) {
         resolve({
             addresses: getIPAddress(),
-            port: store.get("app.share_port")
+            port: store.get("app.network_port")
         });
     });
 });

@@ -1,15 +1,20 @@
 import {NetworkInterfaceInfo, networkInterfaces} from "os";
+import {app} from "electron";
 import {isString} from "lodash";
-
+import {LAN_SHARE_TMP_FILE} from "../../config/configs";
 const Store = require("electron-store");
+import { IngestService } from "../../service/IngestService";
+import { sendIpc } from "../helper/ElectronHelper";
+
 
 
 const router = require('express').Router();
 const QRCode = require("qrcode");
 
 const {formidable} = require('formidable');
-const fs = require("fs");
-const path = require("path");
+import * as fs from "fs";
+// const path = require("path");
+import * as path from "path";
 
 
 function getIPAddress() : string[] | []
@@ -17,7 +22,8 @@ function getIPAddress() : string[] | []
 	const interfaces : NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces();
 	const ips : string[] | [] = [];
 	for (let devName in interfaces) {
-		const face = interfaces[devName];
+			// @ts-ignore
+		const face : NetworkInterfaceInfo[] = interfaces[devName];
 
 		for (let i = 0; i < face.length; i++) {
 			const alias : NetworkInterfaceInfo = face[i];
@@ -107,37 +113,63 @@ router.get("/qr-code/:ip/:port",(req:any, res:any) => {
 })
 
 router.post('/', (req:any, res:any, next:any) => {
-
+	const targetPath : string = path.resolve(app.getPath("temp"),LAN_SHARE_TMP_FILE);
 	const form = formidable({ 
 		// uploadDir  : "C:/Users/jun/Downloads/downloadTest",
-		uploadDir : "C:/Users/jun/Downloads/downloadTest",
+		uploadDir : targetPath,
 		keepExtensions : true,
 		multiples: true,
 		maxFileSize : 100*1024*1024*1024 
 	})
 	.on("progress",(bytesReceived, bytesExpected) => {
-		const temp = bytesReceived * 100 / bytesExpected;
-		const progress = Math.floor(temp);
-		console.log('progress',progress);
+		// const temp = bytesReceived * 100 / bytesExpected;
+		// const progress = Math.floor(temp);
+		// console.log('progress',progress);
 	})
 	.on("fileBegin",(webkitRelativePath, file) => {
-		console.log('fileBeegin',webkitRelativePath, file);
+		// console.log('fileBeegin',webkitRelativePath, file);
 	})
 	.on("file",(name, file) => {
 		console.log('file done',name , file);
+		new IngestService().outIngestByFiles([file.filepath])
+		.then((result) => {
+			sendIpc("#ShowMessageAlert/reply",{
+				severity : "success",
+				title : `작업요청에 성공했습니다.`
+			})
+				
+		})
+		.catch((exception) => {
+			sendIpc("#ShowMessageAlert/reply",{
+				severity : "error",
+				title : `작업요청에 실패했습니다.
+					${exception}}`
+			})
+		})
 	});
-
-	form.parse(req, (error , fields, files) => {
-		if(error != null) {
-			console.error("form error", error);
+	fs.mkdir(targetPath,{recursive : true}, (error) => {
+		if(error){
+			console.error(error);
 			res.sendStatus(400);
-		    } else {
-			// logDebug("files", files);
-			console.log("file uploads done");
-			res.sendStatus(200);
+		}else{
+			form.parse(req, (error , fields, files) => {
+				if(error != null) {
+					console.error("form error", error);
+					res.sendStatus(400);
+				    } else {
+					// logDebug("files", files);
+					console.log("file uploads done");
+					res.sendStatus(200);
+				}
+			})
 		}
+		
 	})
+
 });
+
+
+
 
 
 

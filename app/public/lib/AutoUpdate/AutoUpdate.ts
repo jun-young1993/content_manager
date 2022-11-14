@@ -21,20 +21,18 @@ export class AutoUpdate {
 		const logger = log.channel("main");
 		logger.transports.file.level = "debug"
 		autoUpdater.logger = logger;
-		log.channel("main").info('[Start App Updater]')
-
-		const _this = this;
-
-		// event.reply('auto-update/available','available');
 		
+		const instanceLock:Boolean = app.requestSingleInstanceLock();
+		log.channel("main").info('[Start App Updater] => ',instanceLock)
+		if(!instanceLock){
+			const _this = this;
 
-
-		if(isFunction(methods.available)){
-			this.isCheck(autoUpdater,methods)
-		}
-		if(isFunction(methods.update)){	
-			this.update(autoUpdater,methods)
-		}
+			if(isFunction(methods.available)){
+				this.isCheck(autoUpdater,methods)
+			}
+			if(isFunction(methods.update)){	
+				this.update(autoUpdater,methods)
+			}
 
 			if(isDev){
 				Object.defineProperty(app,'isPackaged',{
@@ -46,6 +44,11 @@ export class AutoUpdate {
 			}
 			autoUpdater.checkForUpdates()
 			
+		}
+
+
+
+		
 			
 	
 

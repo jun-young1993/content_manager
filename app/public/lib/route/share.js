@@ -1,17 +1,23 @@
 "use strict";
 exports.__esModule = true;
 var os_1 = require("os");
+var electron_1 = require("electron");
 var lodash_1 = require("lodash");
+var configs_1 = require("../../config/configs");
 var Store = require("electron-store");
+var IngestService_1 = require("../../service/IngestService");
+var ElectronHelper_1 = require("../helper/ElectronHelper");
 var router = require('express').Router();
 var QRCode = require("qrcode");
 var formidable = require('formidable').formidable;
 var fs = require("fs");
+// const path = require("path");
 var path = require("path");
 function getIPAddress() {
     var interfaces = (0, os_1.networkInterfaces)();
     var ips = [];
     for (var devName in interfaces) {
+        // @ts-ignore
         var face = interfaces[devName];
         for (var i = 0; i < face.length; i++) {
             var alias = face[i];
@@ -86,33 +92,54 @@ router.get("/qr-code/:ip/:port", function (req, res) {
     });
 });
 router.post('/', function (req, res, next) {
+    var targetPath = path.resolve(electron_1.app.getPath("temp"), configs_1.LAN_SHARE_TMP_FILE);
     var form = formidable({
         // uploadDir  : "C:/Users/jun/Downloads/downloadTest",
-        uploadDir: "C:/Users/jun/Downloads/downloadTest",
+        uploadDir: targetPath,
         keepExtensions: true,
         multiples: true,
         maxFileSize: 100 * 1024 * 1024 * 1024
     })
         .on("progress", function (bytesReceived, bytesExpected) {
-        var temp = bytesReceived * 100 / bytesExpected;
-        var progress = Math.floor(temp);
-        console.log('progress', progress);
+        // const temp = bytesReceived * 100 / bytesExpected;
+        // const progress = Math.floor(temp);
+        // console.log('progress',progress);
     })
         .on("fileBegin", function (webkitRelativePath, file) {
-        console.log('fileBeegin', webkitRelativePath, file);
+        // console.log('fileBeegin',webkitRelativePath, file);
     })
         .on("file", function (name, file) {
         console.log('file done', name, file);
+        new IngestService_1.IngestService().outIngestByFiles([file.filepath])
+            .then(function (result) {
+            (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
+                severity: "success",
+                title: "\uC791\uC5C5\uC694\uCCAD\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4."
+            });
+        })["catch"](function (exception) {
+            (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
+                severity: "error",
+                title: "\uC791\uC5C5\uC694\uCCAD\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.\n\t\t\t\t\t".concat(exception, "}")
+            });
+        });
     });
-    form.parse(req, function (error, fields, files) {
-        if (error != null) {
-            console.error("form error", error);
+    fs.mkdir(targetPath, { recursive: true }, function (error) {
+        if (error) {
+            console.error(error);
             res.sendStatus(400);
         }
         else {
-            // logDebug("files", files);
-            console.log("file uploads done");
-            res.sendStatus(200);
+            form.parse(req, function (error, fields, files) {
+                if (error != null) {
+                    console.error("form error", error);
+                    res.sendStatus(400);
+                }
+                else {
+                    // logDebug("files", files);
+                    console.log("file uploads done");
+                    res.sendStatus(200);
+                }
+            });
         }
     });
 });

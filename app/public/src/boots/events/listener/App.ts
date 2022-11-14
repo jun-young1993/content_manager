@@ -26,7 +26,7 @@ ipcMain.handle("$share/ip-info",(event:IpcMainInvokeEvent) => {
     return new Promise((resolve) => {
         resolve({
             addresses : getIPAddress(),
-            port : store.get("app.share_port")
+            port : store.get("app.network_port")
         });
     })
 })

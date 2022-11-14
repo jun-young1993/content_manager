@@ -20,7 +20,7 @@ export default function LanShare() : JSX.Element
 
     const [state , setState] = React.useReducer(reducer,{
         ip : "127.0.0.1",
-        port : store.get("app.share_port")
+        port : store.get("app.network_port")
     })
     React.useEffect(()=>{
         invoker("$share/ip-info")

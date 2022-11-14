@@ -48,7 +48,13 @@ var Logger_1 = require("./lib/Logger");
 var mainWindow;
 var Store = require("electron-store");
 var store = new Store();
-(0, Logger_1.channel)("full").info('[APP BEFORE START]');
+(0, Logger_1.channel)("main").info('[APP BEFORE START]');
+var instanceLock = electron_1.app.requestSingleInstanceLock();
+if (!instanceLock) {
+    (0, Logger_1.channel)("full").info('[APP Single Instancel Lock Quit]');
+    electron_1.app.quit();
+    electron_1.app.exit();
+}
 var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
 boots.loader();
 // ipcMain.on('test',(events,...args)=>{

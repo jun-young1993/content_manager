@@ -6,6 +6,13 @@ import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
 const log = require("../lib/Logger");
 import { WorkflowRuleInterface } from "../interfaces/WorkflowRuleInterface";
 import { TaskManager } from "../lib/Task/TaskManager";
+import { OptionParse, AllowExtentionType } from "../lib/Task/OptionParse";
+import * as path from "path";
+import { ContentService } from "./ContentService";
+const contentService = new ContentService();
+import * as Store from "electron-store";
+const store = new Store();
+
 export interface outIngestFirstTask{
     content_id : string,
     workflow_id : string,
@@ -89,6 +96,100 @@ export class IngestService extends BaseService{
             // })
         })
    }
+
+    /**
+     * 
+     * @param file 
+     * @param ingestType 
+     * @param defaultValues 
+     * @returns 
+     */
+   ingest(file:string,ingestType : string , defaultValues:any = {}){
+	return new Promise((resolve, reject) => {
+		const workflowId : any = store.get(`default_values.ingest_workflow_${ingestType}`);
+		if(isEmpty(workflowId)){
+			reject('not found ingest workflow');
+		}
+		contentService.createContent(Object.assign({
+			workflow_id : workflowId,
+			title : path.basename(file),
+			content_type : ingestType
+		},defaultValues))
+		.then((content:any) => {
+			log.channel('ingest').info(`[Ingest][Request][Create Content]`);
+			log.channel('ingest').info(content);
+			new TaskManager()
+			.startWorkflow({
+				content_id : content.data._id,
+				workflow_id : workflowId,
+				source : file
+			})
+			.then((task:any) => {
+				resolve(task);
+			});
+		});
+	})
+   }
+
+   outIngestByFiles(files:string[]){
+    const _this = this;
+    return new Promise((resolve,reject) => {        
+        new OptionParse().getContentTypeByFiles(files)
+            .then((result:AllowExtentionType) => {
+                const ingestPromises: any = [];
+            
+                for(let ingestType in result){
+                    for(let fileIndex = 0; fileIndex < result[ingestType].length; fileIndex++){
+                        const filePath : string = result[ingestType][fileIndex];
+                        log.channel('ingest').info(`[Ingest][Request][BeforeParams]`);
+                        log.channel('ingest').info({
+                            file_path : filePath,
+                            ingest_type : ingestType
+                        });
+                        ingestPromises.push(_this.ingest(filePath,ingestType));
+                        
+                    }
+                }
+
+                Promise.all(ingestPromises)
+                .then((ingestes) => {
+                    new TaskManager()
+                    .initialize()
+                    .then((taskParse:any) => {
+                        log.channel('ingest').info(`[Ingest] success Task : ${taskParse.data}`);
+                        resolve(ingestes);
+                        // sendIpc("#ShowMessageAlert/reply",{
+                        //     severity : "success",
+                        //     title : `작업요청에 성공했습니다.`
+                        // })
+                        // resolve(taskParse);
+                    })
+                    .catch((exception) => {
+                        log.channel('ingest').info(`[Ingest][Exception] : ${exception}`);
+                        reject(exception);
+                        // sendIpc("#ShowMessageAlert/reply",{
+                        //     severity : "error",
+                        //     title : `작업요청에 실패했습니다.
+                        //         ${exception}}`
+                        // })
+                    })
+                    
+                })
+                .catch((ingestPromisesException) => {
+                    log.channel('ingest').info(`[Ingest][Request][IngestPromisesException]`);
+                    log.channel('ingest').info(ingestPromisesException);			
+                    reject(ingestPromisesException);
+                })
+            })
+            .catch((getContentTypeByFilesException) => {
+                log.channel('ingest').info(`[Ingest][Request][GetContentTypeByFilesException]`);
+                log.channel('ingest').info(getContentTypeByFilesException);		
+                reject(getContentTypeByFilesException);
+            })
+        
+        })
+    }
+
 
    
 

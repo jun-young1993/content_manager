@@ -30,7 +30,7 @@ var ChildrenBrowserWindow = /** @class */ (function () {
                 devTools: isDev
             },
             modal: true,
-            show: false,
+            show: true,
             frame: false,
             alwaysOnTop: true,
             thickFrame: false

@@ -1,15 +1,26 @@
-function requestPost(file){
+/**
+ * 
+ * @param {*} prefix 
+ * @param {*} random 
+ * @returns 
+ */
+function uniqid(prefix = "", random = false) {
+    const sec = Date.now() * 1000 + Math.random() * 1000;
+    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+    return `${prefix}${id}${random ? `.${Math.trunc(Math.random() * 100000000)}`:""}`;
+};
+
+function requestPost(file,uniqId){
     const uploadRequest = new XMLHttpRequest();
     uploadRequest.open('POST', "/share/", true);
 
     uploadRequest.upload.addEventListener('progress', (event) => {
         if(event.lengthComputable) {
             const percent = Math.floor((event.loaded / event.total) * 100);
-            console.log('progress', percent);
+            document.getElementById(`${uniqId}-percent`).innerText = percent;
+            document.getElementById(`${uniqId}-progress`).style = `width : ${percent}%`;
+            
             // progressMessageDiv.innerText = percent + "%";
-        } else {
-            console.log('progress', uploadRequest);
-            // progressMessageDiv.innerHTML = "&nbsp;&nbsp;&nbsp;Uploading...";
         }
     });
     const formData = new FormData();
@@ -63,11 +74,12 @@ function DropFile(dropAreaId, fileListId) {
 
     function previewFile(file) {
         console.log("=>(index.js:44) file", file);
-        requestPost(file);
-        fileList.appendChild(renderFile(file));
+        const uniqId = uniqid("",true);
+        fileList.appendChild(renderFile(file,uniqId));
+        requestPost(file,uniqId);
     }
 
-    function renderFile(file) {
+    function renderFile(file,uniqId) {
         let fileDOM = document.createElement("div");
         fileDOM.className = "file";
         fileDOM.innerHTML = `
@@ -77,14 +89,13 @@ function DropFile(dropAreaId, fileListId) {
               <div class="details">
                 <header class="header">
                   <span class="name">${file.name}</span>
-                  <span class="size">${file.size}</span>
+                  <span class="size">${file.size}Byte</span>
                 </header>
                 <div class="progress">
-                  <div class="bar" style="width: 0%;"></div>
+                  <div id="${uniqId}-progress" class="bar" style="width: 0%;"></div>
                 </div>
                 <div class="status">
-                  <span class="percent">0%</span>
-                  <span class="speed">90KB/sec</span>
+                  <span id="${uniqId}-percent" class="percent">0</span><span class"percent">%</span>
                 </div>
               </div>
             `;

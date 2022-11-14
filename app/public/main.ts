@@ -13,7 +13,15 @@ let mainWindow: BrowserWindow;
 const Store = require("electron-store");
 const store = new Store();
 
-logChannel("full").info('[APP BEFORE START]');
+logChannel("main").info('[APP BEFORE START]');
+
+const instanceLock:Boolean = app.requestSingleInstanceLock();
+if(!instanceLock){
+  logChannel("full").info('[APP Single Instancel Lock Quit]');
+  app.quit();
+  app.exit();
+}
+
 const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
 boots.loader();
 
