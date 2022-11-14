@@ -17,8 +17,14 @@ function requestPost(file,uniqId){
     uploadRequest.upload.addEventListener('progress', (event) => {
         if(event.lengthComputable) {
             const percent = Math.floor((event.loaded / event.total) * 100);
-            document.getElementById(`${uniqId}-percent`).innerText = percent;
-            document.getElementById(`${uniqId}-progress`).style = `width : ${percent}%`;
+            if(Boolean(document.getElementById(`${uniqId}-percent`))){
+                document.getElementById(`${uniqId}-percent`).innerText = percent;
+            }
+            if(Boolean(document.getElementById(`${uniqId}-progress`))){
+                document.getElementById(`${uniqId}-progress`).style = `width : ${percent}%`;
+            }
+            
+            
             
             // progressMessageDiv.innerText = percent + "%";
         }

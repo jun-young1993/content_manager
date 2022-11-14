@@ -112,7 +112,7 @@ export class IngestService extends BaseService{
 		}
 		contentService.createContent(Object.assign({
 			workflow_id : workflowId,
-			title : path.basename(file),
+			title : defaultValues.title || path.basename(file),
 			content_type : ingestType
 		},defaultValues))
 		.then((content:any) => {
@@ -131,7 +131,7 @@ export class IngestService extends BaseService{
 	})
    }
 
-   outIngestByFiles(files:string[]){
+   outIngestByFiles(files:string[], defaultValues:any = {}){
     const _this = this;
     return new Promise((resolve,reject) => {        
         new OptionParse().getContentTypeByFiles(files)
@@ -146,7 +146,7 @@ export class IngestService extends BaseService{
                             file_path : filePath,
                             ingest_type : ingestType
                         });
-                        ingestPromises.push(_this.ingest(filePath,ingestType));
+                        ingestPromises.push(_this.ingest(filePath,ingestType,defaultValues));
                         
                     }
                 }

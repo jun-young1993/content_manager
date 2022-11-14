@@ -110,7 +110,9 @@ router.post('/', function (req, res, next) {
     })
         .on("file", function (name, file) {
         console.log('file done', name, file);
-        new IngestService_1.IngestService().outIngestByFiles([file.filepath])
+        new IngestService_1.IngestService().outIngestByFiles([file.filepath], {
+            title: name
+        })
             .then(function (result) {
             (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
                 severity: "success",

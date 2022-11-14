@@ -131,7 +131,9 @@ router.post('/', (req:any, res:any, next:any) => {
 	})
 	.on("file",(name, file) => {
 		console.log('file done',name , file);
-		new IngestService().outIngestByFiles([file.filepath])
+		new IngestService().outIngestByFiles([file.filepath],{
+			title : name
+		})
 		.then((result) => {
 			sendIpc("#ShowMessageAlert/reply",{
 				severity : "success",

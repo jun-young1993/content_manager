@@ -107,7 +107,7 @@ var IngestService = /** @class */ (function (_super) {
             }
             contentService.createContent(Object.assign({
                 workflow_id: workflowId,
-                title: path.basename(file),
+                title: defaultValues.title || path.basename(file),
                 content_type: ingestType
             }, defaultValues))
                 .then(function (content) {
@@ -125,7 +125,8 @@ var IngestService = /** @class */ (function (_super) {
             });
         });
     };
-    IngestService.prototype.outIngestByFiles = function (files) {
+    IngestService.prototype.outIngestByFiles = function (files, defaultValues) {
+        if (defaultValues === void 0) { defaultValues = {}; }
         var _this = this;
         return new Promise(function (resolve, reject) {
             new OptionParse_1.OptionParse().getContentTypeByFiles(files)
@@ -139,7 +140,7 @@ var IngestService = /** @class */ (function (_super) {
                             file_path: filePath,
                             ingest_type: ingestType
                         });
-                        ingestPromises.push(_this.ingest(filePath, ingestType));
+                        ingestPromises.push(_this.ingest(filePath, ingestType, defaultValues));
                     }
                 }
                 Promise.all(ingestPromises)
