@@ -14,7 +14,7 @@ const log = require("../../../../lib/Logger");
 
 
 ipcMain.handle("$ingest",(event:IpcMainInvokeEvent) => {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const dialog = getElectronModule('dialog');
 		dialog.showOpenDialog(getBrowserWindow(),{
 			properties:['openFile','multiSelections']
@@ -35,16 +35,20 @@ ipcMain.handle("$ingest",(event:IpcMainInvokeEvent) => {
 						
 				})
 				.catch((exception) => {
+					reject(exception);
 					sendIpc("#ShowMessageAlert/reply",{
 						severity : "error",
 						title : `작업요청에 실패했습니다.
 							${exception}}`
 					})
 				})
+			}else{
+				reject(false);
 			}
 			
 		})
 		.catch((dialogException) => {
+			reject(dialogException);
 			log.channel('ingest').info(`[Ingest][Request][DialogException]`);
 			log.channel('ingest').info(dialogException);
 		});

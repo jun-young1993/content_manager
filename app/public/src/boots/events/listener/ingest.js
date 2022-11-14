@@ -7,7 +7,7 @@ var ElectronHelper_1 = require("../../../../lib/helper/ElectronHelper");
 var IngestService_1 = require("../../../../service/IngestService");
 var log = require("../../../../lib/Logger");
 electron_1.ipcMain.handle("$ingest", function (event) {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
         var dialog = getElectronModule('dialog');
         dialog.showOpenDialog(getBrowserWindow(), {
             properties: ['openFile', 'multiSelections']
@@ -25,13 +25,18 @@ electron_1.ipcMain.handle("$ingest", function (event) {
                         title: "\uC791\uC5C5\uC694\uCCAD\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4."
                     });
                 })["catch"](function (exception) {
+                    reject(exception);
                     (0, ElectronHelper_1.sendIpc)("#ShowMessageAlert/reply", {
                         severity: "error",
                         title: "\uC791\uC5C5\uC694\uCCAD\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.\n\t\t\t\t\t\t\t".concat(exception, "}")
                     });
                 });
             }
+            else {
+                reject(false);
+            }
         })["catch"](function (dialogException) {
+            reject(dialogException);
             log.channel('ingest').info("[Ingest][Request][DialogException]");
             log.channel('ingest').info(dialogException);
         });

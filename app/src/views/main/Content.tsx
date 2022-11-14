@@ -314,6 +314,9 @@ export default function Content(props:ContentInterface){
                                 invoker("$ingest")
                                 .then((result) => {
                                     setLoading(false);
+                                })
+                                .catch((exception) => {
+                                    setLoading(false);
                                 });
                         }
                     },{

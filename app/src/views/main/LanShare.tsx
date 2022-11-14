@@ -1,7 +1,7 @@
 import BasicAppBar from "@views/components/BasicAppBar";
 import React from "react";
 import {invoker} from "@views/helper/helper";
-
+import {Stack, Link, Typography} from '@mui/material';
 const Store = require("electron-store");
 const store = new Store();
 interface IpInfoInterface {
@@ -31,13 +31,18 @@ export default function LanShare() : JSX.Element
                 })
             })
     },[])
-
+    // console.log(`http://${state.ip}:${state.port}/share`)
+    
     return (
         <>
             <BasicAppBar
                 title={"네트워크 공유 입수"}
             />
-            <img src={`http://127.0.0.1:${state.port}/share/qr-code/${state.ip}/${state.port}`} />
+            <Stack>
+                <Typography>http://{state.ip}:{state.port}/share</Typography>
+                <img src={`http://127.0.0.1:${state.port}/share/qr-code/${state.ip}/${state.port}`} style={{width : 150, height : 150}}/>
+            </Stack>
+            
         </>
     )
 }
