@@ -2,6 +2,7 @@ const {CodeItemService} = require("../../service/CodeItemService");
 const codeItemService = new CodeItemService();
 import { apiReject, apiResolve, convertArrayToKeyValue } from '../helper/ApiHelper';
 const path = require("path");
+const log = require('../Logger');
 export type AllowExtentionType = {[index : string] :string[]};
 
 
@@ -23,11 +24,12 @@ export class OptionParse{
 		return new Promise((resolve) => {
 			codeItemService.findByParentCode(`content_type`)
 			.then((result) => {
-				
+				log.channel('option_parse').info("[OPTION PARSE][findByParentCode]",result);
 					const contentTypes = convertArrayToKeyValue(result.data,{
 						key : undefined,
 						value : 'code'
 					})
+					log.channel('option_parse').info("[OPTION PARSE][contentTypes]",contentTypes);
 					const allowExtenions:any = [];
 					const allowExtentionParentCodeMap:any = {};
 					contentTypes.map((ingestType) => {
@@ -35,10 +37,11 @@ export class OptionParse{
 						allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
 						allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
 					})
-					
+					log.channel('option_parse').info("[OPTION PARSE][allowExtenions]",allowExtenions);
+					log.channel('option_parse').info("[OPTION PARSE][allowExtentionParentCodeMap]",allowExtentionParentCodeMap);
 					Promise.all(allowExtenions)
 					.then((resolves) => {
-						
+						log.channel('option_parse').info("[OPTION PARSE][PromiseAll Allow Extention]",allowExtenions);
 						const allowExtention: AllowExtentionType = {};
 						resolves.map((result) => {
 							if(result.success === true){
@@ -65,22 +68,26 @@ export class OptionParse{
 	
 	}
 	getContentTypeByFiles(files : string[]) : Promise<AllowExtentionType>
-	{
+	{log.channel('option_parse').info("[OPTION PARSE][getContentTypeByFiles]",files);
 		const _this = this;
 		return new Promise((resolve) => {
 			_this.allowExtentions().then((result:AllowExtentionType) => {
+				log.channel('option_parse').info("[OPTION PARSE][getContentTypeByFiles allowExtentions]",result);
 				const ingestTypeByFiles : AllowExtentionType = {};
 				const extentionByMap = {};
 				for(let ingestType in result){
 					
 					for(let extentionIndex = 0; extentionIndex < result[ingestType].length ; extentionIndex++){
-						extentionByMap[`.${result[ingestType][extentionIndex]}`] = ingestType;
+						extentionByMap[`.${result[ingestType][extentionIndex].toLowerCase()}`] = ingestType;
 					}
 				}
-				
+				log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]",ingestTypeByFiles);
+				log.channel('option_parse').info("[OPTION PARSE][extentionByMap]",extentionByMap);
 				for(let fileIndex = 0; fileIndex < files.length; fileIndex++){
 					const fileName = files[fileIndex];
-					const extentionName = path.extname(fileName);
+					log.channel('option_parse').info("[OPTION PARSE][fileName]",fileName);
+					const extentionName : string = path.extname(fileName).toLowerCase();
+					log.channel('option_parse').info("[OPTION PARSE][extentionName]",extentionName);
 					let ingestTypeByExtname = extentionByMap[extentionName];
 					if(ingestTypeByExtname === undefined){
 						ingestTypeByExtname = 'other';
@@ -93,6 +100,7 @@ export class OptionParse{
 					}
 					
 				}
+				log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]",ingestTypeByFiles);
 				resolve(ingestTypeByFiles);
 			})
 		})

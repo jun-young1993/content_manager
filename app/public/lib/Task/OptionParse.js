@@ -5,6 +5,7 @@ var CodeItemService = require("../../service/CodeItemService").CodeItemService;
 var codeItemService = new CodeItemService();
 var ApiHelper_1 = require("../helper/ApiHelper");
 var path = require("path");
+var log = require('../Logger');
 var OptionParse = /** @class */ (function () {
     function OptionParse() {
     }
@@ -18,10 +19,12 @@ var OptionParse = /** @class */ (function () {
         return new Promise(function (resolve) {
             codeItemService.findByParentCode("content_type")
                 .then(function (result) {
+                log.channel('option_parse').info("[OPTION PARSE][findByParentCode]", result);
                 var contentTypes = (0, ApiHelper_1.convertArrayToKeyValue)(result.data, {
                     key: undefined,
                     value: 'code'
                 });
+                log.channel('option_parse').info("[OPTION PARSE][contentTypes]", contentTypes);
                 var allowExtenions = [];
                 var allowExtentionParentCodeMap = {};
                 contentTypes.map(function (ingestType) {
@@ -29,8 +32,11 @@ var OptionParse = /** @class */ (function () {
                     allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
                     allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
                 });
+                log.channel('option_parse').info("[OPTION PARSE][allowExtenions]", allowExtenions);
+                log.channel('option_parse').info("[OPTION PARSE][allowExtentionParentCodeMap]", allowExtentionParentCodeMap);
                 Promise.all(allowExtenions)
                     .then(function (resolves) {
+                    log.channel('option_parse').info("[OPTION PARSE][PromiseAll Allow Extention]", allowExtenions);
                     var allowExtention = {};
                     resolves.map(function (result) {
                         if (result.success === true) {
@@ -51,19 +57,25 @@ var OptionParse = /** @class */ (function () {
         });
     };
     OptionParse.prototype.getContentTypeByFiles = function (files) {
+        log.channel('option_parse').info("[OPTION PARSE][getContentTypeByFiles]", files);
         var _this = this;
         return new Promise(function (resolve) {
             _this.allowExtentions().then(function (result) {
+                log.channel('option_parse').info("[OPTION PARSE][getContentTypeByFiles allowExtentions]", result);
                 var ingestTypeByFiles = {};
                 var extentionByMap = {};
                 for (var ingestType in result) {
                     for (var extentionIndex = 0; extentionIndex < result[ingestType].length; extentionIndex++) {
-                        extentionByMap[".".concat(result[ingestType][extentionIndex])] = ingestType;
+                        extentionByMap[".".concat(result[ingestType][extentionIndex].toLowerCase())] = ingestType;
                     }
                 }
+                log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]", ingestTypeByFiles);
+                log.channel('option_parse').info("[OPTION PARSE][extentionByMap]", extentionByMap);
                 for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
                     var fileName = files[fileIndex];
-                    var extentionName = path.extname(fileName);
+                    log.channel('option_parse').info("[OPTION PARSE][fileName]", fileName);
+                    var extentionName = path.extname(fileName).toLowerCase();
+                    log.channel('option_parse').info("[OPTION PARSE][extentionName]", extentionName);
                     var ingestTypeByExtname = extentionByMap[extentionName];
                     if (ingestTypeByExtname === undefined) {
                         ingestTypeByExtname = 'other';
@@ -75,6 +87,7 @@ var OptionParse = /** @class */ (function () {
                         ingestTypeByFiles[ingestTypeByExtname].push(fileName);
                     }
                 }
+                log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]", ingestTypeByFiles);
                 resolve(ingestTypeByFiles);
             });
         });
