@@ -18,10 +18,10 @@ export interface BaseGridInterface {
     toolbar ?: toolbarType[]
     id ?: string
 }
-export type GridPanelItem = BaseGridInterface;
+
 export interface GridPanelInterface {
     height ?: string
-    items : GridPanelItem[]
+    items : BaseGridInterface[]
 }
 
 /**
@@ -106,7 +106,7 @@ export function GridPanel(props:GridPanelInterface){
 
     return (
         <Grid container spacing={2} sx={{height: height}} >
-            {props.items.map((item:GridPanelItem) => {
+            {props.items.map((item:BaseGridInterface) => {
                 console.log('baseGridItem', typeof item);
                 return (
                         <Grid item xs={6} sx={{height: height}}>
