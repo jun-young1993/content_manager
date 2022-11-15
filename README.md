@@ -1,7 +1,7 @@
 # Content Manager v1.1.9
 
 ## Content Manager 다운로드 링크
-> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.9/ContentManager-Setup-1.1.10-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.10/ContentManager-Setup-1.1.10-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
 > <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.9/ContentManager-1.1.9-arm64.dmg"><strong>App Download for mac »</strong></a> 
 
 ## 기능
