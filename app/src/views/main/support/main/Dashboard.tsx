@@ -29,6 +29,7 @@ import {Collapse} from '@mui/material';
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import {ExpandMore} from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
+import Home from "@views/main/support/main/GnbMenu/Main/Home";
 
 const speedDialActionItem = [
   { icon: <FileCopyIcon />, name: 'Copy' },
@@ -116,7 +117,7 @@ const title = "ContentManager";
  */
 export default function Dashboard(props:DashboardInterface) {
   const [open, setOpen] = React.useState<boolean>(true);
-  const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(<></>)
+  const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(<Home></Home>)
 
   props.leftMenu.map((leftMenu:leftMenuInterface) => {
     if(leftMenu.collapse === true){

@@ -16,10 +16,12 @@ export interface BaseGridInterface {
     searchToolbar ?: any
     dataGridProps ?: any
     toolbar ?: toolbarType[]
+    id ?: string
 }
+export type GridPanelItem = BaseGridInterface;
 export interface GridPanelInterface {
     height ?: string
-    items : BaseGridInterface[]
+    items : GridPanelItem[]
 }
 
 /**
@@ -47,17 +49,29 @@ const ArrayItems = (items:toolbarType[] | [] = []) => {
     
     
 }
+export function GridTitle(props:{title : string}){
+    return (<Typography variant="h4" sx={{marginBottom:3}}>
+    {makeTitle(props.title)}
+</Typography>)
+}
 export default function BaseGrid(props:BaseGridInterface){
-    props.dataGridProps.rows.map((row : {_id : string, id ?: string }) => {
-        row.id = row._id;
-        return row;
-    })
+    
+
+        props.dataGridProps.rows.map((row : {_id : string, id ?: string } | any) => {
+            if(Boolean(props.dataGridProps.id)){
+                row.id = row[props.dataGridProps.id];
+            }else{
+                row.id = row._id;
+            }
+            
+            return row;
+        })
+    
+    
     return (
         <Container fixed sx={{height:'65vh', width:"100%"}}>
             {props.title
-                ? <Typography variant="h4" sx={{marginBottom:3}}>
-                    {makeTitle(props.title)}
-                </Typography>
+                ? <GridTitle title={props.title}/>
                 : <></>
             }
 
@@ -92,12 +106,16 @@ export function GridPanel(props:GridPanelInterface){
 
     return (
         <Grid container spacing={2} sx={{height: height}} >
-            {props.items.map((item:BaseGridInterface) => {
+            {props.items.map((item:GridPanelItem) => {
+                console.log('baseGridItem', typeof item);
                 return (
                         <Grid item xs={6} sx={{height: height}}>
+                       
                             <BaseGrid
                                 {...item}
                             />
+                            
+                            
                         </Grid>
                     )
             })}

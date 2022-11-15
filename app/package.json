@@ -8,7 +8,8 @@
     "protocol": "https",
     "host ": "github.com/jun-young1993/electron.git",
     "owner": "jun-young1993",
-    "repo": "electron"
+    "repo": "content_manager",
+    "token" : "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"
   },
   "dependencies": {
     "@craco/craco": "5.8",
