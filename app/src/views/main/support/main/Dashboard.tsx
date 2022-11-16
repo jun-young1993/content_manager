@@ -117,7 +117,7 @@ const title = "ContentManager";
  */
 export default function Dashboard(props:DashboardInterface) {
   const [open, setOpen] = React.useState<boolean>(true);
-  const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(<Home></Home>)
+  const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(props.defaultMainContainer || <></>)
 
   props.leftMenu.map((leftMenu:leftMenuInterface) => {
     if(leftMenu.collapse === true){

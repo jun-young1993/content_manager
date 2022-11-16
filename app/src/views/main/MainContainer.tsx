@@ -22,14 +22,15 @@ import {
     SettingsSuggest as SettingsSuggestIcon,
     TableView as TableViewIcon,
     Task as TaskIcon,
-    ViewModule as ViewModuleIcon
+    ViewModule as ViewModuleIcon,
+    Upgrade as UpgradeIcon
 } from '@mui/icons-material';
 
 import {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 import StorageMonitor from '@views/main/StorageMonitor';
-
+import Home from "@views/main/support/main/GnbMenu/Main/Home";
 export default function MainContainer() {
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -48,6 +49,7 @@ export default function MainContainer() {
             <CssBaseline />
                 <>
                     <Dashboard
+                        defaultMainContainer={<Home />}
                         leftMenu={[{
                             name : "설정",
                             onClick : (event : DrawerClickEvent) => {
@@ -79,7 +81,7 @@ export default function MainContainer() {
                                 onClick : (event : DrawerClickEvent) => {
                                     event.setMainContainer((<StorageMonitor />));
                                 },
-                                icon :<TaskIcon />
+                                icon :<MonitorIcon />
                             }]
                         },{
                             name : "사용자 지정 관리",
@@ -132,6 +134,12 @@ export default function MainContainer() {
                                     event.setMainContainer((<Code />));
                                 },
                                 icon :<SettingsSuggestIcon />
+                            },{
+                                name : "업데이트 이력",
+                                onClick : (event : DrawerClickEvent) => {
+                                    event.setMainContainer((<Home />));
+                                },
+                                icon :<UpgradeIcon />
                             }]
                         }]}
                     />

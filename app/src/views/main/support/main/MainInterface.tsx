@@ -17,4 +17,5 @@ export interface leftMenuInterface {
 
 export interface DashboardInterface {
 	leftMenu : leftMenuInterface[]
+	defaultMainContainer ?: JSX.Element
 }
