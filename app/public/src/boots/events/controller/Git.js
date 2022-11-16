@@ -25,7 +25,25 @@ var Git = /** @class */ (function () {
         return new Promise(function (resolve, reject) {
             var options = {
                 'method': 'GET',
-                'url': "".concat(GIT_HUB_API, "/repos/").concat(GIT_HUB_OWNNER, "/").concat(GIT_HUB_REPO, "/releases").concat((args.length === 0) ? "" : "/".concat(args[0])),
+                'url': "".concat(GIT_HUB_API, "/repos/").concat(GIT_HUB_OWNNER, "/").concat(GIT_HUB_REPO, "/releases").concat((args.length === 0) ? "" : "".concat(args[0])),
+                'headers': GIT_HUB_HEADER
+            };
+            request(options, function (error, response) {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(response.body);
+                }
+                ;
+            });
+        });
+    };
+    Git.$commits = function (event, args) {
+        return new Promise(function (resolve, reject) {
+            var options = {
+                'method': 'GET',
+                'url': "".concat(GIT_HUB_API, "/repos/").concat(GIT_HUB_OWNNER, "/").concat(GIT_HUB_REPO, "/commits").concat((args.length === 0) ? "" : "".concat(args[0])),
                 'headers': GIT_HUB_HEADER
             };
             request(options, function (error, response) {

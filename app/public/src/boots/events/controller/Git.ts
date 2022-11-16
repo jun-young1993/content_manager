@@ -17,7 +17,7 @@ class Git {
 		return new Promise((resolve, reject) => {
 			const options = {
 				'method': 'GET',
-				'url': `${GIT_HUB_API}/repos/${GIT_HUB_OWNNER}/${GIT_HUB_REPO}/releases${(args.length === 0) ? "" : `/${args[0]}`}`,
+				'url': `${GIT_HUB_API}/repos/${GIT_HUB_OWNNER}/${GIT_HUB_REPO}/releases${(args.length === 0) ? "" : `${args[0]}`}`,
 				'headers': GIT_HUB_HEADER
 			};
 			request(options, function (error, response) {
@@ -31,6 +31,24 @@ class Git {
 		})
 		
 		      
+	}
+
+	static $commits(event, args:[string] | []){
+		return new Promise((resolve, reject) => {
+			const options = {
+				'method': 'GET',
+				'url': `${GIT_HUB_API}/repos/${GIT_HUB_OWNNER}/${GIT_HUB_REPO}/commits${(args.length === 0) ? "" : `${args[0]}`}`,
+				'headers': GIT_HUB_HEADER
+			};
+			request(options, function (error, response) {
+				if (error){
+					reject(error);
+				}else{
+					resolve(response.body);
+				};
+				
+			});
+		})
 	}
 }
 new BaseController(Git);
