@@ -30,7 +30,7 @@ import {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 import StorageMonitor from '@views/main/StorageMonitor';
-import Home from "@views/main/support/main/GnbMenu/Main/Home";
+import UpdateRequest from "@/src/views/main/support/main/GnbMenu/Main/UpdateRequest";
 export default function MainContainer() {
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -49,7 +49,7 @@ export default function MainContainer() {
             <CssBaseline />
                 <>
                     <Dashboard
-                        defaultMainContainer={<Home />}
+                        defaultMainContainer={<UpdateRequest />}
                         leftMenu={[{
                             name : "설정",
                             onClick : (event : DrawerClickEvent) => {
@@ -137,7 +137,7 @@ export default function MainContainer() {
                             },{
                                 name : "업데이트 이력",
                                 onClick : (event : DrawerClickEvent) => {
-                                    event.setMainContainer((<Home />));
+                                    event.setMainContainer((<UpdateRequest />));
                                 },
                                 icon :<UpgradeIcon />
                             }]

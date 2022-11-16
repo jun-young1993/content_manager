@@ -7,7 +7,7 @@ import {
 import BaseGrid, {GridTitle} from "@views/components/grid/BaseGrid";
 import MarkdownTypography from "@views/components/utill/MarkdownTypography";
 
-export default function Home() {
+export default function UpdateRequest() {
 	const [releases, setReleases] = useState<[{id : number,  node_id : string , tag_name : string, created_at : string, body : string}] | []>([]);
 	const [body , setBody] = useState<string>("");
 	console.log('releases',releases);
@@ -25,7 +25,6 @@ export default function Home() {
 
 	return (
 		<Grid container spacing={2} sx={{height: "70vh"}} >
-			<Stack>
 				<Grid item xs={6} sx={{height: "70vh"}}>
 					{(releases.length === 0)
 					? <></>
@@ -47,7 +46,6 @@ export default function Home() {
 						}}
 					/>}
 				</Grid>
-			</Stack>
 			<Grid item xs={6} sx={{height: "70vh"}} style={{border : 1}}>
 				<GridTitle title={"업데이트 내용"} />
 				<MarkdownTypography markdown={body} />
