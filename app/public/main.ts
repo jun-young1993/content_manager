@@ -22,8 +22,19 @@ if(!instanceLock){
   app.exit();
 }
 
-const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'));
-boots.loader();
+const boots = new AutoLoader(path.join(__dirname,'./src/boots/**/*.js'),{
+  allDone : () => {
+    store.set("app.latest_migration_version",app.getVersion());
+  }
+});
+
+boots.loader({
+  ...((store.get("app.latest_migration_version") === app.getVersion()) ? {
+        ignore : [
+          "**/src/boots/migration/**"
+        ]
+      } : {})
+});
 
 // ipcMain.on('test',(events,...args)=>{
 //   console.log('test render');

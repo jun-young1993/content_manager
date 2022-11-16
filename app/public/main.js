@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -55,8 +66,24 @@ if (!instanceLock) {
     electron_1.app.quit();
     electron_1.app.exit();
 }
-var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'));
-boots.loader();
+var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.js'), {
+    allDone: function () {
+        store.set("app.latest_migration_version", electron_1.app.getVersion());
+    }
+});
+(0, Logger_1.channel)('main').info('[store.get("app.latest_migration_version")]', store.get("app.latest_migration_version"));
+(0, Logger_1.channel)('main').info('app.getVersion()', electron_1.app.getVersion());
+(0, Logger_1.channel)('main').info('(store.get("app.latest_migration_version") === app.getVersion())', (store.get("app.latest_migration_version") === electron_1.app.getVersion()));
+(0, Logger_1.channel)('main').info('[loader option]', __assign({}, ((store.get("app.latest_migration_version") === electron_1.app.getVersion()) ? {} : {
+    ignore: [
+        "**/src/boots/migration/**"
+    ]
+})));
+boots.loader(__assign({}, ((store.get("app.latest_migration_version") === electron_1.app.getVersion()) ? {} : {
+    ignore: [
+        "**/src/boots/migration/**"
+    ]
+})));
 // ipcMain.on('test',(events,...args)=>{
 //   console.log('test render');
 //   console.log('events',events)

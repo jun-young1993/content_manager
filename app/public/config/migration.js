@@ -268,8 +268,8 @@ module.exports = {
             "key" : "network_port",
             "value" : 11101
         },{
-            "key" : "share_port",
-            "value" : 11103
+            "key" : "latest_migration_version",
+            "value" : false
         }]
     },{
         "type" : "exception",
