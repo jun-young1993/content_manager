@@ -2,7 +2,6 @@
 exports.__esModule = true;
 exports.AutoLoader = void 0;
 var glob = require("glob");
-var path = require("path");
 var AutoLoader = /** @class */ (function () {
     function AutoLoader(path, options) {
         this.options = options || {};
@@ -13,7 +12,7 @@ var AutoLoader = /** @class */ (function () {
         var files = glob.sync(this.path, options || {});
         var requireProcessed = 0;
         files.forEach(function (filePath, index) {
-            console.log('filePath', path.basename(filePath));
+            // console.log('filePath',path.basename(filePath));
             requireProcessed++;
             require(filePath);
             if (files.length === requireProcessed) {

@@ -138,7 +138,11 @@ export default function CustomAlert(props:any) {
                         <Alert severity={severity}
                         >
                             <AlertTitle>
-                                {title}
+                                {title.split("<br/>").length === 1 
+                                ? title 
+                                : title.split("<br/>").map((titleItem:string) => 
+                                    (<>{titleItem}<br/></>)
+                                )}
                                 {confirm}
                             </AlertTitle>
                         </Alert>

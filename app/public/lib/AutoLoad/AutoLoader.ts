@@ -21,7 +21,7 @@ export class AutoLoader {
 
         let requireProcessed:number = 0;
         files.forEach((filePath:string,index:number) => {
-            console.log('filePath',path.basename(filePath));
+            // console.log('filePath',path.basename(filePath));
             requireProcessed++;
             require(filePath);
 

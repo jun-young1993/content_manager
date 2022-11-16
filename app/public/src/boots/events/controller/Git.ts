@@ -12,7 +12,7 @@ const GIT_HUB_HEADER : {"user-agent" : "node.js" , "Authorization" ?: string } =
 	};
 const GIT_HUB_OWNNER : string = "jun-young1993";
 const GIT_HUB_REPO : string = "content_manager";
-class Git {
+export default class Git {
 	static $release(event, args:[string] | []){
 		return new Promise((resolve, reject) => {
 			const options = {

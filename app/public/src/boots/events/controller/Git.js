@@ -59,4 +59,5 @@ var Git = /** @class */ (function () {
     };
     return Git;
 }());
+exports["default"] = Git;
 new BaseController_1.BaseController(Git);

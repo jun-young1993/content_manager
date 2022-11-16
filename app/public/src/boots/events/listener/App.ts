@@ -1,6 +1,7 @@
-import {ipcMain, IpcMainInvokeEvent} from "electron";
+import {ipcMain, IpcMainInvokeEvent, app} from "electron";
 import {NetworkInterfaceInfo, networkInterfaces} from "os";
 import {isString} from "lodash";
+import Git from "../controller/Git";
 
 const Store = require("electron-store");
 const store = new Store();
@@ -28,5 +29,27 @@ ipcMain.handle("$share/ip-info",(event:IpcMainInvokeEvent) => {
             addresses : getIPAddress(),
             port : store.get("app.network_port")
         });
+    })
+})
+
+
+ipcMain.handle("$app-info",(event:IpcMainInvokeEvent) => {
+    return new Promise((resolve) => {
+        Git.$release(null,["/latest"])
+        .then((latest:any) => {
+            const latestVersion = JSON.parse(latest).tag_name;
+            let isLatest : boolean = true;
+            if(latestVersion !== `v${app.getVersion()}`){
+                isLatest = false;
+            }
+            resolve({
+                latest_version : latestVersion,
+                app_version : app.getVersion(),
+                is_latest : isLatest,
+                port : store.get("app.network_port")
+            })
+        })
+        
+        
     })
 })

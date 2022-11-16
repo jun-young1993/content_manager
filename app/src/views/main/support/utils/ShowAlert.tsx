@@ -4,7 +4,7 @@ import * as React from "react";
 import CustomAlert from "@views/components/CustomAlert";
 import {ipcRenderer, IpcRendererEvent} from "electron";
 export interface ListenerAlert {
-    title : string
+    title : string | JSX.Element
     severity :"default" | "error" | "success" | "warning" | "info",
     onClose ?: Function
 }

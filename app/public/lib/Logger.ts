@@ -2,6 +2,7 @@
 const log = require('electron-log');
 const path = require('path');
 const logConfig = require("../config/logging");
+
 const channel = (channel : string) => {
 	if(logConfig.fix){
 		channel = logConfig.fix;
@@ -12,6 +13,7 @@ const channel = (channel : string) => {
 	log.transports.file.resolvePath = () => path.resolve(directory,logPath);
 	return log;
 }
+
 export {
 	channel
 }

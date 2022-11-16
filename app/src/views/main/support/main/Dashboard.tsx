@@ -27,8 +27,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {Collapse} from '@mui/material';
 import ExpandLess from "@mui/icons-material/ExpandLess";
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import {ExpandMore} from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
+import { invoker, showAlert } from '@views/helper/helper';
 
 const speedDialActionItem = [
   { icon: <FileCopyIcon />, name: 'Copy' },
@@ -59,8 +61,8 @@ const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
-}
-
+};
+interface AppInfoInterface {app_version : string , latest_version : string, is_latest : Boolean, port : number};
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
@@ -117,7 +119,7 @@ const title = "ContentManager";
 export default function Dashboard(props:DashboardInterface) {
   const [open, setOpen] = React.useState<boolean>(true);
   const [mainContainer , setMainContainer] = React.useState<React.ReactNode>(props.defaultMainContainer || <></>)
-
+  const [appInfo , setAppInfo] = React.useState<AppInfoInterface | null>(null)
   props.leftMenu.map((leftMenu:leftMenuInterface) => {
     if(leftMenu.collapse === true){
       const [collapse, setCollapse] = React.useState(false);
@@ -126,7 +128,13 @@ export default function Dashboard(props:DashboardInterface) {
     }
 
   })
-
+  React.useEffect(() => {
+    invoker("$app-info")
+    .then((appInfo : AppInfoInterface) => {
+      console.log('appInfo',appInfo) ;
+      setAppInfo(appInfo);
+    });
+  },[])
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -141,27 +149,64 @@ export default function Dashboard(props:DashboardInterface) {
               pr: '24px', // keep right padding when drawer closed
             }}
           >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              {title}
-            </Typography>
+
+            
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: '36px',
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+              >
+                {title}
+              </Typography>
+           
+              <div>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={()=>{
+                    if(appInfo !== null){
+                      showAlert({
+                        title : `
+                        Ver. ${appInfo.app_version} 
+                        <br/>
+                        ${appInfo.is_latest ? "최신버전입니다." : "업데이트가 필요합니다."}
+                        <br/>
+                        juny3738@gmail.com
+                        <br/>
+                        Copyright © 2022 
+                        `,
+                        severity : "info"
+                      })
+                    }else{
+                      showAlert({
+                        title : `앱 정보가 업습니다.`,
+                        severity : "warning"
+                      })
+                    }
+                    
+                  }}
+                  color="inherit"
+                >
+                  <QuestionMarkIcon />
+                </IconButton>
+              </div>
+     
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
