@@ -30,7 +30,7 @@ import {TagEdit} from "@views/main/TagConfig";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
 import StorageMonitor from '@views/main/StorageMonitor';
-import UpdateRequest from "@/src/views/main/support/main/GnbMenu/Main/UpdateRequest";
+import UpdateRequest from "@views/main/support/main/GnbMenu/Main/UpdateRequest";
 export default function MainContainer() {
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
