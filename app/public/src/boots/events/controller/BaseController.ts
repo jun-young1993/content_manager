@@ -35,8 +35,7 @@ export class BaseController implements Property{
             //     _this.controller[methodName](event,args);
             // });
             // console.log('start method',methodName);
-            console.log("=>(BaseController.ts:39) isAsyncMethod(methodName)", this.isAsyncMethod(methodName),methodName);
-            console.log("=>(BaseController.ts:40) this.isInvokeMethod(methodName)", this.isInvokeMethod(methodName),methodName);
+            
             if(_this.isAsyncMethod(methodName)){
                 //async method
                 ipcMain.on(channel,(event,...args)=>{

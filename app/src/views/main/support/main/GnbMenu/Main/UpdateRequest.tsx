@@ -29,7 +29,7 @@ export default function UpdateRequest() {
 					{(releases.length === 0)
 					? <></>
 					: <BaseGrid
-						title ="업데이트 이력"
+						title ="업데이트 히스토리"
 						dataGridProps={{
 								id : "node_id",
 								onRowClick:(params:GridRowParams) => {

@@ -71,19 +71,11 @@ var boots = new AutoLoader_1.AutoLoader(path.join(__dirname, './src/boots/**/*.j
         store.set("app.latest_migration_version", electron_1.app.getVersion());
     }
 });
-(0, Logger_1.channel)('main').info('[store.get("app.latest_migration_version")]', store.get("app.latest_migration_version"));
-(0, Logger_1.channel)('main').info('app.getVersion()', electron_1.app.getVersion());
-(0, Logger_1.channel)('main').info('(store.get("app.latest_migration_version") === app.getVersion())', (store.get("app.latest_migration_version") === electron_1.app.getVersion()));
-(0, Logger_1.channel)('main').info('[loader option]', __assign({}, ((store.get("app.latest_migration_version") === electron_1.app.getVersion()) ? {} : {
+boots.loader(__assign({}, ((store.get("app.latest_migration_version") === electron_1.app.getVersion()) ? {
     ignore: [
         "**/src/boots/migration/**"
     ]
-})));
-boots.loader(__assign({}, ((store.get("app.latest_migration_version") === electron_1.app.getVersion()) ? {} : {
-    ignore: [
-        "**/src/boots/migration/**"
-    ]
-})));
+} : {})));
 // ipcMain.on('test',(events,...args)=>{
 //   console.log('test render');
 //   console.log('events',events)

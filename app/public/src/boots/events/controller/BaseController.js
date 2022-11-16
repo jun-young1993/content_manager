@@ -39,8 +39,6 @@ var BaseController = /** @class */ (function () {
             //     _this.controller[methodName](event,args);
             // });
             // console.log('start method',methodName);
-            console.log("=>(BaseController.ts:39) isAsyncMethod(methodName)", this_1.isAsyncMethod(methodName), methodName);
-            console.log("=>(BaseController.ts:40) this.isInvokeMethod(methodName)", this_1.isInvokeMethod(methodName), methodName);
             if (_this.isAsyncMethod(methodName)) {
                 //async method
                 electron_1.ipcMain.on(channel, function (event) {
@@ -70,7 +68,6 @@ var BaseController = /** @class */ (function () {
                 electron_1.ipcMain.on(channel, _this.controller[methodName]);
             }
         };
-        var this_1 = this;
         for (var index = 0; index < allMethods.length; index++) {
             _loop_1(index);
         }
