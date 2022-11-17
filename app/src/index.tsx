@@ -6,11 +6,12 @@ import MainContainer from '@views/main/MainContainer';
 // import AppTest from './AppTest2';
 import reportWebVitals from './reportWebVitals';
 // import './views/css/main.css';
-import {ipcRenderer} from "electron";
+
 import UtilsContainer from "@views/main/UtilsContainer";
 import {Box} from "@mui/material";
 import {HashRouter, Route, Routes} from 'react-router-dom';
 import LanShare from "@views/main/LanShare";
+import Update from "@views/main/Update";
 import ContentDetail from "@views/main/ContentDetail";
 
 window.React = React
@@ -25,6 +26,7 @@ ReactDOM.render(
                         <Route path="/" element={<MainContainer />} />
                         <Route path="/content-detail" element={<ContentDetail />} />
                         <Route path="/share" element={<LanShare />} />
+                        <Route path="/update" element={<Update />} />
                     </Routes>
                 </HashRouter>
                 <UtilsContainer />

@@ -1,4 +1,4 @@
-
+require("v8-compile-cache");
 import { app, BrowserWindow, session, Event} from 'electron';
 const electron = require('electron');
 

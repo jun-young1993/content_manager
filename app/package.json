@@ -1,6 +1,6 @@
 {
   "name": "content_manager",
-  "version": "1.1.11",
+  "version": "1.1.10",
   "main": "public/main.js",
   "homepage": "./",
   "publish": {
@@ -9,7 +9,7 @@
     "host ": "github.com/jun-young1993/electron.git",
     "owner": "jun-young1993",
     "repo": "content_manager",
-    "token" : "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"
+    "token": "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"
   },
   "dependencies": {
     "@craco/craco": "5.8",
@@ -81,6 +81,7 @@
     "recharts": "^2.1.13",
     "redux": "^4.2.0",
     "uniqid": "^5.4.0",
+    "v8-compile-cache": "^2.3.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -144,7 +145,7 @@
   },
   "_moduleAliases": {
     "@": "./",
-    "@public" : "./public",
+    "@public": "./public",
     "@src": "./src",
     "@lib": "./public/lib",
     "@models": "./public/models",

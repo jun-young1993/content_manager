@@ -37,7 +37,7 @@ export class ChildrenBrowserWindow{
    
     }
     
-    readyToShow(url:string): Promise<Boolean> {
+    readyToShow(url:string,callback?:Function): Promise<Boolean> {
         
         return new Promise((resolve , reject) => {
             channel("children-window").info('[CHILDREN DIR]',isDev? `localhost:3000/index.html/#/${url}` : `${path.join(__dirname, `../../../../../build/index.html`)}`);
@@ -49,7 +49,7 @@ export class ChildrenBrowserWindow{
                 this.browserWindow.webContents.executeJavaScript(`window.location.hash = "#/${url}"`).then((response) => {
                     
                         channel("children-window").info('[HSAH ROUTER]',`#/${url}`);
-                    
+                        
                 })
                 }
                 this.browserWindow.show();

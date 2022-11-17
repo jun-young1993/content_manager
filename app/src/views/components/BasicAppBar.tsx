@@ -17,6 +17,7 @@ const AppBarTitle = styled(Typography)`
 export interface BasicAppBarProps {
   toolbar ?: JSX.Element[]
   title ?: string
+  hideClose ?: true
 }
 export default function BasicAppBar(props:BasicAppBarProps) {
   return (
@@ -44,14 +45,18 @@ export default function BasicAppBar(props:BasicAppBarProps) {
             
             <CloseIcon fontSize="inherit" />
           </IconButton> */}
-          <IconButton aria-label="close" size="large" onClick={()=>{
+          {(props.hideClose === true)
+          ? <></>
+            : (<IconButton aria-label="close" size="large" onClick={()=>{
               invoker("$focus-window-close")
               .then((result) => {
                 console.log('result',result);
               })
-          }}>
-            <CloseIcon fontSize="inherit" />
-          </IconButton>
+              }}>
+              <CloseIcon fontSize="inherit" />
+            </IconButton>)
+          }
+          
           
           {/* style="-webkit-app-region: drag;" */}
         </Toolbar>

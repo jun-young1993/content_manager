@@ -30,12 +30,15 @@ export default function UpdateSnackbar() {
 		</div>
   	</Stack>
   )
-  ipcRenderer.on('auto-update-available',(event:IpcRendererEvent,messages:string)=>{
+//   ipcRenderer.on('auto-update-checking-for-update"',(event:IpcRendererEvent,messages:string)=>{
+//         console.log('auto-updater event',messages);
+//    })
+  ipcRenderer.on('auto-update-update-available"',(event:IpcRendererEvent,messages:string)=>{
         console.log('auto-updater event',messages);
 	setOpen(true);
    })
 
-   ipcRenderer.on('auto-update-start-reply',(event:IpcRendererEvent,messages:string)=>{
+   ipcRenderer.on('auto-update-download-progress',(event:IpcRendererEvent,messages:string)=>{
         console.log('auto-updater event',messages);
 	// setOpen(true);
    })
@@ -68,7 +71,7 @@ export default function UpdateSnackbar() {
 	action={
 		<React.Fragment>
 			
-		<Tooltip title="클릭시 최신버전으로 업데이트 됩니다.">
+		{/* <Tooltip title="클릭시 최신버전으로 업데이트 됩니다.">
 		    <IconButton
 		    aria-label="update"
 		    color="inherit"
@@ -80,8 +83,8 @@ export default function UpdateSnackbar() {
 			>
 		    <UpgradeIcon />
 		  </IconButton>
-		</Tooltip>
-		<Tooltip title="다음에 다시 보기">
+		</Tooltip> */}
+		{/* <Tooltip title="다음에 다시 보기">
 		  <IconButton
 		    aria-label="close"
 		    color="inherit"
@@ -90,7 +93,7 @@ export default function UpdateSnackbar() {
 		  >
 		    <CloseIcon />
 		  </IconButton>
-		  </Tooltip>
+		  </Tooltip> */}
 		</React.Fragment>
 	      }
       />

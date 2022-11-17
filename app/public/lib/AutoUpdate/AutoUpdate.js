@@ -5,7 +5,6 @@ var autoUpdater = require('electron-updater').autoUpdater;
 var _a = require('../helper/ElectronHelper'), getBrowserWindow = _a.getBrowserWindow, getElectronModule = _a.getElectronModule;
 var log = require('../Logger');
 var electron_1 = require("electron");
-var ChildrenWindows_1 = require("../../src/boots/events/listener/ChildrenWindows");
 var AutoUpdate = /** @class */ (function () {
     function AutoUpdate(options) {
         if (options === void 0) { options = {}; }
@@ -29,18 +28,31 @@ var AutoUpdate = /** @class */ (function () {
             // 		}
             // 	})
             // }
-            if (options.window) {
-                this.window = new ChildrenWindows_1.ChildrenBrowserWindow({});
-                // detailWindow.readyToShow(`share`)
-            }
+            // if(options.window){
+            // 	this.window = new ChildrenBrowserWindow({
+            // 		width: 400,
+            // 		height: 150,
+            // 	});
+            // 	// detailWindow.readyToShow(`share`)
+            // }
             this.update(autoUpdater);
             autoUpdater.checkForUpdates();
+            this.testUpdate();
         }
     }
     AutoUpdate.prototype.showBrowser = function () {
-        if (this.window) {
-            this.window.readyToShow("share");
-        }
+        var _this_1 = this;
+        return new Promise(function (resolve) {
+            if (_this_1.window) {
+                _this_1.window.readyToShow("update")
+                    .then(function (result) {
+                    resolve(result);
+                });
+            }
+            else {
+                resolve(true);
+            }
+        });
     };
     AutoUpdate.prototype.sendWindowMessage = function (channel) {
         var arg = [];
@@ -50,6 +62,43 @@ var AutoUpdate = /** @class */ (function () {
         if (this.window) {
             this.window.browserWindow.webContents.send("auto-update-" + channel, arg);
         }
+    };
+    AutoUpdate.prototype.testUpdate = function () {
+        var _this = this;
+        _this.sendWindowMessage("checking-for-update", "checking-for-update");
+        _this.sendWindowMessage("update-available", {
+            tag: 'v1.1.11',
+            version: '1.1.11',
+            files: [
+                {
+                    url: 'ContentManager-Setup-1.1.11-x64.exe',
+                    sha512: 'W634UMwdvjZbE5HybIOVcQyv0i950scU4FXx8+WKOChDnHl2C4yck/fLWSuohZNMDFdYIdibS+pGs/mCgZIIgw==',
+                    size: 189226211
+                }
+            ],
+            path: 'ContentManager-Setup-1.1.11-x64.exe',
+            sha512: 'W634UMwdvjZbE5HybIOVcQyv0i950scU4FXx8+WKOChDnHl2C4yck/fLWSuohZNMDFdYIdibS+pGs/mCgZIIgw==',
+            releaseDate: '2022-11-15T12:18:59.746Z',
+            releaseName: 'v1.1.11',
+            releaseNotes: '<blockquote>\n' +
+                '<h2>Added</h2>\n' +
+                '<h2>Changed</h2>\n' +
+                '<ul>\n' +
+                '<li>대문자 확장자 입수 오류 수정</li>\n' +
+                '</ul>\n' +
+                '<h2>Deleted</h2>\n' +
+                '</blockquote>'
+        });
+        var percent = 1;
+        setTimeout(function () {
+            _this.sendWindowMessage("download-progress", {
+                percent: percent,
+                bytesPerSecond: percent + 17,
+                transferred: 100,
+                progressObj: 11825899
+            });
+            percent++;
+        }, 100);
     };
     AutoUpdate.prototype.update = function (autoUpdater) {
         var _this = this;
@@ -79,7 +128,7 @@ var AutoUpdate = /** @class */ (function () {
             // if(isFunction(methods.available)){
             log.channel("main").info("[AutoUpdater][update-available] available");
             _this.showBrowser();
-            _this.sendWindowMessage("update-available", "update-available");
+            _this.sendWindowMessage("update-available", info);
             // methods.available()
             // }
             // log.info('available.');

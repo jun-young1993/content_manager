@@ -38,7 +38,7 @@ var ChildrenBrowserWindow = /** @class */ (function () {
         });
         this.browserWindow = new electron_1.BrowserWindow(childrenBrowserWindowProperty);
     }
-    ChildrenBrowserWindow.prototype.readyToShow = function (url) {
+    ChildrenBrowserWindow.prototype.readyToShow = function (url, callback) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             (0, Logger_1.channel)("children-window").info('[CHILDREN DIR]', isDev ? "localhost:3000/index.html/#/".concat(url) : "".concat(path.join(__dirname, "../../../../../build/index.html")));
