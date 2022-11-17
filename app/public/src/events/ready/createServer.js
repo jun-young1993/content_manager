@@ -2,8 +2,6 @@
 // @ts-ignore
 var express = require('express');
 var app = express();
-var cors = require("cors");
-app.use(cors());
 app.use('/thumbnail', require('../../../lib/route/thumbnail'));
 app.use('/play', require('../../../lib/route/play'));
 app.use("/share", require("../../../lib/route/share"));

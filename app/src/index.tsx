@@ -15,7 +15,7 @@ import ContentDetail from "@views/main/ContentDetail";
 
 window.React = React
 
-ipcRenderer.send('auto-update-check','auto-update-check')
+
 
 
 ReactDOM.render(

@@ -56,6 +56,7 @@ var AutoLoader_1 = require("./lib/AutoLoad/AutoLoader");
 var ElectronHelper_1 = require("./lib/helper/ElectronHelper");
 // import 'module-alias/register';
 var Logger_1 = require("./lib/Logger");
+var AutoUpdate_1 = require("./lib/AutoUpdate/AutoUpdate");
 var mainWindow;
 var Store = require("electron-store");
 var store = new Store();
@@ -121,6 +122,8 @@ var createWindow = function () {
 };
 electron_1.app.whenReady().then(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
+        (0, Logger_1.channel)("full").info('[APP WHEN READY]');
+        new AutoUpdate_1.AutoUpdate({ window: true });
         return [2 /*return*/];
     });
 }); });

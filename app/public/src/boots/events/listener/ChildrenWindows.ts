@@ -8,7 +8,7 @@ import {channel} from "../../../../lib/Logger";
 interface ChildrenBrowserWindowProperty {
     
 }
-class ChildrenBrowserWindow{
+export class ChildrenBrowserWindow{
     browserWindow : BrowserWindow;
     constructor(options ?: ChildrenBrowserWindowProperty){
         const parentBrowerser : any =  BrowserWindow.getFocusedWindow();

@@ -3,10 +3,10 @@
 // @ts-ignore
 const express = require('express');
 const app = express();
-const cors = require("cors");
 
 
-app.use(cors());
+
+
 app.use('/thumbnail',require('../../../lib/route/thumbnail'));
 app.use('/play',require('../../../lib/route/play'));
 app.use("/share",require("../../../lib/route/share"));

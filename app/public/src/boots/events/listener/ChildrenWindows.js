@@ -11,6 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 exports.__esModule = true;
+exports.ChildrenBrowserWindow = void 0;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
@@ -58,6 +59,7 @@ var ChildrenBrowserWindow = /** @class */ (function () {
     };
     return ChildrenBrowserWindow;
 }());
+exports.ChildrenBrowserWindow = ChildrenBrowserWindow;
 electron_1.ipcMain.handle("$lan-share-window", function (event) {
     var detailWindow = new ChildrenBrowserWindow({});
     return detailWindow.readyToShow("share");

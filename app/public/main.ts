@@ -9,6 +9,7 @@ import {AutoLoader} from './lib/AutoLoad/AutoLoader';
 import {showMessageBox} from "./lib/helper/ElectronHelper";
 // import 'module-alias/register';
 import {channel, channel as logChannel} from "./lib/Logger";
+import {AutoUpdate} from "./lib/AutoUpdate/AutoUpdate";
 let mainWindow: BrowserWindow;
 const Store = require("electron-store");
 const store = new Store();
@@ -95,7 +96,8 @@ const createWindow = () => {
   
 };
 app.whenReady().then(async () => {
-
+  logChannel("full").info('[APP WHEN READY]');
+  new AutoUpdate({window : true});
   // await session.defaultSession.loadExtension("C:\\Users\\jun\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\ghbmnnjooekpmoecnnnilnnbdlolhkhi\\1.44.2_0")
   // await session.defaultSession.removeExtension('ghbmnnjooekpmoecnnnilnnbdlolhkhi');
 })
