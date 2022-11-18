@@ -1,7 +1,10 @@
-# Content Manager v1.1.9
+[![Latest release](https://badgen.net/github/release/jun-young1993/content_manager)](https://github.com/jun-young1993/content_manager/releases)
+# Content Manager 
+
+
 
 ## Content Manager 다운로드 링크
-> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.11/ContentManager-Setup-1.1.11-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.12/ContentManager-Setup-1.1.12-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
 > <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.9/ContentManager-1.1.9-arm64.dmg"><strong>App Download for mac »</strong></a> 
 
 ## 기능
