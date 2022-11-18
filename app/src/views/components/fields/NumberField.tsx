@@ -10,13 +10,14 @@ interface NumberFieldInterface {
 	title ?: string
 	onChange ?: Function
 	hideSlider ?: boolean
+	max ?: number
     }
 export default function NumberField(props:NumberFieldInterface){
 	console.log('numberField',props);
 	const [value, setValue] = React.useState<number | string | Array<number | string>>(
 		props.value || 0
 	    );
-
+	    const max = props.max || 100;
 	    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if(props.onChange){
 			
@@ -30,20 +31,20 @@ export default function NumberField(props:NumberFieldInterface){
 	    const handleBlur = () => {
 		if (value < 0) {
 		    setValue(0);
-		} else if (value > 100) {
-		    setValue(100);
+		} else if (value > max) {
+		    setValue(max);
 		}
 	    };
 	return (
 		<Input
                         value={value}
-                        size="small"
+                        size="medium"
                         onChange={handleInputChange}
                         onBlur={handleBlur}
                         inputProps={{
                             step: 10,
                             min: 0,
-                            max: 100,
+                            max: max,
                             type: 'number',
                             'aria-labelledby': 'input-slider',
                         }}

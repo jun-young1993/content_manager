@@ -45,7 +45,7 @@ import { findDOMNode } from 'react-dom'
     this.state.url = test;
     const contentId = props.content_id;
     // const contentId = metadata._id;
-    const proxyPath = `http://localhost:11101/play/proxy/${contentId}`;
+    const proxyPath = `http://localhost:11101/play/proxy/${contentId}?w=248&fit=crop&auto=format`;
     this.proxyPath = proxyPath;
     console.log('props',props)
   }

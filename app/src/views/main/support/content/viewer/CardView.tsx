@@ -89,6 +89,8 @@ export function SimpleView(props:ViewerInterface){
 export function ShowContentDetail(props:{button : JSX.Element, id : string}){
     return (
         <ResizingDragbleModal
+            initWidth={store.get("content.panel_width")}
+            initHeight={store.get("content.panel_height")}
             hideHeader={true} 
             button={props.button}
             content={(event:BasicModalPropsContentEvent) => {

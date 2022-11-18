@@ -12,6 +12,8 @@ export interface ResizebleDragbleModalState {
 	hideHeader ?: Boolean
 	open ?: Boolean
 	setOpen ?: any
+	initWidth ?: number
+	initHeight ?: number
 }
 export default function ResizebleDragbleModal(props : ResizebleDragbleModalState){
 	const [open, setOpen] = useState<Boolean>(props.open || false);
@@ -40,8 +42,8 @@ export default function ResizebleDragbleModal(props : ResizebleDragbleModalState
 		<FlexibleModal
 		//     ref={modal} 
 		    hideHeader={Boolean(props.hideHeader)}
-                    initWidth={800} 
-                    initHeight={400} 
+                    initWidth={props.initWidth || 800} 
+                    initHeight={props.initHeight || 400} 
                     onFocus={() => {
 			// console.log("modal ref",modal);
 		    }}

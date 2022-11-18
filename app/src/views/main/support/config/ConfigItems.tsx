@@ -22,6 +22,7 @@ export const contentDetailPanel = [{
 				width
 			</Typography>
 			<NumberField
+				max={1000}
 				title={"패널 넓이 조절"}
 				value={():number=>{
 					return Number(store.get("content.panel_width"));
@@ -34,6 +35,7 @@ export const contentDetailPanel = [{
 				height
 			</Typography>
 			<NumberField
+				max={1000}
 				title={"패널 높이 조절"}
 				value={():number=>{
 					return Number(store.get("content.panel_height"));
