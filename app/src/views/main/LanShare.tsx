@@ -7,15 +7,18 @@ const store = new Store();
 interface IpInfoInterface {
     addresses : string[] | []
     port : string
+	
 }
-
+interface lanShareProps {
+    onCloseClick ?: () => void
+}
 
 const reducer = (prevState:any, newState:any) => ({
     ...{},
     ...prevState,
     ...newState
 })
-export default function LanShare() : JSX.Element
+export default function LanShare(props : lanShareProps) : JSX.Element
 {
 
     const [state , setState] = React.useReducer(reducer,{
@@ -31,11 +34,16 @@ export default function LanShare() : JSX.Element
                 })
             })
     },[])
-    // console.log(`http://${state.ip}:${state.port}/share`)
+    console.log(`http://${state.ip}:${state.port}/share`)
     
     return (
         <>
             <BasicAppBar
+            	onCloseClick={() => {
+					if(props.onCloseClick){
+						props.onCloseClick();	
+					}
+				}} 
                 title={"네트워크 공유 입수"}
             />
             <Stack>

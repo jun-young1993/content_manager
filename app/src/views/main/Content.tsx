@@ -9,9 +9,10 @@ import ContentPagination from "@views/main/support/content/ContentPagination";
 import InputLabel from "@mui/material/InputLabel";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import SearchField from "@views/components/fields/SearchField";
-
+import ResizingDragbleModal from "@views/components/utill/ResizingDragbleModal";
 import LoadingDropDownMenuButton from "@views/components/menu/LoadingDropDownMenuButton";
-
+import BasicModal, { BasicModalPropsContentEvent } from "@views/components/BasicModal";
+import LanShare from "@views/main/LanShare";
 import {Circle as CircleIcon} from '@mui/icons-material';
 import Store from "electron-store";
 import Icons from "@views/components/Icons";
@@ -90,6 +91,7 @@ export function CategorySelect(props:
         icon ?: boolean
     }) : JSX.Element
 {
+    
     const [value ,setValue] = React.useState(props.value || "");
     React.useEffect(()=>{
         setValue(props.value || "");
@@ -169,6 +171,7 @@ export default function Content(props:ContentInterface){
         count : 0,
         contentType : []
     })
+    const [lanModalOpen, setlanModalOpen] = React.useState(<></>);
     const [search , setSearch] = React.useReducer(searchReducer,{
         searchText : null,
         category : store.get('default_values.tag'),
@@ -325,14 +328,24 @@ export default function Content(props:ContentInterface){
                             sx:{
                                 mr : 1
                             }
-                        })),
+                        })),   
                         title : "네트워크 공유 입수",
                         onClick : (setLoading) => {
-                            setLoading(true);
-                            invoker("$lan-share-window")
-                                .then((result) => {
-                                    setLoading(false);
-                                });
+                            setlanModalOpen(<ResizingDragbleModal
+                                open={true}
+                                hideHeader={true} 
+                                content={(event:BasicModalPropsContentEvent) => {
+                                    return <LanShare 
+                                        onCloseClick={()=>{
+                                            setlanModalOpen(<></>);
+                                            event.close();
+                                        }}
+                                        
+                                    />
+                                }
+                                }
+                                />);
+                           
                         }
                     }]}
                 />
@@ -354,6 +367,7 @@ export default function Content(props:ContentInterface){
             />}
 
         </Container>
+            {lanModalOpen}
         </>
     );
 }

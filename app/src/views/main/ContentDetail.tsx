@@ -11,6 +11,7 @@ export type ContentDetailWindowMode = "hash" | "base";
 export interface ContentDetailWindowProps {
 	mode ?: ContentDetailWindowMode
 	contentId ?: string
+	onCloseClick ?: () => void
 	
 }
 
@@ -71,7 +72,12 @@ export default function ContentDetail(props:ContentDetailWindowProps){
 	return (
 		// <Box sx={{display : 'flex'}}>
 		<>
-			<BasicAppBar 
+			<BasicAppBar
+				onCloseClick={() => {
+					if(props.onCloseClick){
+						props.onCloseClick();	
+					}
+				}} 
 				toolbar={[
 					<DropDownMenu 
 						items={[{

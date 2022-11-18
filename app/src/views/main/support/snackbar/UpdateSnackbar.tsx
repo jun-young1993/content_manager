@@ -26,7 +26,7 @@ export default function UpdateSnackbar() {
   		<LinearProgress color="secondary" />
 		<br/>
 		<div>
-			최신버전 업데이트가 가능합니다.
+			최신버전으로 업데이트를 시작합니다.
 		</div>
   	</Stack>
   )

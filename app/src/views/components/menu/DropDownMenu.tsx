@@ -43,6 +43,10 @@ export default function DropDownMenu(props:DropDownMenuProps) {
 	    <Menu
 	      id="basic-menu"
 	      anchorEl={anchorEl}
+	      style={{
+		zIndex : 3001,
+		position : "absolute"
+	      }}
 	      open={open}
 	      onClose={handleClose}
 	      MenuListProps={{

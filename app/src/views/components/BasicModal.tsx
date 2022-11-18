@@ -15,25 +15,45 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-
-export default function BasicModal(props:any) {
+export interface BasicModalPropsContentEvent {
+    close : () => void
+}
+export interface BasicModalProps {
+    button : JSX.Element
+    content : JSX.Element | ((event :BasicModalPropsContentEvent) => JSX.Element)
+}
+export default function BasicModal(props:BasicModalProps) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [buttonTitle, setButtonTitle] = React.useState(props.button.title);
-    const [item, setItem] = React.useState(props.item);
+    // const [buttonTitle, setButtonTitle] = React.useState(props.button.title);
+    console.log("typeof props.content",typeof props.content);
+    const [content, setContent] = React.useState(typeof props.content === "function" ? props.content({close : handleClose}) : props.content);
     return (
-        <div>
-            <Button onClick={handleOpen}>{buttonTitle}</Button>
+        <>
+            {/* <Button onClick={handleOpen}>{buttonTitle}</Button> */}
+            {React.cloneElement(props.button,{
+                onClick : () => {
+                    handleOpen();
+                }
+            })}
             <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                {item}
+                <Box sx={style}>
+                {/* <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Text in a modal
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                </Typography> */}
+                    {content}
+                </Box>
             </Modal>
-        </div>
+        </>
     );
 }

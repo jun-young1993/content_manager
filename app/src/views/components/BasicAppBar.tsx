@@ -18,6 +18,7 @@ export interface BasicAppBarProps {
   toolbar ?: JSX.Element[]
   title ?: string
   hideClose ?: true
+  onCloseClick ?: () => void
 }
 export default function BasicAppBar(props:BasicAppBarProps) {
   return (
@@ -48,10 +49,10 @@ export default function BasicAppBar(props:BasicAppBarProps) {
           {(props.hideClose === true)
           ? <></>
             : (<IconButton aria-label="close" size="large" onClick={()=>{
-              invoker("$focus-window-close")
-              .then((result) => {
-                console.log('result',result);
-              })
+                if(props.onCloseClick){
+                  props.onCloseClick()
+                }
+              
               }}>
               <CloseIcon fontSize="inherit" />
             </IconButton>)

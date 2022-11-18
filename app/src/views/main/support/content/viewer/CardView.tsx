@@ -26,7 +26,9 @@ import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 import notFoundThumb from "@views/images/not_found_thumb.png";
 import {Box} from "@mui/material";
 import LoadMask from "@views/main/support/utils/LoadMask";
-
+import BasicModal, { BasicModalPropsContentEvent } from "@views/components/BasicModal";
+import ContentDetail from "@views/main/ContentDetail";
+import ResizingDragbleModal from "@views/components/utill/ResizingDragbleModal";
 const Store = require("electron-store");
 const store = new Store();
 
@@ -83,20 +85,37 @@ export function SimpleView(props:ViewerInterface){
         })}
     </>)
 }
-export default function CardView(props:ViewerInterface) {
 
-    const [loadMask,setLoadMask] = React.useState(<></>);
+export function ShowContentDetail(props:{button : JSX.Element, id : string}){
+    return (
+        <ResizingDragbleModal
+            hideHeader={true} 
+            button={props.button}
+            content={(event:BasicModalPropsContentEvent) => {
+                return <ContentDetail 
+                    contentId={props.id}
+                    onCloseClick={event.close}
+                />
+                }
+            }
+        />
+    );
+}
+export default function CardView(props:ViewerInterface) {
+    console.log('content rerender');
+    // const [modal,setModal] = React.useState(<></>);
     const showDetailWindow = (contentId:string) => {
-        setLoadMask(<LoadMask />);
-        invoker('$content-detail-window',contentId)
-        .then((resolve) => {
-            setLoadMask(<></>);
-            console.log("resolve",resolve);
-        });
+        console.log('show detail window');
+        // setModal(<BasicModal />);
+        // setLoadMask(<LoadMask />);
+        // invoker('$content-detail-window',contentId)
+        // .then((resolve) => {
+        //     setLoadMask(<></>);
+        //     console.log("resolve",resolve);
+        // });
     }
     return (
         <>
-        {loadMask}
         <ThemeProvider theme={theme}>
             <CssBaseline />
 
@@ -138,55 +157,29 @@ export default function CardView(props:ViewerInterface) {
                                             style={{height: "100%"}}
                                             sx={{display: 'flex', flexDirection: 'column'}}
                                         >
-                                            <CardMedia
-                                                component="img"
-                                                sx={{
-                                                    '&:hover': {
-                                                        cursor: "pointer",
-                                                        transform: "scale(1.4)",
-                                                        transition: "all 0.2s linear",
-                                                        overflow: "hidden"
-                                                    }
-                                                    // 16:9
-                                                    // pt: '1%',
-                                                }}
-                                                image={"http://localhost:11101/thumbnail/" + content._id + "?w=248&fit=crop&auto=format"}
-                                                alt="썸네일 생성작업을 요청해주세요."
-                                                onError={(event: any) => {
-                                                    // event.target.style['display'] = 'none';
-                                                    // event.target.style['background-image'] = 'red';
-                                                    // console.log(event);
-                                                    // console.log(event);
-                                                    // event.target.onerror = null;
-                                                    // event.target.src = store.get('url.no_thumb');
-                                                    event.target.src = notFoundThumb;
-                                                    // event.target.src = logo;
-
-                                                    // console.log(event);
-                                                    // // event.stopPropagation();
-                                                    // event.target.onError = () => {
-                                                    //     console.log('target on error');
-                                                    // }
-                                                    // return false;
-                                                }}
-                                                onClick={(event: any) => {
-                                                    showDetailWindow(content._id)
-                                                    // invoker('$content-detail-window',content._id)
-                                                    // .then((resolve) => {
-                                                    //     console.log("resolve",resolve);
-                                                    // });
-                                                    // showDrawer({
-                                                    //     open: true,
-                                                    //     metadata: content
-                                                    // }, (checked: boolean) => {
-
-                                                    //     console.log('수정완료 close event', content._id);
-
-                                                    // });
-                                                    console.log('content click');
-                                                }}
-                                            >
-                                            </CardMedia>
+                                            <ShowContentDetail 
+                                                id={content._id}
+                                                button={
+                                                    <CardMedia
+                                                            component="img"
+                                                            sx={{
+                                                                '&:hover': {
+                                                                    cursor: "pointer",
+                                                                    transform: "scale(1.4)",
+                                                                    transition: "all 0.2s linear",
+                                                                    overflow: "hidden"
+                                                                }
+                                                                // 16:9
+                                                                // pt: '1%',
+                                                            }}
+                                                            image={"http://localhost:11101/thumbnail/" + content._id + "?w=248&fit=crop&auto=format"}
+                                                            alt="썸네일 생성작업을 요청해주세요."
+                                                            onError={(event: any) => {
+                                                                event.target.src = notFoundThumb;
+                                                            }}
+                                                        />
+                                                }
+                                            />
                                             <CardContent sx={{flexGrow: 1, padding: "3px", height: "3vh"}}>
                                                 <Typography gutterBottom noWrap variant="h6" component="h6">
                                                     {content.title}
@@ -197,23 +190,16 @@ export default function CardView(props:ViewerInterface) {
                                                 {/*</Typography>*/}
                                             </CardContent>
                                             <CardActions sx={{height: "3vh", justifyContent: "flex-end"}}>
-                                                <LightTooltip title={"상세보기"} placement={"top-end"}>
-                                                    <IconButton onClick={() => {
-                                                        // setOpenContentDetail(true);
-                                                        // invoker('$content-detail-window',content._id);
-                                                        showDetailWindow(content._id);
-                                                        // showDrawer({
-                                                        //     open: true,
-                                                        //     metadata: content
-                                                        // }, (checked: boolean) => {
-
-                                                        //     console.log('수정완료 close event', content._id);
-
-                                                        // });
-                                                    }}>
-                                                        <PageviewOutlinedIcon/>
-                                                    </IconButton>
-                                                </LightTooltip>
+                                                <ShowContentDetail 
+                                                    id={content._id}
+                                                    button={   
+                                                        <LightTooltip title={"상세보기"} placement={"top-end"}>
+                                                            <IconButton>
+                                                                <PageviewOutlinedIcon/>
+                                                            </IconButton>
+                                                        </LightTooltip>
+                                                    }
+                                                />
                                                 <WorkflowButton
                                                     contentId={content._id}
                                                     contentType={content.content_type}

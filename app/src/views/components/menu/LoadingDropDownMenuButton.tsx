@@ -7,7 +7,8 @@ import { isEmpty } from "lodash";
 interface LoadingMenuItemInterface {
 	startTitleIcon ?: JSX.Element
 	endTitleIcon ?: JSX.Element
-	title : string
+	title ?: string 
+	menuItem ?: JSX.Element
 	onClick ?: (setLoading:React.Dispatch<React.SetStateAction<boolean>>) => void
 }
 interface LoadingMenuButtonProps {
@@ -54,13 +55,17 @@ export default function LoadingDropDownMenuButton(props:LoadingMenuButtonProps) 
 				isEmpty(props.item)
 				? (<MenuItem onClick={()=>{handleClose()}}>No Item</MenuItem>)
 				: props.item.map((item : LoadingMenuItemInterface) => {					
+						if(item.menuItem){
+							return item.menuItem;
+						}
 						return (<MenuItem onClick={()=>{
 							if(item.onClick) item.onClick(setLoading);
 
 							handleClose();
 						}}> 
+						
 							{item.startTitleIcon || <></>}
-							{item.title}
+							{item.title || <></>}
 							{item.endTitleIcon || <></>}
 						</MenuItem>)
 					}
