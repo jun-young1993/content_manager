@@ -17,7 +17,7 @@ interface ContentDetailInterface {
 export default function ContentDetail(props:ContentDetailInterface){
 	const contentId = props.metadata._id;
 
-	console.log('detail props ',props);
+
 
 
 	const ContentViews = () => {
@@ -28,6 +28,15 @@ export default function ContentDetail(props:ContentDetailInterface){
 				sx={{
 				    // 16:9
 				    // pt: '0%',
+				}}
+				style={{
+					width: "calc(98%)",
+					height: "calc(100% - 75px)",
+					marginLeft : "calc(1%)",
+					backgroundColor : "gray",
+					maxWidth : "100%",
+					borderRadius: "7px",
+					border: "3px solid yellow"
 				}}
 				image={"http://localhost:11101/thumbnail/"+contentId+"?w=248&fit=crop&auto=format"}
 				alt="썸네일 생성작업을 요청해주세요."

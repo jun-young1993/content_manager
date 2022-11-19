@@ -1,17 +1,10 @@
 import * as React from 'react';
-import ImageList from '@mui/material/ImageList';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import ImageListItem from '@mui/material/ImageListItem';
-import ImageListItemBar from '@mui/material/ImageListItemBar';
-import ContentItemBar from '@views/main/support/content/ContentItemBar';
-import ListSubheader from '@mui/material/ListSubheader';
 import electron from "electron";
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
-const ipcRenderer = electron.ipcRenderer;
 import ReactPlayer from 'react-player/file';
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
+
+const ipcRenderer = electron.ipcRenderer;
 
 // import { Slider, Direction } from 'react-player-controls'
 
@@ -176,6 +169,9 @@ import { findDOMNode } from 'react-dom'
     const reactPlayerDom : any = findDOMNode(this.player);
     console.log('this.proxyPath',this.proxyPath);
     if(reactPlayerDom){
+        reactPlayerDom.style.width ="100%";
+        reactPlayerDom.style.height ="100%";
+
       if(reactPlayerDom.children){
         if(reactPlayerDom.children.length >= 1){
           reactPlayerDom.children[0].setAttribute("src",this.proxyPath)
@@ -194,12 +190,15 @@ import { findDOMNode } from 'react-dom'
     const SEPARATOR = ' · '
 
     return (
-      <Box style={{height: '100%', width: '100%', backgroundColor:'gray'}}>
+      <Box style={{width: "calc(98%)",
+          height: "calc(100% - 75px)", backgroundColor:'gray'}}>
         <ReactPlayer
           ref={this.ref}
-          className='react-player'
-          width='100%'
-          height='100%'
+          // className='react-player'
+          style={{
+              width: "calc(98%)",
+              height: "calc(100% - 75px)"
+          }}
           url={url}
           pip={pip}
           playing={playing}
