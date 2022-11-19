@@ -4,17 +4,18 @@ const {Storage} = require("../../models/Storage");
 const {Media} = require("../../models/Media");
 const {Task} = require("../../models/Task");
 const {Module} = require("../../models/Module");
+const {Content} = require("../../models/Content");
 const {FileManager} = require("./module/FileManager");
 const {Transcoder} = require("./module/Transcoder");
 const {MediaInfo} = require("./module/MediaInfo");
 
-import { sendIpc } from '../helper/ElectronHelper';
-const log = require('../Logger');
+import {sendIpc} from '../helper/ElectronHelper';
 import {isEmpty} from 'lodash';
 // const {isEmpty} = require('lodash');
 import * as path from "path";
-import { apiReject, apiResolve, convertArrayToKeyValue } from '../helper/ApiHelper';
-import { TaskUpdater } from './TaskUpdater';
+import {apiResolve} from '../helper/ApiHelper';
+
+const log = require('../Logger');
 
 export class TaskParse {
 	private sourceMediaId : any = null;
@@ -29,7 +30,7 @@ export class TaskParse {
 	private targetMedia : any = null;
 	private module : any = null;
 	private moduleInfo : any = null;
-
+	private content : any = null;
 	private task : any = null;
 
 
@@ -334,13 +335,23 @@ export class TaskParse {
 																ext = '.mp4'
 															}
 
+
+															let targetFileId : string = _this.task._id;
+
+															if(_this.moduleInfo.target_media === "no" && _this.targetStorage.type == "local"){
+																targetFileId = (_this.content.title || "") +"("+targetFileId+")";
+															}
+
 															const setTargetOptions = {
 																content_id : _this.task.content_id,
 																type : _this.moduleInfo.target_media,
 																storage : _this.moduleInfo.target_storage,
-																path : _this.task._id+ext,
-																full_path : path.resolve(_this.targetStorage.path,_this.task._id+ext)
+																path : targetFileId+ext,
+																full_path : path.resolve(_this.targetStorage.path,targetFileId+ext)
 															};
+
+															// 타겟 옵션중
+															// target + media type == no  이면 파일 아이디를 콘텐츠 타이틀로 변경
 
 															_this.setMedia(setTargetOptions)
 																.then((setTargetMedia : any) => {
@@ -448,6 +459,7 @@ export class TaskParse {
 
 	async getTaskParse(){
 		return new Promise((resolve , reject) => {
+			const _this = this;
 			let taskSetting:any = null;
 			if(!isEmpty(this.task.source) && !isEmpty(this.task.target)){
 				taskSetting = this.onlineSetting();
@@ -455,14 +467,25 @@ export class TaskParse {
 				taskSetting = this.setting()
 
 			}
-			taskSetting
-				.then((complete:any) => {
-					sendIpc("#TaskMonitor/create",complete);
-					resolve(complete);
-				})
-				.catch((error:string) => {
-					log.channel('task_parse').error(error);
-				})
+			const contentDb = new Content();
+
+			contentDb.db().findOne({_id : this.task.content_id},(err, content) => {
+				_this.content = content;
+				log.channel('task_parse').info("[TaskParse][Get Content]",_this.content);
+				taskSetting
+					.then((complete:any) => {
+						sendIpc("#TaskMonitor/create",complete);
+						resolve(complete);
+					})
+					.catch((error:string) => {
+						log.channel('task_parse').error(error);
+					})
+			})
+
+
+
+
+
 
 		})
 

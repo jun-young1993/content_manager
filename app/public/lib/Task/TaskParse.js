@@ -41,15 +41,16 @@ var Storage = require("../../models/Storage").Storage;
 var Media = require("../../models/Media").Media;
 var Task = require("../../models/Task").Task;
 var Module = require("../../models/Module").Module;
+var Content = require("../../models/Content").Content;
 var FileManager = require("./module/FileManager").FileManager;
 var Transcoder = require("./module/Transcoder").Transcoder;
 var MediaInfo = require("./module/MediaInfo").MediaInfo;
 var ElectronHelper_1 = require("../helper/ElectronHelper");
-var log = require('../Logger');
 var lodash_1 = require("lodash");
 // const {isEmpty} = require('lodash');
 var path = require("path");
 var ApiHelper_1 = require("../helper/ApiHelper");
+var log = require('../Logger');
 var TaskParse = /** @class */ (function () {
     function TaskParse(task) {
         this.sourceMediaId = null;
@@ -64,6 +65,7 @@ var TaskParse = /** @class */ (function () {
         this.targetMedia = null;
         this.module = null;
         this.moduleInfo = null;
+        this.content = null;
         this.task = null;
         this.task = task;
     }
@@ -363,13 +365,19 @@ var TaskParse = /** @class */ (function () {
                                             else if (moduleTypeMethod.toLowerCase() == 'proxy') {
                                                 ext = '.mp4';
                                             }
+                                            var targetFileId = _this.task._id;
+                                            if (_this.moduleInfo.target_media === "no" && _this.targetStorage.type == "local") {
+                                                targetFileId = (_this.content.title || "") + "(" + targetFileId + ")";
+                                            }
                                             var setTargetOptions = {
                                                 content_id: _this.task.content_id,
                                                 type: _this.moduleInfo.target_media,
                                                 storage: _this.moduleInfo.target_storage,
-                                                path: _this.task._id + ext,
-                                                full_path: path.resolve(_this.targetStorage.path, _this.task._id + ext)
+                                                path: targetFileId + ext,
+                                                full_path: path.resolve(_this.targetStorage.path, targetFileId + ext)
                                             };
+                                            // 타겟 옵션중
+                                            // target + media type == no  이면 파일 아이디를 콘텐츠 타이틀로 변경
                                             _this.setMedia(setTargetOptions)
                                                 .then(function (setTargetMedia) {
                                                 log.channel('task_parse').info('[setting][setTargetMedia]', setTargetMedia);
@@ -455,6 +463,7 @@ var TaskParse = /** @class */ (function () {
             var _this_1 = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var _this = _this_1;
                         var taskSetting = null;
                         if (!(0, lodash_1.isEmpty)(_this_1.task.source) && !(0, lodash_1.isEmpty)(_this_1.task.target)) {
                             taskSetting = _this_1.onlineSetting();
@@ -462,12 +471,17 @@ var TaskParse = /** @class */ (function () {
                         else {
                             taskSetting = _this_1.setting();
                         }
-                        taskSetting
-                            .then(function (complete) {
-                            (0, ElectronHelper_1.sendIpc)("#TaskMonitor/create", complete);
-                            resolve(complete);
-                        })["catch"](function (error) {
-                            log.channel('task_parse').error(error);
+                        var contentDb = new Content();
+                        contentDb.db().findOne({ _id: _this_1.task.content_id }, function (err, content) {
+                            _this.content = content;
+                            log.channel('task_parse').info("[TaskParse][Get Content]", _this.content);
+                            taskSetting
+                                .then(function (complete) {
+                                (0, ElectronHelper_1.sendIpc)("#TaskMonitor/create", complete);
+                                resolve(complete);
+                            })["catch"](function (error) {
+                                log.channel('task_parse').error(error);
+                            });
                         });
                     })];
             });
