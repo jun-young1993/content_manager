@@ -17,7 +17,6 @@ import {
 } from "@mui/icons-material";
 import {LightTooltip} from "@views/components/tooltip/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import {invoker, showDrawer} from "@views/helper/helper";
 import Chip from '@mui/material/Chip';
 
 import WorkflowRequest from "@views/main/support/workflow/WorkflowRequest";
@@ -25,10 +24,10 @@ import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 import notFoundThumb from "@views/images/not_found_thumb.png";
 import {Box} from "@mui/material";
-import LoadMask from "@views/main/support/utils/LoadMask";
-import BasicModal, { BasicModalPropsContentEvent } from "@views/components/BasicModal";
+import {BasicModalPropsContentEvent} from "@views/components/BasicModal";
 import ContentDetail from "@views/main/ContentDetail";
 import ResizingDragbleModal from "@views/components/utill/ResizingDragbleModal";
+
 const Store = require("electron-store");
 const store = new Store();
 
@@ -178,6 +177,10 @@ export default function CardView(props:ViewerInterface) {
                                                             alt="썸네일 생성작업을 요청해주세요."
                                                             onError={(event: any) => {
                                                                 event.target.src = notFoundThumb;
+                                                            }}
+                                                            onDrag={(event : any)=>{
+                                                            //    drag envet
+                                                            //    1.콘텐츠 순서 변경
                                                             }}
                                                         />
                                                 }

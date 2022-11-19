@@ -29,6 +29,9 @@ var MediaInfo = /** @class */ (function () {
             return event.autoReply(resolve);
         });
     };
+    MediaInfo.$index = function (event, args) {
+        return mediaInfoService.index(args[0]);
+    };
     MediaInfo.index = function (event, args) {
         new Media_1.Media().db().find(args, function (err, data) {
             if (data) {

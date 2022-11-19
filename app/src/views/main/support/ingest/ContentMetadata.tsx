@@ -1,12 +1,13 @@
 import * as React from 'react';
-import FieldSet from "@views/main/support/ingest/fields/FieldSet";
 import TextField from "@mui/material/TextField";
 import {Button, MenuItem} from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
 import Stack from "@mui/material/Stack";
 import EditIcon from '@mui/icons-material/Edit';
-import {sender, showConfirm, showAlert} from "@views/helper/helper";
-import { CategorySelectMenuItem } from '@views/main/Content';;
+import {invoker, sender, showAlert, showConfirm} from "@views/helper/helper";
+import {CategorySelectMenuItem} from '@views/main/Content';
+import dayjs from "dayjs";
+
+
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -98,8 +99,20 @@ export default function ContentMetadata(props:any){
     React.useEffect(()=>{
         sender("@Field/_index",{content_type : props.metadata.content_type})
         .then((result:any) => {
-            const fields:any = {fields : settingField(result.data)};
-                setState(fields);
+
+
+                invoker("@MediaInfo/$index",props.metadata._id)
+                    .then((mediaInfo) => {
+                        console.log("media info",{
+                            fields : settingField(result.data),
+                            mediaInfo : mediaInfo && mediaInfo.data ? mediaInfo.data : {}
+                        });
+
+                        setState({
+                            fields : settingField(result.data),
+                            mediaInfo : mediaInfo && mediaInfo.data ? mediaInfo.data : {}
+                        });
+                    })
         })
         // ipcRenderer.send("@Field/_index");
         // ipcRenderer.on('@Field/_index/reply',(event,result)=>{
@@ -127,7 +140,18 @@ export default function ContentMetadata(props:any){
 
     return(
         <>
-
+            <TextField
+                label="콘텐츠 아이디"
+                fullWidth={true}
+                style={{
+                    backgroundColor : "#8080808c"
+                }}
+                defaultValue={state.metadata._id}
+                InputProps={{
+                    readOnly: true,
+                }}
+                variant="standard"
+            />
 
             {state.fields.map((field:any)=>{
 
@@ -141,7 +165,34 @@ export default function ContentMetadata(props:any){
                     return(<div>{React.cloneElement(element,field)}</div>)
 
                 })}
-
+            <div>
+            <TextField
+                label="콘텐츠 생성일"
+                defaultValue={dayjs(state.metadata.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                fullWidth={true}
+                style={{
+                    backgroundColor : "#8080808c"
+                }}
+                InputProps={{
+                    readOnly: true,
+                }}
+                variant="standard"
+            />
+            </div>
+            <div>
+            <TextField
+                fullWidth={true}
+                label="콘텐츠 수정일"
+                style={{
+                    backgroundColor : "#8080808c"
+                }}
+                defaultValue={dayjs(state.metadata.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
+                InputProps={{
+                    readOnly: true,
+                }}
+                variant="standard"
+            />
+            </div>
             <Stack
                 sx={{padding : 1}}
                 direction="row"

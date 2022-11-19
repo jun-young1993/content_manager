@@ -36,7 +36,8 @@ export default function ContentDetail(props:ContentDetailInterface){
 					backgroundColor : "gray",
 					maxWidth : "100%",
 					borderRadius: "7px",
-					border: "3px solid yellow"
+					border: "3px solid yellow",
+					objectFit : "fill"
 				}}
 				image={"http://localhost:11101/thumbnail/"+contentId+"?w=248&fit=crop&auto=format"}
 				alt="썸네일 생성작업을 요청해주세요."

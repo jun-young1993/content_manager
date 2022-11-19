@@ -2,7 +2,8 @@
 
 import {BaseController} from "./BaseController";
 import {Media as Model} from "../../../../models/Media";
-import { MediaInfoService } from "../../../../service/MediaInfoService";
+import {MediaInfoService} from "../../../../service/MediaInfoService";
+
 const mediaInfoService = new MediaInfoService();
 // import {User} from "@model/User";
 const db = new Model();
@@ -27,7 +28,10 @@ class MediaInfo {
         .then((resolve) => {
             return event.autoReply(resolve)
         })
-        
+    }
+    static $index(event,args){
+        return mediaInfoService.index(args[0]);
+            
     }
     static index(event, args){
 
