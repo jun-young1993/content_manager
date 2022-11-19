@@ -4,8 +4,8 @@
 
 
 ## Content Manager 다운로드 링크
-> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.12/ContentManager-Setup-1.1.12-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
-> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.9/ContentManager-1.1.9-arm64.dmg"><strong>App Download for mac »</strong></a> 
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.13/ContentManager-Setup-1.1.13-x64.exe"><strong>App Download for Windows x64 »</strong></a>  
+> <a href="https://github.com/jun-young1993/electron/releases/download/v1.1.13/ContentManager-1.1.13-arm64.dmg"><strong>App Download for mac »</strong></a> 
 
 ## 기능
 > - 유형별 / 태그별 / 메타데이터별 콘텐츠 검색  
