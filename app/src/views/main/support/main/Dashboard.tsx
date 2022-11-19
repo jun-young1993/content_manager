@@ -30,7 +30,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import {ExpandMore} from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
-import { invoker, showAlert } from '@views/helper/helper';
+import {getZIndex, invoker, showAlert} from '@views/helper/helper';
 
 const speedDialActionItem = [
   { icon: <FileCopyIcon />, name: 'Copy' },
@@ -61,8 +61,8 @@ const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
-};
-interface AppInfoInterface {app_version : string , latest_version : string, is_latest : Boolean, port : number};
+}
+interface AppInfoInterface {app_version : string , latest_version : string, is_latest : Boolean, port : number}
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
@@ -209,7 +209,7 @@ export default function Dashboard(props:DashboardInterface) {
      
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer id="main-app-gnb" variant="permanent" open={open} style={getZIndex(-1)}>
           <Toolbar
             sx={{
               display: 'flex',

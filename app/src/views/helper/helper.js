@@ -1,7 +1,8 @@
 "use strict";
 exports.__esModule = true;
-exports.invoker = exports.showDrawer = exports.showConfirm = exports.showAlert = exports.sender = void 0;
+exports.getZIndex = exports.invoker = exports.showDrawer = exports.showConfirm = exports.showAlert = exports.sender = void 0;
 var electron_1 = require("electron");
+var lodash_1 = require("lodash");
 // declare var _MODELS: any;
 var sender = function (channel, arg1, arg2) {
     return new Promise(function (resolve, reject) {
@@ -62,3 +63,18 @@ var showDrawer = function (options, onClick) {
     }
 };
 exports.showDrawer = showDrawer;
+var getZIndex = function (diff, id) {
+    if (diff === void 0) { diff = 1; }
+    if (id === void 0) { id = "main-app-bar"; }
+    var mainAppBar = document.getElementById(id);
+    var zIndexStyle = {};
+    if (mainAppBar !== null) {
+        if (!(0, lodash_1.isEmpty)(getComputedStyle(mainAppBar).zIndex)) {
+            zIndexStyle = {
+                zIndex: Number(getComputedStyle(mainAppBar).zIndex) + (diff)
+            };
+        }
+    }
+    return zIndexStyle;
+};
+exports.getZIndex = getZIndex;

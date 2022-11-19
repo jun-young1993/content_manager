@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, {Component, Fragment} from 'react';
 import './index.css';
 import * as FontAwesome from 'react-icons/fa';
-import { CSSTransition } from 'react-transition-group';
+import {CSSTransition} from 'react-transition-group';
+import {getZIndex} from "@views/helper/helper";
 
 interface PropTypes {
     className: string;
@@ -15,9 +16,12 @@ interface PropTypes {
     onRequestRecover: () => void;
     onFocus: () => void;
 }
-// const mainAppBar = document.getElementById("main-app-bar");
+
+
+
 export default class Modal extends Component<PropTypes> {
     node?: HTMLDivElement | null;
+
     render() {
         const { isDragging, width, height, top, left, isOpen, isMinimised, onRequestRecover, className, onFocus } = this.props;
         if (isOpen) {
@@ -31,8 +35,7 @@ export default class Modal extends Component<PropTypes> {
                             }}
                             draggable={isDragging}
                             className={!className ? "flexible-modal" : "flexible-modal " + className}
-                            style={{...{ width, height, top, left },...{
-                                zIndex : 3000,
+                            style={{...{ width, height, top, left },...getZIndex(1),...{
                                 overflowX : "scroll",
                                 overflowY : "scroll"
                                 // overflow-x: scroll

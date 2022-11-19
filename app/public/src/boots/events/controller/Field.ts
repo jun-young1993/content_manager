@@ -2,7 +2,7 @@
 
 import {BaseController} from "./BaseController";
 import {Field as FieldModel} from "../../../../models/Field";
-import { isEmpty } from "lodash";
+import {isEmpty} from "lodash";
 // import {User} from "@model/User";
 const db = new FieldModel();
 
@@ -87,7 +87,7 @@ class Field {
     }
     static _insert(event, args){
 
-        db.db().findOne({code : args[0].code,content_type : args[0],content_type})
+        db.db().findOne({code : args[0].code,content_type : args[0].content_type})
         .exec((error, code) => {
             if(isEmpty(code)){
                 db.db().findOne({content_type : args[0].content_type})

@@ -89,7 +89,7 @@ var Field = /** @class */ (function () {
         });
     };
     Field._insert = function (event, args) {
-        db.db().findOne({ code: args[0].code, content_type: args[0], content_type: content_type })
+        db.db().findOne({ code: args[0].code, content_type: args[0].content_type })
             .exec(function (error, code) {
             if ((0, lodash_1.isEmpty)(code)) {
                 db.db().findOne({ content_type: args[0].content_type })

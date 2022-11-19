@@ -1,5 +1,6 @@
 import {ipcRenderer, IpcRendererEvent} from "electron";
 import {ShowALertInterface} from "./helperInterface";
+import {isEmpty} from "lodash";
 
 // declare var _MODELS: any;
 const sender = (channel:string,arg1 ?:any,arg2 ?:any) => {
@@ -70,10 +71,24 @@ const showDrawer = (options:any,onClick ?: Function) => {
 		})
 	}
 }
+
+const getZIndex = ( diff : number = 1,id : string = "main-app-bar") : {zIndex ?: number} => {
+	let mainAppBar : Element | null = document.getElementById(id);
+	let zIndexStyle : {zIndex ?: number} = {};
+	if(mainAppBar !== null){
+		if(!isEmpty(getComputedStyle(mainAppBar).zIndex)){
+			zIndexStyle = {
+				zIndex : Number(getComputedStyle(mainAppBar).zIndex) + (diff)
+			}
+		}
+	}
+	return zIndexStyle;
+}
 export {
 	sender,
 	showAlert,
 	showConfirm,
 	showDrawer,
-	invoker
+	invoker,
+	getZIndex
 };
