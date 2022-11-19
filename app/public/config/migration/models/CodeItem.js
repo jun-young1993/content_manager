@@ -84,6 +84,11 @@ module.exports = {
 		name : "기타자료",
 		_id : "content_type_other"
 	},{
+		parent_code : "content_type",
+		code : "folder",
+		name : "폴더",
+		_id : "content_type_folder"
+	},{
 		parent_code : "media_type",
 		code : "original",
 		name : "원본",
