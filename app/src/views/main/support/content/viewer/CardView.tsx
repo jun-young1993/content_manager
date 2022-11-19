@@ -176,8 +176,8 @@ export default function CardView(props:ViewerInterface) {
                                                                 sx={{
                                                                     '&:hover': {
                                                                         cursor: "pointer",
-                                                                        transform: "scale(1.4)",
-                                                                        transition: "all 0.2s linear",
+                                                                        transform: "scale(1.1)",
+                                                                        transition: "all 1.2s linear",
                                                                         overflow: "hidden"
                                                                     }
                                                                     // 16:9
