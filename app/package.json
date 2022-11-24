@@ -153,7 +153,7 @@
     "@task": "./public/lib/Task"
   },
   "build": {
-    "asar": false,
+    "asar": true,
     "appId": "ContentManager.com",
     "productName": "ContentManager",
     "mac": {
