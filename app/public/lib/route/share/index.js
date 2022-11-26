@@ -8,7 +8,7 @@ function uniqid(prefix = "", random = false) {
     const sec = Date.now() * 1000 + Math.random() * 1000;
     const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
     return `${prefix}${id}${random ? `.${Math.trunc(Math.random() * 100000000)}`:""}`;
-};
+}
 
 function requestPost(file,uniqId){
     const uploadRequest = new XMLHttpRequest();
@@ -86,6 +86,7 @@ function DropFile(dropAreaId, fileListId) {
     }
 
     function renderFile(file,uniqId) {
+        console.log('before render file',file);
         let fileDOM = document.createElement("div");
         fileDOM.className = "file";
         fileDOM.innerHTML = `

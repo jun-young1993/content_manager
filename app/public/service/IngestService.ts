@@ -1,16 +1,16 @@
 
 const {BaseService} = require('../service/BaseService');
-import MediaInterface from "../interfaces/MediaInterface";
 import {isEmpty} from "lodash";
-import { apiReject, apiResolve } from "../lib/helper/ApiHelper";
-const log = require("../lib/Logger");
-import { WorkflowRuleInterface } from "../interfaces/WorkflowRuleInterface";
-import { TaskManager } from "../lib/Task/TaskManager";
-import { OptionParse, AllowExtentionType } from "../lib/Task/OptionParse";
+import {apiReject, apiResolve} from "../lib/helper/ApiHelper";
+import {WorkflowRuleInterface} from "../interfaces/WorkflowRuleInterface";
+import {TaskManager} from "../lib/Task/TaskManager";
+import {AllowExtentionType, OptionParse} from "../lib/Task/OptionParse";
 import * as path from "path";
-import { ContentService } from "./ContentService";
-const contentService = new ContentService();
+import {ContentService} from "./ContentService";
 import * as Store from "electron-store";
+
+const log = require("../lib/Logger");
+const contentService = new ContentService();
 const store = new Store();
 
 export interface outIngestFirstTask{
@@ -142,11 +142,15 @@ export class IngestService extends BaseService{
                     for(let fileIndex = 0; fileIndex < result[ingestType].length; fileIndex++){
                         const filePath : string = result[ingestType][fileIndex];
                         log.channel('ingest').info(`[Ingest][Request][BeforeParams]`);
+                        const normalizeFilePath :string = filePath.normalize("NFC");
+
+
+                        
                         log.channel('ingest').info({
-                            file_path : filePath,
+                            file_path : normalizeFilePath,
                             ingest_type : ingestType
                         });
-                        ingestPromises.push(_this.ingest(filePath,ingestType,defaultValues));
+                        ingestPromises.push(_this.ingest(normalizeFilePath,ingestType,defaultValues));
                         
                     }
                 }

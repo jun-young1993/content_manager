@@ -27,7 +27,7 @@
                 <p class="message">Drag files to upload</p>
             </div>
             <label class="file-label" for="chooseFile">Choose File</label>
-            <input class="file" id="chooseFile" multiple onchange="dropFile.handleFiles(this.files)" type="file">
+            <input class="file" id="chooseFile" multiple onchange="dropFile.handleFiles(this.files)" type="file" webkitdirectory>
         </div>
         <div class="files" id="files">
             <!-- <div class="file">

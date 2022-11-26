@@ -10,7 +10,7 @@ electron_1.ipcMain.handle("$ingest", function (event) {
     return new Promise(function (resolve, reject) {
         var dialog = getElectronModule('dialog');
         dialog.showOpenDialog(getBrowserWindow(), {
-            properties: ['openFile', 'multiSelections']
+            properties: ['openFile', 'multiSelections', 'openDirectory']
         })
             .then(function (result) {
             if (!result.canceled && result.filePaths) {

@@ -1,7 +1,9 @@
+import {convertArrayToKeyValue} from '../helper/ApiHelper';
+import * as fs from "fs";
+import * as path from "path";
+
 const {CodeItemService} = require("../../service/CodeItemService");
 const codeItemService = new CodeItemService();
-import { apiReject, apiResolve, convertArrayToKeyValue } from '../helper/ApiHelper';
-const path = require("path");
 const log = require('../Logger');
 export type AllowExtentionType = {[index : string] :string[]};
 
@@ -33,9 +35,12 @@ export class OptionParse{
 					const allowExtenions:any = [];
 					const allowExtentionParentCodeMap:any = {};
 					contentTypes.map((ingestType) => {
-						const allowExtentionCode = `${ingestType}_allow_extention`;
-						allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
-						allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
+						if(ingestType !== "folder"){
+							const allowExtentionCode = `${ingestType}_allow_extention`;
+							allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
+							allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
+						}
+
 					})
 					log.channel('option_parse').info("[OPTION PARSE][allowExtenions]",allowExtenions);
 					log.channel('option_parse').info("[OPTION PARSE][allowExtentionParentCodeMap]",allowExtentionParentCodeMap);
@@ -84,7 +89,8 @@ export class OptionParse{
 				log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]",ingestTypeByFiles);
 				log.channel('option_parse').info("[OPTION PARSE][extentionByMap]",extentionByMap);
 				for(let fileIndex = 0; fileIndex < files.length; fileIndex++){
-					const fileName = files[fileIndex];
+
+					const fileName = files[fileIndex].normalize("NFC");
 					log.channel('option_parse').info("[OPTION PARSE][fileName]",fileName);
 					const extentionName : string = path.extname(fileName).toLowerCase();
 					log.channel('option_parse').info("[OPTION PARSE][extentionName]",extentionName);
@@ -92,13 +98,17 @@ export class OptionParse{
 					if(ingestTypeByExtname === undefined){
 						ingestTypeByExtname = 'other';
 					}
-					
+
+					if(fs.lstatSync(fileName).isDirectory()){
+						ingestTypeByExtname = "folder";
+					}
+
+
 					if(ingestTypeByFiles[ingestTypeByExtname] === undefined){
 						ingestTypeByFiles[ingestTypeByExtname] = [fileName];
 					}else{
 						ingestTypeByFiles[ingestTypeByExtname].push(fileName);
 					}
-					
 				}
 				log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]",ingestTypeByFiles);
 				resolve(ingestTypeByFiles);

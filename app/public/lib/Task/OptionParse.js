@@ -1,10 +1,11 @@
 "use strict";
 exports.__esModule = true;
 exports.OptionParse = void 0;
+var ApiHelper_1 = require("../helper/ApiHelper");
+var fs = require("fs");
+var path = require("path");
 var CodeItemService = require("../../service/CodeItemService").CodeItemService;
 var codeItemService = new CodeItemService();
-var ApiHelper_1 = require("../helper/ApiHelper");
-var path = require("path");
 var log = require('../Logger');
 var OptionParse = /** @class */ (function () {
     function OptionParse() {
@@ -28,9 +29,11 @@ var OptionParse = /** @class */ (function () {
                 var allowExtenions = [];
                 var allowExtentionParentCodeMap = {};
                 contentTypes.map(function (ingestType) {
-                    var allowExtentionCode = "".concat(ingestType, "_allow_extention");
-                    allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
-                    allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
+                    if (ingestType !== "folder") {
+                        var allowExtentionCode = "".concat(ingestType, "_allow_extention");
+                        allowExtentionParentCodeMap[allowExtentionCode] = ingestType;
+                        allowExtenions.push(codeItemService.findByParentCode(allowExtentionCode));
+                    }
                 });
                 log.channel('option_parse').info("[OPTION PARSE][allowExtenions]", allowExtenions);
                 log.channel('option_parse').info("[OPTION PARSE][allowExtentionParentCodeMap]", allowExtentionParentCodeMap);
@@ -72,13 +75,16 @@ var OptionParse = /** @class */ (function () {
                 log.channel('option_parse').info("[OPTION PARSE][ingestTypeByFiles]", ingestTypeByFiles);
                 log.channel('option_parse').info("[OPTION PARSE][extentionByMap]", extentionByMap);
                 for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
-                    var fileName = files[fileIndex];
+                    var fileName = files[fileIndex].normalize("NFC");
                     log.channel('option_parse').info("[OPTION PARSE][fileName]", fileName);
                     var extentionName = path.extname(fileName).toLowerCase();
                     log.channel('option_parse').info("[OPTION PARSE][extentionName]", extentionName);
                     var ingestTypeByExtname = extentionByMap[extentionName];
                     if (ingestTypeByExtname === undefined) {
                         ingestTypeByExtname = 'other';
+                    }
+                    if (fs.lstatSync(fileName).isDirectory()) {
+                        ingestTypeByExtname = "folder";
                     }
                     if (ingestTypeByFiles[ingestTypeByExtname] === undefined) {
                         ingestTypeByFiles[ingestTypeByExtname] = [fileName];

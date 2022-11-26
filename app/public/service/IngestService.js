@@ -19,13 +19,13 @@ exports.IngestService = void 0;
 var BaseService = require('../service/BaseService').BaseService;
 var lodash_1 = require("lodash");
 var ApiHelper_1 = require("../lib/helper/ApiHelper");
-var log = require("../lib/Logger");
 var TaskManager_1 = require("../lib/Task/TaskManager");
 var OptionParse_1 = require("../lib/Task/OptionParse");
 var path = require("path");
 var ContentService_1 = require("./ContentService");
-var contentService = new ContentService_1.ContentService();
 var Store = require("electron-store");
+var log = require("../lib/Logger");
+var contentService = new ContentService_1.ContentService();
 var store = new Store();
 var IngestService = /** @class */ (function (_super) {
     __extends(IngestService, _super);
@@ -136,11 +136,12 @@ var IngestService = /** @class */ (function (_super) {
                     for (var fileIndex = 0; fileIndex < result[ingestType].length; fileIndex++) {
                         var filePath = result[ingestType][fileIndex];
                         log.channel('ingest').info("[Ingest][Request][BeforeParams]");
+                        var normalizeFilePath = filePath.normalize("NFC");
                         log.channel('ingest').info({
-                            file_path: filePath,
+                            file_path: normalizeFilePath,
                             ingest_type: ingestType
                         });
-                        ingestPromises.push(_this.ingest(filePath, ingestType, defaultValues));
+                        ingestPromises.push(_this.ingest(normalizeFilePath, ingestType, defaultValues));
                     }
                 }
                 Promise.all(ingestPromises)
