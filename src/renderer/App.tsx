@@ -1,5 +1,6 @@
 import React from 'react';
 import { AppState } from '../@types/app/index';
+import Footer from './Footer';
 import Header from './Header';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -17,12 +18,12 @@ export default class App extends React.Component<AppProps, AppState> {
 
   // eslint-disable-next-line class-methods-use-this
   private renderApp(): JSX.Element {
-    return <>app</>;
+    return <div className="container">app</div>;
   }
 
   // eslint-disable-next-line class-methods-use-this
   private renderFooter(): JSX.Element {
-    return <>app</>;
+    return <Footer />;
   }
 
   /**
@@ -33,7 +34,7 @@ export default class App extends React.Component<AppProps, AppState> {
    */
   public render(): JSX.Element {
     return (
-      <div className="container">
+      <div className="container mx-auto">
         {this.renderHeader()}
         {this.renderApp()}
         {this.renderFooter()}
