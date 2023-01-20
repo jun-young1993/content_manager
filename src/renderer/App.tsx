@@ -1,50 +1,43 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
-import './App.css';
+import React from 'react';
+import { AppState } from '../@types/app/index';
+import Header from './Header';
 
-const Hello = () => {
-  return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
-  );
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface AppProps {}
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
+export default class App extends React.Component<AppProps, AppState> {
+  public constructor(props: AppProps) {
+    super(props);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private renderHeader(): JSX.Element {
+    return <Header />;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private renderApp(): JSX.Element {
+    return <>app</>;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private renderFooter(): JSX.Element {
+    return <>app</>;
+  }
+
+  /**
+   *
+   *
+   * @returns JSX.Element
+   * @memberof App
+   */
+  public render(): JSX.Element {
+    return (
+      <div className="container">
+        {this.renderHeader()}
+        {this.renderApp()}
+        {this.renderFooter()}
+      </div>
+    );
+  }
 }
