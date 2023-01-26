@@ -1,7 +1,11 @@
+/* eslint-disable import/order */
 import 'tailwindcss/tailwind.css';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import App from './app';
 import './tailwind.css';
+import AppStore from '../lib/store/app-store';
+import { AppState } from '../lib/types/app-types';
+import Dispatcher from './dispatcher';
 
 // const body = document.getElementsByTagName('body')[0];
 // body.setAttribute('style', 'height:100vh');
@@ -9,7 +13,10 @@ import './tailwind.css';
 const container = document.getElementById('root')!;
 // container.setAttribute('style', 'height:100vh');
 const root = createRoot(container);
-root.render(<App />);
+
+const appStore: AppStore = new AppStore();
+const dispatcher = new Dispatcher(appStore);
+root.render(<App dispatcher={dispatcher} />);
 
 // calling IPC exposed from preload script
 window.electron.ipcRenderer.once('ipc-example', (arg) => {

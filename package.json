@@ -112,6 +112,7 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.2.3",
+    "event-kit": "^2.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.0"
@@ -122,6 +123,7 @@
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
+    "@types/event-kit": "^2.4.1",
     "@types/jest": "^28.1.7",
     "@types/node": "18.7.6",
     "@types/react": "^18.0.17",
