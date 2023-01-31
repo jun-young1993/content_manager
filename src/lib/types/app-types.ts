@@ -12,6 +12,14 @@ export interface AppProps {
   readonly dispatcher: Dispatcher;
 }
 // ========== ./main.tsx ================
+
+// =========== ./renderer/views/global/menu.tsx ===============
+export interface GnbMenuProps {
+  onClick: (mainMenu: MainMenu) => void;
+}
+// export interface GnbState {
+//   onClick: (mainMenu: MainMenu) => void;
+// }
 interface MainMenuItems {
   [key: MainMenu]: Ele;
 }

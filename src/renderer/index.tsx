@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import App from './app';
 import './tailwind.css';
 import AppStore from '../lib/store/app-store';
-import { AppState } from '../lib/types/app-types';
 import Dispatcher from './dispatcher';
 
 // const body = document.getElementsByTagName('body')[0];
@@ -16,6 +15,7 @@ const root = createRoot(container);
 
 const appStore: AppStore = new AppStore();
 const dispatcher = new Dispatcher(appStore);
+
 root.render(<App dispatcher={dispatcher} />);
 
 // calling IPC exposed from preload script
