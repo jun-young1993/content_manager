@@ -5,6 +5,8 @@ import { AppProps, AppState, MainMenu } from '../lib/types/app-types';
 import { MAIN_MENU } from '../lib/types/app-defines';
 import Dispatcher from './dispatcher';
 import GnbMenu from './views/global/menu';
+import Setting from './views/main/setting';
+import FlexContainer from './views/layout/flex-container';
 
 export default class App extends React.Component<AppProps, AppState> {
   public constructor(props: AppProps) {
@@ -29,7 +31,7 @@ export default class App extends React.Component<AppProps, AppState> {
     return this.getDispather().getAppStore();
   }
 
-  private renderMainView(): JSX.Element | ReactNode {
+  private renderMainView(): JSX.Element {
     const { currentMainMenu } = this.state;
 
     switch (currentMainMenu) {
@@ -37,6 +39,8 @@ export default class App extends React.Component<AppProps, AppState> {
         return <div>{MAIN_MENU.HOME}</div>;
       case MAIN_MENU.MAIN:
         return <div>{MAIN_MENU.MAIN}</div>;
+      case MAIN_MENU.SETTING:
+        return <Setting />;
       default:
         return <div>[{currentMainMenu}] not found page</div>;
     }
@@ -44,19 +48,38 @@ export default class App extends React.Component<AppProps, AppState> {
 
   private renderMain(): JSX.Element {
     return (
-      <main className="w-full h-full flex flex-row">
-        <div className="border-1 border-indigo-1000 basis-20 flex">
-          <GnbMenu
-            onClick={(mainMenu: MainMenu) => {
-              this.onClickMainMenu(mainMenu);
-            }}
-          />
-        </div>
-        <div className="border-1 border-indigo-1000 basis-full">
-          {this.renderMainView()}
-        </div>
-      </main>
+      <FlexContainer
+        flex="row"
+        elements={[
+          {
+            size: '20',
+            element: (
+              <GnbMenu
+                onClick={(mainMenu: MainMenu) => {
+                  this.onClickMainMenu(mainMenu);
+                }}
+              />
+            ),
+          },
+          {
+            size: 'full',
+            element: this.renderMainView(),
+          },
+        ]}
+      />
     );
+    // <div className="w-full h-full flex flex-row">
+    //   <div className="border-1 border-indigo-1000 basis-20 flex">
+    //     <GnbMenu
+    //       onClick={(mainMenu: MainMenu) => {
+    //         this.onClickMainMenu(mainMenu);
+    //       }}
+    //     />
+    //   </div>
+    //   <div className="border-1 border-indigo-1000 basis-full">
+    //     {this.renderMainView()}
+    //   </div>
+    // </div>
   }
 
   /**
