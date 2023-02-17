@@ -1,13 +1,14 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 import AppStore from '../lib/store/app-store';
-import { AppProps, AppState, MainMenu } from '../lib/types/app-types';
+import { AppProps, AppState, Ele, MainMenu } from '../lib/types/app-types';
 import { MAIN_MENU } from '../lib/types/app-defines';
 import Dispatcher from './dispatcher';
 import GnbMenu from './views/global/menu';
 import Setting from './views/main/setting';
 import FlexContainer from './views/layout/flex-container';
 
+type MainRenderView = Ele | Setting;
 export default class App extends React.Component<AppProps, AppState> {
   public constructor(props: AppProps) {
     super(props);
@@ -31,7 +32,11 @@ export default class App extends React.Component<AppProps, AppState> {
     return this.getDispather().getAppStore();
   }
 
-  private renderMainView(): JSX.Element {
+  private settingComponent(): Setting {
+    return <Setting />;
+  }
+
+  private renderMainView(): MainRenderView {
     const { currentMainMenu } = this.state;
 
     switch (currentMainMenu) {
@@ -40,7 +45,7 @@ export default class App extends React.Component<AppProps, AppState> {
       case MAIN_MENU.MAIN:
         return <div>{MAIN_MENU.MAIN}</div>;
       case MAIN_MENU.SETTING:
-        return <Setting />;
+        return this.settingComponent();
       default:
         return <div>[{currentMainMenu}] not found page</div>;
     }
@@ -63,23 +68,11 @@ export default class App extends React.Component<AppProps, AppState> {
           },
           {
             size: 'full',
-            element: this.renderMainView(),
+            element: this.renderMainView() as JSX.Element,
           },
         ]}
       />
     );
-    // <div className="w-full h-full flex flex-row">
-    //   <div className="border-1 border-indigo-1000 basis-20 flex">
-    //     <GnbMenu
-    //       onClick={(mainMenu: MainMenu) => {
-    //         this.onClickMainMenu(mainMenu);
-    //       }}
-    //     />
-    //   </div>
-    //   <div className="border-1 border-indigo-1000 basis-full">
-    //     {this.renderMainView()}
-    //   </div>
-    // </div>
   }
 
   /**

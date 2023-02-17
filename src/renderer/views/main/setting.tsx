@@ -1,52 +1,70 @@
+// import { SettingProps } from './lib/types/app-types';
 import React from 'react';
+import { SettingProps } from '../../../lib/types/app-types';
+type SettingItems = SettingProps['items'];
 
-export default class Setting extends React.Component {
+export default class Setting extends React.Component<SettingProps> {
+  static defaultProps = {
+    items: [
+      {
+        key: 'item_1',
+        title: '아이템1',
+        subTitle: '아이템1 부제',
+        path: 'M22 12h-4l-3 9L9 3l-3 9H2',
+      },
+      {
+        key: 'item_2',
+        title: '아이템2',
+        subTitle: '아이템2 부제',
+        path: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2',
+      },
+    ] as SettingItems,
+  };
+
   public constructor(props) {
     super(props);
   }
 
+  renderItem(index: number): JSX.Element {
+    const { items } = this.props;
+    const item = items[index];
+    return (
+      <div
+        className={`p-4 lg:w-1/${items.length} md:w-1/${items.length}`}
+        key={item.key}
+      >
+        <div className="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-8 sm:flex-row flex-col">
+          <div className="w-16 h-16 sm:mr-8 sm:mb-0 mb-4 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 flex-shrink-0">
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="w-8 h-8"
+              viewBox="0 0 24 24"
+            >
+              <path d={`${item.path}`} />
+            </svg>
+          </div>
+          <div className="flex-grow">
+            <h2 className="text-gray-900 text-lg title-font font-medium mb-3">
+              {item.title}
+            </h2>
+            <p className="leading-relaxed text-base">{item.subTitle}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render(): JSX.Element {
+    const { items } = this.props;
     return (
       <section className="text-gray-600 body-font">
         <div className="container px-5 py-24 mx-auto flex flex-wrap">
           <div className="flex flex-wrap -m-4">
-          <div className="p-4 lg:w-1/2 md:w-full">
-            <div className="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-8 sm:flex-row flex-col">
-              <div className="w-16 h-16 sm:mr-8 sm:mb-0 mb-4 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 flex-shrink-0">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-8 h-8" viewBox="0 0 24 24">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                </svg>
-              </div>
-              <div className="flex-grow">
-                <h2 className="text-gray-900 text-lg title-font font-medium mb-3">Shooting Stars</h2>
-                <p className="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
-                <a className="mt-3 text-indigo-500 inline-flex items-center">Learn More
-                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="p-4 lg:w-1/2 md:w-full">
-            <div className="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-8 sm:flex-row flex-col">
-              <div className="w-16 h-16 sm:mr-8 sm:mb-0 mb-4 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 flex-shrink-0">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-10 h-10" viewBox="0 0 24 24">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <div className="flex-grow">
-                <h2 className="text-gray-900 text-lg title-font font-medium mb-3">The Catalyzer</h2>
-                <p className="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
-                <a className="mt-3 text-indigo-500 inline-flex items-center">Learn More
-                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"></path>
-                  </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
+            {items.map((_, index: number) => this.renderItem(index))}
           </div>
         </div>
       </section>
